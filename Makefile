@@ -5,23 +5,25 @@ SHELL := /bin/sh
 .DEFAULT_GOAL := help
 
 CATALOG := build/catalog/Catalog.sqlite
+APP_CATALOG := apple/App/Resources/Catalog.sqlite
 PACKAGES := ReadingEngine ReadingData CatalogCompiler
 SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 	Server/Sources Server/Tests Server/Package.swift apple
 PORT ?= 8080
 
 .PHONY: help generate catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format check deploy clean
+	test-linux run serve screenshot lint format check archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
 
-generate: ## Generate apple/DayByWord.xcodeproj from apple/project.yml
+generate: catalog ## Generate apple/DayByWord.xcodeproj from apple/project.yml
 	@cd apple && xcodegen generate --quiet
 
-catalog: ## Compile the catalog to build/catalog/Catalog.sqlite (RELEASE=1 for release mode)
+catalog: ## Compile the catalog for the server and the app bundle (RELEASE=1 for release mode)
 	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
 		--output $(CATALOG) $(if $(RELEASE),--release)
+	@cp $(CATALOG) $(APP_CATALOG)
 
 build: generate ## Build the app for the simulator
 	@scripts/xcodebuild.sh build-simulator -destination "$$(scripts/sim-destination.sh)" build
@@ -66,6 +68,12 @@ format: ## Format the Swift sources in place
 
 check: lint catalog test-packages test-server test-app ## The gate before every commit
 	@echo "check: all passed"
+
+archive: ## Build a signed Release archive for TestFlight (docs/release.md)
+	@scripts/archive.sh
+
+testflight: ## Upload build/DayByWord.xcarchive to App Store Connect (docs/release.md)
+	@scripts/testflight.sh
 
 deploy: ## Deploy origin/main to daybyword.com
 	@echo "deploy: not built yet (BUILD.md P7.2)" >&2; exit 1
