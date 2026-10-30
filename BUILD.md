@@ -100,7 +100,7 @@ top-level items; sub-items roll up into their parent.
 
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
-| 0 | Owner foundations | — | 8 | 3 |
+| 0 | Owner foundations | — | 8 | 5 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 0 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
@@ -131,8 +131,9 @@ top-level items; sub-items roll up into their parent.
 
 **Current state (2026-10-30):** planning is complete. The owner answered
 every open decision on 2026-10-30 (D1–D38). The repository holds AGENTS.md,
-BUILD.md, and README.md and no code. daybyword.com has no DNS records yet,
-and the owner is adding them (P0.4). **Phase 1 is next**, starting at P1.1.
+BUILD.md, and README.md and no code. daybyword.com's DNS and Email Routing
+are in place (P0.4), and Xcode is signed in to the owner's team (P0.6).
+**Phase 1 is next**, starting at P1.1.
 
 ---
 
@@ -373,8 +374,9 @@ anything they depend on and record what they checked.
    Store for "day by word" and "daybyword" found no app of that name. The
    owner has chosen to keep the name without a trademark search (D2).
 3. **The repository.** `dunamismax/daybyword` was created on 2026-10-30 at
-   10:14 UTC. It is **public** and was empty. `origin` pushes to GitHub,
-   and Codeberg is to be added (D32).
+   10:14 UTC. It is **public** and was empty. `origin` pushes to GitHub.
+   The Codeberg mirror, `codeberg.org/dunamismax/daybyword`, was created
+   the same day (D32, P0.5).
 4. **Bible destinations.** YouVersion's `youversion://bible?reference=JHN.3.16`
    scheme is undocumented and may change
    ([a 2013 write-up](https://ben.prose.sh/2013-12-18-youversion-bible-url-scheme)),
@@ -715,9 +717,12 @@ research/                 gitignored downloads and working files
 - [x] **P0.1 [OWNER]** Answer the open decisions. *(Owner, 2026-10-30: D1–D38 answered in an interactive session and recorded above.)*
 - [x] **P0.2 [OWNER]** Create the repository. *(Owner, 2026-10-30: `dunamismax/daybyword`, public; see D4.)*
 - [x] **P0.3 [OWNER]** Register the domain. *(Owner, 2026-10-30: daybyword.com at Cloudflare, registered 09:58 UTC, expiring 2027-10-30.)*
-- [ ] **P0.4 [OWNER]** DNS and mail in Cloudflare: A records for `daybyword.com` and `www.daybyword.com` pointing at the server (the address prayerbookatlas.com uses, Research finding 14), DNS only and not proxied, and Email Routing with a catch-all to the owner's inbox (D28). *(Owner, 2026-10-30: adding them now.)* Agents tick this once `dig` shows the records and MX.
+- [x] **P0.4 [OWNER]** DNS and mail in Cloudflare: A records for `daybyword.com` and `www.daybyword.com` pointing at the server (the address prayerbookatlas.com uses, Research finding 14), DNS only and not proxied, and Email Routing with a catch-all to the owner's inbox (D28). *(Owner, 2026-10-30.)*
+  - *Result (agent, 2026-10-30):* `dig` against 1.1.1.1 shows `daybyword.com` and `www.daybyword.com` as A 71.215.196.157 (the server's own address, so DNS only, not proxied) with no AAAA; MX `route1`–`route3.mx.cloudflare.net`; and SPF `v=spf1 include:_spf.mx.cloudflare.net ~all`. The catch-all rule itself cannot be seen from outside; the first message to support@daybyword.com will confirm it.
 - [ ] **P0.5 [OWNER]** Codeberg (D32): create `dunamismax/daybyword` on Codeberg and add its push URL to `origin`. Agents tick this once `git remote -v` shows both push URLs.
-- [ ] **P0.6 [OWNER]** Make sure Xcode on this Mac is signed in to the Apple ID of the owner's individual Developer Program membership (D33). Agents do the rest (P1.12).
+  - *Note (agent, 2026-10-30):* the Codeberg repository exists (public, empty, created 10:14 UTC), but this clone's `origin` has only its GitHub push URL. The owner's mirrored Beautiful Corner pushes to `git@codeberg.org-dunamismax:dunamismax/<repo>.git` as a second push URL on `origin`.
+- [x] **P0.6 [OWNER]** Make sure Xcode on this Mac is signed in to the Apple ID of the owner's individual Developer Program membership (D33). Agents do the rest (P1.12). *(Owner, 2026-10-30.)*
+  - *Result (agent, 2026-10-30):* Xcode's account settings show team `D9QMP3LP8H`, type Individual, not a free provisioning team, and the keychain holds one valid Apple Development signing identity for it.
 
 When the first usable build exists:
 
@@ -1077,8 +1082,9 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 - **Next: Phase 1 from P1.1.** Pin Swift 6.4.2, set up the packages, the
   Hummingbird 2 server, and the XcodeGen project, then the Makefile and
   `make check`.
-- **Owner steps outstanding:** P0.4 (DNS and Email Routing, in progress),
-  P0.5 (Codeberg), and P0.6 (Xcode signed in).
+- **Owner steps:** P0.4 (DNS and mail) and P0.6 (Xcode) are verified.
+  P0.5 is half done: the Codeberg repository exists, but `origin` in this
+  clone has no Codeberg push URL yet.
 - **Key changes from the brief:** no interviews or pilot (D25), never Bible
   text (D13), never AI (D23), YouVersion only at launch (D26), modern
   browsers only (D30), and nothing reused from other repositories (D22).
