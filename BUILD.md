@@ -55,7 +55,9 @@ dispute (AGENTS.md §3).
 1. Read AGENTS.md first. Then read this whole file once per session.
 2. Work the **first open `- [ ]` item in the earliest incomplete phase**,
    skipping items whose gate is still closed and items marked [OWNER] that
-   are waiting on the owner personally (AGENTS.md §4). Items marked
+   are waiting on the owner personally (AGENTS.md §4). The design session
+   (P2.3) is the exception: it is a hard stop, and no further building
+   happens until the owner has said the design is final. Items marked
    *(parallel-safe)* may be done in any order within their phase, and Phase
    10 (the launch catalog) may run alongside Phases 9–17.
 3. Every feature lands in the app and on the web in the same phase (D37).
@@ -547,7 +549,7 @@ Engineering consequences go in `docs/decisions.md`.
 | D15 | Prayer-book plans and their reviewers | **The owner reviews the 1979 and 1662 plans now, as reviewer of record, and a second reviewer who uses each book is sought when possible** (owner, 2026-10-30). Until the owner's review is recorded, those plans are marked "in review" and stay out of release builds. Each is labeled with its exact edition and calendar rule and kept apart from Sunday and Communion lectionaries. The later English tables (1871, 1922, 1961) are separate plans, never merged under 1662. |
 | D16 | Territories | **The US App Store first; other storefronts after a rights review of every plan served there** (owner, 2026-10-30). The website serves everyone, and the 1662 UK question goes to Cambridge University Press (D38) before any UK storefront. No geo-blocking unless the rights research requires it; every plan page states its rights basis. |
 | D17 | Streaks | **Opt-in, against the reader's own rhythm** (owner, 2026-10-30): off by default, counted against the reader's reading days (rest days never break it), shown small, never in notifications, and never with loss language. |
-| D18 | Visual identity | **Chosen in a design session** (owner, 2026-10-30) from three directions agents draw (P2.3): **Bookmark** (paper, ink, a single ribbon color for "next", references in a book face), **Morning** (light and open, a modern sans, one dawn accent), and **Desk** (near-monochrome, very large references readable from across a desk). The owner picks or mixes them, and the choice is recorded here. |
+| D18 | Visual identity | **Chosen in a design session** (owner, 2026-10-30) from three directions agents draw (P2.3): **Bookmark** (paper, ink, a single ribbon color for "next", references in a book face), **Morning** (light and open, a modern sans, one dawn accent), and **Desk** (near-monochrome, very large references readable from across a desk). The owner picks or mixes them, and the choice is recorded here. The session is a hard stop: nothing further is built until the owner says the design is final (owner, 2026-10-30). |
 | D19 | Images and icons | **The owner supplies them** (owner, 2026-10-30). Agents never draw, redraw, or generate images or icons. They write prompts in `design/image-prompts.md`, the owner generates the files, and agents resize, export, and register them. |
 | D20 | Calendar and lectionary facts | **Facts only** (dates, names, ranks, references), never prose, each cited and cross-checked against two independent sources with every difference listed (owner, 2026-10-30). |
 | D21 | Rights research downloads | **Agents may download** candidate scans and data (Internet Archive, HathiTrust, Google Books, eBible.org, CCEL, STEPBible-Data, first-party church and publisher sites) into the gitignored `research/` folder, and nothing there ships until it is cleared (owner, 2026-10-30). |
@@ -750,7 +752,7 @@ When the first usable build exists:
 
 - [ ] **P2.1** Write `docs/product.md`: the three sections and Settings, navigation on both platforms, the three schedule behaviors in reader-facing words, the return flow, tone rules (AGENTS.md §3), no guilt mechanics, privacy by design, physical Bible mode, and what each surface (app, widget, notification, web) does.
 - [ ] **P2.2** A hands-on competitive teardown: use ReadingPlan, Sola, YouVersion's plans, Read Scripture, Through the Word, Yearly, My Bible Tracker, and one Bible app's plans (Olive Tree or Logos) on a device. Record onboarding, catalog depth, missed-day behavior, links out, widgets, reminders, privacy labels, and prices in `docs/research/competitors.md`, confirm the † rows, and update the feature map.
-- [ ] **P2.3 [OWNER]** The design session (D18): agents draw the three directions with Today, a plan page, and Progress in each, light and dark, at phone and desktop widths. The owner chooses, and agents record the choice in D18 and write `docs/design.md` and `design/tokens.json`. Image needs go to `design/image-prompts.md` (D19).
+- [ ] **P2.3 [OWNER]** The design session (D18), **a hard stop**: agents draw the three directions as screen mockups (Today, a plan page, and Progress in each, light and dark, at phone and desktop widths, with placeholders where images would go, D19), show them to the owner, and then **stop and wait**. Nothing else is built until the owner has chosen, refined the choice over as many rounds as the owner wants, and said the design is final (owner, 2026-10-30). Then agents record the choice in D18 and write `docs/design.md` and `design/tokens.json`. Image needs go to `design/image-prompts.md` (D19).
 - [ ] **P2.4** Generate the Swift color assets and the web's `tokens.css` from `design/tokens.json` by a script, so the two cannot drift. Test that every text pair in `docs/design.md` meets WCAG AA in light and dark, and that no view or stylesheet writes a raw color.
 - [ ] **P2.5** Type: system faces for the interface, and at most one self-hosted, openly licensed book face for references if D18 calls for one (recorded in `catalog/SOURCES.md`). A type scale that includes a **desk-glance reference size**, scaling with Dynamic Type to AX5 on Apple platforms and in `rem` on the web.
 - [ ] **P2.6** Shared components on both platforms: the reference block (large, selectable, copyable, and read well by VoiceOver: "Mark, chapter 4, verses 1 to 20"); the assignment row with its state (completed, partial, skipped, unread, always in words or symbols as well as color); the plan card; the workload line ("about 12 minutes; estimates vary"); the source note; the sample week; the preview-before-change sheet; the undo banner; and empty, loading, offline, and error states.
@@ -1082,7 +1084,8 @@ never a built-in Bible reader (D13) or an AI feature (D23).
   There is no code yet.
 - **Next: Phase 1 from P1.1.** Pin Swift 6.4.2, set up the packages, the
   Hummingbird 2 server, and the XcodeGen project, then the Makefile and
-  `make check`.
+  `make check`. The design session (P2.3) is a hard stop: show the
+  mockups, then wait for the owner to finalize the design.
 - **Owner steps:** P0.4 (DNS and mail), P0.5 (Codeberg; `origin` pushes to
   both), and P0.6 (Xcode) are verified. Only the [GATE DEMO] letters remain
   in Phase 0.
