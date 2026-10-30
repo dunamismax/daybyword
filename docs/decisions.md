@@ -238,3 +238,49 @@ bound, never interpolated into SQL. A connection is not `Sendable`: code
 that shares one across tasks owns it inside an actor, which keeps SQLite's
 threading rules out of every caller. Typed row decoding, migrations, and
 the backup API are added to this wrapper when an item needs them.
+
+### E19. Server-rendered HTML through the project's own `HTML` type
+
+*2026-10-30, agent.* The server writes its pages with a small `HTML` type of
+its own (`Server/Sources/DayByWordWeb/HTML.swift`): markup is written as
+Swift string literals, and every interpolated `String` is escaped unless it
+is itself `HTML`. Numbers interpolate as digits; any other type does not
+interpolate at all, so it has to be turned into text or markup on purpose.
+Pages are plain Swift functions that return `HTML`.
+
+**Why:** the options were the Hummingbird project's Mustache library, a
+third-party Swift HTML DSL, or our own type. Our own type needs no
+dependency (E10) and is about a hundred lines. Templates are checked by the
+compiler, so a renamed value or a missing partial is a build error rather
+than a blank on a reader's page, and there are no template files to find at
+run time on the server. Escaping is the default and the type system
+enforces it, which matters because plan titles and readers' input reach
+these pages. Mustache's logic-less templates would push the same logic into
+view models anyway, and nobody edits these templates but agents writing
+Swift. If the pages outgrow string literals, a result-builder DSL of our own
+can replace them behind the same functions.
+
+### E20. The server's packages
+
+*2026-10-30, agent.* `Server/Package.swift` depends directly on:
+
+| Package | Version | Use |
+|---|---|---|
+| `hummingbird-project/hummingbird` | 2.28.0 (up to next minor) | the HTTP server, router, middleware, and file serving (D5); its `HummingbirdTesting` library in tests only |
+| `apple/swift-http-types` | 1.8.0 (up to next minor) | `HTTPField` names for security headers |
+| `apple/swift-log` | 1.16.2 (up to next minor) | structured logging |
+
+Everything else in `Server/Package.resolved` comes in through Hummingbird:
+SwiftNIO and its extras, HTTP/2, and SSL; Service Lifecycle; swift-metrics,
+swift-distributed-tracing, and swift-service-context; swift-configuration;
+swift-collections, swift-algorithms, swift-async-algorithms, swift-atomics,
+swift-numerics, and swift-system; and, for `HummingbirdTesting` only,
+AsyncHTTPClient with swift-crypto, swift-certificates, and swift-asn1. These
+are Apple and Swift Server Work Group packages (E10).
+
+**Why:** Hummingbird 2.28.0 was the newest release on 2026-10-30. The two
+direct additions are already part of Hummingbird's graph, so naming them
+adds no code; it only makes the imports explicit. Versions are held by
+`Package.resolved`, which is committed, and deploys build with
+`--force-resolved-versions` so the server builds exactly what was tested.
+Updates are deliberate (BUILD.md P26.3).

@@ -17,4 +17,8 @@ import Testing
     #expect(rows.map { $0["key"] } == [.text("build_mode"), .text("schema_version")])
     #expect(rows.map { $0["value"] } == [.text("development"), .text(String(CatalogBuild.schemaVersion))])
     #expect(!FileManager.default.fileExists(atPath: output.path + ".partial"))
+    #expect(
+        try CatalogMetadata.read(path: output.path)
+            == CatalogMetadata(schemaVersion: CatalogBuild.schemaVersion, buildMode: "development")
+    )
 }
