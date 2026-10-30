@@ -22,8 +22,8 @@ tools.
 
 - Work on `main` only. Never create branches, worktrees, or pull requests.
   Commit directly to `main` and push with `git push origin main`. `origin`
-  pushes to GitHub and, once the owner adds its push URL (BUILD.md P0.5), to
-  Codeberg, so one push updates both.
+  has two push URLs, GitHub and Codeberg (BUILD.md P0.5), so one push
+  updates both.
 - No AI attribution anywhere: no `Co-Authored-By` trailers, no "Generated
   with ..." lines, and no crediting Claude, Anthropic, ChatGPT, OpenAI, or
   any AI tool in commit messages, tags, release notes, code, comments, docs,
