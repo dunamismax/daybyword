@@ -284,3 +284,26 @@ adds no code; it only makes the imports explicit. Versions are held by
 `Package.resolved`, which is committed, and deploys build with
 `--force-resolved-versions` so the server builds exactly what was tested.
 Updates are deliberate (BUILD.md P26.3).
+
+### E21. The pinned toolchain on Linux comes from swiftly
+
+*2026-10-30, agent.* `.swift-version` pins the Swift toolchain (6.4.2 at
+first). On this Mac it is the toolchain inside Xcode, and
+`scripts/check-toolchain.sh` (run by `make check`) fails if `swift` reports
+another version. On Linux, everywhere, the toolchain is installed by
+swiftly from `.swift-version`: in the container that `make test-linux`
+builds (`scripts/linux/Dockerfile`: Ubuntu 24.04, swiftly verified against
+swift.org's signing keys, then `swiftly install` of the pinned version and
+its system packages), in the CI Linux job, which runs `make test-linux`, and
+on the server (P7.1).
+
+**Why:** BUILD.md P1.6 first said "the official Swift container", but Swift
+6.4.2 was released on 2026-10-29 and on 2026-10-30 Docker Hub's official
+`swift` image offered only 6.4.1, so pinning to the official image would
+have meant a different compiler on Linux than on this Mac. swiftly is what
+the server uses anyway (D27, P7.1), reads `.swift-version` itself, and
+verifies each toolchain's signature, so one mechanism gives the same
+compiler in the container, in CI, and in production. The image is cached
+locally by version (`daybyword-linux:<version>`), and build products live in
+a named volume, so later runs take seconds. The repository is mounted
+read-only, so a Linux run can never change the checkout.
