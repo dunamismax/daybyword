@@ -1,0 +1,99 @@
+# The Day by Word Xcode project. XcodeGen generates DayByWord.xcodeproj from
+# this file (make generate); never edit the generated project by hand.
+name: DayByWord
+
+options:
+  bundleIdPrefix: com.daybyword
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
+
+packages:
+  ReadingEngine:
+    path: ../Packages/ReadingEngine
+  ReadingData:
+    path: ../Packages/ReadingData
+
+targets:
+  App:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    settings:
+      base:
+        PRODUCT_NAME: DayByWord
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybyword.app
+        INFOPLIST_FILE: App/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: Day by Word
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.lifestyle
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+    dependencies:
+      - package: ReadingEngine
+      - package: ReadingData
+      - target: Widgets
+
+  Widgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+    settings:
+      base:
+        PRODUCT_NAME: Widgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybyword.app.widgets
+        INFOPLIST_FILE: Widgets/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: Day by Word
+        SKIP_INSTALL: YES
+    dependencies:
+      - package: ReadingEngine
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+
+  AppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: AppTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybyword.app.tests
+        # The app's product is DayByWord.app, not the target's name.
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/DayByWord.app/DayByWord
+        BUNDLE_LOADER: $(TEST_HOST)
+    dependencies:
+      - target: App
+
+  AppUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: AppUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.daybyword.app.uitests
+    dependencies:
+      - target: App
+
+schemes:
+  DayByWord:
+    build:
+      targets:
+        App: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - AppTests
+        - AppUITests
+    archive:
+      config: Release

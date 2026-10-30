@@ -103,7 +103,7 @@ top-level items; sub-items roll up into their parent.
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
-| 1 | Repository and toolchain | M1 Foundation | 13 | 4 |
+| 1 | Repository and toolchain | M1 Foundation | 13 | 5 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
@@ -738,7 +738,7 @@ When the first usable build exists:
 - [x] **P1.2** Add `LICENSE` (all rights reserved, D4) and create `docs/decisions.md`, a numbered, append-only decision log seeded with the Engineering foundations, D5's reasoning, and the no-tracking rule.
 - [x] **P1.3** The packages `Packages/ReadingEngine`, `Packages/ReadingData`, and `Packages/CatalogCompiler` (an executable named `catalog`): Foundation only and Linux-compatible (no UIKit, SwiftUI, or other Apple-only frameworks), each with one passing Swift Testing test. Add a static guard on their imports.
 - [x] **P1.4** The server package `Server/` (`DayByWordServer`, Hummingbird 2 at its current release): configuration from the environment, structured logging, graceful shutdown, `/up`, and a placeholder home page, depending on the local packages by path, with tests through HummingbirdTesting. Record a decision entry for each dependency, including the HTML templating choice (for example the Hummingbird project's Mustache library, or a Swift HTML DSL), and pin them all.
-- [ ] **P1.5** The Apple project, `apple/project.yml` (XcodeGen): `App` (iPhone and iPad), a `Widgets` extension, `AppTests`, and `AppUITests`; Swift 6 language mode, complete concurrency checking, and warnings as errors; settings in `Config/Base.xcconfig`, with the signing team in the gitignored `Secrets.xcconfig` (an example is committed); identifiers from D1; deployment target iOS 26 (D7). It links `ReadingEngine` and `ReadingData`.
+- [x] **P1.5** The Apple project, `apple/project.yml` (XcodeGen): `App` (iPhone and iPad), a `Widgets` extension, `AppTests`, and `AppUITests`; Swift 6 language mode, complete concurrency checking, and warnings as errors; settings in `Config/Base.xcconfig`, with the signing team in the gitignored `Secrets.xcconfig` (an example is committed); identifiers from D1; deployment target iOS 26 (D7). It links `ReadingEngine` and `ReadingData`.
 - [ ] **P1.6** A pinned toolchain: `.swift-version` (6.4.2 to begin with) used on this Mac, in CI, and on the server (through swiftly). `make test-linux` builds and tests the packages and the server in the official Swift container when a container runtime is present; deploys run the same tests on the server (P7.2).
 - [ ] **P1.7** The top-level `Makefile`, with a one-line description for each target: `generate`, `catalog`, `build`, `test-packages`, `test-server`, `test-app`, `test-linux`, `run` (build, boot, install, and launch through `simctl`), `serve` (the server on localhost with a development catalog), `screenshot`, `check` (lint, catalog, package, server, and app tests), `deploy`, and `clean`.
 - [ ] **P1.8** Formatting: `swift format` with a committed `.swift-format`, linted by `make check`, and a short style note for the project's JavaScript and CSS in `docs/web.md`.
