@@ -103,7 +103,7 @@ top-level items; sub-items roll up into their parent.
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
-| 1 | Repository and toolchain | M1 Foundation | 13 | 0 |
+| 1 | Repository and toolchain | M1 Foundation | 13 | 1 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
@@ -734,7 +734,7 @@ When the first usable build exists:
 
 ## Phase 1: Repository and toolchain
 
-- [ ] **P1.1** Add `.gitignore`: Xcode user data, DerivedData, `build/`, `.build/`, `.swiftpm/`, the generated `*.xcodeproj`, `apple/Config/Secrets.xcconfig`, `.env*`, `*.p8`, `*.p12`, `*.mobileprovision`, compiled catalogs, local server databases, `research/`, `screenshots/`, and `.DS_Store`.
+- [x] **P1.1** Add `.gitignore`: Xcode user data, DerivedData, `build/`, `.build/`, `.swiftpm/`, the generated `*.xcodeproj`, `apple/Config/Secrets.xcconfig`, `.env*`, `*.p8`, `*.p12`, `*.mobileprovision`, compiled catalogs, local server databases, `research/`, `screenshots/`, and `.DS_Store`.
 - [ ] **P1.2** Add `LICENSE` (all rights reserved, D4) and create `docs/decisions.md`, a numbered, append-only decision log seeded with the Engineering foundations, D5's reasoning, and the no-tracking rule.
 - [ ] **P1.3** The packages `Packages/ReadingEngine`, `Packages/ReadingData`, and `Packages/CatalogCompiler` (an executable named `catalog`): Foundation only and Linux-compatible (no UIKit, SwiftUI, or other Apple-only frameworks), each with one passing Swift Testing test. Add a static guard on their imports.
 - [ ] **P1.4** The server package `Server/` (`DayByWordServer`, Hummingbird 2 at its current release): configuration from the environment, structured logging, graceful shutdown, `/up`, and a placeholder home page, depending on the local packages by path, with tests through HummingbirdTesting. Record a decision entry for each dependency, including the HTML templating choice (for example the Hummingbird project's Mustache library, or a Swift HTML DSL), and pin them all.

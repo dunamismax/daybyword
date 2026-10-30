@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+
+# Xcode user data and build products
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+DerivedData/
+build/
+
+# The Xcode project is generated from apple/project.yml (make generate)
+*.xcodeproj
+*.xcworkspace
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Secrets and signing material: never committed (AGENTS.md §5)
+apple/Config/Secrets.xcconfig
+.env
+.env.*
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+
+# Compiled catalogs (built by make catalog)
+Catalog.sqlite
+Catalog.sqlite-*
+apple/App/Resources/Catalog.sqlite
+
+# Local server databases
+Server/storage/
+*.sqlite-wal
+*.sqlite-shm
+
+# Research downloads and working files (D21)
+research/
+
+# Screenshots from tours and checks
+screenshots/
