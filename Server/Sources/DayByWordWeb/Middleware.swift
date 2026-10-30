@@ -24,7 +24,9 @@ struct RequestLogMiddleware<Context: RequestContext>: RouterMiddleware {
         }
     }
 
-    private func log(_ request: Request, _ context: Context, status: HTTPResponse.Status, since start: ContinuousClock.Instant) {
+    private func log(
+        _ request: Request, _ context: Context, status: HTTPResponse.Status, since start: ContinuousClock.Instant
+    ) {
         let elapsed = (ContinuousClock.now - start).components
         let milliseconds = elapsed.seconds * 1000 + elapsed.attoseconds / 1_000_000_000_000_000
         context.logger.info(

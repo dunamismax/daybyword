@@ -103,7 +103,7 @@ top-level items; sub-items roll up into their parent.
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
-| 1 | Repository and toolchain | M1 Foundation | 13 | 6 |
+| 1 | Repository and toolchain | M1 Foundation | 13 | 8 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
@@ -741,8 +741,9 @@ When the first usable build exists:
 - [x] **P1.5** The Apple project, `apple/project.yml` (XcodeGen): `App` (iPhone and iPad), a `Widgets` extension, `AppTests`, and `AppUITests`; Swift 6 language mode, complete concurrency checking, and warnings as errors; settings in `Config/Base.xcconfig`, with the signing team in the gitignored `Secrets.xcconfig` (an example is committed); identifiers from D1; deployment target iOS 26 (D7). It links `ReadingEngine` and `ReadingData`.
 - [x] **P1.6** A pinned toolchain: `.swift-version` (6.4.2 to begin with) used on this Mac, in CI, and on the server (through swiftly). `make test-linux` builds and tests the packages and the server in the official Swift container when a container runtime is present; deploys run the same tests on the server (P7.2).
   - *Note (agent, 2026-10-30):* the official image had no 6.4.2 tag yet, so the container installs the pinned toolchain through swiftly, as the server will (docs/decisions.md E21). First run: all four packages pass on Ubuntu 24.04 (aarch64) with Swift 6.4.2.
-- [ ] **P1.7** The top-level `Makefile`, with a one-line description for each target: `generate`, `catalog`, `build`, `test-packages`, `test-server`, `test-app`, `test-linux`, `run` (build, boot, install, and launch through `simctl`), `serve` (the server on localhost with a development catalog), `screenshot`, `check` (lint, catalog, package, server, and app tests), `deploy`, and `clean`.
-- [ ] **P1.8** Formatting: `swift format` with a committed `.swift-format`, linted by `make check`, and a short style note for the project's JavaScript and CSS in `docs/web.md`.
+- [x] **P1.7** The top-level `Makefile`, with a one-line description for each target: `generate`, `catalog`, `build`, `test-packages`, `test-server`, `test-app`, `test-linux`, `run` (build, boot, install, and launch through `simctl`), `serve` (the server on localhost with a development catalog), `screenshot`, `check` (lint, catalog, package, server, and app tests), `deploy`, and `clean`.
+- [x] **P1.8** Formatting: `swift format` with a committed `.swift-format`, linted by `make check`, and a short style note for the project's JavaScript and CSS in `docs/web.md`.
+  - *Note (agent, 2026-10-30):* `.swift-format` is the tool's default with four-space indentation and 120-column lines. `make format` rewrites in place.
 - [ ] **P1.9** `scripts/sim-destination.sh` picks the newest available iPhone simulator, and `SIM_DEVICE` overrides it. Never hard-code a device.
 - [ ] **P1.10** First light on both platforms: the app launches to a placeholder Today, and `make serve` answers `/` and `/up`. Check both in the simulator and the browser, in light and dark.
 - [ ] **P1.11** GitHub Actions on manual dispatch (D31): a macOS job (Xcode 27, `make check`) and a Linux job (the Swift container: packages and server). Tick after the first hosted run passes.

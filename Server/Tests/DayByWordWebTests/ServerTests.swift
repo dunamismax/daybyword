@@ -13,6 +13,7 @@ private let publicDirectory = URL(fileURLWithPath: #filePath)
 private func testApplication() throws -> some ApplicationProtocol {
     var configuration = ServerConfiguration()
     configuration.publicDirectory = publicDirectory
+    configuration.logLevel = .warning
     return try buildApplication(configuration)
 }
 
@@ -75,5 +76,6 @@ func everyResponseCarriesTheSecurityHeaders(path: String) async throws {
 @Test func aMissingCatalogStopsStartUp() throws {
     var configuration = ServerConfiguration()
     configuration.catalogPath = "/nonexistent/Catalog.sqlite"
+    configuration.logLevel = .warning
     #expect(throws: (any Error).self) { try buildApplication(configuration) }
 }

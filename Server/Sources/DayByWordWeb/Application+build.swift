@@ -20,18 +20,18 @@ public func buildApplication(_ configuration: ServerConfiguration) throws -> som
     }
 
     return Application(
-        router: buildRouter(configuration),
+        router: buildRouter(configuration, logger: logger),
         configuration: .init(address: .hostname(configuration.host, port: configuration.port)),
         logger: logger
     )
 }
 
 /// The routes and the middleware around them.
-func buildRouter(_ configuration: ServerConfiguration) -> Router<BasicRequestContext> {
+func buildRouter(_ configuration: ServerConfiguration, logger: Logger) -> Router<BasicRequestContext> {
     let router = Router()
     router.add(middleware: RequestLogMiddleware())
     router.add(middleware: SecurityHeadersMiddleware())
-    router.add(middleware: FileMiddleware(configuration.publicDirectory, searchForIndexHtml: false))
+    router.add(middleware: FileMiddleware(configuration.publicDirectory, searchForIndexHtml: false, logger: logger))
 
     router.get("/") { _, _ in Pages.home() }
 
