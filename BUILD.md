@@ -103,7 +103,7 @@ top-level items; sub-items roll up into their parent.
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
-| 1 | Repository and toolchain | M1 Foundation | 13 | 10 |
+| 1 | Repository and toolchain | M1 Foundation | 13 | 11 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
@@ -750,7 +750,9 @@ When the first usable build exists:
   - *Result (agent, 2026-10-30):* `make run` launches the app to the placeholder Today on the iPhone 18 Pro simulator (iOS 27.2), checked in light, dark, and the largest accessibility text size (AX5). `make serve` compiles the development catalog, opens it, and answers `/` (200, HTML) and `/up` (200, `OK`); the in-app browser showed the home page at 1280 px and 375 px wide, light and dark, with no console errors or CSP violations.
 - [ ] **P1.11** GitHub Actions on manual dispatch (D31): a macOS job (Xcode 27, `make check`) and a Linux job (the Swift container: packages and server). Tick after the first hosted run passes.
 - [ ] **P1.12** The TestFlight path (D33): `make archive` and `make testflight` (a signed Release archive with the release-checked catalog), a first privacy manifest, the App Store Connect record with D1's bundle ID, and `docs/release.md`. Tick after the first build is processed and installs through TestFlight.
-- [ ] **P1.13** Update `README.md`: prerequisites confirmed on this Mac, a quick start that works from a clean checkout, and the real layout.
+  - *Note (agent, 2026-10-30):* `make archive` builds a Release archive (build 14), but signs it only with the development identity and the wildcard team profile. `make testflight` stops at "Failed to Use Accounts": xcodebuild cannot read the Xcode account's credentials from the keychain ("missing Xcode-Username"), so it cannot create the distribution certificate and App Store profile. Waiting on the owner for four things: re-sign in to the Apple ID in Xcode → Settings → Accounts; the App Store Connect record for `com.daybyword.app` (or permission to create it in the owner's signed-in session); an app icon (D19; App Store Connect rejects uploads without one); and installing the processed build from TestFlight on a device.
+- [x] **P1.13** Update `README.md`: prerequisites confirmed on this Mac, a quick start that works from a clean checkout, and the real layout.
+  - *Result (agent, 2026-10-30):* `make check` passed from a fresh clone with no generated project, no secrets, and no build products.
 
 ## Phase 2: Product, design system, and shells
 
