@@ -1,0 +1,43 @@
+# Continuous integration, on manual dispatch only (D31). The local `make check`
+# is the gate before every commit; this confirms it on clean machines, and
+# confirms the packages and the server on Linux.
+name: Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    name: macOS (Xcode 27.2, make check)
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Select Xcode 27.2
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_27.2.app
+          xcodebuild -version
+          swift --version
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: make check
+        run: make check
+      - name: Keep the build logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: xcodebuild-logs
+          path: build/logs/
+          if-no-files-found: ignore
+
+  linux:
+    name: Linux (packages and server)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: make test-linux
+        run: make test-linux
