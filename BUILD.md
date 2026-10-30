@@ -104,7 +104,7 @@ top-level items; sub-items roll up into their parent.
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 11 |
-| 2 | Product, design system, and shells | M1 Foundation | 12 | 0 |
+| 2 | Product, design system, and shells | M1 Foundation | 12 | 1 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
 | 5 | The reading engine | M1 Foundation | 13 | 0 |
@@ -756,7 +756,7 @@ When the first usable build exists:
 
 ## Phase 2: Product, design system, and shells
 
-- [ ] **P2.1** Write `docs/product.md`: the three sections and Settings, navigation on both platforms, the three schedule behaviors in reader-facing words, the return flow, tone rules (AGENTS.md §3), no guilt mechanics, privacy by design, physical Bible mode, and what each surface (app, widget, notification, web) does.
+- [x] **P2.1** Write `docs/product.md`: the three sections and Settings, navigation on both platforms, the three schedule behaviors in reader-facing words, the return flow, tone rules (AGENTS.md §3), no guilt mechanics, privacy by design, physical Bible mode, and what each surface (app, widget, notification, web) does.
 - [ ] **P2.2** A hands-on competitive teardown: use ReadingPlan, Sola, YouVersion's plans, Read Scripture, Through the Word, Yearly, My Bible Tracker, and one Bible app's plans (Olive Tree or Logos) on a device. Record onboarding, catalog depth, missed-day behavior, links out, widgets, reminders, privacy labels, and prices in `docs/research/competitors.md`, confirm the † rows, and update the feature map.
 - [ ] **P2.3 [OWNER]** The design session (D18), **a hard stop**: agents draw the three directions as screen mockups (Today, a plan page, and Progress in each, light and dark, at phone and desktop widths, with placeholders where images would go, D19), show them to the owner, and then **stop and wait**. Nothing else is built until the owner has chosen, refined the choice over as many rounds as the owner wants, and said the design is final (owner, 2026-10-30). Then agents record the choice in D18 and write `docs/design.md` and `design/tokens.json`. Image needs go to `design/image-prompts.md` (D19).
 - [ ] **P2.4** Generate the Swift color assets and the web's `tokens.css` from `design/tokens.json` by a script, so the two cannot drift. Test that every text pair in `docs/design.md` meets WCAG AA in light and dark, and that no view or stylesheet writes a raw color.
