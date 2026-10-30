@@ -15,7 +15,13 @@ version=$(cat .swift-version)
 image="daybyword-linux:$version"
 
 echo "test-linux: preparing $image"
-"$runtime" build --quiet --build-arg "SWIFT_VERSION=$version" --tag "$image" scripts/linux >/dev/null
+mkdir -p build/logs
+if ! "$runtime" build --progress=plain --build-arg "SWIFT_VERSION=$version" --tag "$image" scripts/linux \
+  >build/logs/linux-image.log 2>&1; then
+  tail -n 60 build/logs/linux-image.log >&2
+  echo "test-linux: building $image failed; the full log is build/logs/linux-image.log" >&2
+  exit 1
+fi
 
 "$runtime" run --rm \
   --volume "$PWD:/src:ro" \
