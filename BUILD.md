@@ -216,20 +216,22 @@ languages as editorial expertise and rights allow.
 ### Feature map: what others offer, and our answer
 
 This map is drawn from App Store data (Apple's public search API, US store)
-and the products' own pages, checked 2026-10-30 (Research finding 1).
-Ratings change, so re-check them before quoting. Rows marked † rest partly
-on general knowledge and are confirmed in P2.2.
+and the products' own pages, checked 2026-10-30 (Research finding 1), and
+from each app's App Store listing (privacy label, purchases, description,
+version notes), checked the same day (P2.2a, `docs/research/competitors.md`).
+Ratings change, so re-check them before quoting. Rows marked † still rest
+partly on general knowledge and are confirmed on a device in P2.2b.
 
 | Product | What it offers | Our answer (phase) |
 |---|---|---|
 | **ReadingPlan** (James Price; 4.7 from 199 ratings; since 2009) | A plan catalog, any start date, follow the schedule or go at your own pace, readings opened in online Bible sites or native Bible apps | The closest match to this concept. Our answer is guidance in choosing, calendar-correct lectionaries, the return flow, paper support, and web and app sync (P5, P6, P8, P9, P13, P14) |
 | **YouVersion Bible App** (Life.Church; 4.9 from about 13.9 million ratings) † | A vast catalog that includes partner plans, a built-in Bible, "Catch Me Up" (which resets today to the day after the last completed reading), and plans with friends | Fewer, reviewed plans with workloads and limitations; three catch-up choices, each previewed; YouVersion as the first place to open a reading (P5.8, P8.5, P9, P10) |
 | **Sola – Bible reading plans** (Samuel Jusaitis; 4.8 from 40) | Custom plans balanced by word count, editable pace, hosted shared plans, rescheduling of missed readings, links to Bible apps, and supporter in-app purchases. Sign-in is by email, and its privacy label lists name, email, user ID, and purchase history used for analytics | Catalog plans balanced by reading time, no sign-in needed, passkeys when syncing, and "Data Not Collected" for local use (P3.7, P10, P14, P16.7) |
-| **Read Scripture** (Crazy Love Ministries; 4.8 from 1,770) † | A whole-Bible plan with BibleProject videos | The videos stay the publisher's; a partnership inquiry (D38) |
-| **Through the Word** (4.8 from 5,033) † | Guided audio through the books of the Bible | Audio services as places to open a reading (P19) |
-| **One Year Bible Plan + Audio** (4.9 from 3,180) and **Yearly** (4.7 from 357) † | Single-plan apps for reading the Bible in a year | A real choice of plans, including year plans in canonical, five-day, and balanced forms (P10) |
-| **My Bible Tracker** (4.6 from 131) and similar trackers † | Chapter checklists | Assignment states (completed, partial, skipped, unread), with coverage kept apart from completion (P5, P11) |
-| **Olive Tree** (4.8 from 324,587), **Blue Letter Bible** (4.9 from 360,859), **Logos** (4.9 from 176,945), **Bible Gateway** (3.7 from 10,118) † | Reading plans inside a full Bible reader | Destinations, not rivals: we open the passage there after 1.0 (P19) |
+| **Read Scripture** (Crazy Love Ministries; 4.8 from 1,770) | A whole-Bible plan with BibleProject videos; optional accounts sync progress; "Data Not Collected" | The videos stay the publisher's; a partnership inquiry (D38) |
+| **Through the Word** (4.8 from 5,035) | Guided audio for every chapter, 19 "journeys", group plans, email sign-in; its privacy label declares tracking by identifiers | Audio services as places to open a reading (P19) |
+| **One Year Bible Plan + Audio** (4.9 from 3,181) and **Yearly** (4.7 from 357) | One Year Bible Plan: one year plan with built-in text, audio, and streaks. Yearly: several year plans (M'Cheyne, Old and New Testament daily, straight through, and the ACNA 2019 Daily Office, per its version notes), streaks, and a $2.99 a month premium tier | A real choice of plans, including year plans in canonical, five-day, and balanced forms (P10) |
+| **My Bible Tracker** (4.6 from 131) and similar trackers | Chapter checklists, several trackers, achievements, and no timed plans | Assignment states (completed, partial, skipped, unread), with coverage kept apart from completion (P5, P11) |
+| **Olive Tree** (4.8 from 324,607), **Blue Letter Bible** (4.9 from 360,863), **Logos** (4.9 from 176,972), **Bible Gateway** (3.7 from 10,117) † | Reading plans inside a full Bible reader (confirmed for Olive Tree: "dozens" of plans, progress, daily reminders) | Destinations, not rivals: we open the passage there after 1.0 (P19) |
 | **daybyword.org "DayByWord"** (web) | Its own 2026 plan, short built-in plans, custom plans by start date and chapters a day, a monthly calendar, PDF and Excel export, English and Chinese, and quotations from the Recovery Version | An unrelated site with the same name; the owner keeps the name (D2) |
 
 New entrants in September 2026 ("Bible Reading Plan: Pace", "Shepherd: Track
@@ -758,6 +760,9 @@ When the first usable build exists:
 
 - [x] **P2.1** Write `docs/product.md`: the three sections and Settings, navigation on both platforms, the three schedule behaviors in reader-facing words, the return flow, tone rules (AGENTS.md §3), no guilt mechanics, privacy by design, physical Bible mode, and what each surface (app, widget, notification, web) does.
 - [ ] **P2.2** A hands-on competitive teardown: use ReadingPlan, Sola, YouVersion's plans, Read Scripture, Through the Word, Yearly, My Bible Tracker, and one Bible app's plans (Olive Tree or Logos) on a device. Record onboarding, catalog depth, missed-day behavior, links out, widgets, reminders, privacy labels, and prices in `docs/research/competitors.md`, confirm the † rows, and update the feature map.
+  - *Note (agent, 2026-10-30):* split in two, because App Store apps cannot be installed in the iOS Simulator and this session had no physical device.
+  - [x] **P2.2a** From the App Store listings: ratings, prices and purchases, privacy labels, features, and version notes for every app named here, recorded in `docs/research/competitors.md`, with the feature map updated and four † rows confirmed.
+  - [ ] **P2.2b** On a device: onboarding, missed-day behavior in practice (YouVersion's "Catch Me Up", Sola's rescheduling, ReadingPlan's pace), links out, widgets, and reminders, confirming the remaining † rows. Needs a session with an iPhone that may have these apps installed. Nothing later depends on it.
 - [ ] **P2.3 [OWNER]** The design session (D18), **a hard stop**: agents draw the three directions as screen mockups (Today, a plan page, and Progress in each, light and dark, at phone and desktop widths, with placeholders where images would go, D19), show them to the owner, and then **stop and wait**. Nothing else is built until the owner has chosen, refined the choice over as many rounds as the owner wants, and said the design is final (owner, 2026-10-30). Then agents record the choice in D18 and write `docs/design.md` and `design/tokens.json`. Image needs go to `design/image-prompts.md` (D19).
 - [ ] **P2.4** Generate the Swift color assets and the web's `tokens.css` from `design/tokens.json` by a script, so the two cannot drift. Test that every text pair in `docs/design.md` meets WCAG AA in light and dark, and that no view or stylesheet writes a raw color.
 - [ ] **P2.5** Type: system faces for the interface, and at most one self-hosted, openly licensed book face for references if D18 calls for one (recorded in `catalog/SOURCES.md`). A type scale that includes a **desk-glance reference size**, scaling with Dynamic Type to AX5 on Apple platforms and in `rem` on the web.

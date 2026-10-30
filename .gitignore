@@ -37,7 +37,7 @@ Server/storage/
 *.sqlite-shm
 
 # Research downloads and working files (D21)
-research/
+/research/
 
 # Screenshots from tours and checks
 screenshots/
