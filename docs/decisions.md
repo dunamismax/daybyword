@@ -218,3 +218,23 @@ calendar-feed token, which is a credential and is handled as one.
 laws special-category data (Research finding 11). The surest way to protect
 data is not to collect it, and the surest way not to collect it is to have
 no code that could.
+
+### E18. ReadingData's SQLite wrapper
+
+*2026-10-30, agent.* `ReadingData` talks to SQLite through its own small
+wrapper over the C API: a `Database` class (one connection, opened read-only,
+read-write, or create), `execute` for parameterless statements such as
+schemas, `run` and `query` for one statement with positional parameters
+bound as `SQLiteValue`s, and `transaction` that commits or rolls back. Rows
+come back as `SQLiteRow` values (column names and values). On Apple
+platforms it imports the SDK's `SQLite3` module; on Linux a system-library
+target, `CSQLite`, maps `<sqlite3.h>` and links `libsqlite3` (from
+`libsqlite3-dev`).
+
+**Why:** E9 and E10 call for the system library and no third-party driver.
+The C API is small, and a wrapper of about two hundred lines covers what the
+catalog, the journal, and the server's stores need. Parameters are always
+bound, never interpolated into SQL. A connection is not `Sendable`: code
+that shares one across tasks owns it inside an actor, which keeps SQLite's
+threading rules out of every caller. Typed row decoding, migrations, and
+the backup API are added to this wrapper when an item needs them.
