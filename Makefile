@@ -12,7 +12,7 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 PORT ?= 8080
 
 .PHONY: help tokens generate catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format strings check-strings check archive testflight deploy clean
+	test-linux run serve screenshot lint format strings check-strings tour tour-app tour-web check archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -77,7 +77,18 @@ strings: build ## Add the app's new interface strings to its String Catalog and 
 check-strings: ## Check the String Catalog against the last build's strings (after test-app)
 	@swift scripts/strings.swift check
 
-check: lint catalog test-packages test-server test-app check-strings ## The gate before every commit
+tour: tour-app tour-web ## Visit every section in light and dark in the app and on the web, saving screenshots
+
+tour-app: generate ## Tour the app in the simulator; screenshots go to screenshots/app/
+	@mkdir -p screenshots/app
+	@TEST_RUNNER_DBW_SCREENSHOTS="$(CURDIR)/screenshots/app" scripts/xcodebuild.sh tour-app \
+		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests test
+
+tour-web: catalog ## Tour the site in a real browser through WebDriver; screenshots go to screenshots/web/
+	@swift build --package-path Server --quiet
+	@swift scripts/webtour.swift
+
+check: lint catalog test-packages test-server test-app check-strings tour-web ## The gate before every commit
 	@echo "check: all passed"
 
 archive: ## Build a signed Release archive for TestFlight (docs/release.md)

@@ -397,3 +397,32 @@ catalog sync runs only in the IDE, so a script keeps the catalog honest in
 bundle (which differs between macOS and Linux) and turns a misspelled key
 into a compile error. Until a second language exists, `text(_:)` always
 answers in English; the reader's language will then come from the request.
+
+### E26. Tours: an XCUITest and our own WebDriver client
+
+*2026-11-01, agent.* The app tour is an XCUITest (`TourTests`) that launches
+the app with the reader's appearance set to light and then dark, visits
+Today, Plans, Progress, a plan, a week, and Settings, attaches a screenshot
+of each to the result, and saves it as a PNG when the test runner gets
+`DBW_SCREENSHOTS` (`make tour-app` writes to `screenshots/app/`). The web
+tour is `scripts/webtour.swift`: it starts the server on a spare port,
+drives a browser through the W3C WebDriver protocol with a few commands of
+its own over `URLSession`, visits every address in docs/urls.md at 1280 px
+and 500 px wide in light and dark, checks the heading, the single
+current-section marker, the theme, sideways scrolling, the hidden browser
+notice, the footer, and the skip link's place, saves screenshots to
+`screenshots/web/`, and checks that a Settings choice applies and is kept.
+`make check` runs the web tour; the app tour runs with `make test-ui` and
+`make tour-app`.
+
+The browser is **Firefox through geckodriver** by default, and Safari
+through `safaridriver` with `DBW_WEBDRIVER=safari`. Safari needs "Allow
+remote automation" turned on in its Developer settings, which is the
+owner's setting to change; Firefox needs nothing turned on, and GitHub's
+macOS images carry both it and geckodriver. Firefox will not make a window
+narrower than 500 px, so phone widths (375 and 320 px) are still checked by
+hand in a browser's device emulation.
+
+**Why:** the project has no npm (AGENTS.md §5), and the WebDriver commands a
+tour needs are a page of Swift. No package or driver library is added.
+Screenshots are gitignored and never committed.

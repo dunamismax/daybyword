@@ -87,6 +87,11 @@ Confirmed on the owner's Mac on 2026-10-30:
 - **XcodeGen** 2.46.0: `brew install xcodegen`.
 - **python3**, used by `scripts/sim-destination.sh` (any Python 3 on the
   PATH; the Command Line Tools include one).
+- **Firefox** (159 here) and **geckodriver** 0.37.1 (`brew install
+  geckodriver`, added 2026-11-01) for the web tour in `make check`
+  (`make tour-web`, decision E26). Safari works too once "Allow remote
+  automation" is on in Safari's Developer settings:
+  `DBW_WEBDRIVER=safari make tour-web`.
 - For `make test-linux`, a running container runtime: Docker Desktop, or
   Colima (`brew install colima docker`, then `colima start`). The first run
   downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB).
@@ -99,7 +104,7 @@ Confirmed on the owner's Mac on 2026-10-30:
 From a clean checkout:
 
 ```sh
-make check     # lint, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
+make check     # lint, catalog, package, server, and app tests, the String Catalog, and the web tour: the gate before every commit
 make run       # build, boot the newest iPhone simulator, install, and launch the app
 make serve     # serve the site at http://localhost:8080 (/ and /up)
 ```

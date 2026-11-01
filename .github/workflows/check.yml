@@ -21,8 +21,11 @@ jobs:
           sudo xcode-select --switch /Applications/Xcode_27.2.app
           xcodebuild -version
           swift --version
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Install XcodeGen, and Firefox and geckodriver for the web tour
+        run: |
+          brew install xcodegen
+          command -v geckodriver || brew install geckodriver
+          test -d /Applications/Firefox.app || brew install --cask firefox
       - name: make check
         run: make check
       - name: Keep the build logs
