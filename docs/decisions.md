@@ -531,3 +531,30 @@ that the unit tests and a look at the change do not, so they belong at the
 points where a build reaches someone. Keeping web progress in the browser
 removes consent records, profile expiry, server backups, and cookies from
 1.0 without moving any reading logic into JavaScript.
+
+### E30. Passages are verses, and plan files have one way to write them
+
+*2026-11-01, agent.* A `Passage` in `ReadingEngine` is a run of verses in
+one book, from a first verse to a last, checked against a versification
+scheme when it is made and carrying that scheme's name; a `Reading` is one
+or more passages in the plan's order. Whole chapters are stored as their
+verses, so `GEN 1` and `GEN 1:1-31` are the same passage, and "whole
+chapters" is a question asked of the scheme (the King James Rest of Esther's
+tenth chapter, whole, is 10:4–13).
+
+Plan files write readings in one strict format (`ReferenceFormat`): USFM
+ids, `GEN 1`, `GEN 1-2`, `JHN 3:16`, `JHN 3:1-21`, `JHN 3:16-4:3`, joined by
+`; `. Anything else is refused with the reason, including a range written
+longer than it needs to be (`GEN 2-2`, `JHN 3:1-3:21`). The reader sees
+`ReferenceFormatter`'s wording under their naming convention (D29), with an
+en dash: whole chapters as chapters, a single psalm as "Psalm", and a
+one-chapter book by its verses alone ("Jude 3–5", or "Jude" for all of it),
+as the SBL Handbook cites them. Repeating the book name before each
+passage ("Psalm 119:1–24; Psalm 120") is an app convention, chosen for a
+reader finding the place in print.
+
+**Why:** storing verses gives every later step (verse sets, word counts,
+coverage, links into Bible apps) one shape to work with and makes equal
+passages compare equal; one writing per passage makes plan files easy to
+review and leaves a parser for other sources' citation styles (P28.1) as a
+separate job.
