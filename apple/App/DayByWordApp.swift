@@ -8,10 +8,10 @@ struct DayByWordApp: App {
                 if ProcessInfo.processInfo.arguments.contains("-componentGallery") {
                     ComponentGallery()
                 } else {
-                    TodayView()
+                    RootView()
                 }
             #else
-                TodayView()
+                RootView()
             #endif
         }
     }

@@ -354,3 +354,24 @@ Dynamic Type through `@ScaledMetric` relative to a text style
 the project's own language; a script rather than a package because it runs
 only at development time. Generated files are committed so the app and the
 server build without running it.
+
+### E24. The app's shell: routes, and restoring the reader's place
+
+*2026-11-01, agent.* The app's three sections are a SwiftUI `TabView`, each
+tab with its own `NavigationStack` bound to a path of `Destination` values,
+and Settings is a sheet opened from a toolbar button on each tab's root
+(`apple/App/Navigation/`). Every place the app can be sent is an `AppRoute`,
+read from a `daybyword://` link or from an https link on daybyword.com
+whose path is the same, so the app and the web share one set of addresses
+(docs/urls.md, P2.9). A link the app does not understand changes nothing.
+The selected tab and the three paths are encoded as JSON in `@SceneStorage`.
+
+**Why scene storage:** docs/product.md asks for both "opens to Today" and
+"remembers the place within each tab". Scene storage gives exactly that
+split. When the system ends the app in the background and relaunches it,
+the reader returns to the same tab and page, because they never chose to
+leave. When the reader closes the app themselves (swiping it away), the
+scene's state is discarded and the next launch opens on Today. Nothing
+about where the reader was is written to the app's own database, so
+navigation never becomes reading data. Data saved by an older version that
+cannot be decoded is ignored, and the reader starts on Today.

@@ -29,9 +29,11 @@ secondary area for preferences.
 | **Today**, **Plans**, **Progress** | a tab bar, each tab with its own navigation stack | a sidebar (P12.6) | header navigation |
 | **Settings** | a toolbar button on each tab's root | a toolbar button | a header link |
 
-- The app opens to **Today**, always, unless it was opened from a link to
-  somewhere else. It remembers the selected tab and the place within each
-  tab between launches.
+- The app opens to **Today**, unless it was opened from a link to
+  somewhere else. When the system relaunches it after ending it in the
+  background, the reader returns to the same tab and the same place within
+  each tab; when the reader closes the app themselves, it starts on Today
+  again (docs/decisions.md E24).
 - Every destination has a stable address: `daybyword://` routes in the app
   and readable URLs on the web (`docs/urls.md`, P2.9). The two mirror each
   other, so a shared plan link opens the same plan in either.

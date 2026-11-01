@@ -1,6 +1,6 @@
 import XCTest
 
-/// The app launches to Today.
+/// The app launches to Today, and the shell reaches every section.
 final class LaunchTests: XCTestCase {
     @MainActor
     func testLaunchesToToday() {
@@ -8,5 +8,36 @@ final class LaunchTests: XCTestCase {
         app.launch()
         XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Your next reading will appear here."].exists)
+    }
+
+    @MainActor
+    func testVisitsEverySectionAndSettings() {
+        let app = XCUIApplication()
+        app.launch()
+        XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
+
+        app.tabBars.buttons["Plans"].tap()
+        XCTAssertTrue(app.navigationBars["Plans"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Progress"].tap()
+        XCTAssertTrue(app.navigationBars["Progress"].waitForExistence(timeout: 5))
+
+        app.navigationBars["Progress"].buttons["Settings"].tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        app.navigationBars["Settings"].buttons["Done"].tap()
+        XCTAssertTrue(app.navigationBars["Progress"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testOpensDayByWordLinks() throws {
+        let app = XCUIApplication()
+        app.launch()
+        XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
+
+        app.open(try XCTUnwrap(URL(string: "daybyword://plans/psalm-a-day")))
+        XCTAssertTrue(app.navigationBars["Plan"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Plan"].buttons["Plans"].exists)
+
+        app.open(try XCTUnwrap(URL(string: "daybyword://settings")))
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
     }
 }
