@@ -11,10 +11,13 @@ public func buildApplication(_ configuration: ServerConfiguration) throws -> som
     logger.logLevel = configuration.logLevel
 
     if let path = configuration.catalogPath {
-        let catalog = try CatalogMetadata.read(path: path)
+        let catalog = try Catalog(path: path)
         logger.info(
             "catalog opened",
-            metadata: ["schema": "\(catalog.schemaVersion)", "build": "\(catalog.buildMode)"]
+            metadata: [
+                "schema": "\(catalog.metadata.schemaVersion)", "build": "\(catalog.metadata.buildMode)",
+                "plans": "\(catalog.plans.count)",
+            ]
         )
     } else {
         logger.notice("no catalog configured (DBW_CATALOG); serving without one in development")

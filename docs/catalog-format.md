@@ -105,14 +105,21 @@ problem anywhere stops the build with the file and line, and writes
 nothing. The database has these tables (`CatalogBuild.schemaVersion`):
 
 - `catalog_meta`: `schema_version`, `build_mode`, `plans` (how many), and
-  `content_sha256`, a SHA-256 of every plan's fields and assignments, the
-  same wherever the catalog is built, so the app and the server can tell
+  `content_sha256`, a SHA-256 of the scripture data and every plan's
+  fields, assignments, and facts, the same wherever the catalog is built, so the app and the server can tell
   whether they hold the same catalog.
 - `plans`: one row per plan, a column per front matter key (`reading-days`
   is `reading_days`).
 - `assignments`: `plan_id`, `id`, `position` (from 1, in reading order),
   `reading`, in its shortest plan-file writing, and its `words`.
 - `plan_facts`: what each plan's schedule covers, computed (below).
+- `scripture`: `books.json` and `versification/english.tsv`, as compiled.
+
+The app and the server open it with `Catalog` in `ReadingData`, which reads
+it whole and read-only and refuses, with what to do, a missing file or one
+of another schema. Its `scripture` table holds the book registry and the
+English versification it was compiled with, so a reader needs nothing else
+from `catalog/`. `make check` compiles it in both modes.
 
 A development build includes every plan whose source is `cleared` or
 `pending`. A release build (`RELEASE=1 make catalog`) leaves out plans below

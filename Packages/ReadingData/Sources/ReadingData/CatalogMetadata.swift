@@ -4,7 +4,7 @@ public struct CatalogMetadata: Sendable, Equatable {
     /// The catalog schema this build writes and reads
     /// (docs/catalog-format.md). The compiler writes it; the app and the
     /// server check it.
-    public static let currentSchemaVersion = 2
+    public static let currentSchemaVersion = 3
 
     public let schemaVersion: Int
     public let buildMode: String

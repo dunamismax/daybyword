@@ -1,6 +1,7 @@
 import Foundation
 import Hummingbird
 import HummingbirdTesting
+import ReadingData
 import Testing
 
 @testable import DayByWordWeb
@@ -77,7 +78,9 @@ func everyResponseCarriesTheSecurityHeaders(path: String) async throws {
     var configuration = ServerConfiguration()
     configuration.catalogPath = "/nonexistent/Catalog.sqlite"
     configuration.logLevel = .warning
-    #expect(throws: (any Error).self) { try buildApplication(configuration) }
+    #expect(
+        throws: CatalogReadError(path: "/nonexistent/Catalog.sqlite", problem: "does not exist; run `make catalog`")
+    ) { try buildApplication(configuration) }
 }
 
 @Test(arguments: [("/today", "Today"), ("/plans", "Plans"), ("/progress", "Progress"), ("/settings", "Settings")])

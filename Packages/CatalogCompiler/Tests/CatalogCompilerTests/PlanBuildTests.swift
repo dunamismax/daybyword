@@ -141,3 +141,34 @@ func plansNeedASourceTheirBuildAllows(rights: String, mode: CatalogBuild.Mode, p
     #expect(error?.file.lastPathComponent == "test-plan.plan")
     #expect(error?.problem == "line 19: MRK has no chapter 17")
 }
+
+/// The app and the server read back exactly the plans the compiler checked.
+@Test func theCatalogReadsBackAsCompiled() throws {
+    let days = (1...31).map { "\($0)\tPRO \($0)" }.joined(separator: "\n")
+    let monthly = planText(
+        [
+            "id": "monthly-plan", "schedule": "day-of-month", "behaviors": "calendar", "books": "PRO",
+            "coverage": "books",
+        ],
+        schedule: days)
+    let (root, source) = try fixtureCatalog(plans: ["test-plan.plan": planText(), "monthly-plan.plan": monthly])
+    defer { try? FileManager.default.removeItem(at: root) }
+    let output = root.appending(path: "Catalog.sqlite")
+    try CatalogBuild.write(from: source, to: output, mode: .development)
+
+    let catalog = try Catalog(path: output.path)
+    #expect(catalog.metadata.schemaVersion == CatalogMetadata.currentSchemaVersion)
+    #expect(catalog.plans.map(\.id.rawValue) == ["monthly-plan", "test-plan"])
+    #expect(catalog.plan(PlanID("test-plan")!) == (try readPlan(planText())))
+    #expect(catalog.plan(PlanID("monthly-plan")!) == (try readPlan(monthly, name: "monthly-plan")))
+    #expect(catalog.registry.canon("protestant")?.books.count == 66)
+    #expect(catalog.versification.verseCount(of: BookID("PSA")!) == 2461)
+}
+
+@Test func theRepositorysCatalogOpens() throws {
+    let root = temporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let output = root.appending(path: "Catalog.sqlite")
+    try CatalogBuild.write(from: catalogSource, to: output, mode: .release)
+    #expect(try Catalog(path: output.path).metadata.buildMode == "release")
+}

@@ -51,3 +51,24 @@ import Testing
     #expect(throws: SQLiteError.self) { try readOnly.run("INSERT INTO item VALUES (1)") }
     #expect(throws: SQLiteError.self) { try Database(path: path + ".missing", access: .readOnly) }
 }
+
+@Test func aMissingCatalogSaysWhatToDo() {
+    let path = FileManager.default.temporaryDirectory.appendingPathComponent("missing-\(UUID().uuidString).sqlite").path
+    #expect(throws: CatalogReadError(path: path, problem: "does not exist; run `make catalog`")) {
+        try Catalog(path: path)
+    }
+}
+
+@Test func aCatalogOfAnotherSchemaIsRefused() throws {
+    let path = FileManager.default.temporaryDirectory.appendingPathComponent("old-\(UUID().uuidString).sqlite").path
+    defer { try? FileManager.default.removeItem(atPath: path) }
+    let database = try Database(path: path, access: .create)
+    try database.execute(
+        """
+        CREATE TABLE catalog_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL) STRICT;
+        INSERT INTO catalog_meta VALUES ('schema_version', '0'), ('build_mode', 'development');
+        """)
+    let problem =
+        "has schema 0, but this build reads schema \(CatalogMetadata.currentSchemaVersion); run `make catalog`"
+    #expect(throws: CatalogReadError(path: path, problem: problem)) { try Catalog(path: path) }
+}

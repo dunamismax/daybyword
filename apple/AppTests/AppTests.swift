@@ -15,8 +15,8 @@ import Testing
 /// make catalog copies the compiled catalog into the app bundle.
 @Test func bundlesTheCatalog() throws {
     let url = try #require(Bundle.main.url(forResource: "Catalog", withExtension: "sqlite"))
-    let metadata = try CatalogMetadata.read(path: url.path)
-    #expect(metadata.schemaVersion == CatalogMetadata.currentSchemaVersion)
+    let catalog = try Catalog(path: url.path)
+    #expect(catalog.metadata.schemaVersion == CatalogMetadata.currentSchemaVersion)
 }
 
 /// Every reading status has its own word and symbol, so color never carries the

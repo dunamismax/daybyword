@@ -47,6 +47,13 @@ public enum CatalogBuild {
                 throw CatalogError(file: url, problem: error.description)
             }
         }
+        // The scripture data readers need to read the plans back: the book
+        // registry and the scheme every reference was checked against.
+        var scripture: [(name: String, content: String)] = []
+        for name in ["books.json", "versification/english.tsv"] {
+            scripture.append(
+                (name, try String(contentsOf: source.appending(path: "scripture/\(name)"), encoding: .utf8)))
+        }
         let plans = all.map(\.plan).filter { mode == .development || $0.review >= releaseReview }
         let leftOut = all.map(\.plan).filter { !plans.contains($0) }.map(\.id)
 
@@ -76,6 +83,7 @@ public enum CatalogBuild {
                     position INTEGER NOT NULL, reading TEXT NOT NULL, words INTEGER NOT NULL,
                     PRIMARY KEY (plan_id, id), UNIQUE (plan_id, position)
                 ) STRICT;
+                CREATE TABLE scripture (name TEXT PRIMARY KEY, content TEXT NOT NULL) STRICT;
                 CREATE TABLE plan_facts (
                     plan_id TEXT PRIMARY KEY REFERENCES plans (id), verses INTEGER NOT NULL,
                     unique_verses INTEGER NOT NULL, repeats TEXT NOT NULL, omitted TEXT NOT NULL,
@@ -85,6 +93,9 @@ public enum CatalogBuild {
                 """
             )
             try database.transaction {
+                for (name, content) in scripture {
+                    try database.run("INSERT INTO scripture VALUES (?, ?)", [.text(name), .text(content)])
+                }
                 for plan in plans {
                     try database.run(
                         "INSERT INTO plans VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -103,7 +114,9 @@ public enum CatalogBuild {
                         "INSERT INTO plan_facts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [.text(plan.id.rawValue)] + row(planFacts, versification: english).map(\.value))
                 }
-                for (key, value) in metadata(mode: mode, plans: plans, facts: facts, versification: english) {
+                for (key, value) in metadata(
+                    mode: mode, plans: plans, facts: facts, scripture: scripture, versification: english)
+                {
                     try database.run("INSERT INTO catalog_meta (key, value) VALUES (?, ?)", [.text(key), .text(value)])
                 }
             }
@@ -277,13 +290,15 @@ public enum CatalogBuild {
 
     /// The metadata written into every catalog, in a fixed order so that two
     /// builds of the same sources write the same rows: the schema version,
-    /// the build mode, the number of plans, and a SHA-256 of the plans'
-    /// contents and computed facts, which is the same wherever the catalog
+    /// the build mode, the number of plans, and a SHA-256 of the scripture
+    /// data and the plans' contents and computed facts, which is the same wherever the catalog
     /// is built.
     static func metadata(
-        mode: Mode, plans: [Plan], facts: [PlanID: PlanFacts], versification: Versification
+        mode: Mode, plans: [Plan], facts: [PlanID: PlanFacts], scripture: [(name: String, content: String)],
+        versification: Versification
     ) -> [(String, String)] {
         var content: [UInt8] = []
+        for (name, text) in scripture { content += Array("\(name)\n\(text)\n".utf8) }
         for plan in plans {
             for (column, value) in row(plan) + row(facts[plan.id]!, versification: versification) {
                 let text: String =

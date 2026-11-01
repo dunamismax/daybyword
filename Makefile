@@ -12,7 +12,7 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 	Server/Sources Server/Tests Server/Package.swift apple
 PORT ?= 8080
 
-.PHONY: help tokens generate catalog build test-packages test-server test-app test-ui \
+.PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
@@ -28,6 +28,10 @@ catalog: ## Compile the catalog for the server and the app bundle (RELEASE=1 for
 	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
 		--output $(CATALOG) $(if $(RELEASE),--release)
 	@cp $(CATALOG) $(APP_CATALOG)
+
+check-catalog: ## Compile the catalog in release mode too, which refuses plans with uncleared sources
+	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
+		--output build/catalog/Catalog-release.sqlite --release
 
 build: generate ## Build the app for the simulator
 	@scripts/xcodebuild.sh build-simulator -destination "$$(scripts/sim-destination.sh)" build
@@ -89,7 +93,7 @@ tour-web: catalog ## Tour the site in a real browser through WebDriver; screensh
 	@swift build --package-path Server --quiet
 	@swift scripts/webtour.swift
 
-check: lint catalog test-packages test-server test-app check-strings ## The gate before every commit
+check: lint catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
 check-full: check tour-web tour-app test-linux ## The milestone gate: check, both tours in light and dark, and Linux
