@@ -116,7 +116,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
-| 4 | The catalog | M1 Foundation | 8 | 3 |
+| 4 | The catalog | M1 Foundation | 8 | 4 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 0 |
@@ -431,7 +431,8 @@ licensed plans (roadmap).
   - *Result (agent, 2026-11-01):* written, with an example plan. Schedules are `sequence` or `day-of-month`, the two 1.0 needs; `creator` was added for the plan page (P9.4).
 - [x] **P4.3** The compiler (`swift run catalog`, called by `make catalog`): parse and validate `catalog/plans/`, verify every reference against the English scheme, and write a deterministic `build/catalog/Catalog.sqlite` with a schema version, a manifest, and a checksum. It fails on unknown sources, duplicate ids, unresolved references, and plans without a review status; release mode also fails on uncleared sources. *(Rewritten by D39: no search index at 1.0.)*
   - *Result (agent, 2026-11-01):* `PlanFile` reads and checks plan files with line numbers, `SourcesRegistry` reads SOURCES.md, and `CatalogBuild` writes `plans` and `assignments` with a content SHA-256 (our own, since CryptoKit is not on Linux) as schema 1 (docs/catalog-format.md). Release builds leave out plans below `reviewed`. The plan model is `Plan` in `ReadingEngine`.
-- [ ] **P4.4** Claims checked against the facts: the compiler computes each plan's unique coverage, repeats, and omissions, and refuses a claim the schedule does not support. A "whole Bible" claim must cover every verse of its stated canon. The computed facts feed the plan page.
+- [x] **P4.4** Claims checked against the facts: the compiler computes each plan's unique coverage, repeats, and omissions, and refuses a claim the schedule does not support. A "whole Bible" claim must cover every verse of its stated canon. The computed facts feed the plan page.
+  - *Result (agent, 2026-11-01):* `PlanFacts` computes coverage, repeats, omissions, whole and partial chapters, and each reading's words; `whole-bible` and `books` claims must omit nothing. The facts are in `plan_facts` (schema 2).
 - [ ] **P4.6** Plan versions, simply: every plan file has a version, the catalog records it, and an enrollment records the version it follows. The full rules for corrections are P28.3, needed with the first correction after release. *(Rewritten by D39.)*
 - [ ] **P4.8** Integration: `make catalog` feeds the app bundle (`apple/App/Resources/Catalog.sqlite`, gitignored) and the server (opened read-only from the release). A missing catalog fails clearly, and `make check` covers unique ids, resolved references, cleared sources, and no empty assignments.
 - [ ] **P4.9** Write `docs/criteria.md`, the published selection criteria, in a page: verified references, transparent coverage, realistic workload, clear instructions, a documented basis for use, and limitations stated beside advantages. It becomes a public page in P16.5.

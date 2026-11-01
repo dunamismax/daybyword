@@ -110,8 +110,9 @@ nothing. The database has these tables (`CatalogBuild.schemaVersion`):
   whether they hold the same catalog.
 - `plans`: one row per plan, a column per front matter key (`reading-days`
   is `reading_days`).
-- `assignments`: `plan_id`, `id`, `position` (from 1, in reading order), and
-  `reading`, in its shortest plan-file writing.
+- `assignments`: `plan_id`, `id`, `position` (from 1, in reading order),
+  `reading`, in its shortest plan-file writing, and its `words`.
+- `plan_facts`: what each plan's schedule covers, computed (below).
 
 A development build includes every plan whose source is `cleared` or
 `pending`. A release build (`RELEASE=1 make catalog`) leaves out plans below
@@ -121,7 +122,19 @@ entry.
 
 ## What the compiler adds
 
-The compiler computes, and never takes from the file: each plan's unique
-coverage, repeats, and omissions (P4.4), its workload from the word counts
-(P3.7), and the sample week. It refuses a plan whose claim the schedule
-does not support.
+The compiler computes these from the schedule and never takes them from the
+file (`PlanFacts`, AGENTS.md §6), for the plan page (P9.4):
+
+- `verses` given, counting repeats, and `unique_verses`, each once;
+- `repeats`, the verses given more than once, and `omitted`, the verses of
+  the listed books that no reading gives, each as the fewest passages in
+  plan-file writing (empty when there are none);
+- `whole_chapters` and `partial_chapters`, the chapters read in full and in
+  part;
+- the lightest, median, and heaviest reading's words (`words_minimum`,
+  `words_median`, `words_maximum`), from which `Workload` gives minutes.
+
+It refuses a claim the schedule does not support: a `whole-bible` or `books`
+plan must leave nothing out, and the error names the first passages missing.
+A `selection` claims no coverage to check. The sample week depends on the
+reader's start date and reading days, so the engine computes it (P8.2).

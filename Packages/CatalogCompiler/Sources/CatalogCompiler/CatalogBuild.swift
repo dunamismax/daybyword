@@ -33,11 +33,19 @@ public enum CatalogBuild {
         let registry = try readRegistry(from: source)
         let schemes = try readVersifications(from: source, registry: registry)
         let english = schemes[.english]!
-        _ = try readWordCounts(from: source, versification: english)
+        let counts = try readWordCounts(from: source, versification: english)
         let sources = try readSources(from: source)
         let all = try readPlans(from: source, registry: registry, versification: english)
+        var facts: [PlanID: PlanFacts] = [:]
         for (url, plan) in all {
             try checkRights(plan, in: url, sources: sources, mode: mode)
+            do {
+                let computed = try PlanFacts(plan, versification: english, counts: counts)
+                try computed.check(plan, versification: english)
+                facts[plan.id] = computed
+            } catch {
+                throw CatalogError(file: url, problem: error.description)
+            }
         }
         let plans = all.map(\.plan).filter { mode == .development || $0.review >= releaseReview }
         let leftOut = all.map(\.plan).filter { !plans.contains($0) }.map(\.id)
@@ -65,8 +73,14 @@ public enum CatalogBuild {
                 ) STRICT;
                 CREATE TABLE assignments (
                     plan_id TEXT NOT NULL REFERENCES plans (id), id INTEGER NOT NULL,
-                    position INTEGER NOT NULL, reading TEXT NOT NULL,
+                    position INTEGER NOT NULL, reading TEXT NOT NULL, words INTEGER NOT NULL,
                     PRIMARY KEY (plan_id, id), UNIQUE (plan_id, position)
+                ) STRICT;
+                CREATE TABLE plan_facts (
+                    plan_id TEXT PRIMARY KEY REFERENCES plans (id), verses INTEGER NOT NULL,
+                    unique_verses INTEGER NOT NULL, repeats TEXT NOT NULL, omitted TEXT NOT NULL,
+                    whole_chapters INTEGER NOT NULL, partial_chapters INTEGER NOT NULL,
+                    words_minimum INTEGER NOT NULL, words_median INTEGER NOT NULL, words_maximum INTEGER NOT NULL
                 ) STRICT;
                 """
             )
@@ -75,16 +89,21 @@ public enum CatalogBuild {
                     try database.run(
                         "INSERT INTO plans VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         row(plan).map { $0.value })
+                    let planFacts = facts[plan.id]!
                     for (position, assignment) in plan.assignments.enumerated() {
                         try database.run(
-                            "INSERT INTO assignments VALUES (?, ?, ?, ?)",
+                            "INSERT INTO assignments VALUES (?, ?, ?, ?, ?)",
                             [
                                 .text(plan.id.rawValue), .integer(Int64(assignment.id)), .integer(Int64(position + 1)),
                                 .text(ReferenceFormat.text(of: assignment.reading, in: english)),
+                                .integer(Int64(planFacts.words[position])),
                             ])
                     }
+                    try database.run(
+                        "INSERT INTO plan_facts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [.text(plan.id.rawValue)] + row(planFacts, versification: english).map(\.value))
                 }
-                for (key, value) in metadata(mode: mode, plans: plans, versification: english) {
+                for (key, value) in metadata(mode: mode, plans: plans, facts: facts, versification: english) {
                     try database.run("INSERT INTO catalog_meta (key, value) VALUES (?, ?)", [.text(key), .text(value)])
                 }
             }
@@ -238,14 +257,35 @@ public enum CatalogBuild {
         }
     }
 
+    /// A plan's computed facts in the `plan_facts` table, by column after
+    /// `plan_id`. Repeats and omissions are written as plan-file readings, or
+    /// empty when there are none.
+    static func row(_ facts: PlanFacts, versification: Versification) -> [(column: String, value: SQLiteValue)] {
+        func text(_ passages: [Passage]) -> SQLiteValue {
+            .text(passages.map { ReferenceFormat.text(of: $0, in: versification) }.joined(separator: "; "))
+        }
+        return [
+            ("verses", .integer(Int64(facts.verses))), ("unique_verses", .integer(Int64(facts.uniqueVerses))),
+            ("repeats", text(facts.repeats)), ("omitted", text(facts.omitted)),
+            ("whole_chapters", .integer(Int64(facts.wholeChapters))),
+            ("partial_chapters", .integer(Int64(facts.partialChapters))),
+            ("words_minimum", .integer(Int64(facts.workload.minimum.words))),
+            ("words_median", .integer(Int64(facts.workload.median.words))),
+            ("words_maximum", .integer(Int64(facts.workload.maximum.words))),
+        ]
+    }
+
     /// The metadata written into every catalog, in a fixed order so that two
     /// builds of the same sources write the same rows: the schema version,
     /// the build mode, the number of plans, and a SHA-256 of the plans'
-    /// contents, which is the same wherever the catalog is built.
-    static func metadata(mode: Mode, plans: [Plan], versification: Versification) -> [(String, String)] {
+    /// contents and computed facts, which is the same wherever the catalog
+    /// is built.
+    static func metadata(
+        mode: Mode, plans: [Plan], facts: [PlanID: PlanFacts], versification: Versification
+    ) -> [(String, String)] {
         var content: [UInt8] = []
         for plan in plans {
-            for (column, value) in row(plan) {
+            for (column, value) in row(plan) + row(facts[plan.id]!, versification: versification) {
                 let text: String =
                     switch value {
                     case .text(let text): text
@@ -254,9 +294,9 @@ public enum CatalogBuild {
                     }
                 content += Array("\(column)\t\(text)\n".utf8)
             }
-            for assignment in plan.assignments {
-                content += Array(
-                    "\(assignment.id)\t\(ReferenceFormat.text(of: assignment.reading, in: versification))\n".utf8)
+            for (assignment, words) in zip(plan.assignments, facts[plan.id]!.words) {
+                let reading = ReferenceFormat.text(of: assignment.reading, in: versification)
+                content += Array("\(assignment.id)\t\(reading)\t\(words)\n".utf8)
             }
         }
         return [
