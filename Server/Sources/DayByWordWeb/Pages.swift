@@ -48,7 +48,9 @@ enum Pages {
             <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
             <link rel="stylesheet" href="/assets/tokens.css">
             <link rel="stylesheet" href="/assets/site.css">
+            <script src="/assets/theme.js"></script>
             <script type="module" src="/assets/support.js"></script>
+            <script type="module" src="/assets/settings.js"></script>
             <script nomodule defer src="/assets/unsupported.js"></script>
             <script type="module" src="/assets/copy.js"></script>
             </head>
@@ -186,11 +188,52 @@ enum Pages {
                 .empty(title: text(.progressEmptyTitle), message: text(.progressEmptyMessage))))
     }
 
-    static func settings() -> HTML {
-        section(
-            .settings,
-            Components.state(
-                .empty(title: text(.settingsEmptyTitle), message: text(.siteIndependence))))
+    /// Settings (BUILD.md P2.11). The choices are kept in this browser's own
+    /// storage by settings.js and applied before the page paints by theme.js;
+    /// the server never sees them, and no cookie is set.
+    static func settings(commit: String?) -> HTML {
+        let version = commit.map { text(.version, ["version": String($0.prefix(12))]) } ?? text(.developmentVersion)
+        let sample = Reference(display: text(.sampleReference), spoken: text(.sampleReferenceSpoken))
+        return layout(
+            title: text(.settings),
+            section: .settings,
+            content: """
+                <h1>\(text(.settings))</h1>
+                <form class="settings" id="settings">
+                <fieldset class="card">
+                <legend>\(text(.appearance))</legend>
+                \(choices("appearance", [("automatic", text(.appearanceAutomatic)), ("light", text(.appearanceLight)), ("dark", text(.appearanceDark))]))
+                <p class="note">\(text(.appearanceNote))</p>
+                </fieldset>
+                <fieldset class="card">
+                <legend>\(text(.referenceSize))</legend>
+                \(choices("reference-size", [("standard", text(.referenceSizeStandard)), ("larger", text(.referenceSizeLarger)), ("largest", text(.referenceSizeLargest))]))
+                \(Components.referenceBlock(sample))
+                <p class="note">\(text(.referenceSizeNote))</p>
+                </fieldset>
+                <p class="note">\(text(.keptInThisBrowser))</p>
+                </form>
+                <section class="card" aria-labelledby="about">
+                <h2 id="about">\(text(.about))</h2>
+                <p>\(text(.siteIndependence))</p>
+                <p class="note">\(version)</p>
+                </section>
+                """
+        )
+    }
+
+    /// A row of radio buttons, the first checked until settings.js restores
+    /// the reader's choice.
+    private static func choices(_ name: String, _ options: [(value: String, label: String)]) -> HTML {
+        let items = HTML(
+            options.enumerated().map { index, option in
+                let id = "\(name)-\(option.value)"
+                return """
+                    <label class="choice" for="\(id)"><input type="radio" id="\(id)" name="\(name)" \
+                    value="\(option.value)"\(index == 0 ? " checked" as HTML : "")> \(option.label)</label>
+                    """
+            })
+        return "<div class=\"choices\">\(items)</div>"
     }
 
     /// A section's page: its title and its content in a card.

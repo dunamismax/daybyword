@@ -131,7 +131,10 @@ func pagesLoadOnlyTheirOwnScriptsAndStyles(path: String) async throws {
     }
 }
 
-@Test(arguments: ["/assets/support.js", "/assets/unsupported.js", "/assets/images/favicon-32.png"])
+@Test(arguments: [
+    "/assets/support.js", "/assets/unsupported.js", "/assets/theme.js", "/assets/settings.js",
+    "/assets/images/favicon-32.png",
+])
 func servesTheShellsAssets(path: String) async throws {
     try await testApplication().test(.router) { client in
         try await client.execute(uri: path, method: .get) { response in
@@ -184,4 +187,34 @@ func otherPlanAddressesAreNotFound(path: String) async throws {
     #expect(Pages.startDate("2027-1-4") == nil)
     #expect(Pages.startDate("2027/01/04") == nil)
     #expect(Pages.startDate("２０２７-01-04") == nil)
+}
+
+@Test func settingsOffersAppearanceReferenceSizeAndTheVersion() async throws {
+    try await testApplication().test(.router) { client in
+        try await client.execute(uri: "/settings", method: .get) { response in
+            let body = String(buffer: response.body)
+            for value in ["automatic", "light", "dark"] {
+                #expect(body.contains(#"name="appearance" value="\#(value)""#))
+            }
+            for value in ["standard", "larger", "largest"] {
+                #expect(body.contains(#"name="reference-size" value="\#(value)""#))
+            }
+            #expect(body.components(separatedBy: " checked>").count == 3)
+            #expect(body.contains("<legend>Appearance</legend>"))
+            #expect(body.contains("Development build"))
+            #expect(body.contains("never sent to daybyword.com"))
+            #expect(body.contains("not affiliated with any church or denomination"))
+        }
+    }
+}
+
+@Test func settingsShowsTheDeployedCommit() async throws {
+    var configuration = ServerConfiguration()
+    configuration.commit = "a333b3f0123456789abcdef"
+    configuration.logLevel = .warning
+    try await buildApplication(configuration).test(.router) { client in
+        try await client.execute(uri: "/settings", method: .get) { response in
+            #expect(String(buffer: response.body).contains("Version a333b3f01234"))
+        }
+    }
 }

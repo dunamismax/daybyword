@@ -23,6 +23,10 @@ final class LaunchTests: XCTestCase {
 
         app.navigationBars["Progress"].buttons["Settings"].tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Appearance"].exists || app.staticTexts["Appearance"].exists)
+        XCTAssertTrue(app.buttons["Reference text size"].exists || app.staticTexts["Reference text size"].exists)
+        XCTAssertTrue(app.staticTexts["Mark, chapter 4, verses 1 to 20"].exists)
+        XCTAssertTrue(app.staticTexts["Version"].exists)
         app.navigationBars["Settings"].buttons["Done"].tap()
         XCTAssertTrue(app.navigationBars["Progress"].waitForExistence(timeout: 5))
     }

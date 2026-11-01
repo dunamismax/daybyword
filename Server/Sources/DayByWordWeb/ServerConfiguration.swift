@@ -9,6 +9,7 @@ import Logging
 /// | `DBW_PORT` | the port to listen on | `8080` |
 /// | `DBW_PUBLIC_DIR` | the folder of static assets | `Public` |
 /// | `DBW_CATALOG` | the compiled `Catalog.sqlite`, opened read-only | none; required in production |
+/// | `DBW_COMMIT` | the deployed commit, shown in Settings | none: "Development build" |
 /// | `LOG_LEVEL` | `trace` … `critical` | `info` |
 public struct ServerConfiguration: Sendable, Equatable {
     public enum Environment: String, Sendable {
@@ -21,6 +22,7 @@ public struct ServerConfiguration: Sendable, Equatable {
     public var port = 8080
     public var publicDirectory = "Public"
     public var catalogPath: String?
+    public var commit: String?
     public var logLevel = Logger.Level.info
 
     public init() {}
@@ -49,6 +51,12 @@ public struct ServerConfiguration: Sendable, Equatable {
         }
         if let value = variables["DBW_CATALOG"], !value.isEmpty {
             catalogPath = value
+        }
+        if let value = variables["DBW_COMMIT"], !value.isEmpty {
+            guard value.count <= 40, value.allSatisfy(\.isHexDigit) else {
+                throw ConfigurationError("DBW_COMMIT must be a commit hash, not \(value)")
+            }
+            commit = value.lowercased()
         }
         if let value = variables["LOG_LEVEL"] {
             guard let level = Logger.Level(rawValue: value) else {

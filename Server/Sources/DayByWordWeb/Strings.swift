@@ -31,7 +31,22 @@ enum StringKey: String, CaseIterable, Sendable {
     case weekEmptyMessage = "week.empty-message"
     case progressEmptyTitle = "progress.empty-title"
     case progressEmptyMessage = "progress.empty-message"
-    case settingsEmptyTitle = "settings.empty-title"
+    case appearance = "settings.appearance"
+    case appearanceAutomatic = "settings.appearance-automatic"
+    case appearanceLight = "settings.appearance-light"
+    case appearanceDark = "settings.appearance-dark"
+    case appearanceNote = "settings.appearance-note"
+    case referenceSize = "settings.reference-size"
+    case referenceSizeStandard = "settings.reference-size-standard"
+    case referenceSizeLarger = "settings.reference-size-larger"
+    case referenceSizeLargest = "settings.reference-size-largest"
+    case referenceSizeNote = "settings.reference-size-note"
+    case sampleReference = "settings.sample-reference"
+    case sampleReferenceSpoken = "settings.sample-reference-spoken"
+    case keptInThisBrowser = "settings.kept-in-this-browser"
+    case about = "settings.about"
+    case version = "settings.version"
+    case developmentVersion = "settings.development-version"
     case notFoundTitle = "not-found.title"
     case notFoundMessage = "not-found.message"
 
@@ -103,7 +118,22 @@ struct Strings: Sendable {
         .weekEmptyMessage: "Weeks arrive with the catalog.",
         .progressEmptyTitle: "Your reading record will appear here.",
         .progressEmptyMessage: "It describes what you've read, and nothing more.",
-        .settingsEmptyTitle: "Settings will appear here.",
+        .appearance: "Appearance",
+        .appearanceAutomatic: "Automatic",
+        .appearanceLight: "Light",
+        .appearanceDark: "Dark",
+        .appearanceNote: "Automatic follows your device.",
+        .referenceSize: "Reference text size",
+        .referenceSizeStandard: "Standard",
+        .referenceSizeLarger: "Larger",
+        .referenceSizeLargest: "Largest",
+        .referenceSizeNote: "References on Today and in plans use this size, on top of your browser's text size.",
+        .sampleReference: "Mark 4:1–20",
+        .sampleReferenceSpoken: "Mark, chapter 4, verses 1 to 20",
+        .keptInThisBrowser: "These choices are kept in this browser only. They are never sent to daybyword.com.",
+        .about: "About",
+        .version: "Version {version}",
+        .developmentVersion: "Development build",
         .notFoundTitle: "Page not found",
         .notFoundMessage: "There's no page at this address. It may have moved, or the link may be mistyped.",
 

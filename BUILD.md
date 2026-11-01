@@ -104,7 +104,7 @@ top-level items; sub-items roll up into their parent.
 |---|---|---|---|---|
 | 0 | Owner foundations | — | 8 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 12 |
-| 2 | Product, design system, and shells | M1 Foundation | 12 | 9 |
+| 2 | Product, design system, and shells | M1 Foundation | 12 | 10 |
 | 3 | Scripture references and versification | M1 Foundation | 9 | 0 |
 | 4 | Catalog pipeline and rights registry | M1 Foundation | 10 | 0 |
 | 5 | The reading engine | M1 Foundation | 13 | 0 |
@@ -783,7 +783,8 @@ When the first usable build exists:
   - *Result (agent, 2026-11-01):* `docs/urls.md` lists every address, reserved paths, and the rules (plan ids, lowercase, display-only queries, no personal data, permanent addresses). `ReadingEngine.PlanID` is now the single plan-id check, with table-driven cases. The server routes `/plans/<id>` and `/plans/<id>/week` (a malformed `start` is ignored; any other id is 404), and `AppRoute` mirrors every row, a week opening above its plan. Both test files cover every row of the table. Checked in the browser and the simulator. `start` is checked only for its shape until `CivilDate` (P5.3).
 - [x] **P2.10** Every interface string through a String Catalog (Apple) and the server's string tables (web), English only for now, with tests that find untranslated text and missing keys.
   - *Result (agent, 2026-11-01):* the app and widget share `apple/Shared/Localizable.xcstrings` (49 keys); `scripts/strings.swift` syncs it from Xcode's `.stringsdata` (`make strings`), and `make check` fails on missing or stale keys and on words in `Text(verbatim:)` (a probe file was caught). The web's `StringKey` and `Strings.english` hold every interface string, used through `text(_:)`; server tests check English for every key and that every word on every page (titles, labels, and the copy button's messages included) comes from the table. Decision E25. English-only catalogs compile to no `.strings` output until a second language arrives.
-- [ ] **P2.11** The Settings shell: appearance (Automatic, Light, Dark), reference text size, about with the independence statement, and the running version (the build or the deployed commit).
+- [x] **P2.11** The Settings shell: appearance (Automatic, Light, Dark), reference text size, about with the independence statement, and the running version (the build or the deployed commit).
+  - *Result (agent, 2026-11-01):* the app's Settings sheet has Appearance (Automatic, Light, Dark, applied with `preferredColorScheme`) and Reference text size (Standard, Larger, Largest: 1, 1.25, and 1.5 times the desk-glance size, on top of Dynamic Type) with a sample reference, kept in user defaults as display preferences, and About with the independence statement and "0.1.0 (build)". The web's `/settings` offers the same choices as radio pills, kept only in the browser's own storage (no cookie, never sent to the server) and applied before first paint by `theme.js`; About shows the deployed commit from `DBW_COMMIT`, or "Development build". At the narrowest widths, a reference's size is also capped by viewport width so Largest at 200% text never scrolls sideways. Checked in the simulator (light, dark, AX5; Dark and Largest applied after relaunch) and the browser (desktop, 320 px at 200% text, dark, choices kept across reloads). The menu pickers could not be opened by a synthetic tap in the simulator, so the preferences were set through the app's defaults for that check.
 - [ ] **P2.12** Tours: an iOS UI test, and web browser tests through WebDriver (`safaridriver` ships with macOS; a decision entry records the client), that visit every section in light and dark and save screenshots to gitignored folders.
 
 ## Phase 3: Scripture references and versification

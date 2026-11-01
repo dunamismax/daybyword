@@ -16,13 +16,28 @@
     "%@: from %@ to %@" : {
 
     },
+    "A sample reference at this size." : {
+
+    },
     "A sample week" : {
+
+    },
+    "About" : {
 
     },
     "About %lld minutes. Estimates vary." : {
 
     },
     "About 1 minute. Estimates vary." : {
+
+    },
+    "Appearance" : {
+
+    },
+    "Automatic" : {
+
+    },
+    "Automatic follows your device." : {
 
     },
     "Cancel" : {
@@ -38,6 +53,9 @@
 
     },
     "Copy reference" : {
+
+    },
+    "Dark" : {
 
     },
     "Day by Word" : {
@@ -58,10 +76,25 @@
     "It describes what you've read, and nothing more." : {
 
     },
+    "Larger" : {
+
+    },
+    "Largest" : {
+
+    },
+    "Light" : {
+
+    },
     "Loading…" : {
 
     },
+    "Mark 4:1–20" : {
+
+    },
     "Mark read" : {
+
+    },
+    "Mark, chapter 4, verses 1 to 20" : {
 
     },
     "Next reading" : {
@@ -97,10 +130,13 @@
     "Read" : {
 
     },
-    "Settings" : {
+    "Reference text size" : {
 
     },
-    "Settings will appear here." : {
+    "References on Today and in plans use this size, on top of your device's text size." : {
+
+    },
+    "Settings" : {
 
     },
     "Shows the next reading in your plan." : {
@@ -110,6 +146,9 @@
 
     },
     "Something went wrong" : {
+
+    },
+    "Standard" : {
 
     },
     "This plan's page will appear here." : {
@@ -125,6 +164,9 @@
 
     },
     "Undo" : {
+
+    },
+    "Version" : {
 
     },
     "Week" : {

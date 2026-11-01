@@ -24,6 +24,8 @@ func everyKeyHasEnglish(key: StringKey) throws {
 private func readerText(in html: String) -> [String] {
     var found: [String] = []
     let withoutSVG = html.replacingOccurrences(of: #"<svg[\s\S]*?</svg>"#, with: "", options: .regularExpression)
+        // A reference keeps its chapter and verses together in a span; read it whole.
+        .replacingOccurrences(of: #"<span class="nobreak">([^<]*)</span>"#, with: "$1", options: .regularExpression)
     let textNodes = try! Regex(#">([^<]+)<"#)
     for match in withoutSVG.matches(of: textNodes) {
         found.append(String(match.output[1].substring!))

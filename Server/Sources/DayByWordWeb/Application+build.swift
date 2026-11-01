@@ -45,7 +45,7 @@ func buildRouter(_ configuration: ServerConfiguration, logger: Logger) -> Router
         Pages.planWeek(try planID(context), start: Pages.startDate(request.uri.queryParameters["start"]))
     }
     router.get("/progress") { _, _ in Pages.progress() }
-    router.get("/settings") { _, _ in Pages.settings() }
+    router.get("/settings") { _, _ in Pages.settings(commit: configuration.commit) }
 
     if configuration.environment == .development {
         router.get("/dev/components") { _, _ in Pages.componentGallery() }

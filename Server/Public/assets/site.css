@@ -206,9 +206,26 @@ h1 {
   color: var(--color-accent);
 }
 
+/* The reader's reference size (Settings, P2.11), on top of the browser's own
+   text size. theme.js sets data-reference-size on the root element. */
+:root {
+  --reference-scale: 1;
+}
+
+:root[data-reference-size="larger"] {
+  --reference-scale: 1.25;
+}
+
+:root[data-reference-size="largest"] {
+  --reference-scale: 1.5;
+}
+
+/* A reference never breaks inside "4:1–20", so on the narrowest screens its
+   size is also capped by the viewport width, keeping it from forcing a
+   horizontal scroll at large text and reference sizes (WCAG 1.4.10). */
 .reference {
   margin: var(--space-xxs) 0;
-  font-size: var(--font-size-reference);
+  font-size: min(calc(var(--font-size-reference) * var(--reference-scale)), 22vw);
   font-weight: var(--font-weight-reference);
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -422,7 +439,7 @@ h1 {
   }
 
   .reference {
-    font-size: var(--font-size-reference-desktop);
+    font-size: min(calc(var(--font-size-reference-desktop) * var(--reference-scale)), 12vw);
   }
 
   .card {
@@ -435,4 +452,55 @@ h1 {
     transition: none !important;
     animation: none !important;
   }
+}
+
+/* Settings (P2.11): each group is a card, with its choices as pills. */
+
+.settings fieldset {
+  min-width: 0;
+}
+
+.settings legend {
+  float: left;
+  width: 100%;
+  margin-bottom: var(--space-s);
+  font-weight: 600;
+}
+
+.choices {
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 2.75rem;
+  padding: 0 var(--space-m);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-soft);
+  cursor: pointer;
+}
+
+.choice:has(input:checked) {
+  background: var(--color-accent-tint);
+  font-weight: 600;
+}
+
+.choice input {
+  accent-color: var(--color-accent);
+  margin: 0;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.card h2:not(.reference) {
+  margin: 0 0 var(--space-s);
+  font-size: var(--font-size-reference-list);
 }

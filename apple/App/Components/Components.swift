@@ -96,10 +96,11 @@ struct ReferenceText: Hashable, Sendable {
 struct ReferenceBlock: View {
     let reference: ReferenceText
     var style = TypeScale.reference
+    @Environment(\.referenceScale) private var referenceScale
 
     var body: some View {
         Text(verbatim: reference.unbroken)
-            .typeStyle(style)
+            .typeStyle(TypeStyle(size: style.size * referenceScale, weight: style.weight, relativeTo: style.relativeTo))
             .tracking(-0.4)
             .foregroundStyle(Palette.text)
             .fixedSize(horizontal: false, vertical: true)

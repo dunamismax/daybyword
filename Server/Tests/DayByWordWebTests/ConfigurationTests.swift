@@ -18,6 +18,7 @@ import Testing
         "DBW_PORT": "4316",
         "DBW_PUBLIC_DIR": "/srv/www/daybyword.com/current/Public",
         "DBW_CATALOG": "/srv/www/daybyword.com/current/Catalog.sqlite",
+        "DBW_COMMIT": "A333B3F",
         "LOG_LEVEL": "notice",
     ])
     #expect(configuration.environment == .production)
@@ -25,6 +26,7 @@ import Testing
     #expect(configuration.port == 4316)
     #expect(configuration.publicDirectory == "/srv/www/daybyword.com/current/Public")
     #expect(configuration.catalogPath == "/srv/www/daybyword.com/current/Catalog.sqlite")
+    #expect(configuration.commit == "a333b3f")
     #expect(configuration.logLevel == .notice)
 }
 
@@ -34,6 +36,8 @@ import Testing
     ["DBW_PORT": "70000"],
     ["DBW_HOST": ""],
     ["LOG_LEVEL": "loud"],
+    ["DBW_COMMIT": "main"],
+    ["DBW_COMMIT": String(repeating: "a", count: 41)],
     ["DBW_ENV": "production"],
 ])
 func rejectsSettingsItCannotUse(variables: [String: String]) {

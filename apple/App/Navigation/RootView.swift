@@ -7,6 +7,8 @@ struct RootView: View {
     @State private var navigation = AppNavigation()
     @SceneStorage("navigation") private var savedNavigation = Data()
     @State private var restored = false
+    @AppStorage(Appearance.storageKey) private var appearance = Appearance.automatic
+    @AppStorage(ReferenceSize.storageKey) private var referenceSize = ReferenceSize.standard
 
     var body: some View {
         @Bindable var navigation = navigation
@@ -24,7 +26,10 @@ struct RootView: View {
         .tint(Palette.accent)
         .sheet(isPresented: $navigation.showingSettings) {
             SettingsView()
+                .preferredColorScheme(appearance.colorScheme)
         }
+        .environment(\.referenceScale, referenceSize.scale)
+        .preferredColorScheme(appearance.colorScheme)
         .environment(navigation)
         .onAppear {
             guard !restored else { return }
