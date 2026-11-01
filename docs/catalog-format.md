@@ -97,6 +97,28 @@ history must keep meaning the same reading across versions of the plan:
 - A reading removed from a sequence leaves its id unused for good.
 - A day-of-month plan's ids are its days, so they never change.
 
+## The compiled catalog
+
+`make catalog` writes `build/catalog/Catalog.sqlite` (and copies it into the
+app's bundle), replacing the old file only once the new one is complete. A
+problem anywhere stops the build with the file and line, and writes
+nothing. The database has these tables (`CatalogBuild.schemaVersion`):
+
+- `catalog_meta`: `schema_version`, `build_mode`, `plans` (how many), and
+  `content_sha256`, a SHA-256 of every plan's fields and assignments, the
+  same wherever the catalog is built, so the app and the server can tell
+  whether they hold the same catalog.
+- `plans`: one row per plan, a column per front matter key (`reading-days`
+  is `reading_days`).
+- `assignments`: `plan_id`, `id`, `position` (from 1, in reading order), and
+  `reading`, in its shortest plan-file writing.
+
+A development build includes every plan whose source is `cleared` or
+`pending`. A release build (`RELEASE=1 make catalog`) leaves out plans below
+`reviewed` and says which, and refuses a plan whose source is not `cleared`.
+Either refuses a plan whose source is `rejected` or `reference`, or has no
+entry.
+
 ## What the compiler adds
 
 The compiler computes, and never takes from the file: each plan's unique

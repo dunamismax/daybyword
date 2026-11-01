@@ -8,7 +8,8 @@ let usage = """
 
       --source DIR   the catalog's sources (default: catalog)
       --output PATH  where to write the catalog (default: build/catalog/Catalog.sqlite)
-      --release      build for release: uncleared sources are errors, not warnings
+      --release      build for release: leave out plans not yet reviewed, and
+                     refuse a plan whose source is not cleared
     """
 
 func fail(_ message: String) -> Never {
@@ -44,8 +45,13 @@ case "build":
     }
     let url = URL(fileURLWithPath: output)
     do {
-        try CatalogBuild.write(from: URL(fileURLWithPath: source, isDirectory: true), to: url, mode: mode)
+        let leftOut = try CatalogBuild.write(from: URL(fileURLWithPath: source, isDirectory: true), to: url, mode: mode)
         print("catalog: wrote \(url.path) (\(mode.rawValue), schema \(CatalogBuild.schemaVersion))")
+        if !leftOut.isEmpty {
+            print(
+                "catalog: left out, not yet \(CatalogBuild.releaseReview.rawValue): \(leftOut.map(\.rawValue).joined(separator: ", "))"
+            )
+        }
     } catch {
         FileHandle.standardError.write(Data("catalog: \(error)\n".utf8))
         exit(1)

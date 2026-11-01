@@ -23,8 +23,12 @@ func temporaryDirectory() -> URL {
 
     let catalog = try Database(path: output.path, access: .readOnly)
     let rows = try catalog.query("SELECT key, value FROM catalog_meta ORDER BY key")
-    #expect(rows.map { $0["key"] } == [.text("build_mode"), .text("schema_version")])
-    #expect(rows.map { $0["value"] } == [.text("development"), .text(String(CatalogBuild.schemaVersion))])
+    #expect(
+        rows.map { $0["key"] } == [
+            .text("build_mode"), .text("content_sha256"), .text("plans"), .text("schema_version"),
+        ])
+    #expect(rows.first { $0["key"] == .text("build_mode") }?["value"] == .text("development"))
+    #expect(rows.first { $0["key"] == .text("schema_version") }?["value"] == .text(String(CatalogBuild.schemaVersion)))
     #expect(!FileManager.default.fileExists(atPath: output.path + ".partial"))
     #expect(
         try CatalogMetadata.read(path: output.path)

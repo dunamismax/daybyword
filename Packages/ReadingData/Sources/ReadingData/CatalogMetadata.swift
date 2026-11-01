@@ -1,6 +1,11 @@
 /// What a compiled catalog says about itself: its schema version and how it
 /// was built (`docs/decisions.md` E6).
 public struct CatalogMetadata: Sendable, Equatable {
+    /// The catalog schema this build writes and reads
+    /// (docs/catalog-format.md). The compiler writes it; the app and the
+    /// server check it.
+    public static let currentSchemaVersion = 1
+
     public let schemaVersion: Int
     public let buildMode: String
 

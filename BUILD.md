@@ -116,7 +116,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
-| 4 | The catalog | M1 Foundation | 8 | 2 |
+| 4 | The catalog | M1 Foundation | 8 | 3 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 0 |
@@ -429,7 +429,8 @@ licensed plans (roadmap).
   - *Result (agent, 2026-11-01):* the schema heads the file, machine-readable for the compiler (id from the heading, status from the Status line), and `daybyword-original` covers Day by Word's own plans.
 - [x] **P4.2** Write `docs/catalog-format.md`: plan files with `key: value` front matter (id, title, version, summary, who it suits, schedule kind, permitted behaviors, reading days, coverage claim, books included, limitations, instructions, source note, rights id, review status) and a tab-separated schedule body in P3.4's reference format, and the rule for stable assignment ids. *(Rewritten by D39.)*
   - *Result (agent, 2026-11-01):* written, with an example plan. Schedules are `sequence` or `day-of-month`, the two 1.0 needs; `creator` was added for the plan page (P9.4).
-- [ ] **P4.3** The compiler (`swift run catalog`, called by `make catalog`): parse and validate `catalog/plans/`, verify every reference against the English scheme, and write a deterministic `build/catalog/Catalog.sqlite` with a schema version, a manifest, and a checksum. It fails on unknown sources, duplicate ids, unresolved references, and plans without a review status; release mode also fails on uncleared sources. *(Rewritten by D39: no search index at 1.0.)*
+- [x] **P4.3** The compiler (`swift run catalog`, called by `make catalog`): parse and validate `catalog/plans/`, verify every reference against the English scheme, and write a deterministic `build/catalog/Catalog.sqlite` with a schema version, a manifest, and a checksum. It fails on unknown sources, duplicate ids, unresolved references, and plans without a review status; release mode also fails on uncleared sources. *(Rewritten by D39: no search index at 1.0.)*
+  - *Result (agent, 2026-11-01):* `PlanFile` reads and checks plan files with line numbers, `SourcesRegistry` reads SOURCES.md, and `CatalogBuild` writes `plans` and `assignments` with a content SHA-256 (our own, since CryptoKit is not on Linux) as schema 1 (docs/catalog-format.md). Release builds leave out plans below `reviewed`. The plan model is `Plan` in `ReadingEngine`.
 - [ ] **P4.4** Claims checked against the facts: the compiler computes each plan's unique coverage, repeats, and omissions, and refuses a claim the schedule does not support. A "whole Bible" claim must cover every verse of its stated canon. The computed facts feed the plan page.
 - [ ] **P4.6** Plan versions, simply: every plan file has a version, the catalog records it, and an enrollment records the version it follows. The full rules for corrections are P28.3, needed with the first correction after release. *(Rewritten by D39.)*
 - [ ] **P4.8** Integration: `make catalog` feeds the app bundle (`apple/App/Resources/Catalog.sqlite`, gitignored) and the server (opened read-only from the release). A missing catalog fails clearly, and `make check` covers unique ids, resolved references, cleared sources, and no empty assignments.

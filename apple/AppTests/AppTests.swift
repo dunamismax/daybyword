@@ -16,7 +16,7 @@ import Testing
 @Test func bundlesTheCatalog() throws {
     let url = try #require(Bundle.main.url(forResource: "Catalog", withExtension: "sqlite"))
     let metadata = try CatalogMetadata.read(path: url.path)
-    #expect(metadata.schemaVersion == 0)
+    #expect(metadata.schemaVersion == CatalogMetadata.currentSchemaVersion)
 }
 
 /// Every reading status has its own word and symbol, so color never carries the
