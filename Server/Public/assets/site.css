@@ -1,49 +1,74 @@
 /*
- * Placeholder styles until the design is chosen (BUILD.md P2.3) and the
- * generated tokens.css arrives (P2.4). They use only CSS system colors, so
- * there is no raw color here and light and dark follow the reader's setting.
+ * The site's layout and type, in the Morning design (docs/design.md). Every
+ * color, radius, space, and size is a custom property from the generated
+ * tokens.css; this file never writes a raw color (scripts/check-colors.sh).
  */
-:root {
-  color-scheme: light dark;
-}
-
 body {
   margin: 0;
-  background: Canvas;
-  color: CanvasText;
-  font: 1.125rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  font: var(--font-weight-body) var(--font-size-body) / 1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-main,
-footer {
-  max-width: 38rem;
+a {
+  color: var(--color-accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 70rem;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--space-m);
 }
 
-main {
-  padding-top: 4rem;
+main.page {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-xxl);
 }
 
 h1 {
-  font-size: 2.5rem;
-  line-height: 1.2;
-  margin: 0 0 0.5rem;
+  font-size: var(--font-size-screen-title);
+  font-weight: var(--font-weight-screen-title);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 var(--space-xs);
 }
 
 .tagline {
-  font-size: 1.25rem;
-  margin: 0 0 1.5rem;
+  font-size: var(--font-size-reference-list);
+  font-weight: var(--font-weight-reference-list);
+  margin: 0 0 var(--space-l);
 }
 
 .notice {
-  margin-top: 2rem;
-  font-size: 1rem;
-  font-style: italic;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
 }
 
-footer {
-  margin-top: 4rem;
-  padding-bottom: 2rem;
-  font-size: 0.875rem;
+footer.page {
+  padding-top: var(--space-l);
+  padding-bottom: var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+@media (min-width: 64rem) {
+  .page {
+    padding: 0 var(--space-xxl);
+  }
+
+  h1 {
+    font-size: var(--font-size-screen-title-desktop);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }

@@ -1,0 +1,79 @@
+/* Generated from design/tokens.json by scripts/tokens.swift. Do not edit. */
+
+:root {
+  color-scheme: light dark;
+  --color-accent: #B9531A;
+  --color-accent-tint: #FFF0E5;
+  --color-background: #FBFBFA;
+  --color-danger: #B42318;
+  --color-line: #E7E8EC;
+  --color-on-accent: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F1F2F5;
+  --color-text: #15171C;
+  --color-text-muted: #596070;
+  --radius-chip: 18px;
+  --radius-card: 24px;
+  --radius-card-large: 28px;
+  --radius-control: 999px;
+  --space-xxs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 2.5rem;
+  --font-size-body: 1.0625rem;
+  --font-weight-body: 400;
+  --font-size-caption: 0.8125rem;
+  --font-weight-caption: 400;
+  --font-size-figure: 3rem;
+  --font-size-figure-desktop: 4.25rem;
+  --font-weight-figure: 700;
+  --font-size-label: 0.875rem;
+  --font-weight-label: 600;
+  --font-size-plan-title: 1.875rem;
+  --font-size-plan-title-desktop: 2.875rem;
+  --font-weight-plan-title: 700;
+  --font-size-reference: 2.375rem;
+  --font-size-reference-desktop: 4.5rem;
+  --font-weight-reference: 600;
+  --font-size-reference-list: 1.3125rem;
+  --font-weight-reference-list: 600;
+  --font-size-screen-title: 2.125rem;
+  --font-size-screen-title-desktop: 2.75rem;
+  --font-weight-screen-title: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-accent: #F4A26A;
+    --color-accent-tint: #2E2118;
+    --color-background: #0D1117;
+    --color-danger: #F97066;
+    --color-line: #262D38;
+    --color-on-accent: #1B0F06;
+    --color-surface: #161B23;
+    --color-surface-soft: #222935;
+    --color-text: #F1F3F6;
+    --color-text-muted: #A0A8B6;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-accent: #F4A26A;
+  --color-accent-tint: #2E2118;
+  --color-background: #0D1117;
+  --color-danger: #F97066;
+  --color-line: #262D38;
+  --color-on-accent: #1B0F06;
+  --color-surface: #161B23;
+  --color-surface-soft: #222935;
+  --color-text: #F1F3F6;
+  --color-text-muted: #A0A8B6;
+}

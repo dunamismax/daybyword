@@ -11,11 +11,14 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 	Server/Sources Server/Tests Server/Package.swift apple
 PORT ?= 8080
 
-.PHONY: help generate catalog build test-packages test-server test-app test-ui \
+.PHONY: help tokens generate catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format check archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
+
+tokens: ## Regenerate the color assets, DesignTokens.swift, and tokens.css from design/tokens.json
+	@swift scripts/tokens.swift generate
 
 generate: catalog ## Generate apple/DayByWord.xcodeproj from apple/project.yml
 	@cd apple && xcodegen generate --quiet
@@ -58,10 +61,12 @@ screenshot: ## Save a screenshot of the booted simulator in screenshots/
 	@mkdir -p screenshots
 	@xcrun simctl io booted screenshot "screenshots/$$(date +%Y%m%d-%H%M%S).png"
 
-lint: ## Check the toolchain, Swift formatting, and the packages' imports
+lint: ## Check the toolchain, formatting, imports, design tokens, and raw colors
 	@scripts/check-toolchain.sh
 	@swift format lint --strict --recursive --parallel $(SWIFT_SOURCES)
 	@scripts/check-imports.sh
+	@swift scripts/tokens.swift check
+	@scripts/check-colors.sh
 
 format: ## Format the Swift sources in place
 	@swift format format --in-place --recursive --parallel $(SWIFT_SOURCES)

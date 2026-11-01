@@ -1,25 +1,27 @@
 import SwiftUI
 
-/// Today, as a placeholder until the design is chosen (BUILD.md P2.3) and the
-/// shell is built (P2.7). It uses only the system's semantic colors and text
-/// styles, so it follows light and dark mode and Dynamic Type.
+/// Today, as a placeholder until the shell is built (BUILD.md P2.7) and the
+/// first plans arrive (P8.3). It uses the Morning tokens (docs/design.md).
 struct TodayView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: Spacing.s) {
                     Text("Your next reading will appear here.")
-                        .font(.title2)
+                        .typeStyle(TypeScale.referenceList)
                     Text("Find your plan. Read your Bible. Keep your place.")
-                        .foregroundStyle(.secondary)
+                        .typeStyle(TypeScale.body)
+                        .foregroundStyle(Palette.textMuted)
                     Text("Day by Word is in development.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 24)
+                        .typeStyle(TypeScale.caption)
+                        .foregroundStyle(Palette.textMuted)
+                        .padding(.top, Spacing.l)
                 }
+                .foregroundStyle(Palette.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
+                .padding(Spacing.m)
             }
+            .background(Palette.background)
             .navigationTitle("Today")
         }
     }

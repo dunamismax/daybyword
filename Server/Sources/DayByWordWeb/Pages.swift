@@ -12,13 +12,14 @@ enum Pages {
         <meta name="color-scheme" content="light dark">
         <meta name="robots" content="noindex">
         <title>\(title)</title>
+        <link rel="stylesheet" href="/assets/tokens.css">
         <link rel="stylesheet" href="/assets/site.css">
         </head>
         <body>
-        <main>
+        <main class="page">
         \(content)
         </main>
-        <footer>
+        <footer class="page">
         <p>Day by Word is independent and not affiliated with any church or denomination.</p>
         </footer>
         </body>
