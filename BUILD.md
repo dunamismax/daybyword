@@ -131,12 +131,13 @@ top-level items; sub-items roll up into their parent.
 | 26 | Operations and annual maintenance | Ongoing | 9 | 0 |
 | 27 | Future directions | Ongoing | 6 | 0 |
 
-**Current state (2026-10-30):** planning is complete. The owner answered
-every open decision on 2026-10-30 (D1–D38). The repository holds AGENTS.md,
-BUILD.md, and README.md and no code, and pushes to GitHub and Codeberg
-(P0.5). daybyword.com's DNS and Email Routing are in place (P0.4), and
-Xcode is signed in to the owner's team (P0.6). **Phase 1 is next**,
-starting at P1.1.
+**Current state (2026-11-01):** the shared packages, local Swift server,
+and Apple project are implemented. The hosted manual CI run passed
+(P1.11). Morning is the chosen design; its color and type system is in
+place (P2.4–P2.5). The requested artwork batch is delivered (P2.3), and
+AppIcon is registered. P2.6 shared components are being worked on in a
+separate session. TestFlight remains blocked on the account/distribution
+and owner-device steps in P1.12; no deployment has occurred.
 
 ---
 
@@ -552,7 +553,7 @@ Engineering consequences go in `docs/decisions.md`.
 | D16 | Territories | **The US App Store first; other storefronts after a rights review of every plan served there** (owner, 2026-10-30). The website serves everyone, and the 1662 UK question goes to Cambridge University Press (D38) before any UK storefront. No geo-blocking unless the rights research requires it; every plan page states its rights basis. |
 | D17 | Streaks | **Opt-in, against the reader's own rhythm** (owner, 2026-10-30): off by default, counted against the reader's reading days (rest days never break it), shown small, never in notifications, and never with loss language. |
 | D18 | Visual identity | **Chosen in a design session** (owner, 2026-10-30) from three directions agents draw (P2.3): **Bookmark** (paper, ink, a single ribbon color for "next", references in a book face), **Morning** (light and open, a modern sans, one dawn accent), and **Desk** (near-monochrome, very large references readable from across a desk). The owner picks or mixes them, and the choice is recorded here. The session is a hard stop: nothing further is built until the owner says the design is final (owner, 2026-10-30). **Chosen: Morning** (owner, 2026-11-01): the owner preferred it to Bookmark and Desk and asked for building to continue. `docs/design.md` and `design/tokens.json` record it. |
-| D19 | Images and icons | **The owner supplies them** (owner, 2026-10-30). Agents never draw, redraw, or generate images or icons. They write prompts in `design/image-prompts.md`, the owner generates the files, and agents resize, export, and register them. |
+| D19 | Images and icons | **The owner supplies them** (owner, 2026-10-30). Agents never draw, redraw, or generate images or icons. They write prompts in `design/image-prompts.md`, the owner generates the files, and agents resize, export, and register them. **Batch exception (owner, 2026-11-01):** the owner requested creation and registration of the images in that brief. The delivered Morning assets are inventoried in `design/images/README.md`; future image work retains the standing workflow unless the owner requests otherwise. |
 | D20 | Calendar and lectionary facts | **Facts only** (dates, names, ranks, references), never prose, each cited and cross-checked against two independent sources with every difference listed (owner, 2026-10-30). |
 | D21 | Rights research downloads | **Agents may download** candidate scans and data (Internet Archive, HathiTrust, Google Books, eBible.org, CCEL, STEPBible-Data, first-party church and publisher sites) into the gitignored `research/` folder, and nothing there ships until it is cleared (owner, 2026-10-30). |
 | D22 | Reuse from the owner's other repositories | **None: everything here is written fresh** (owner, 2026-10-30). No code, scripts, or content come from `prayerbook-atlas`, `beautiful-corner`, or any other repository of the owner's. Agents may read Prayerbook Atlas's public `docs/deploy.md` to learn the server's conventions (Research finding 14), so this site fits beside the others, but they copy nothing. A SOUL.md or statement of faith is never brought in. |
@@ -754,6 +755,7 @@ When the first usable build exists:
   - *Result (agent, 2026-11-01):* the macOS job runs on GitHub's `xcode-27` image with Xcode 27.2 selected. The first two runs failed on Linux because the runners could not read swift.org's key file (decision E22); run 41298521967 passed both jobs.
 - [ ] **P1.12** The TestFlight path (D33): `make archive` and `make testflight` (a signed Release archive with the release-checked catalog), a first privacy manifest, the App Store Connect record with D1's bundle ID, and `docs/release.md`. Tick after the first build is processed and installs through TestFlight.
   - *Note (agent, 2026-10-30):* `make archive` builds a Release archive (build 14), but signs it only with the development identity and the wildcard team profile. `make testflight` stops at "Failed to Use Accounts": xcodebuild cannot read the Xcode account's credentials from the keychain ("missing Xcode-Username"), so it cannot create the distribution certificate and App Store profile. Waiting on the owner for four things: re-sign in to the Apple ID in Xcode → Settings → Accounts; the App Store Connect record for `com.daybyword.app` (or permission to create it in the owner's signed-in session); an app icon (D19; App Store Connect rejects uploads without one); and installing the processed build from TestFlight on a device.
+  - *Update (2026-11-01):* the requested app icon is now registered and compiles (P2.3). The account, distribution profile, App Store Connect record, processed upload, and owner-device installation remain unverified; P1.12 stays open.
 - [x] **P1.13** Update `README.md`: prerequisites confirmed on this Mac, a quick start that works from a clean checkout, and the real layout.
   - *Result (agent, 2026-10-30):* `make check` passed from a fresh clone with no generated project, no secrets, and no build products.
 
@@ -766,6 +768,8 @@ When the first usable build exists:
   - [ ] **P2.2b** On a device: onboarding, missed-day behavior in practice (YouVersion's "Catch Me Up", Sola's rescheduling, ReadingPlan's pace), links out, widgets, and reminders, confirming the remaining † rows. Needs a session with an iPhone that may have these apps installed. Nothing later depends on it.
 - [x] **P2.3 [OWNER]** The design session (D18), **a hard stop**: agents draw the three directions as screen mockups (Today, a plan page, and Progress in each, light and dark, at phone and desktop widths, with placeholders where images would go, D19), show them to the owner, and then **stop and wait**. Nothing else is built until the owner has chosen, refined the choice over as many rounds as the owner wants, and said the design is final (owner, 2026-10-30). Then agents record the choice in D18 and write `docs/design.md` and `design/tokens.json`. Image needs go to `design/image-prompts.md` (D19).
   - *Result (agent, 2026-11-01):* the three directions were drawn on a Design canvas on 2026-10-30 (an overview, and Bookmark and Morning in full; Desk's Today only, since the owner chose before the rest was drawn). The owner chose **Morning** on 2026-11-01 and asked for building to continue through P2.6. Its boards are kept in `design/mockups/`; `docs/design.md`, `design/tokens.json`, and `design/image-prompts.md` are written. Further refinement rounds remain open to the owner.
+  - *Artwork delivery (owner request, 2026-11-01):* light, dark, and tinted app icons; raster and single-color SVG marks; favicon, touch, and maskable web icons; a sharing image; and twelve optional plan covers. Register the app icon and stage web exports without claiming the future catalog or web pages are complete.
+    - *Result (2026-11-01):* canonical files, exact prompts, and checksums are in `design/images/`. The app's `AppIcon` set compiles and was checked on the simulator Home Screen in default, dark, and tinted styles, with its accessible name verified. All covers are 1600 × 900 and below 300,000 bytes (largest 184,688); the maskable motif fits the safe circle. `make check` and `make test-linux` pass. All web exports serve with matching checksums; the sharing image was reviewed in the in-app browser without console or CSP errors. Normal and AX5 app launch were checked; no new reader controls were added. Existing App Intents metadata-extraction tool warnings remain unrelated to the asset catalog. No upload or deployment was attempted.
 - [x] **P2.4** Generate the Swift color assets and the web's `tokens.css` from `design/tokens.json` by a script, so the two cannot drift. Test that every text pair in `docs/design.md` meets WCAG AA in light and dark, and that no view or stylesheet writes a raw color.
 - [x] **P2.5** Type: system faces for the interface, and at most one self-hosted, openly licensed book face for references if D18 calls for one (recorded in `catalog/SOURCES.md`). A type scale that includes a **desk-glance reference size**, scaling with Dynamic Type to AX5 on Apple platforms and in `rem` on the web.
   - *Result (agent, 2026-11-01):* Morning uses the system sans only, so no book face is needed. The scale (`design/tokens.json`, `TypeScale`) puts the desk-glance reference at 38 pt relative to Large Title (72 px on the desktop web). Checked at AX5 in the simulator and at phone and desktop widths in the browser.
@@ -1093,18 +1097,22 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-10-30, planning:** the owner answered every decision (D1–D38) in an
-  interactive session. BUILD.md, AGENTS.md, and README.md reflect them.
-  There is no code yet.
-- **Next: Phase 1 from P1.1.** Pin Swift 6.4.2, set up the packages, the
-  Hummingbird 2 server, and the XcodeGen project, then the Makefile and
-  `make check`. The design session (P2.3) is a hard stop: show the
-  mockups, then wait for the owner to finalize the design.
-- **Owner steps:** P0.4 (DNS and mail), P0.5 (Codeberg; `origin` pushes to
-  both), and P0.6 (Xcode) are verified. Only the [GATE DEMO] letters remain
-  in Phase 0.
-- **Key changes from the brief:** no interviews or pilot (D25), never Bible
-  text (D13), never AI (D23), YouVersion only at launch (D26), modern
-  browsers only (D30), and nothing reused from other repositories (D22).
-- **To confirm with the owner when convenient:** D34's note that agents may
-  add daybyword.com's own entry to `ubuntu-vm-backup`.
+- **2026-11-01, P2.3:** the owner's requested Morning image batch is
+  complete. `design/images/README.md` lists files, sizes, provisional plan
+  slugs, integration status, exact prompts, and checksum manifest.
+- AppIcon is registered in `Brand.xcassets` and selected in `project.yml`.
+  Default, dark, and tinted icons were exercised on the simulator Home
+  Screen; the app launches normally and at AX5. No new controls were added.
+- Web exports are in `Server/Public/assets/images/`; `/favicon.ico` is
+  supplied. Header, plan pages, social metadata, and manifest integration
+  remain with P2.8, P9.4/P9.9, P15.1, and P16.8. Plan rights/reviews stay
+  closed; artwork does not clear a schedule. No server deploy occurred.
+- `make check` and `make test-linux` passed; all web files served with
+  matching hashes. App Intents metadata-extraction tooling still prints
+  its existing skipped-dependency warnings; the asset catalog has none.
+- **Other session:** shared components (P2.6) are being edited in this
+  checkout. Those changes are outside the image commit and left intact.
+- **Next:** finish P2.6. P2.2b still needs a physical device. P1.12 still
+  needs the account/distribution path, a processed TestFlight upload, and
+  installation by the owner; the icon is no longer missing. D19's
+  exception applies to this requested batch. Future artwork follows D19.

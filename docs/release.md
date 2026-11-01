@@ -14,9 +14,11 @@ to the App Store. The web is deployed separately (`docs/deploy.md`).
   it.
 - **The App Store Connect record** for bundle ID `com.daybyword.app` (D1):
   name *Day by Word*, primary language English (U.S.), SKU `daybyword`.
-- **An app icon** from the owner (D19). App Store Connect rejects an upload
-  without one, so no build can reach TestFlight until the owner supplies the
-  icon file and an agent adds it to the asset catalog.
+- **An app icon** (D19). The owner's requested 2026-11-01 artwork batch is
+  registered as `AppIcon` in `apple/App/Resources/Brand.xcassets`, with
+  light, dark, and grayscale tinted appearances. The 1024 px originals
+  are in `design/images/`; this removes the missing-icon blocker, but does
+  not establish that a build has been uploaded or processed.
 
 ## Each build
 

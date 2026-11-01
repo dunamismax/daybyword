@@ -1,0 +1,258 @@
+{
+  "version": 1,
+  "date": "2026-11-01",
+  "direction": "Morning",
+  "assets": [
+    {
+      "file": "app-icon-dark.png",
+      "bytes": 169200,
+      "sha256": "18034bf1f779d4fa76bb26db17a70f33774c014815b7bfa49380ccdfe2831e10",
+      "width": 1024,
+      "height": 1024,
+      "copies": [
+        "apple/App/Resources/Brand.xcassets/AppIcon.appiconset/app-icon-dark.png"
+      ],
+      "purpose": "Dark iOS app icon foreground"
+    },
+    {
+      "file": "app-icon-tinted.png",
+      "bytes": 214498,
+      "sha256": "469bee7115fcbc4b2693aab392d7730108a6948ac34f11cdac3695bdb41a20f2",
+      "width": 1024,
+      "height": 1024,
+      "copies": [
+        "apple/App/Resources/Brand.xcassets/AppIcon.appiconset/app-icon-tinted.png"
+      ],
+      "purpose": "Tinted iOS app icon"
+    },
+    {
+      "file": "app-icon.png",
+      "bytes": 579377,
+      "sha256": "298fab8f21af85cfc8eae4ea614f2835e5880587addd762024d8e86fee4d2148",
+      "width": 1024,
+      "height": 1024,
+      "copies": [
+        "apple/App/Resources/Brand.xcassets/AppIcon.appiconset/app-icon.png"
+      ],
+      "purpose": "Primary iOS app icon"
+    },
+    {
+      "file": "apple-touch-icon.png",
+      "bytes": 20662,
+      "sha256": "ea900df629aa77a6de934c63ec0ab3e63cd95e1c6d5d3d20685022a387e025b0",
+      "width": 180,
+      "height": 180,
+      "copies": [
+        "Server/Public/assets/images/apple-touch-icon.png"
+      ],
+      "purpose": "Apple web shortcut icon"
+    },
+    {
+      "file": "favicon-32.png",
+      "bytes": 790,
+      "sha256": "753f634686d7bb0cbb8c5b8e8b6658f5eb44a2e35972b2dfb526004f1d073cbf",
+      "width": 32,
+      "height": 32,
+      "copies": [
+        "Server/Public/assets/images/favicon-32.png"
+      ],
+      "purpose": "Browser tab icon"
+    },
+    {
+      "file": "mark.png",
+      "bytes": 71603,
+      "sha256": "c6290e989f7203eb8c139e2c8d76cdcc9203b89c8bd28d76c89b47194c49f3af",
+      "width": 1024,
+      "height": 1024,
+      "copies": [],
+      "purpose": "Transparent raster mark source"
+    },
+    {
+      "file": "share.png",
+      "bytes": 509571,
+      "sha256": "d43cb4d9f7d01d0063ba154556fe5d985f10c7f1d223829cdcd855203c656588",
+      "width": 1200,
+      "height": 630,
+      "copies": [
+        "Server/Public/assets/images/share.png"
+      ],
+      "purpose": "Homepage link preview"
+    },
+    {
+      "file": "web-app-192.png",
+      "bytes": 17162,
+      "sha256": "9a87bf8a9407b1a836b0c47a316008d5c6539e44db16d537bf68b2b6a1aad7f5",
+      "width": 192,
+      "height": 192,
+      "copies": [
+        "Server/Public/assets/images/web-app-192.png"
+      ],
+      "purpose": "Installable web app icon"
+    },
+    {
+      "file": "web-app-512.png",
+      "bytes": 123603,
+      "sha256": "361faf165b221eaa063a95ed683bdf40a45f2f6107016e56c212611d8f0a3ce8",
+      "width": 512,
+      "height": 512,
+      "copies": [
+        "Server/Public/assets/images/web-app-512.png"
+      ],
+      "purpose": "Maskable installable web app icon"
+    },
+    {
+      "file": "plans/bible-in-a-year-five-days.jpg",
+      "bytes": 184688,
+      "sha256": "bb06e15abdf5c2c44a3794f830a600b29a9d4256d808a56656aac270e44674a8",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/bible-in-a-year-five-days.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/bible-in-a-year.jpg",
+      "bytes": 133920,
+      "sha256": "19de7e014bd9e0ba3691f5e0224dc31cdc917655082e70295964de24d3ecb588",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/bible-in-a-year.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/daily-office-1979.jpg",
+      "bytes": 132581,
+      "sha256": "87393bc8fdfbb5c1da344ad5bdaa9b924b1354155d013e61bb3c76c0d5aa3727",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/daily-office-1979.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/deuterocanonical-books.jpg",
+      "bytes": 106890,
+      "sha256": "0a282dcc8ab45dba8f989c6a06b05c58ccbe05b026dab171752dc1de6ed04e6f",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/deuterocanonical-books.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/gospels-at-your-pace.jpg",
+      "bytes": 135472,
+      "sha256": "b3c4df64c3e092f548254a430eee0da83a40365a7fd5a834b3f1eca18c202d43",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/gospels-at-your-pace.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/mcheyne-1842.jpg",
+      "bytes": 117074,
+      "sha256": "5ae15d67246ad8679bd62222ae2e1c45cf2606fa1af39c16aca9f95846b21d75",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/mcheyne-1842.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/new-testament-in-a-year-five-days.jpg",
+      "bytes": 114000,
+      "sha256": "dbbaaee37382fa78b823515d3e1ca91d5a3f51f2fa0a45f66496755f1a38e4a0",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/new-testament-in-a-year-five-days.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/pauls-letters.jpg",
+      "bytes": 107215,
+      "sha256": "4a4ddab64f48f55cdee03144e9f757160d51ae2e48a5487634f67dd453a9438f",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/pauls-letters.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/proverbs-through-the-month.jpg",
+      "bytes": 127564,
+      "sha256": "30d70527205d6ffeba917ba6bf55d8757faf90ad655b1d804f0328835884e82c",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/proverbs-through-the-month.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/psalm-a-day.jpg",
+      "bytes": 100883,
+      "sha256": "b21a30ab4f9fd9abc907fe3e386c80c303ded3ef36a1c1c28873c704eb4e4a77",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/psalm-a-day.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/story-of-scripture.jpg",
+      "bytes": 115266,
+      "sha256": "4564d5976508a4b2666d73b952d9d7f7ad724dcbfe916da58ed170e4ca55d8ec",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/story-of-scripture.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "plans/table-of-lessons-1662.jpg",
+      "bytes": 161909,
+      "sha256": "4939dfb50552b05b9a662e1e1f0dab309057fe02f5b70dfb72b21ad68a3ba689",
+      "width": 1600,
+      "height": 900,
+      "copies": [
+        "Server/Public/assets/images/plans/table-of-lessons-1662.jpg"
+      ],
+      "purpose": "Decorative plan cover"
+    },
+    {
+      "file": "mark.svg",
+      "bytes": 1336,
+      "sha256": "31937d7b124fdb2a663a91b92c35280d63ad67b1d1481d80d80b071419f131bb",
+      "copies": [
+        "Server/Public/assets/images/mark.svg"
+      ],
+      "purpose": "Adaptive single-color site mark"
+    },
+    {
+      "file": "favicon.ico",
+      "bytes": 5430,
+      "sha256": "767805d4a1f65a3ab27b32ec5bc7fe7a318641c43e944e1f35eaa0e1b07b1451",
+      "purpose": "Browser fallback icon",
+      "sizes": [
+        32,
+        16
+      ],
+      "copies": [
+        "Server/Public/favicon.ico"
+      ]
+    }
+  ]
+}

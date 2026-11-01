@@ -106,9 +106,13 @@ rather than truncating.
 
 ## Icons and images
 
-The owner supplies every image and icon (D19); agents write the prompts in
-`design/image-prompts.md`. Until a file arrives, its place shows a dashed
-placeholder. Interface symbols in the app (tab icons, Settings, Share) are
+The owner directs every image and icon (D19); prompts are kept in
+`design/image-prompts.md`. On 2026-11-01 the owner requested the initial
+artwork batch and its registration. The files, dimensions, and integration
+status are listed in `design/images/README.md`. Future image work still
+follows D19 unless the owner requests otherwise. Until a file arrives, its
+place shows a dashed placeholder. Interface symbols in the app (tab icons,
+Settings, Share) are
 Apple's SF Symbols, which are system symbols rather than drawn artwork, and
 they are used only on Apple platforms, as their licence requires; the web
 uses words instead of symbols.

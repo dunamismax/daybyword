@@ -63,14 +63,16 @@ Packages/ReadingData/     the SQLite wrapper, catalog reader, journal, and sync 
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
 Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
 apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
+design/                   Morning tokens, mockups, image brief, and finished artwork
 docs/                     decisions, product rules, release, web style, and more as they land
 scripts/                  helpers behind the Makefile (simulator choice, Linux tests, archive)
 .github/workflows/        CI, run by hand (D31)
 ```
 
 Still to come, as BUILD.md's phases reach them: `catalog/` (plan sources,
-scripture data, and `SOURCES.md`), `design/` (tokens and the owner's
-images), and `deploy/` (the server's unit, Caddy site, and scripts).
+scripture data, and `SOURCES.md`) and `deploy/` (the server's unit, Caddy
+site, and scripts). [The artwork inventory](design/images/README.md)
+records the app icon, web exports, sharing image, and twelve plan covers.
 
 ## Prerequisites
 
