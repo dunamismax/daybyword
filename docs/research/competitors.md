@@ -11,7 +11,7 @@ Privacy labels are the developers' own declarations, which Apple does not
 verify. **No app was used hands-on**: this session had no physical device,
 and App Store apps cannot be installed in the iOS Simulator. Onboarding,
 missed-day behavior in practice, widgets, and reminder quality therefore
-remain to be confirmed on a device (P2.2b). Where a feature comes only from
+remain to be confirmed on a device (BUILD.md P9.10, formerly P2.2b). Where a feature comes only from
 a user review, it says so. Ratings change; re-check before quoting.
 
 ## Summary
@@ -66,7 +66,7 @@ released 2026-09-09) and "Shepherd: Track Bible Reading" (Sanghoon Im,
 - **Being a tracker is not enough** (BUILD.md's feature map): two new
   trackers launched in September 2026 alone.
 
-## Still to confirm on a device (P2.2b)
+## Still to confirm on a device (P9.10)
 
 Onboarding in each app; how each behaves after missed days (above all
 YouVersion's "Catch Me Up", Sola's rescheduling, and ReadingPlan's pace

@@ -58,10 +58,9 @@ a church, tradition, or faith story to them.
 
 1. Find the **first unchecked `- [ ]` item in the earliest phase that is not
    complete**, skipping items whose gate is still closed and [OWNER] steps
-   still waiting on the owner (§4). The one exception is the design session
-   (BUILD.md P2.3), which is a hard stop: once its mockups are shown, wait
-   for the owner to finalize the design, and build nothing else until the
-   owner says it is final. Phases are ordered, and items inside a
+   still waiting on the owner (§4). The design session (P2.3) was a hard
+   stop until the owner chose the design; it finished on 2026-11-01 (D18).
+   Phases are ordered, and items inside a
    phase are ordered unless marked *(parallel-safe)* or the phase says
    otherwise. Phase 10 (the launch catalog) may run alongside Phases 9–17.
 2. Inspect the relevant code before writing any. Checkboxes can drift from
