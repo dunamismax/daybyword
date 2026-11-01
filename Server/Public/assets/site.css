@@ -26,9 +26,116 @@ a {
   padding: 0 var(--space-m);
 }
 
+@media (min-width: 48rem) {
+  .page {
+    padding: 0 var(--space-xxl);
+  }
+}
+
 main.page {
   padding-top: var(--space-xl);
   padding-bottom: var(--space-xxl);
+}
+
+main:focus {
+  outline: none;
+}
+
+main.page > h1 {
+  margin-bottom: var(--space-l);
+}
+
+/* The header (BUILD.md P2.8): the wordmark and the section switcher, a pill
+   with the current section on the accent tint. It wraps below the wordmark on
+   narrow screens and at large text sizes. */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-m);
+  top: -10rem;
+  z-index: 1;
+  padding: var(--space-xs) var(--space-m);
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: var(--space-xs);
+}
+
+.site-header .page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s) var(--space-l);
+  padding-top: var(--space-m);
+  padding-bottom: var(--space-xs);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.wordmark .mark {
+  width: 1.875rem;
+  height: 1.875rem;
+  flex: none;
+  color: var(--color-accent);
+}
+
+.sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxs);
+  margin: 0;
+  padding: var(--space-xxs);
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+}
+
+.sections a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 var(--space-m);
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  text-decoration: none;
+}
+
+.sections a:hover {
+  color: var(--color-text);
+}
+
+.sections a[aria-current="page"] {
+  background: var(--color-accent-tint);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.browser-notice {
+  background: var(--color-accent-tint);
+  color: var(--color-text);
+  border-block: 1px solid var(--color-line);
+}
+
+.browser-notice p {
+  margin: 0 auto;
+  padding-block: var(--space-s);
 }
 
 h1 {
@@ -50,11 +157,19 @@ h1 {
   font-size: var(--font-size-caption);
 }
 
-footer.page {
-  padding-top: var(--space-l);
-  padding-bottom: var(--space-xl);
+.site-footer {
+  border-top: 1px solid var(--color-line);
   color: var(--color-text-muted);
   font-size: var(--font-size-caption);
+}
+
+.site-footer .page {
+  padding-top: var(--space-l);
+  padding-bottom: var(--space-xl);
+}
+
+.site-footer p {
+  margin: 0 0 var(--space-xs);
 }
 
 /* Components (BUILD.md P2.6): the same set as the app's Components.swift. */

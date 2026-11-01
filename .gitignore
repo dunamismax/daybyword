@@ -41,3 +41,6 @@ Server/storage/
 
 # Screenshots from tours and checks
 screenshots/
+
+# Local editor and agent tool settings
+.claude/

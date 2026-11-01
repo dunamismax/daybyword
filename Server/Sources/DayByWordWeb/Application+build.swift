@@ -31,9 +31,14 @@ func buildRouter(_ configuration: ServerConfiguration, logger: Logger) -> Router
     let router = Router()
     router.add(middleware: RequestLogMiddleware())
     router.add(middleware: SecurityHeadersMiddleware())
+    router.add(middleware: NotFoundPageMiddleware())
     router.add(middleware: FileMiddleware(configuration.publicDirectory, searchForIndexHtml: false, logger: logger))
 
     router.get("/") { _, _ in Pages.home() }
+    router.get("/today") { _, _ in Pages.today() }
+    router.get("/plans") { _, _ in Pages.plans() }
+    router.get("/progress") { _, _ in Pages.progress() }
+    router.get("/settings") { _, _ in Pages.settings() }
 
     if configuration.environment == .development {
         router.get("/dev/components") { _, _ in Pages.componentGallery() }

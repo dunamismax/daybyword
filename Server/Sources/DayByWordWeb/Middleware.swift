@@ -62,11 +62,15 @@ struct SecurityHeadersMiddleware<Context: RequestContext>: RouterMiddleware {
             "base-uri 'none'",
             "frame-ancestors 'none'",
         ].joined(separator: "; ")
-        headers[HTTPField.Name("Permissions-Policy")!] =
-            "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        headers[HTTPField.Name("Permissions-Policy")!] = [
+            "accelerometer=()", "browsing-topics=()", "camera=()", "display-capture=()", "geolocation=()",
+            "gyroscope=()", "hid=()", "magnetometer=()", "microphone=()", "midi=()", "payment=()",
+            "serial=()", "usb=()",
+        ].joined(separator: ", ")
         headers[HTTPField.Name("X-Content-Type-Options")!] = "nosniff"
         headers[HTTPField.Name("Referrer-Policy")!] = "no-referrer"
         headers[HTTPField.Name("Cross-Origin-Opener-Policy")!] = "same-origin"
+        headers[HTTPField.Name("Cross-Origin-Resource-Policy")!] = "same-origin"
         headers[HTTPField.Name("X-Frame-Options")!] = "DENY"
         return headers
     }
@@ -86,5 +90,24 @@ struct SecurityHeadersMiddleware<Context: RequestContext>: RouterMiddleware {
             response.headers.append(field)
         }
         return response
+    }
+}
+
+/// Answers an unknown address with the site's own "Page not found" page, in
+/// the layout, rather than an empty body. Other errors pass through.
+struct NotFoundPageMiddleware<Context: RequestContext>: RouterMiddleware {
+    func handle(
+        _ request: Request,
+        context: Context,
+        next: (Request, Context) async throws -> Response
+    ) async throws -> Response {
+        do {
+            return try await next(request, context)
+        } catch let error as any HTTPResponseError where error.status == .notFound {
+            guard request.method == .get || request.method == .head else { throw error }
+            var response = try Pages.notFound().response(from: request, context: context)
+            response.status = .notFound
+            return response
+        }
     }
 }

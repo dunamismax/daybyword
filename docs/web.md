@@ -59,3 +59,29 @@ by `swift format` with the repository's `.swift-format` and linted by
   lowercase with hyphens. No utility-class systems.
 - Respect `prefers-reduced-motion`; keep visible focus styles on every
   control.
+
+## The page shell
+
+Every page shares one layout (`Server/Sources/DayByWordWeb/Pages.swift`):
+a skip link, the header with the wordmark and the section switcher (the
+current section carries `aria-current="page"`), the page's `main`, and a
+footer with the independence statement. An unknown address gets the site's
+own "Page not found" page with status 404.
+
+## Unsupported browsers
+
+D30 supports the current and previous major versions of Safari, Chrome,
+Firefox, and Edge. Each page holds a plain notice, hidden by default, that
+says the web app needs a recent browser and that pages still work for
+reading:
+
+- `support.js` (a module) shows it when any feature the web app relies on
+  is missing: `structuredClone`, `Array.prototype.findLast`,
+  `Object.groupBy`, the CSS `:has()` selector, and container queries. Every
+  browser D30 covers has all of them; raise the list when a newer feature
+  becomes essential.
+- `unsupported.js` (a `nomodule`, deferred classic script, written in the
+  oldest JavaScript) shows it in browsers that cannot load modules at all.
+- A `noscript` copy covers JavaScript turned off.
+
+The notice's words are in the page, never in the scripts.
