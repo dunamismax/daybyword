@@ -4,7 +4,15 @@ import SwiftUI
 struct DayByWordApp: App {
     var body: some Scene {
         WindowGroup {
-            TodayView()
+            #if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("-componentGallery") {
+                    ComponentGallery()
+                } else {
+                    TodayView()
+                }
+            #else
+                TodayView()
+            #endif
         }
     }
 }

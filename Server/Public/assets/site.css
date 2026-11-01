@@ -8,6 +8,7 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font: var(--font-weight-body) var(--font-size-body) / 1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-wrap: break-word;
 }
 
 a {
@@ -56,6 +57,246 @@ footer.page {
   font-size: var(--font-size-caption);
 }
 
+/* Components (BUILD.md P2.6): the same set as the app's Components.swift. */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.nobreak {
+  white-space: nowrap;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  padding: var(--space-l);
+  margin: 0 0 var(--space-m);
+}
+
+.label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-label);
+}
+
+.label.accent {
+  color: var(--color-accent);
+}
+
+.reference {
+  margin: var(--space-xxs) 0;
+  font-size: var(--font-size-reference);
+  font-weight: var(--font-weight-reference);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.workload,
+.source-note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.source-note strong {
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-m);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: var(--space-xxs) var(--space-m);
+  border: 0;
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: var(--font-size-label);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button.primary {
+  min-height: 3.125rem;
+  padding-inline: var(--space-l);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+}
+
+.button.secondary {
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.link-button {
+  min-height: 2.75rem;
+  padding: 0 var(--space-xs);
+  border: 0;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.assignments,
+.sample-week ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.assignment {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 var(--space-s);
+  padding: var(--space-xs) 0;
+}
+
+.assignment-label {
+  grid-column: 1;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.assignment-reference {
+  grid-column: 1;
+  font-size: var(--font-size-reference-list);
+  font-weight: var(--font-weight-reference-list);
+}
+
+.assignment-status {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-label);
+}
+
+.status-read .assignment-status {
+  color: var(--color-text);
+}
+
+.plan-card h3 {
+  margin: var(--space-xxs) 0;
+  font-size: 1.375rem;
+}
+
+.plan-card h3 a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.plan-card p {
+  margin: 0 0 var(--space-xxs);
+}
+
+.sample-week h3,
+.change-preview h2 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--font-size-body);
+}
+
+.sample-week li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-s);
+  padding: var(--space-xxs) 0;
+  font-size: var(--font-size-label);
+}
+
+.sample-label {
+  color: var(--color-text-muted);
+}
+
+.sample-reference {
+  font-weight: 600;
+}
+
+.change-preview h2 {
+  font-size: var(--font-size-plan-title);
+}
+
+.change-preview dl {
+  margin: var(--space-m) 0 0;
+}
+
+.change-preview dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-label);
+}
+
+.change-preview dd {
+  margin: 0 0 var(--space-s);
+}
+
+.undo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin: 0 0 var(--space-m);
+  padding: var(--space-xxs) var(--space-xxs) var(--space-xxs) var(--space-l);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+}
+
+.undo-banner form {
+  margin: 0;
+}
+
+.state {
+  text-align: center;
+  padding: var(--space-m);
+}
+
+.state p {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-text-muted);
+}
+
+.state .state-title {
+  color: var(--color-text);
+  font-size: var(--font-size-reference-list);
+  font-weight: var(--font-weight-reference-list);
+}
+
+.state .error {
+  color: var(--color-danger);
+}
+
+@media (max-width: 40rem) {
+  .actions .button.primary {
+    flex: 1 1 100%;
+  }
+
+  .actions .button.secondary {
+    flex: 1 1 auto;
+  }
+}
+
 @media (min-width: 64rem) {
   .page {
     padding: 0 var(--space-xxl);
@@ -63,6 +304,14 @@ footer.page {
 
   h1 {
     font-size: var(--font-size-screen-title-desktop);
+  }
+
+  .reference {
+    font-size: var(--font-size-reference-desktop);
+  }
+
+  .card {
+    border-radius: var(--radius-card-large);
   }
 }
 

@@ -35,6 +35,10 @@ func buildRouter(_ configuration: ServerConfiguration, logger: Logger) -> Router
 
     router.get("/") { _, _ in Pages.home() }
 
+    if configuration.environment == .development {
+        router.get("/dev/components") { _, _ in Pages.componentGallery() }
+    }
+
     // The health check that Caddy, deploys, and monitoring use.
     router.get("/up") { _, _ in
         var headers = HTTPFields()

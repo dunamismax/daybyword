@@ -162,7 +162,7 @@ func css(_ tokens: Tokens) -> String {
     var out = "/* \(header) */\n\n:root {\n  color-scheme: light dark;\n"
     out += colors({ $0.light }, indent: "  ") + "\n"
     for (name, value) in tokens.radius { out += "  --radius-\(kebab(name)): \(value)px;\n" }
-    for (name, value) in tokens.space { out += "  --space-\(kebab(name)): \(rem(value));\n" }
+    for (name, value) in tokens.space { out += "  --space-\(kebab(name)): \(value)px;\n" }
     let weights = ["regular": 400, "medium": 500, "semibold": 600, "bold": 700, "heavy": 800]
     for style in tokens.type {
         out += "  --font-size-\(kebab(style.name)): \(rem(style.size));\n"
