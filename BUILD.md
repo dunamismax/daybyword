@@ -131,12 +131,13 @@ top-level items; sub-items roll up into their parent.
 | 26 | Operations and annual maintenance | Ongoing | 9 | 0 |
 | 27 | Future directions | Ongoing | 6 | 0 |
 
-**Current state (2026-11-01):** Phase 1 is done except P1.12 (TestFlight,
-waiting on the owner), and Phase 2 through P2.6: product rules, the Morning
-design with generated tokens and type, the owner's artwork batch, and the
-shared components on both platforms. `make check`, `make test-linux`, and
-the hosted CI run pass. **Next: P2.7**, the iOS shell; the owner asked for
-work to stop after P2.6 this session. Nothing is deployed yet.
+**Current state (2026-11-01, later):** Phase 1 is done except P1.12, whose
+build 25 is uploaded, processed, and offered to the owner in TestFlight;
+it is ticked once it installs on the owner's device. Phase 2 is done except
+P2.2b (hands-on use of competing apps, on the owner's iPhone). The app and
+the web have their shells, addresses, string tables, Settings, and tours.
+`make check` (now with the web tour) and `make test-linux` pass. **Next:
+P3.1.** Nothing is deployed yet.
 
 ---
 
@@ -1104,26 +1105,28 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-10-30 to 11-01:** P1.1–P1.11 and P1.13; P2.1, P2.2a, P2.3 (the owner
-  chose Morning), the artwork batch, P2.4–P2.6. Stopped after P2.6 at the
-  owner's request. **Next: P2.7** (iOS shell), then P2.8.
-- **Waiting on the owner (P1.12):** xcodebuild cannot read the Xcode
-  account's keychain credentials ("Failed to Use Accounts"), so re-sign in
-  under Xcode → Settings → Accounts; create the App Store Connect record for
-  `com.daybyword.app` (or allow it in a signed-in session); then install the
-  first build from TestFlight. The app icon is now in place.
-- **Needs a device:** P2.2b (hands-on use of competing apps).
-- **Surprises:** Swift 6.4.2 had no official Docker image, and GitHub's
-  runners cannot read swift.org's key file, so Linux uses our own verified
-  installer with pinned keys (E21, E22). Xcode 27's simulator app is
-  DeviceHub. Colima does not mount `/private/tmp`, so run `make test-linux`
-  from the repository. The built-in browser refuses clipboard writes, so
-  Copy reference's success path is unverified there (its fallback works).
-  Tailscale SSH to `ubuntu-vm` asked for an interactive re-authentication on
-  2026-10-30; Phase 7 will need the owner to approve it.
-- **Design record:** the canvas
-  (https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf, private) holds all three
-  directions; Desk was only partly drawn when the owner chose. Morning's
-  boards are in `design/mockups/`.
-- **To confirm with the owner when convenient:** D34's note that agents may
-  add daybyword.com's own entry to `ubuntu-vm-backup`.
+- **2026-11-01 (this session):** P1.12's upload (App Store Connect record
+  6829425132, renamed "Day by Word"; build 25 processed; internal group
+  *Owner* with automatic distribution and the owner's two Apple IDs). Then
+  P2.7–P2.12: the iOS shell and `AppRoute` (E24), the web shell and 404
+  page, `docs/urls.md` with `ReadingEngine.PlanID`, string tables on both
+  platforms (E25), the Settings shell, and the tours (E26). **Next: P3.1.**
+- **Waiting on the owner:** install build 25 from TestFlight, then P1.12 can
+  be ticked; P2.2b on the owner's iPhone. Optionally turn on "Allow remote
+  automation" in Safari's Developer settings so `DBW_WEBDRIVER=safari make
+  tour-web` also runs.
+- **Tools added:** geckodriver 0.37.1 (Homebrew) for the web tour in
+  `make check`; CI installs it if missing. `.claude/` is gitignored.
+- **Surprises:** Xcode's Distribute App created the App Store Connect record
+  but then reported `DistributionAppRecordProviderError`, because App Store
+  Connect had not caught up yet; `make testflight` a minute later uploaded
+  (docs/release.md). Synthetic taps in the simulator do not open SwiftUI
+  menu pickers, so Settings was checked through the app's defaults. Firefox
+  will not make a window narrower than 500 px, so phone widths stay a
+  manual check. Earlier notes still stand: Colima does not mount
+  `/private/tmp`; the in-app browser refuses clipboard writes; Tailscale SSH
+  to `ubuntu-vm` needed an interactive re-authentication (Phase 7).
+- **Design record:** https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf
+  (private); Morning's boards are in `design/mockups/`.
+- **To confirm with the owner when convenient:** D34's note about adding
+  daybyword.com's own entry to `ubuntu-vm-backup`.
