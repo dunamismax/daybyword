@@ -131,13 +131,12 @@ top-level items; sub-items roll up into their parent.
 | 26 | Operations and annual maintenance | Ongoing | 9 | 0 |
 | 27 | Future directions | Ongoing | 6 | 0 |
 
-**Current state (2026-11-01):** the shared packages, local Swift server,
-and Apple project are implemented. The hosted manual CI run passed
-(P1.11). Morning is the chosen design; its color and type system is in
-place (P2.4–P2.5). The requested artwork batch is delivered (P2.3), and
-AppIcon is registered. P2.6 shared components are being worked on in a
-separate session. TestFlight remains blocked on the account/distribution
-and owner-device steps in P1.12; no deployment has occurred.
+**Current state (2026-11-01):** Phase 1 is done except P1.12 (TestFlight,
+waiting on the owner), and Phase 2 through P2.6: product rules, the Morning
+design with generated tokens and type, the owner's artwork batch, and the
+shared components on both platforms. `make check`, `make test-linux`, and
+the hosted CI run pass. **Next: P2.7**, the iOS shell; the owner asked for
+work to stop after P2.6 this session. Nothing is deployed yet.
 
 ---
 
@@ -1098,22 +1097,26 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-01, P2.3:** the owner's requested Morning image batch is
-  complete. `design/images/README.md` lists files, sizes, provisional plan
-  slugs, integration status, exact prompts, and checksum manifest.
-- AppIcon is registered in `Brand.xcassets` and selected in `project.yml`.
-  Default, dark, and tinted icons were exercised on the simulator Home
-  Screen; the app launches normally and at AX5. No new controls were added.
-- Web exports are in `Server/Public/assets/images/`; `/favicon.ico` is
-  supplied. Header, plan pages, social metadata, and manifest integration
-  remain with P2.8, P9.4/P9.9, P15.1, and P16.8. Plan rights/reviews stay
-  closed; artwork does not clear a schedule. No server deploy occurred.
-- `make check` and `make test-linux` passed; all web files served with
-  matching hashes. App Intents metadata-extraction tooling still prints
-  its existing skipped-dependency warnings; the asset catalog has none.
-- **Other session:** shared components (P2.6) are being edited in this
-  checkout. Those changes are outside the image commit and left intact.
-- **Next:** finish P2.6. P2.2b still needs a physical device. P1.12 still
-  needs the account/distribution path, a processed TestFlight upload, and
-  installation by the owner; the icon is no longer missing. D19's
-  exception applies to this requested batch. Future artwork follows D19.
+- **2026-10-30 to 11-01:** P1.1–P1.11 and P1.13; P2.1, P2.2a, P2.3 (the owner
+  chose Morning), the artwork batch, P2.4–P2.6. Stopped after P2.6 at the
+  owner's request. **Next: P2.7** (iOS shell), then P2.8.
+- **Waiting on the owner (P1.12):** xcodebuild cannot read the Xcode
+  account's keychain credentials ("Failed to Use Accounts"), so re-sign in
+  under Xcode → Settings → Accounts; create the App Store Connect record for
+  `com.daybyword.app` (or allow it in a signed-in session); then install the
+  first build from TestFlight. The app icon is now in place.
+- **Needs a device:** P2.2b (hands-on use of competing apps).
+- **Surprises:** Swift 6.4.2 had no official Docker image, and GitHub's
+  runners cannot read swift.org's key file, so Linux uses our own verified
+  installer with pinned keys (E21, E22). Xcode 27's simulator app is
+  DeviceHub. Colima does not mount `/private/tmp`, so run `make test-linux`
+  from the repository. The built-in browser refuses clipboard writes, so
+  Copy reference's success path is unverified there (its fallback works).
+  Tailscale SSH to `ubuntu-vm` asked for an interactive re-authentication on
+  2026-10-30; Phase 7 will need the owner to approve it.
+- **Design record:** the canvas
+  (https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf, private) holds all three
+  directions; Desk was only partly drawn when the owner chose. Morning's
+  boards are in `design/mockups/`.
+- **To confirm with the owner when convenient:** D34's note that agents may
+  add daybyword.com's own entry to `ubuntu-vm-backup`.
