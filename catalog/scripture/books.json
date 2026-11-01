@@ -1,0 +1,279 @@
+{
+  "format": 1,
+  "conventions": [
+    {
+      "id": "common",
+      "label": "Common English",
+      "example": "Song of Songs, Sirach",
+      "rule": "USFM 3.0's English names, with the qualifiers \"(Hebrew)\" and \"(Greek)\" dropped from Esther and Daniel, because each canon's entry says what its form of a book contains. Where USFM and the SBL Handbook differ, the name follows the source listed in the book's note. Abbreviations are the SBL Handbook's.",
+      "sources": ["usfm-3", "sbl-handbook-2"]
+    },
+    {
+      "id": "kjv",
+      "label": "King James",
+      "example": "Song of Solomon, Ecclesiasticus",
+      "rule": "The names in the contents of the 1769 Oxford King James Bible, where they differ from the common names. Roman numerals are written as Arabic numerals (\"I. Samuel\" is \"1 Samuel\"), and the words \"The\", \"The Epistle to the\", \"The Epistle of\", and \"To the\" are dropped from the front (\"The Acts\" is \"Acts\"). An abbreviation is given only where the SBL Handbook lists that name; otherwise the full name is shown.",
+      "sources": ["kjv-1769", "sbl-handbook-2"]
+    },
+    {
+      "id": "douay",
+      "label": "Douay-Rheims",
+      "example": "Canticle of Canticles, Apocalypse",
+      "rule": "The short names of the Douay-Rheims Bible in Challoner's revision, where they name a book differently from the common names (a longer form of the same name, such as \"Acts of Apostles\", is not an override), as drbo.org's contents give them and checked against the book titles of the Challoner text. Roman numerals are written as Arabic numerals. An abbreviation is given only where the SBL Handbook lists that name; otherwise the full name is shown.",
+      "sources": ["douay-challoner", "drbo", "sbl-handbook-2"]
+    }
+  ],
+  "books": [
+    { "id": "GEN", "testament": "old", "name": "Genesis", "abbreviation": "Gen" },
+    { "id": "EXO", "testament": "old", "name": "Exodus", "abbreviation": "Exod" },
+    { "id": "LEV", "testament": "old", "name": "Leviticus", "abbreviation": "Lev" },
+    { "id": "NUM", "testament": "old", "name": "Numbers", "abbreviation": "Num" },
+    { "id": "DEU", "testament": "old", "name": "Deuteronomy", "abbreviation": "Deut" },
+    { "id": "JOS", "testament": "old", "name": "Joshua", "abbreviation": "Josh",
+      "names": { "douay": { "name": "Josue" } } },
+    { "id": "JDG", "testament": "old", "name": "Judges", "abbreviation": "Judg" },
+    { "id": "RUT", "testament": "old", "name": "Ruth", "abbreviation": "Ruth" },
+    { "id": "1SA", "testament": "old", "name": "1 Samuel", "abbreviation": "1 Sam",
+      "names": { "douay": { "name": "1 Kings" } } },
+    { "id": "2SA", "testament": "old", "name": "2 Samuel", "abbreviation": "2 Sam",
+      "names": { "douay": { "name": "2 Kings" } } },
+    { "id": "1KI", "testament": "old", "name": "1 Kings", "abbreviation": "1 Kgs",
+      "names": { "douay": { "name": "3 Kings" } } },
+    { "id": "2KI", "testament": "old", "name": "2 Kings", "abbreviation": "2 Kgs",
+      "names": { "douay": { "name": "4 Kings" } } },
+    { "id": "1CH", "testament": "old", "name": "1 Chronicles", "abbreviation": "1 Chr",
+      "names": { "douay": { "name": "1 Paralipomenon" } } },
+    { "id": "2CH", "testament": "old", "name": "2 Chronicles", "abbreviation": "2 Chr",
+      "names": { "douay": { "name": "2 Paralipomenon" } } },
+    { "id": "EZR", "testament": "old", "name": "Ezra", "abbreviation": "Ezra",
+      "names": { "douay": { "name": "1 Esdras" } } },
+    { "id": "NEH", "testament": "old", "name": "Nehemiah", "abbreviation": "Neh",
+      "names": { "douay": { "name": "2 Esdras" } } },
+    { "id": "TOB", "testament": "old", "name": "Tobit", "abbreviation": "Tob",
+      "names": { "douay": { "name": "Tobias" } } },
+    { "id": "JDT", "testament": "old", "name": "Judith", "abbreviation": "Jdt" },
+    { "id": "EST", "testament": "old", "name": "Esther", "abbreviation": "Esth",
+      "note": "USFM calls this book \"Esther (Hebrew)\"; the Catholic canon's Esther includes the Greek additions (ESG)." },
+    { "id": "ESG", "testament": "old", "name": "Additions to Esther", "abbreviation": "Add Esth",
+      "note": "The Greek additions to Esther where a Bible prints them apart, as the King James Bible does. USFM calls this id \"Esther Greek\"; the name is the SBL Handbook's.",
+      "names": { "kjv": { "name": "Rest of Esther" } } },
+    { "id": "1MA", "testament": "old", "name": "1 Maccabees", "abbreviation": "1 Macc",
+      "names": { "douay": { "name": "1 Machabees" } } },
+    { "id": "2MA", "testament": "old", "name": "2 Maccabees", "abbreviation": "2 Macc",
+      "names": { "douay": { "name": "2 Machabees" } } },
+    { "id": "JOB", "testament": "old", "name": "Job", "abbreviation": "Job" },
+    { "id": "PSA", "testament": "old", "name": "Psalms", "abbreviation": "Ps" },
+    { "id": "PRO", "testament": "old", "name": "Proverbs", "abbreviation": "Prov" },
+    { "id": "ECC", "testament": "old", "name": "Ecclesiastes", "abbreviation": "Eccl" },
+    { "id": "SNG", "testament": "old", "name": "Song of Songs", "abbreviation": "Song",
+      "names": {
+        "kjv": { "name": "Song of Solomon", "abbreviation": "Song" },
+        "douay": { "name": "Canticle of Canticles", "abbreviation": "Cant" }
+      },
+      "note": "drbo.org's contents say \"Canticles\"; the Gutenberg text's title, \"Solomon's Canticle of Canticles\", gives the Douay name." },
+    { "id": "WIS", "testament": "old", "name": "Wisdom", "abbreviation": "Wis",
+      "note": "USFM and the TCU guide's SBL table say \"Wisdom of Solomon\"; the University of Divinity's SBL table, the USCCB, the 1769 King James Bible, and the Douay-Rheims say \"Wisdom\"." },
+    { "id": "SIR", "testament": "old", "name": "Sirach", "abbreviation": "Sir",
+      "names": {
+        "kjv": { "name": "Ecclesiasticus", "abbreviation": "Sir" },
+        "douay": { "name": "Ecclesiasticus", "abbreviation": "Sir" }
+      } },
+    { "id": "ISA", "testament": "old", "name": "Isaiah", "abbreviation": "Isa",
+      "names": { "douay": { "name": "Isaias" } } },
+    { "id": "JER", "testament": "old", "name": "Jeremiah", "abbreviation": "Jer",
+      "names": { "douay": { "name": "Jeremias" } } },
+    { "id": "LAM", "testament": "old", "name": "Lamentations", "abbreviation": "Lam" },
+    { "id": "BAR", "testament": "old", "name": "Baruch", "abbreviation": "Bar",
+      "note": "The Catholic canon's Baruch has six chapters, the sixth being the Letter of Jeremiah (LJE)." },
+    { "id": "LJE", "testament": "old", "name": "Letter of Jeremiah", "abbreviation": "Ep Jer",
+      "note": "The name is USFM's; the SBL Handbook says \"Epistle of Jeremiah\".",
+      "names": { "kjv": { "name": "Epistle of Jeremiah", "abbreviation": "Ep Jer" } } },
+    { "id": "EZK", "testament": "old", "name": "Ezekiel", "abbreviation": "Ezek",
+      "names": { "douay": { "name": "Ezechiel" } } },
+    { "id": "DAN", "testament": "old", "name": "Daniel", "abbreviation": "Dan",
+      "note": "USFM calls this book \"Daniel (Hebrew)\"; the Catholic canon's Daniel includes the Greek additions (S3Y, SUS, BEL)." },
+    { "id": "S3Y", "testament": "old", "name": "Song of the Three Young Men", "abbreviation": "Sg Three",
+      "note": "USFM writes \"Song of the 3 Young Men\"; the spelling is the SBL Handbook's.",
+      "names": { "kjv": { "name": "Song of the Three Children" } } },
+    { "id": "SUS", "testament": "old", "name": "Susanna", "abbreviation": "Sus",
+      "note": "The 1769 contents say \"The Story of Susanna\"; the common name is kept." },
+    { "id": "BEL", "testament": "old", "name": "Bel and the Dragon", "abbreviation": "Bel",
+      "note": "The 1769 contents say \"The Idol Bel, and the Dragon\"; the common name is kept." },
+    { "id": "HOS", "testament": "old", "name": "Hosea", "abbreviation": "Hos",
+      "names": { "douay": { "name": "Osee" } } },
+    { "id": "JOL", "testament": "old", "name": "Joel", "abbreviation": "Joel" },
+    { "id": "AMO", "testament": "old", "name": "Amos", "abbreviation": "Amos" },
+    { "id": "OBA", "testament": "old", "name": "Obadiah", "abbreviation": "Obad",
+      "names": { "douay": { "name": "Abdias" } } },
+    { "id": "JON", "testament": "old", "name": "Jonah", "abbreviation": "Jonah",
+      "names": { "douay": { "name": "Jonas" } } },
+    { "id": "MIC", "testament": "old", "name": "Micah", "abbreviation": "Mic",
+      "names": { "douay": { "name": "Micheas" } } },
+    { "id": "NAM", "testament": "old", "name": "Nahum", "abbreviation": "Nah" },
+    { "id": "HAB", "testament": "old", "name": "Habakkuk", "abbreviation": "Hab",
+      "names": { "douay": { "name": "Habacuc" } } },
+    { "id": "ZEP", "testament": "old", "name": "Zephaniah", "abbreviation": "Zeph",
+      "names": { "douay": { "name": "Sophonias" } } },
+    { "id": "HAG", "testament": "old", "name": "Haggai", "abbreviation": "Hag",
+      "names": { "douay": { "name": "Aggeus" } } },
+    { "id": "ZEC", "testament": "old", "name": "Zechariah", "abbreviation": "Zech",
+      "names": { "douay": { "name": "Zacharias" } } },
+    { "id": "MAL", "testament": "old", "name": "Malachi", "abbreviation": "Mal",
+      "names": { "douay": { "name": "Malachias" } } },
+    { "id": "MAT", "testament": "new", "name": "Matthew", "abbreviation": "Matt" },
+    { "id": "MRK", "testament": "new", "name": "Mark", "abbreviation": "Mark" },
+    { "id": "LUK", "testament": "new", "name": "Luke", "abbreviation": "Luke" },
+    { "id": "JHN", "testament": "new", "name": "John", "abbreviation": "John" },
+    { "id": "ACT", "testament": "new", "name": "Acts", "abbreviation": "Acts" },
+    { "id": "ROM", "testament": "new", "name": "Romans", "abbreviation": "Rom" },
+    { "id": "1CO", "testament": "new", "name": "1 Corinthians", "abbreviation": "1 Cor" },
+    { "id": "2CO", "testament": "new", "name": "2 Corinthians", "abbreviation": "2 Cor" },
+    { "id": "GAL", "testament": "new", "name": "Galatians", "abbreviation": "Gal" },
+    { "id": "EPH", "testament": "new", "name": "Ephesians", "abbreviation": "Eph" },
+    { "id": "PHP", "testament": "new", "name": "Philippians", "abbreviation": "Phil" },
+    { "id": "COL", "testament": "new", "name": "Colossians", "abbreviation": "Col" },
+    { "id": "1TH", "testament": "new", "name": "1 Thessalonians", "abbreviation": "1 Thess" },
+    { "id": "2TH", "testament": "new", "name": "2 Thessalonians", "abbreviation": "2 Thess" },
+    { "id": "1TI", "testament": "new", "name": "1 Timothy", "abbreviation": "1 Tim" },
+    { "id": "2TI", "testament": "new", "name": "2 Timothy", "abbreviation": "2 Tim" },
+    { "id": "TIT", "testament": "new", "name": "Titus", "abbreviation": "Titus" },
+    { "id": "PHM", "testament": "new", "name": "Philemon", "abbreviation": "Phlm" },
+    { "id": "HEB", "testament": "new", "name": "Hebrews", "abbreviation": "Heb" },
+    { "id": "JAS", "testament": "new", "name": "James", "abbreviation": "Jas" },
+    { "id": "1PE", "testament": "new", "name": "1 Peter", "abbreviation": "1 Pet" },
+    { "id": "2PE", "testament": "new", "name": "2 Peter", "abbreviation": "2 Pet" },
+    { "id": "1JN", "testament": "new", "name": "1 John", "abbreviation": "1 John" },
+    { "id": "2JN", "testament": "new", "name": "2 John", "abbreviation": "2 John" },
+    { "id": "3JN", "testament": "new", "name": "3 John", "abbreviation": "3 John" },
+    { "id": "JUD", "testament": "new", "name": "Jude", "abbreviation": "Jude" },
+    { "id": "REV", "testament": "new", "name": "Revelation", "abbreviation": "Rev",
+      "names": { "douay": { "name": "Apocalypse" } } }
+  ],
+  "canons": [
+    {
+      "id": "protestant",
+      "label": "66 books",
+      "description": "The 39 books of the Old Testament and the 27 of the New, as Protestant Bibles print them.",
+      "orders": [
+        {
+          "id": "protestant",
+          "label": "The order of most Protestant Bibles",
+          "sources": ["kjv-1769", "westminster-1647"],
+          "books": [
+            "GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH",
+            "EZR", "NEH", "EST", "JOB", "PSA", "PRO", "ECC", "SNG", "ISA", "JER", "LAM", "EZK", "DAN",
+            "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL",
+            "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH",
+            "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "catholic",
+      "label": "73 books",
+      "description": "The 46 books of the Old Testament, including Tobit, Judith, 1 and 2 Maccabees, Wisdom, Sirach, and Baruch, with the Greek additions to Esther and Daniel, and the 27 of the New, as Catholic Bibles print them.",
+      "includes": {
+        "EST": ["ESG"],
+        "BAR": ["LJE"],
+        "DAN": ["S3Y", "SUS", "BEL"]
+      },
+      "includesSources": ["usccb-nabre", "douay-challoner"],
+      "orders": [
+        {
+          "id": "usccb",
+          "label": "The order of the New American Bible, Revised Edition",
+          "sources": ["usccb-nabre"],
+          "books": [
+            "GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH",
+            "EZR", "NEH", "TOB", "JDT", "EST", "1MA", "2MA", "JOB", "PSA", "PRO", "ECC", "SNG", "WIS", "SIR",
+            "ISA", "JER", "LAM", "BAR", "EZK", "DAN",
+            "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL",
+            "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH",
+            "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"
+          ]
+        },
+        {
+          "id": "vulgate",
+          "label": "The order of the Nova Vulgata and the Douay-Rheims, with Maccabees last",
+          "sources": ["nova-vulgata", "douay-challoner"],
+          "books": [
+            "GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH",
+            "EZR", "NEH", "TOB", "JDT", "EST", "JOB", "PSA", "PRO", "ECC", "SNG", "WIS", "SIR",
+            "ISA", "JER", "LAM", "BAR", "EZK", "DAN",
+            "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL", "1MA", "2MA",
+            "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH",
+            "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "usfm-3",
+      "title": "USFM 3.0 documentation, \"Book Identifiers\"",
+      "publisher": "United Bible Societies (ubsicap)",
+      "url": "https://ubsicap.github.io/usfm/identification/books.html",
+      "checked": "2026-11-01",
+      "usedFor": "Every book id, and the common English names."
+    },
+    {
+      "id": "sbl-handbook-2",
+      "title": "The SBL Handbook of Style, 2nd ed. (2014), §8.3, as tabulated by two university guides that cite it",
+      "publisher": "SBL Press",
+      "url": "https://divinity.libguides.com/styleguide/bible",
+      "alsoChecked": "W. L. Adams Center for Writing, Texas Christian University, \"Formatting Papers in SBL Style\" (copy in research/sbl/)",
+      "checked": "2026-11-01",
+      "usedFor": "Every abbreviation, and the spellings noted under ESG, S3Y, and WIS."
+    },
+    {
+      "id": "kjv-1769",
+      "title": "The Holy Bible (King James Version), Oxford, 1769, as revised by Benjamin Blayney: contents, on Wikisource",
+      "publisher": "Wikisource transcription of the Oxford printing",
+      "url": "https://en.wikisource.org/wiki/Bible_(King_James)",
+      "checked": "2026-11-01",
+      "usedFor": "The King James names, and the 66-book order."
+    },
+    {
+      "id": "westminster-1647",
+      "title": "The Westminster Confession of Faith, chapter I, section II (Edinburgh: Evan Tyler, 1647), in Philip Schaff, The Creeds of Christendom, vol. 3",
+      "publisher": "Christian Classics Ethereal Library",
+      "url": "https://www.ccel.org/ccel/schaff/creeds3.iv.xvii.ii.html",
+      "checked": "2026-11-01",
+      "usedFor": "A second, independent source for the 66-book order."
+    },
+    {
+      "id": "usccb-nabre",
+      "title": "New American Bible, Revised Edition: contents",
+      "publisher": "United States Conference of Catholic Bishops",
+      "url": "https://bible.usccb.org/bible",
+      "checked": "2026-11-01",
+      "usedFor": "The 73-book canon and its order, and the Greek additions held in Esther, Baruch, and Daniel."
+    },
+    {
+      "id": "nova-vulgata",
+      "title": "Nova Vulgata, Bibliorum Sacrorum Editio: Vetus Testamentum and Novum Testamentum contents",
+      "publisher": "Holy See",
+      "url": "https://www.vatican.va/archive/bible/nova_vulgata/documents/nova-vulgata_index_lt.html",
+      "checked": "2026-11-01",
+      "usedFor": "The 73-book order with 1 and 2 Maccabees last."
+    },
+    {
+      "id": "douay-challoner",
+      "title": "The Holy Bible, Douay-Rheims, revised by Richard Challoner (1749–1752): contents and book titles, Project Gutenberg eBook #1581",
+      "publisher": "Project Gutenberg",
+      "url": "https://www.gutenberg.org/ebooks/1581",
+      "checked": "2026-11-01",
+      "usedFor": "The Douay-Rheims names as book titles, the order with Maccabees last, and Esther in 16 chapters, Baruch in 6 (the sixth the Epistle of Jeremias), and Daniel in 14."
+    },
+    {
+      "id": "drbo",
+      "title": "Douay-Rheims Bible Online: contents",
+      "publisher": "drbo.org",
+      "url": "https://www.drbo.org/",
+      "checked": "2026-11-01",
+      "usedFor": "The short forms of the Douay-Rheims names. Its contents give 1–4 Kings and 1–2 Esdras where the Gutenberg text titles the first two \"Samuel, otherwise called the First (Second) Book of Kings\" and the second Esdras \"Nehemias\"; the short forms follow drbo.org."
+    }
+  ]
+}

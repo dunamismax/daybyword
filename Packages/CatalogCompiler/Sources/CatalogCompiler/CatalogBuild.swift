@@ -1,11 +1,13 @@
 import Foundation
 import ReadingData
+import ReadingEngine
 
 /// Writes a compiled catalog database.
 ///
-/// For now this writes only the catalog's metadata, so that the app and the
-/// server can be wired to a real `Catalog.sqlite` from the start. Plans,
-/// validation, and calendars arrive with BUILD.md Phase 4 (P4.3).
+/// For now this checks the book registry (`scripture/books.json`) and writes
+/// only the catalog's metadata, so that the app and the server can be wired
+/// to a real `Catalog.sqlite` from the start. Plans, the rest of validation,
+/// and calendars arrive with BUILD.md Phase 4 (P4.3).
 public enum CatalogBuild {
     /// How strictly the catalog is built. Release builds refuse uncleared
     /// sources (BUILD.md P4.3); development builds may include them.
@@ -17,9 +19,11 @@ public enum CatalogBuild {
     /// The version of the catalog's database schema.
     public static let schemaVersion = 0
 
-    /// Builds the catalog and writes it to `output`, replacing any file there
-    /// only once the new one is complete.
-    public static func write(to output: URL, mode: Mode) throws {
+    /// Builds the catalog from the `catalog/` directory at `source` and writes
+    /// it to `output`, replacing any file there only once the new one is
+    /// complete. A source that fails its checks writes nothing.
+    public static func write(from source: URL, to output: URL, mode: Mode) throws {
+        _ = try readRegistry(from: source)
         let fileManager = FileManager.default
         try fileManager.createDirectory(
             at: output.deletingLastPathComponent(),
@@ -53,6 +57,22 @@ public enum CatalogBuild {
         }
     }
 
+    /// Reads and checks the book registry under `source`.
+    public static func readRegistry(from source: URL) throws -> BookRegistry {
+        let url = source.appending(path: "scripture/books.json")
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            throw CatalogError(file: url, problem: "cannot be read (\(error.localizedDescription))")
+        }
+        do {
+            return try BookRegistry(json: data)
+        } catch let error as BookRegistryError {
+            throw CatalogError(file: url, problem: error.description)
+        }
+    }
+
     /// The metadata written into every catalog, in a fixed order so that two
     /// builds of the same sources write the same rows.
     static func metadata(mode: Mode) -> [(String, String)] {
@@ -61,4 +81,12 @@ public enum CatalogBuild {
             ("build_mode", mode.rawValue),
         ]
     }
+}
+
+/// A problem in the catalog's sources, naming the file it is in.
+public struct CatalogError: Error, CustomStringConvertible, Equatable {
+    public let file: URL
+    public let problem: String
+
+    public var description: String { "\(file.path): \(problem)" }
 }

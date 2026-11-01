@@ -61,6 +61,7 @@ phases move to [BUILD-HISTORY.md](BUILD-HISTORY.md), and
 
 ```
 AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
+catalog/                  scripture/books.json (the book registry); plans and SOURCES.md to come
 Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
 Packages/ReadingData/     the SQLite wrapper, catalog reader, journal, and sync client
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
@@ -72,9 +73,9 @@ scripts/                  helpers behind the Makefile (simulator choice, Linux t
 .github/workflows/        CI, run by hand (D31)
 ```
 
-Still to come, as BUILD.md's phases reach them: `catalog/` (plan sources,
-scripture data, and `SOURCES.md`) and `deploy/` (the server's unit, Caddy
-site, and scripts). [The artwork inventory](design/images/README.md)
+Still to come, as BUILD.md's phases reach them: the rest of `catalog/` (plan
+sources, versification and word counts, and `SOURCES.md`) and `deploy/` (the
+server's unit, Caddy site, and scripts). [The artwork inventory](design/images/README.md)
 records the app icon, web exports, sharing image, and twelve plan covers.
 
 ## Prerequisites

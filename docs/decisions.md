@@ -426,3 +426,43 @@ hand in a browser's device emulation.
 **Why:** the project has no npm (AGENTS.md §5), and the WebDriver commands a
 tour needs are a page of Swift. No package or driver library is added.
 Screenshots are gitignored and never committed.
+
+### E27. The book registry: USFM ids, canons with orders, and names by convention
+
+*2026-11-01, agent.* `catalog/scripture/books.json` registers every book the
+catalog may name, read and checked by `BookRegistry` in `ReadingEngine`; the
+catalog compiler refuses to build while it has a problem.
+
+- **Ids are USFM 3.0 book codes** (`BookID`). A book that some Bibles print
+  inside another and others print apart has its own id: the Greek additions
+  to Esther (`ESG`), the Letter of Jeremiah (`LJE`), and Daniel's additions
+  (`S3Y`, `SUS`, `BEL`). In Day by Word `ESG` means the additions printed
+  apart, as the King James Bible prints them, whatever USFM's wider use.
+- **A canon is a set of books with one or more printed orders**, and each
+  order cites its sources. Every order of a canon lists the same books, Old
+  Testament before New. A canon's `includes` says which listed book holds
+  material other Bibles print apart (the Catholic canon's `DAN` holds `S3Y`,
+  `SUS`, and `BEL`; `EST` holds `ESG`; `BAR` holds `LJE`), so a plan can be
+  checked against a reader's canon whichever way its Bible prints them. The
+  chapter and verse numbers of those forms belong to versification (P3.2).
+- **Two Catholic orders**: the New American Bible, Revised Edition puts 1 and
+  2 Maccabees after Esther, and the Nova Vulgata and the Douay-Rheims put them
+  after Malachi. The sources disagree because the printings do, so both are
+  registered rather than one chosen as "the" Catholic order.
+- **Names by convention** (D29): every book has a common English name and
+  SBL abbreviation; the King James and Douay-Rheims conventions give only
+  the names that differ, each rule written in the file. A convention's
+  abbreviation is given only where the SBL Handbook lists that name, and
+  otherwise the full name is shown, so no abbreviation is invented. Names
+  and abbreviations are unique within each convention, which the registry
+  checks.
+- **The same name can mean different books under different conventions**:
+  Douay "1 Kings" is common "1 Samuel", and Douay "1 Esdras" is Ezra, not the
+  book USFM calls 1 Esdras. The reference parser (P3.4) must therefore read
+  names under the convention a source uses, never across all of them at once.
+
+**Why:** USFM codes are the published standard for exactly this and cover
+the deuterocanonical books; keeping orders apart from membership lets one
+canon be printed in more than one way without disagreement about what it
+contains; and showing a full name rather than an unsourced abbreviation keeps
+to D20's rule that facts are cited. The Greek Orthodox order is P3.1b.
