@@ -59,6 +59,7 @@ private struct SectionStack<Root: View>: View {
                 .navigationDestination(for: Destination.self) { destination in
                     switch destination {
                     case .plan(let id): PlanView(id: id)
+                    case .planWeek(let id, let start): PlanWeekView(id: id, start: start)
                     }
                 }
         }

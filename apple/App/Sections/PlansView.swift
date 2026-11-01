@@ -1,3 +1,4 @@
+import ReadingEngine
 import SwiftUI
 
 /// Plans, as a placeholder until choosing a plan is built (Phase 9).
@@ -16,7 +17,7 @@ struct PlansView: View {
 
 /// A plan's page, as a placeholder until plan pages are built (P9.4).
 struct PlanView: View {
-    let id: String
+    let id: PlanID
 
     var body: some View {
         ScrollView {
@@ -27,6 +28,24 @@ struct PlanView: View {
         }
         .background(Palette.background)
         .navigationTitle("Plan")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// A plan's week, as a placeholder until printable weeks are built (Phase 13).
+struct PlanWeekView: View {
+    let id: PlanID
+    let start: String?
+
+    var body: some View {
+        ScrollView {
+            StateMessage(
+                kind: .empty(
+                    title: String(localized: "This plan's week will appear here."),
+                    message: String(localized: "Weeks arrive with the catalog.")))
+        }
+        .background(Palette.background)
+        .navigationTitle("Week")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -1,3 +1,5 @@
+import ReadingEngine
+
 /// The site's sections, the same three as the app's tabs, plus Settings
 /// (docs/product.md, Navigation).
 enum Section: CaseIterable, Sendable {
@@ -140,6 +142,45 @@ enum Pages {
             .plans,
             Components.state(
                 .empty(title: "Plans will appear here.", message: "You'll be able to choose a reading plan here.")))
+    }
+
+    /// A plan's page, a placeholder until plan pages are built (P9.4).
+    static func plan(_ id: PlanID) -> HTML {
+        layout(
+            title: "Plan",
+            section: .plans,
+            content: """
+                <p><a href="/plans">Plans</a></p>
+                <h1>Plan</h1>
+                <div class="card">\(Components.state(.empty(title: "This plan's page will appear here.", message: "Plan pages arrive with the catalog.")))</div>
+                """
+        )
+    }
+
+    /// A plan's week from a start date, a placeholder until printable weeks
+    /// are built (Phase 13).
+    static func planWeek(_ id: PlanID, start: String?) -> HTML {
+        layout(
+            title: "Week",
+            section: .plans,
+            content: """
+                <p><a href="/plans/\(id.rawValue)">Plan</a></p>
+                <h1>Week</h1>
+                <div class="card">\(Components.state(.empty(title: "This plan's week will appear here.", message: "Weeks arrive with the catalog.")))</div>
+                """
+        )
+    }
+
+    /// A week's start as the address gives it, kept only when it looks like
+    /// `YYYY-MM-DD`; anything else is ignored and the default week shows
+    /// (docs/urls.md). `CivilDate` (P5.3) will check that the date exists.
+    static func startDate(_ text: Substring?) -> String? {
+        guard let text, text.utf8.count == 10 else { return nil }
+        let shape = text.utf8.enumerated().allSatisfy { index, byte in
+            index == 4 || index == 7
+                ? byte == UInt8(ascii: "-") : (UInt8(ascii: "0")...UInt8(ascii: "9")).contains(byte)
+        }
+        return shape ? String(text) : nil
     }
 
     static func progress() -> HTML {

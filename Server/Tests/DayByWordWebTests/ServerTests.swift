@@ -139,3 +139,49 @@ func servesTheShellsAssets(path: String) async throws {
         }
     }
 }
+
+/// Every address in docs/urls.md's table answers.
+@Test(arguments: [
+    "/", "/today", "/plans", "/plans/psalm-a-day", "/plans/psalm-a-day/week",
+    "/plans/psalm-a-day/week?start=2027-01-04", "/plans/psalm-a-day/week?start=next-week", "/progress",
+    "/settings",
+])
+func everyDocumentedAddressAnswers(path: String) async throws {
+    try await testApplication().test(.router) { client in
+        try await client.execute(uri: path, method: .get) { response in
+            #expect(response.status == .ok)
+        }
+    }
+}
+
+/// Plan addresses with anything but a plan id are not found.
+@Test(arguments: [
+    "/plans/Psalm-a-day", "/plans/-psalm", "/plans/psalm--a-day", "/plans/psalm_a_day", "/plans/psalm%20a%20day",
+    "/plans/Psalm/week", "/plans/psalm-a-day/month",
+])
+func otherPlanAddressesAreNotFound(path: String) async throws {
+    try await testApplication().test(.router) { client in
+        try await client.execute(uri: path, method: .get) { response in
+            #expect(response.status == .notFound)
+        }
+    }
+}
+
+@Test func plansPagesSitInThePlansSection() async throws {
+    try await testApplication().test(.router) { client in
+        try await client.execute(uri: "/plans/psalm-a-day/week", method: .get) { response in
+            let body = String(buffer: response.body)
+            #expect(body.contains(#"<a href="/plans" aria-current="page">Plans</a>"#))
+            #expect(body.contains(#"<a href="/plans/psalm-a-day">Plan</a>"#))
+        }
+    }
+}
+
+@Test func weekStartsAreKeptOnlyWhenTheyLookLikeDates() {
+    #expect(Pages.startDate("2027-01-04") == "2027-01-04")
+    #expect(Pages.startDate(nil) == nil)
+    #expect(Pages.startDate("next-week") == nil)
+    #expect(Pages.startDate("2027-1-4") == nil)
+    #expect(Pages.startDate("2027/01/04") == nil)
+    #expect(Pages.startDate("２０２７-01-04") == nil)
+}

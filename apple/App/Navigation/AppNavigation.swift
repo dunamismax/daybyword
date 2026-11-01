@@ -28,7 +28,10 @@ final class AppNavigation {
             plansPath = []
         case .plan(let id):
             selectedTab = .plans
-            plansPath = [.plan(id: id)]
+            plansPath = [.plan(id)]
+        case .planWeek(let id, let start):
+            selectedTab = .plans
+            plansPath = [.plan(id), .planWeek(id, start: start)]
         case .progress:
             selectedTab = .progress
             progressPath = []
