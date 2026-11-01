@@ -307,3 +307,28 @@ compiler in the container, in CI, and in production. The image is cached
 locally by version (`daybyword-linux:<version>`), and build products live in
 a named volume, so later runs take seconds. The repository is mounted
 read-only, so a Linux run can never change the checkout.
+
+*Superseded by E22.*
+
+### E22. The pinned toolchain on Linux comes from our own verified installer
+
+*2026-11-01, agent; supersedes E21's use of swiftly.* On Linux everywhere (the
+`make test-linux` container, the CI Linux job, and the server),
+`scripts/linux/install-swift.sh <version> <prefix>` downloads the Ubuntu
+24.04 toolchain for `.swift-version` from download.swift.org, checks its
+detached signature with gpg against swift.org's public signing keys kept in
+`scripts/linux/swift-signing-keys.asc`, and unpacks it to
+`<prefix>/<version>`. The Dockerfile installs the toolchain's system
+packages from swift.org's list for Ubuntu 24.04.
+
+**Why:** swiftly always re-downloads the signing keys from
+`www.swift.org/keys/all-keys.asc` before verifying, and from GitHub's hosted
+runners that address returned no valid OpenPGP data (CI runs 41051782933
+and 41053281128), so neither swiftly nor a key download could work in CI.
+Keeping the public keys in the repository, fetched once on 2026-10-30 from
+swift.org (fingerprints include Swift 6.x Release Signing Key
+`52BB 7E3D E28A 71BE 22EC 05FF EF80 A866 B47A 981F` and Swift Automatic
+Signing Key #4 `E813 C892 820A 6FA1 3755 B268 F167 DF1A CF9C E069`), is
+stricter than fetching them on every run, and the same thirty-line script
+serves the container, CI, and the server. If swift.org rotates its keys,
+refresh the file and record the new fingerprints here.
