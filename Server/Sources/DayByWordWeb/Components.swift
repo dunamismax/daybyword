@@ -28,10 +28,10 @@ enum ReadingStatus: CaseIterable, Sendable {
 
     var label: String {
         switch self {
-        case .read: "Read"
-        case .partlyRead: "Part read"
-        case .skipped: "Skipped"
-        case .unread: "Not yet read"
+        case .read: text(.statusRead)
+        case .partlyRead: text(.statusPartlyRead)
+        case .skipped: text(.statusSkipped)
+        case .unread: text(.statusUnread)
         }
     }
 
@@ -77,7 +77,7 @@ enum Components {
     static func copyButton(_ reference: Reference) -> HTML {
         """
         <button type="button" class="button secondary" data-copy="\(reference.display)" \
-        data-copied="Copied" data-failed="Selected; copy it with your keyboard">Copy reference</button>
+        data-copied="\(text(.copied))" data-failed="\(text(.copyFailed))">\(text(.copyReference))</button>
         """
     }
 
@@ -87,9 +87,11 @@ enum Components {
 
     /// "About 12 minutes. Estimates vary." Estimates always say they are estimates.
     static func workload(minutes: Int) -> HTML {
-        minutes == 1
-            ? "<p class=\"workload\">About 1 minute. Estimates vary.</p>"
-            : "<p class=\"workload\">About \(minutes) minutes. Estimates vary.</p>"
+        "<p class=\"workload\">\(workloadText(minutes: minutes))</p>"
+    }
+
+    static func workloadText(minutes: Int) -> String {
+        minutes == 1 ? text(.workloadOne) : text(.workloadOther, ["minutes": String(minutes)])
     }
 
     /// One reading in a list: its label, its reference, and its status in words
@@ -114,14 +116,14 @@ enum Components {
         <p class="label">\(kind)</p>
         <h3><a href="\(href)">\(title)</a></h3>
         <p>\(summary)</p>
-        <p class="workload">\(minutes == 1 ? "About 1 minute" : "About \(minutes) minutes"). Estimates vary. · \(schedule)</p>
+        <p class="workload">\(workloadText(minutes: minutes)) · \(schedule)</p>
         </article>
         """
     }
 
     /// Where a plan comes from, in a sentence or two.
-    static func sourceNote(_ text: String) -> HTML {
-        "<p class=\"source-note\"><strong>Source.</strong> \(text)</p>"
+    static func sourceNote(_ note: String) -> HTML {
+        "<p class=\"source-note\"><strong>\(text(.sourceLabel))</strong> \(note)</p>"
     }
 
     /// A plan's sample week: the first few readings and their references.
@@ -136,7 +138,7 @@ enum Components {
             })
         return """
             <section class="card sample-week" aria-labelledby="sample-week">
-            <h3 id="sample-week">A sample week</h3>
+            <h3 id="sample-week">\(text(.sampleWeek))</h3>
             <ol>\(rows)</ol>
             </section>
             """
@@ -149,8 +151,8 @@ enum Components {
             changes.map { change in
                 """
                 <div><dt>\(change.what)</dt>\
-                <dd><span class="visually-hidden">from </span>\(change.before) \
-                <span aria-hidden="true">→</span><span class="visually-hidden"> to</span> \(change.after)</dd></div>
+                <dd><span class="visually-hidden">\(text(.changeFrom)) </span>\(change.before) \
+                <span aria-hidden="true">→</span><span class="visually-hidden"> \(text(.changeTo))</span> \(change.after)</dd></div>
                 """
             })
         return """
@@ -159,7 +161,7 @@ enum Components {
             <p>\(explanation)</p>
             <dl>\(rows)</dl>
             <form method="post" class="actions">\(primaryButton(confirm))\
-            <a class="button secondary" href="./">Cancel</a></form>
+            <a class="button secondary" href="./">\(text(.cancel))</a></form>
             </section>
             """
     }
@@ -168,7 +170,7 @@ enum Components {
     static func undoBanner(_ message: String) -> HTML {
         """
         <div class="undo-banner" role="status"><span>\(message)</span>\
-        <form method="post"><button type="submit" class="link-button">Undo</button></form></div>
+        <form method="post"><button type="submit" class="link-button">\(text(.undo))</button></form></div>
         """
     }
 
@@ -186,16 +188,16 @@ enum Components {
         case .empty(let title, let message):
             return "<div class=\"state\"><p class=\"state-title\">\(title)</p><p>\(message)</p></div>"
         case .loading:
-            return "<div class=\"state\" role=\"status\"><p>Loading…</p></div>"
+            return "<div class=\"state\" role=\"status\"><p>\(text(.loading))</p></div>"
         case .offline:
             return """
-                <div class="state" role="status"><p class="state-title">You're offline</p>\
-                <p>Marks you make here are kept and sent when you're back online.</p></div>
+                <div class="state" role="status"><p class="state-title">\(text(.offlineTitle))</p>\
+                <p>\(text(.offlineMessage))</p></div>
                 """
         case .error(let message):
             return """
-                <div class="state" role="alert"><p class="state-title">Something went wrong</p>\
-                <p class="error">\(message)</p><a class="button secondary" href="">Try again</a></div>
+                <div class="state" role="alert"><p class="state-title">\(text(.errorTitle))</p>\
+                <p class="error">\(message)</p><a class="button secondary" href="">\(text(.tryAgain))</a></div>
                 """
         }
     }

@@ -375,3 +375,25 @@ scene's state is discarded and the next launch opens on Today. Nothing
 about where the reader was is written to the app's own database, so
 navigation never becomes reading data. Data saved by an older version that
 cannot be decoded is ignored, and the reader starts on Today.
+
+### E25. Interface strings: one String Catalog and a typed web table
+
+*2026-11-01, agent.* The app and the widget share one String Catalog,
+`apple/Shared/Localizable.xcstrings`, compiled into both bundles. English
+keys are the English text, as SwiftUI writes them. `scripts/strings.swift`
+reads the `.stringsdata` files Xcode emits when it builds (`make strings`
+adds new keys and drops stale ones; `make check` fails on a missing or stale
+key, and on words passed to `Text(verbatim:)`, which skips localization;
+the debug component gallery's sample content is exempt). On the web,
+`StringKey` names every interface string and `Strings.english` holds its
+text, with `{name}` placeholders; pages and components ask `text(_:)` for
+a key. Server tests check that every key has English and that every word a
+page shows, including titles, labels, and the copy button's messages, comes
+from the table.
+
+**Why:** E15 asks for localization from the first screen. Xcode's own
+catalog sync runs only in the IDE, so a script keeps the catalog honest in
+`make check` and in CI. On the server, a Swift table needs no resource
+bundle (which differs between macOS and Linux) and turns a misspelled key
+into a compile error. Until a second language exists, `text(_:)` always
+answers in English; the reader's language will then come from the request.

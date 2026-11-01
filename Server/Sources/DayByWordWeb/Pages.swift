@@ -19,10 +19,10 @@ enum Section: CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .today: "Today"
-        case .plans: "Plans"
-        case .progress: "Progress"
-        case .settings: "Settings"
+        case .today: text(.today)
+        case .plans: text(.plans)
+        case .progress: text(.progress)
+        case .settings: text(.settings)
         }
     }
 }
@@ -32,9 +32,9 @@ enum Section: CaseIterable, Sendable {
 /// the independence statement (BUILD.md P2.8).
 enum Pages {
     /// The whole document around a page's content. `section` marks the
-    /// current section in the header.
-    static func layout(title: String, section: Section? = nil, content: HTML) -> HTML {
-        let fullTitle = title == "Day by Word" ? title : "\(title) · Day by Word"
+    /// current section in the header; a page without a title is the home page.
+    static func layout(title: String? = nil, section: Section? = nil, content: HTML) -> HTML {
+        let fullTitle = title.map { text(.pageTitle, ["page": $0]) } ?? text(.siteName)
         return """
             <!doctype html>
             <html lang="en">
@@ -53,7 +53,7 @@ enum Pages {
             <script type="module" src="/assets/copy.js"></script>
             </head>
             <body>
-            <a class="skip-link" href="#content">Skip to content</a>
+            <a class="skip-link" href="#content">\(text(.skipToContent))</a>
             \(header(current: section))
             \(browserNotice)
             <main id="content" class="page" tabindex="-1">
@@ -61,8 +61,8 @@ enum Pages {
             </main>
             <footer class="site-footer">
             <div class="page">
-            <p>Day by Word is independent and not affiliated with any church or denomination.</p>
-            <p class="notice">Day by Word is in development.</p>
+            <p>\(text(.siteIndependence))</p>
+            <p class="notice">\(text(.siteInDevelopment))</p>
             </div>
             </footer>
             </body>
@@ -83,8 +83,8 @@ enum Pages {
         return """
             <header class="site-header">
             <div class="page">
-            <a class="wordmark" href="/">\(mark)<span>Day by Word</span></a>
-            <nav aria-label="Sections"><ul class="sections">\(links)</ul></nav>
+            <a class="wordmark" href="/">\(mark)<span>\(text(.siteName))</span></a>
+            <nav aria-label="\(text(.sectionsLabel))"><ul class="sections">\(links)</ul></nav>
             </div>
             </header>
             """
@@ -106,24 +106,22 @@ enum Pages {
     /// `unsupported.js` when the browser cannot run modules at all, and the
     /// `noscript` copy covers JavaScript turned off. Public pages still read
     /// without JavaScript.
-    static let browserNotice: HTML = """
-        <div class="browser-notice" id="browser-notice" role="note" hidden>
-        <p class="page">This browser is too old for Day by Word's web app. \
-        Pages still work for reading, but marking readings needs a recent version of \
-        Safari, Chrome, Firefox, or Edge.</p>
-        </div>
-        <noscript><div class="browser-notice"><p class="page">Day by Word's web app needs JavaScript. \
-        Pages still work for reading without it.</p></div></noscript>
+    static var browserNotice: HTML {
         """
+        <div class="browser-notice" id="browser-notice" role="note" hidden>
+        <p class="page">\(text(.browserTooOld))</p>
+        </div>
+        <noscript><div class="browser-notice"><p class="page">\(text(.browserNeedsJavaScript))</p></div></noscript>
+        """
+    }
 
     static func home() -> HTML {
         layout(
-            title: "Day by Word",
             content: """
-                <h1>Day by Word</h1>
-                <p class="tagline">Your Bible reading companion.</p>
-                <p>Find your plan. Read your Bible. Keep your place.</p>
-                <p><a class="button primary" href="/today">Go to Today</a></p>
+                <h1>\(text(.siteName))</h1>
+                <p class="tagline">\(text(.siteTagline))</p>
+                <p>\(text(.siteLine))</p>
+                <p><a class="button primary" href="/today">\(text(.goToToday))</a></p>
                 """
         )
     }
@@ -132,27 +130,25 @@ enum Pages {
         section(
             .today,
             Components.state(
-                .empty(
-                    title: "Your next reading will appear here.",
-                    message: "Find your plan. Read your Bible. Keep your place.")))
+                .empty(title: text(.todayEmptyTitle), message: text(.siteLine))))
     }
 
     static func plans() -> HTML {
         section(
             .plans,
             Components.state(
-                .empty(title: "Plans will appear here.", message: "You'll be able to choose a reading plan here.")))
+                .empty(title: text(.plansEmptyTitle), message: text(.plansEmptyMessage))))
     }
 
     /// A plan's page, a placeholder until plan pages are built (P9.4).
     static func plan(_ id: PlanID) -> HTML {
         layout(
-            title: "Plan",
+            title: text(.planTitle),
             section: .plans,
             content: """
-                <p><a href="/plans">Plans</a></p>
-                <h1>Plan</h1>
-                <div class="card">\(Components.state(.empty(title: "This plan's page will appear here.", message: "Plan pages arrive with the catalog.")))</div>
+                <p><a href="/plans">\(text(.plans))</a></p>
+                <h1>\(text(.planTitle))</h1>
+                <div class="card">\(Components.state(.empty(title: text(.planEmptyTitle), message: text(.planEmptyMessage))))</div>
                 """
         )
     }
@@ -161,12 +157,12 @@ enum Pages {
     /// are built (Phase 13).
     static func planWeek(_ id: PlanID, start: String?) -> HTML {
         layout(
-            title: "Week",
+            title: text(.weekTitle),
             section: .plans,
             content: """
-                <p><a href="/plans/\(id.rawValue)">Plan</a></p>
-                <h1>Week</h1>
-                <div class="card">\(Components.state(.empty(title: "This plan's week will appear here.", message: "Weeks arrive with the catalog.")))</div>
+                <p><a href="/plans/\(id.rawValue)">\(text(.planTitle))</a></p>
+                <h1>\(text(.weekTitle))</h1>
+                <div class="card">\(Components.state(.empty(title: text(.weekEmptyTitle), message: text(.weekEmptyMessage))))</div>
                 """
         )
     }
@@ -187,18 +183,14 @@ enum Pages {
         section(
             .progress,
             Components.state(
-                .empty(
-                    title: "Your reading record will appear here.",
-                    message: "It describes what you've read, and nothing more.")))
+                .empty(title: text(.progressEmptyTitle), message: text(.progressEmptyMessage))))
     }
 
     static func settings() -> HTML {
         section(
             .settings,
             Components.state(
-                .empty(
-                    title: "Settings will appear here.",
-                    message: "Day by Word is independent and not affiliated with any church or denomination.")))
+                .empty(title: text(.settingsEmptyTitle), message: text(.siteIndependence))))
     }
 
     /// A section's page: its title and its content in a card.
@@ -215,11 +207,11 @@ enum Pages {
 
     static func notFound() -> HTML {
         layout(
-            title: "Page not found",
+            title: text(.notFoundTitle),
             content: """
-                <h1>Page not found</h1>
-                <p>There's no page at this address. It may have moved, or the link may be mistyped.</p>
-                <p><a href="/today">Go to Today</a></p>
+                <h1>\(text(.notFoundTitle))</h1>
+                <p>\(text(.notFoundMessage))</p>
+                <p><a href="/today">\(text(.goToToday))</a></p>
                 """
         )
     }

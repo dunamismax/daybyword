@@ -99,7 +99,7 @@ Confirmed on the owner's Mac on 2026-10-30:
 From a clean checkout:
 
 ```sh
-make check     # lint, catalog, package, server, and app tests: the gate before every commit
+make check     # lint, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
 make run       # build, boot the newest iPhone simulator, install, and launch the app
 make serve     # serve the site at http://localhost:8080 (/ and /up)
 ```

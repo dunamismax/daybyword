@@ -12,7 +12,7 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 PORT ?= 8080
 
 .PHONY: help tokens generate catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format check archive testflight deploy clean
+	test-linux run serve screenshot lint format strings check-strings check archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -71,7 +71,13 @@ lint: ## Check the toolchain, formatting, imports, design tokens, and raw colors
 format: ## Format the Swift sources in place
 	@swift format format --in-place --recursive --parallel $(SWIFT_SOURCES)
 
-check: lint catalog test-packages test-server test-app ## The gate before every commit
+strings: build ## Add the app's new interface strings to its String Catalog and drop stale ones
+	@swift scripts/strings.swift sync
+
+check-strings: ## Check the String Catalog against the last build's strings (after test-app)
+	@swift scripts/strings.swift check
+
+check: lint catalog test-packages test-server test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
 archive: ## Build a signed Release archive for TestFlight (docs/release.md)

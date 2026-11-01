@@ -1,0 +1,153 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "**Source.** %@" : {
+
+    },
+    "%@ %@" : {
+
+    },
+    "%@ → %@" : {
+
+    },
+    "%@, %@, %@" : {
+
+    },
+    "%@: from %@ to %@" : {
+
+    },
+    "A sample week" : {
+
+    },
+    "About %lld minutes. Estimates vary." : {
+
+    },
+    "About 1 minute. Estimates vary." : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Components" : {
+
+    },
+    "Copied" : {
+
+    },
+    "Copies %@" : {
+
+    },
+    "Copy reference" : {
+
+    },
+    "Day by Word" : {
+
+    },
+    "Day by Word is in development." : {
+
+    },
+    "Day by Word is independent and not affiliated with any church or denomination." : {
+
+    },
+    "Done" : {
+
+    },
+    "Find your plan. Read your Bible. Keep your place." : {
+
+    },
+    "It describes what you've read, and nothing more." : {
+
+    },
+    "Loading…" : {
+
+    },
+    "Mark read" : {
+
+    },
+    "Next reading" : {
+
+    },
+    "Not yet read" : {
+
+    },
+    "Open in YouVersion" : {
+
+    },
+    "Part read" : {
+
+    },
+    "Plan" : {
+
+    },
+    "Plan pages arrive with the catalog." : {
+
+    },
+    "Plans" : {
+
+    },
+    "Plans will appear here." : {
+
+    },
+    "Preview a change" : {
+
+    },
+    "Progress" : {
+
+    },
+    "Read" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Settings will appear here." : {
+
+    },
+    "Shows the next reading in your plan." : {
+
+    },
+    "Skipped" : {
+
+    },
+    "Something went wrong" : {
+
+    },
+    "This plan's page will appear here." : {
+
+    },
+    "This plan's week will appear here." : {
+
+    },
+    "Today" : {
+
+    },
+    "Try again" : {
+
+    },
+    "Undo" : {
+
+    },
+    "Week" : {
+
+    },
+    "Weeks arrive with the catalog." : {
+
+    },
+    "You'll be able to choose a reading plan here." : {
+
+    },
+    "You're offline" : {
+
+    },
+    "Your next reading will appear here." : {
+
+    },
+    "Your plans and reading record are on this device and work without a connection." : {
+
+    },
+    "Your reading record will appear here." : {
+
+    }
+  },
+  "version" : "1.0"
+}
