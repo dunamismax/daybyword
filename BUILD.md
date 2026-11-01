@@ -72,11 +72,16 @@ dispute (AGENTS.md §3).
 7. If an item is wrong, too large, or out of order, do not silently skip or
    delete it. Split it into sub-items (`P5.6a`, `P5.6b`), rewrite it, or add
    a note under it, and say what you changed in the Handoff notes.
-8. Record history where the next agent will look for it: a dated *Note* or
-   *Result* line under the item it concerns, a new or revised decision in the
-   Owner decisions table or `docs/decisions.md`, the evidence in
-   `catalog/SOURCES.md`, and the current state in the Handoff notes. Git
-   keeps the rest.
+8. Record history where the next agent will look for it: a short, dated
+   *Note* or *Result* line under the item it concerns, a new or revised
+   decision in the Owner decisions table or `docs/decisions.md`, the
+   evidence in `catalog/SOURCES.md`, and the current state in the Handoff
+   notes. Git keeps the rest.
+9. When every item in a phase is ticked, move the whole phase to
+   [BUILD-HISTORY.md](BUILD-HISTORY.md) in the same commit, leaving its
+   heading and a one-line pointer here (AGENTS.md §8, "Keeping BUILD.md
+   short"). Sessions do not read the history unless they need a finished
+   item's evidence.
 
 Agents do every item themselves (D3). The markers describe the kind of work:
 
@@ -137,7 +142,7 @@ it is ticked once it installs on the owner's device. Phase 2 is done except
 P2.2b (hands-on use of competing apps, on the owner's iPhone). The app and
 the web have their shells, addresses, string tables, Settings, and tours.
 `make check` (now with the web tour) and `make test-linux` pass. **Next:
-P3.1.** Nothing is deployed yet.
+P3.1a** (started; see its Note). Nothing is deployed yet.
 
 ---
 
@@ -795,6 +800,7 @@ All of this lives in `ReadingEngine`, with table-driven tests that run on
 macOS and Linux.
 
 - [ ] **P3.1** The book registry in `catalog/scripture/books.json`: USFM ids; canonical orders (the 66-book Protestant order, the Catholic order, and the Greek Orthodox order), with each book's membership by canon; names and abbreviations under each naming convention (D29); and the sources for all of it.
+  - *Note (agent, 2026-11-01):* started, nothing committed yet. Split for D20: **P3.1a** the registry with the Protestant and Catholic orders, names, and abbreviations; **P3.1b** the Greek Orthodox order, which needs a primary source (a Church of Greece edition's contents) and a second independent one, since secondary sources differ on 4 Maccabees (an appendix in Greek editions) and the Prayer of Manasseh. Checked so far: USFM 3.0 book codes ([ubsicap.github.io/usfm](https://ubsicap.github.io/usfm/identification/books.html)); the Catholic order from the USCCB's NABRE contents ([bible.usccb.org/bible](https://bible.usccb.org/bible), with Esther, Baruch, and Daniel holding the Greek additions, the Letter of Jeremiah, and the additions to Daniel); SBL Handbook (2nd ed.) §8.3 abbreviations from two university guides that cite it ([University of Divinity](https://divinity.libguides.com/styleguide/bible); TCU's "SBL General Formatting", copy in `research/sbl/`). Still to source: the Douay-Rheims (Challoner) names and a second source for the 66-book order.
 - [ ] **P3.2 [RIGHTS]** Versification data: chapter and verse counts under the English (KJV) scheme as the default, and the Hebrew, Greek, and Latin schemes mapped from TVTMS (Research finding 5). Confirm the licence of the exact file, record attribution in `catalog/SOURCES.md`, and credit it on the sources page.
 - [ ] **P3.3** The reference model: a passage (book, start chapter and verse, end chapter and verse, versification); multiple passages; whole chapters; ranges across chapters; partial verses (`a` and `b`); optional verses; alternatives ("either … or …"); and the source's own displayed wording, kept wherever normalizing would lose meaning.
 - [ ] **P3.4** The parser and formatter: at least 2,000 cases drawn from the real citation styles of the launch plans and lectionaries (for example "Isa 40:1-11", "Ps 119:1-24", "Luke 2:1-14(15-20)", "Ecclus 44:1-15", "1 Kgs 19", "Song 2"), including every way they can fail.
@@ -1105,28 +1111,25 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-01 (this session):** P1.12's upload (App Store Connect record
-  6829425132, renamed "Day by Word"; build 25 processed; internal group
-  *Owner* with automatic distribution and the owner's two Apple IDs). Then
-  P2.7–P2.12: the iOS shell and `AppRoute` (E24), the web shell and 404
-  page, `docs/urls.md` with `ReadingEngine.PlanID`, string tables on both
-  platforms (E25), the Settings shell, and the tours (E26). **Next: P3.1.**
-- **Waiting on the owner:** install build 25 from TestFlight, then P1.12 can
-  be ticked; P2.2b on the owner's iPhone. Optionally turn on "Allow remote
-  automation" in Safari's Developer settings so `DBW_WEBDRIVER=safari make
-  tour-web` also runs.
-- **Tools added:** geckodriver 0.37.1 (Homebrew) for the web tour in
-  `make check`; CI installs it if missing. `.claude/` is gitignored.
-- **Surprises:** Xcode's Distribute App created the App Store Connect record
-  but then reported `DistributionAppRecordProviderError`, because App Store
-  Connect had not caught up yet; `make testflight` a minute later uploaded
-  (docs/release.md). Synthetic taps in the simulator do not open SwiftUI
-  menu pickers, so Settings was checked through the app's defaults. Firefox
-  will not make a window narrower than 500 px, so phone widths stay a
-  manual check. Earlier notes still stand: Colima does not mount
-  `/private/tmp`; the in-app browser refuses clipboard writes; Tailscale SSH
-  to `ubuntu-vm` needed an interactive re-authentication (Phase 7).
-- **Design record:** https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf
-  (private); Morning's boards are in `design/mockups/`.
-- **To confirm with the owner when convenient:** D34's note about adding
-  daybyword.com's own entry to `ubuntu-vm-backup`.
+- **2026-11-01:** P1.12's upload (App Store Connect record 6829425132,
+  named "Day by Word"; build 25 processed; internal group *Owner* with the
+  owner's two Apple IDs), then P2.7–P2.12 (E24–E26). P3.1 was started and
+  stopped at the owner's request; its sources and its split into P3.1a and
+  P3.1b are in its Note, and nothing for it is committed. **Next: P3.1a.**
+- **New policy (owner request):** finished phases move to
+  `BUILD-HISTORY.md` (AGENTS.md §8, "Keeping BUILD.md short"). None qualifies
+  yet: move Phase 1 once P1.12 is ticked, and Phase 2 after P2.2b.
+- **Waiting on the owner:** install build 25 from TestFlight (then tick
+  P1.12); P2.2b on the owner's iPhone; optionally allow remote automation in
+  Safari's Developer settings for `DBW_WEBDRIVER=safari make tour-web`.
+- **Tools added:** geckodriver (the web tour in `make check`; CI installs it)
+  and poppler (`pdftotext`, for research PDFs). `.claude/` is gitignored.
+- **Surprises:** Distribute App reported an error right after creating the
+  App Store Connect record; `make testflight` a minute later worked
+  (docs/release.md). Synthetic simulator taps do not open SwiftUI menu
+  pickers. Firefox windows are at least 500 px wide, so phone widths stay a
+  manual check. Colima does not mount `/private/tmp`; Tailscale SSH to
+  `ubuntu-vm` needed re-authentication (Phase 7).
+- **Owner to confirm when convenient:** D34's note about adding
+  daybyword.com's entry to `ubuntu-vm-backup`. Design canvas:
+  https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf (private).

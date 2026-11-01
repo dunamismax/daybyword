@@ -15,10 +15,13 @@ It will be a native iPhone and iPad app and a web version at
 independent Christian project with no denominational affiliation, and it
 does not speak for any church, ministry, or publisher.
 
-**Status (2026-10-30):** the foundation is being built. The app launches to
-a placeholder Today, the server answers locally, and the shared packages
-pass their tests on macOS and Linux; daybyword.com is not serving yet.
-[BUILD.md](BUILD.md) is the plan and records its current state;
+**Status (2026-11-01):** the foundation is being built. The app and the
+site have their three sections, Settings, and shared addresses, with
+placeholders where plans will go; the first build is on TestFlight for the
+owner; the shared packages pass their tests on macOS and Linux; and
+daybyword.com is not serving yet.
+[BUILD.md](BUILD.md) is the plan and records its current state, finished
+phases move to [BUILD-HISTORY.md](BUILD-HISTORY.md), and
 [AGENTS.md](AGENTS.md) governs how the work is done.
 
 ## What it will do
@@ -57,7 +60,7 @@ pass their tests on macOS and Linux; daybyword.com is not serving yet.
 ## Repository layout
 
 ```
-AGENTS.md  BUILD.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
+AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
 Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
 Packages/ReadingData/     the SQLite wrapper, catalog reader, journal, and sync client
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite

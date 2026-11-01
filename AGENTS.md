@@ -40,7 +40,8 @@ tools.
    file", the finished-product definition, the product principles, the
    research findings, the Owner decisions table (D1–D38, all answered by the
    owner on 2026-10-30), the Engineering foundations, and the Handoff notes
-   at the bottom.
+   at the bottom. Do not read `BUILD-HISTORY.md` unless you need it (§8,
+   "Keeping BUILD.md short").
 2. Read `docs/decisions.md` (once it exists) and any document linked from
    the items you are about to work on: `docs/engine.md` for engine work;
    `docs/catalog-format.md`, `docs/editorial.md`, and `catalog/SOURCES.md`
@@ -65,7 +66,9 @@ a church, tradition, or faith story to them.
    otherwise. Phase 10 (the launch catalog) may run alongside Phases 9–17.
 2. Inspect the relevant code before writing any. Checkboxes can drift from
    reality: if an item is already done, verify it and tick it; if a ticked
-   item is broken, untick it and say why in the Handoff notes.
+   item is broken, untick it and say why in the Handoff notes. If the broken
+   item was in a phase already moved to `BUILD-HISTORY.md`, leave the history
+   as it is and add a new item to the earliest open phase that names it.
 3. Implement the item completely, in the app and on the web together
    (D37): code, tests, docs, and verification.
 4. Verify it (§7), and tick the box only when it meets the definition of
@@ -399,6 +402,39 @@ Handoff notes instead of ticking the box.
 - Keep documentation current and useful: update the owning document in
   place, and keep history in BUILD.md's notes, the decision tables, and Git,
   as BUILD.md's "How agents use this file" describes.
+
+### Keeping BUILD.md short
+
+BUILD.md holds the plan for the work still ahead, so that every session can
+read it in full without filling its context with finished work. Finished
+phases move to `BUILD-HISTORY.md`, which no session reads by default.
+
+- **A phase is finished when every item and sub-item in it is ticked.** A
+  phase with any open item, including an [OWNER], [GATE], [RIGHTS], or
+  [REVIEW] item, stays in BUILD.md.
+- **In the commit that ticks a phase's last item**, move the phase's whole
+  section from BUILD.md to the end of `BUILD-HISTORY.md` unchanged: its
+  heading, introduction, items, sub-items, and every Note and Result. Add a
+  line under the heading saying when it moved. In BUILD.md, leave the phase
+  heading with a single line, "Finished; its items and notes are in
+  BUILD-HISTORY.md.", and keep the phase's row in the Build status table.
+- **Item ids are never reused.** A moved item keeps its id, so references
+  such as "P1.12" in code, docs, and commits still resolve.
+- **The history is a record.** Never edit a moved entry except to repair a
+  broken link. A moved item that later proves broken gets a new item in the
+  earliest open phase (§2).
+- **Open phases stay lean too.** A Note or Result under an item says in a
+  few lines what was done, where it lives, and what was not verified. Longer
+  evidence belongs in the commit body, `docs/decisions.md`, the owning
+  document, or `catalog/SOURCES.md`. The Handoff notes and the "Current
+  state" line are replaced each session, never appended to.
+- **What stays in BUILD.md while it guides future work:** "How agents use
+  this file", the finished-product definition, the product principles, the
+  research findings, the Owner decisions table, the Engineering
+  foundations, the Build status table, and the Handoff notes.
+- **Read `BUILD-HISTORY.md` only when you need it:** when an open item, a
+  document, or a failing check refers to a finished item and you need its
+  evidence, and then only that item's entry.
 
 ## 9. Beyond the repository
 
