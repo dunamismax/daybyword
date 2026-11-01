@@ -38,17 +38,18 @@ tools.
 
 1. Read [BUILD.md](BUILD.md) in full once per session: "How agents use this
    file", the finished-product definition, the product principles, the
-   research findings, the Owner decisions table (D1–D38, all answered by the
-   owner on 2026-10-30), the Engineering foundations, and the Handoff notes
-   at the bottom. Do not read `BUILD-HISTORY.md` unless you need it (§8,
-   "Keeping BUILD.md short").
-2. Read `docs/decisions.md` (once it exists) and any document linked from
-   the items you are about to work on: `docs/engine.md` for engine work;
+   Owner decisions table (D1–D39), the Engineering foundations, the phases
+   to version 1.0, and the Handoff notes at the bottom. Do not read
+   `BUILD-HISTORY.md`, `docs/roadmap.md` (the work after 1.0), or
+   `docs/research/` unless an item or a check points there (§8, "Keeping
+   BUILD.md short").
+2. Read the entries of `docs/decisions.md` that bear on your item, and any
+   document linked from the items you are about to work on: `docs/engine.md` for engine work;
    `docs/catalog-format.md`, `docs/editorial.md`, and `catalog/SOURCES.md`
    for plans; `docs/product.md` and `docs/design.md` for anything a reader
    sees; `docs/deploy.md` before touching the server.
-3. Run `git status`, `git log --oneline -20`, and `make check` (once it
-   exists), so you know the real state before trusting any checkbox.
+3. Run `git status`, `git log --oneline -20`, and `make check`, so you know
+   the real state before trusting any checkbox.
 
 The owner (GitHub `dunamismax`) decides the product. In anything this
 project publishes, refer to the owner only as the owner, and never attribute
@@ -68,14 +69,18 @@ a church, tradition, or faith story to them.
    item is broken, untick it and say why in the Handoff notes. If the broken
    item was in a phase already moved to `BUILD-HISTORY.md`, leave the history
    as it is and add a new item to the earliest open phase that names it.
-3. Implement the item completely, in the app and on the web together
-   (D37): code, tests, docs, and verification.
+3. Implement the item completely and no larger than it needs to be: code,
+   tests, docs, and verification. A feature that exists on both the app and
+   the web lands on both within the same milestone (D37, D39). If an item
+   asks for more than version 1.0 needs, build the 1.0 part and move the
+   rest to `docs/roadmap.md`'s Phase 28 with a note.
 4. Verify it (§7), and tick the box only when it meets the definition of
    done.
 5. Commit (§8), then take the next item. Complete as many items as you can
    in one session, and stop only at the end of your budget. When you meet a
    blocker, clear it or work around it, record why, and keep going.
-6. Before ending: make sure `make check` passes, push, update the Build
+6. Before ending: make sure `make check` passes (and `make check-full` at a
+   milestone, or before a TestFlight build or a deploy), push, update the Build
    status table in BUILD.md, and **replace** the Handoff notes with the
    current state (what you finished, what is half-done, what is blocked, and
    anything surprising). Keep them under 25 lines; history lives in Git.
@@ -85,8 +90,9 @@ passing state or revert the partial work, and record it in the Handoff
 notes.
 
 If an item is wrong, too large, or out of order, do not silently skip or
-delete it. Split it into sub-items (`P5.6a`, `P5.6b`), rewrite it, or add a
-dated note under it, and say what you changed in the Handoff notes.
+delete it. Split it into sub-items (`P5.6a`, `P5.6b`), rewrite it, move the
+part 1.0 does not need to the roadmap, or add a dated note under it, and say
+what you changed in the Handoff notes.
 
 ## 3. Voice, fairness, and the reader
 
@@ -126,8 +132,8 @@ consistency hard. Every rule here protects that reader.
   truthful. Never promise an integration (for example syncing with another
   Bible app) that has not been verified.
 - **Privacy is care.** Reading history and tradition preferences are
-  sensitive, and in some laws they are special-category data (BUILD.md
-  Research finding 11). They are private by default, kept on the device
+  sensitive, and in some laws they are special-category data (Research
+  finding 11, in `docs/research/findings.md`). They are private by default, kept on the device
   unless the reader consents to more (D10), exportable, and deletable. No
   analytics, ever (D12).
 - **No AI in the product** (D23). There are no generative models, chat, or
@@ -161,7 +167,7 @@ Apple Developer account through Xcode and App Store Connect (D33). Decide
 on the evidence, and write the reasoning down where the next agent will find
 it: a new decision goes in BUILD.md's Owner decisions table as
 `(agent, date)` with its reasons, or in `docs/decisions.md` for
-engineering. The owner's answers in D1–D38 are the product's direction. An
+engineering. The owner's answers in D1–D39 are the product's direction. An
 agent may refine how one is carried out, but never reverses one without
 asking the owner.
 
@@ -275,7 +281,9 @@ records each decision with its reasons.
 - **Offline first in the app.** Everything except sync works in airplane
   mode. The web caches the active plans and queues marks made offline.
 - **Personal data** (D10): kept on the device by default, and on the server
-  only after explicit consent. Server logs never record passages, plans, or
+  only after explicit consent. At version 1.0 the server keeps none: the web
+  keeps progress in the reader's browser and sends it with each request for
+  the engine to compute from (D39). Server logs never record passages, plans, or
   reading events; log request metadata only. Never put personal data in a
   URL. The one exception is the secret, revocable calendar-feed token,
   which is a credential and is handled as one.
@@ -326,7 +334,7 @@ records each decision with its reasons.
   AI use.
 - **External directory entries** describe a plan and link to its publisher.
   They never suggest that the schedule is available inside Day by Word.
-- **Editions and calendars are labeled exactly** (BUILD.md Research finding
+- **Editions and calendars are labeled exactly** (Research finding
   7). Daily Office readings are never confused with Sunday or Communion
   lectionaries. Chronological plans name their approach and are never
   presented as the one correct order.
@@ -355,33 +363,32 @@ records each decision with its reasons.
 
 An item is done only when all of these hold:
 
-1. `make check` passes: formatting, the catalog compile and integrity suite,
-   the package tests, the server tests, the app's unit tests, the browser
-   tests as they arrive, and the link check. The packages and server also
-   pass on Linux, through `make test-linux` where a container runtime is
-   present and otherwise at the next deploy or CI run, which the Handoff
-   notes say. The build has zero warnings in the touched targets.
-   xcodebuild prints warnings only for files it recompiles, so touch the
-   sources or clean before trusting that.
-2. User-visible Apple work is exercised in the iOS Simulator: launch it,
-   drive the flow, and capture a screenshot. Check light mode, dark mode,
-   one large Dynamic Type size, and VoiceOver labels on new controls. Pick
-   the device with `scripts/sim-destination.sh`, never a hard-coded one.
+1. `make check` passes: the toolchain, formatting, imports, design tokens
+   and raw colors, the catalog compile and integrity suite, the package and
+   server tests, the app's unit tests, and the String Catalog. The build has
+   zero warnings in the touched targets (xcodebuild prints warnings only for
+   files it recompiles, so touch the sources or clean before trusting that).
+2. User-visible work is seen working once, where it runs: Apple work in the
+   iOS Simulator (pick the device with `scripts/sim-destination.sh`), with
+   VoiceOver labels on new controls; web work in a real browser with
+   `make serve`, with the console free of errors and CSP violations.
    Widgets, notification actions, and App Intents are exercised where they
    run, not only in unit tests. Do not commit routine screenshots.
-3. User-visible web work is exercised in a real browser (the in-app browser
-   or Chrome) with `make serve` running: a desktop width and a phone width
-   (the browser's mobile emulation), light and dark, and 200% text. Check
-   the console for errors and CSP violations.
-4. Engine changes have their cases, written before the code.
-5. Plan content meets its review level, its claims are verified by the
-   compiler, and its rights entry is `cleared` for where it is served, or
-   the plan stays out of release builds.
-6. Server changes that are deployed pass `make check-live`, and the owner's
+3. Engine changes have their cases, written before the code.
+4. Plan content meets its review level, its claims are verified by the
+   compiler, and its rights entry is `cleared`, or the plan stays out of
+   release builds.
+5. Server changes that are deployed pass `make check-live`, and the owner's
    other sites still answer as before.
-7. Relevant docs (`README.md`, `docs/*.md`, `catalog/SOURCES.md`) are
-   updated.
-8. The BUILD.md box is ticked in the same commit as the work.
+6. The documents the item changes are updated, briefly.
+7. The BUILD.md box is ticked in the same commit as the work.
+
+**At each milestone, and before every TestFlight build or deploy**, run
+`make check-full` (`make check`, the web tour in light and dark at desktop
+and narrow widths, the app tour in light and dark, and the packages and
+server on Linux), and check by hand what the tours cannot: a phone width
+and 200% text on the web, one large Dynamic Type size, and dark mode in the
+new screens. Fix what it finds before shipping.
 
 Never claim verification you did not perform. If a step could not be run (no
 network, a missing tool, no device), say so in the commit body and the
@@ -389,8 +396,8 @@ Handoff notes instead of ticking the box.
 
 ## 8. Commits
 
-- One commit per completed BUILD.md item, or a tight group of related
-  items. Use an imperative subject of 72 characters or fewer that starts
+- One commit per completed BUILD.md item, or one for a group of related
+  items finished together. Use an imperative subject of 72 characters or fewer that starts
   with the step id, for example
   `P5.5: Keep the next unread reading next at the reader's pace`. The body
   says what changed and why.
@@ -398,15 +405,19 @@ Handoff notes instead of ticking the box.
 - The repository is public (D4), so every push publishes. Never commit
   secrets, correspondence, readers' personal data, or anything a licence
   forbids publishing.
-- Keep documentation current and useful: update the owning document in
-  place, and keep history in BUILD.md's notes, the decision tables, and Git,
-  as BUILD.md's "How agents use this file" describes.
+- Keep documentation current, useful, and short: update the owning document
+  in place, and keep history in BUILD.md's notes, the decision tables, and
+  Git, as BUILD.md's "How agents use this file" describes. Add a decision
+  entry only for a real choice between alternatives, not to restate what an
+  item already says.
 
 ### Keeping BUILD.md short
 
-BUILD.md holds the plan for the work still ahead, so that every session can
-read it in full without filling its context with finished work. Finished
-phases move to `BUILD-HISTORY.md`, which no session reads by default.
+BUILD.md holds the plan for the work still ahead to version 1.0, so that
+every session can read it in full without filling its context with finished
+or distant work. Finished phases move to `BUILD-HISTORY.md`, and the work
+after 1.0 lives in `docs/roadmap.md` (D39); no session reads either by
+default.
 
 - **A phase is finished when every item and sub-item in it is ticked.** A
   phase with any open item, including an [OWNER], [GATE], [RIGHTS], or
@@ -429,8 +440,11 @@ phases move to `BUILD-HISTORY.md`, which no session reads by default.
   state" line are replaced each session, never appended to.
 - **What stays in BUILD.md while it guides future work:** "How agents use
   this file", the finished-product definition, the product principles, the
-  research findings, the Owner decisions table, the Engineering
-  foundations, the Build status table, and the Handoff notes.
+  Owner decisions table, the Engineering foundations, the Build status
+  table, and the Handoff notes. The research findings are in
+  `docs/research/findings.md` and keep their numbers.
+- **When 1.0 ships**, move the next phases from `docs/roadmap.md` into
+  BUILD.md whole, with their ids, as the next work.
 - **Read `BUILD-HISTORY.md` only when you need it:** when an open item, a
   document, or a failing check refers to a finished item and you need its
   evidence, and then only that item's entry.

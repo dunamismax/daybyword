@@ -35,27 +35,53 @@ phases move to [BUILD-HISTORY.md](BUILD-HISTORY.md), and
   itself.
 - **Respect the kind of plan.** *Continue at my pace*, *Work toward a finish
   date*, or *Follow the calendar*: a sequential plan moves after a holiday,
-  and Easter readings stay at Easter.
+  and a calendar plan keeps its dates.
 - **Make returning normal.** After missed days you get a welcome and real
   choices, each previewed before anything changes. History is never
   rewritten.
-- **Be trustworthy.** Every plan has its exact edition, source, coverage,
-  limitations, and permissions stated, and historic prayer-book lectionaries
-  are computed from their own rules.
+- **Be trustworthy.** Every plan has its source, coverage, workload, and
+  limitations stated, with every reference verified. Historic plans and
+  prayer-book lectionaries, computed from their own rules, follow after 1.0.
 - **Stay private.** No ads, analytics, tracking, or AI. The app works
-  offline without an account; backup and sync are optional, with passkeys,
-  and with export and deletion at any time.
+  offline without an account, the web keeps progress in your own browser,
+  and export and deletion are there at any time. Optional sync, with
+  passkeys, follows after 1.0.
 
 ## The plan at a glance
 
 | | |
 |---|---|
 | App | iPhone and iPad in SwiftUI, iOS 26 and later. Android readers use the installable web app until a native Android decision after 1.0 |
-| Web | daybyword.com, served by a Swift server on Hummingbird 2 with SQLite: public plan pages, the web app, and the sync API, for current browsers |
+| Web | daybyword.com, served by a Swift server on Hummingbird 2 with SQLite: public plan pages and the web app (progress kept in the browser at 1.0), for current browsers |
 | Engine | One Swift package, `ReadingEngine`, shared by the app, its widgets, the server, and the catalog compiler |
 | Plans | Compiled from plain-text sources in `catalog/`, with every reference verified, every coverage claim computed, and every source's rights recorded |
 | Hosting | The owner's Ubuntu server behind Caddy, built on the server from `main` at each deploy |
-| Path | Foundation, then first light (Today and three plans), then version 1.0 with twelve plans, a short beta, and the US App Store |
+| Path | Foundation, then first light (Today and three original plans), then version 1.0 with eight original plans, a short beta, and the App Store; then [the roadmap](docs/roadmap.md) (D39) |
+
+## Architecture
+
+At version 1.0 (D39); sync, accounts, calendar feeds, and web push follow
+after it ([docs/roadmap.md](docs/roadmap.md)).
+
+```
+┌──────────────── iPhone and iPad (SwiftUI, Swift 6) ────────────────┐
+│ Today · Plans · Progress      Widgets · Notification actions ·     │
+│                               App Intents                          │
+│   ReadingEngine (references, schedules, progress, reminder rules)  │
+│   ReadingData (SQLite: catalog and the reader's journal)           │
+└────────────────────────────────────────────────────────────────────┘
+┌──────────────── a browser at daybyword.com ────────────────────────┐
+│   the web app's own JavaScript; the reader's events kept here      │
+└───────────────────────────────┬────────────────────────────────────┘
+                                │ HTTPS: events sent, nothing stored
+┌───────────────────────────────▼────────────────────────────────────┐
+│ ubuntu-vm: Caddy → DayByWordServer (Hummingbird 2, systemd)        │
+│   public plan pages · web app (Today, Plans, Progress)             │
+│   the same ReadingEngine and ReadingData · Catalog.sqlite (read-only)│
+└────────────────────────────────────────────────────────────────────┘
+catalog/ (plans, scripture data, SOURCES.md)
+   └─ swift run catalog ──► Catalog.sqlite ──► app bundle + server release
+```
 
 ## Repository layout
 
@@ -92,7 +118,7 @@ Confirmed on the owner's Mac on 2026-10-30:
 - **python3**, used by `scripts/sim-destination.sh` (any Python 3 on the
   PATH; the Command Line Tools include one).
 - **Firefox** (159 here) and **geckodriver** 0.37.1 (`brew install
-  geckodriver`, added 2026-11-01) for the web tour in `make check`
+  geckodriver`, added 2026-11-01) for the web tour in `make check-full`
   (`make tour-web`, decision E26). Safari works too once "Allow remote
   automation" is on in Safari's Developer settings:
   `DBW_WEBDRIVER=safari make tour-web`.
@@ -108,7 +134,8 @@ Confirmed on the owner's Mac on 2026-10-30:
 From a clean checkout:
 
 ```sh
-make check     # lint, catalog, package, server, and app tests, the String Catalog, and the web tour: the gate before every commit
+make check       # lint, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
+make check-full  # check, the web and app tours in light and dark, and Linux: at milestones and before releases
 make run       # build, boot the newest iPhone simulator, install, and launch the app
 make serve     # serve the site at http://localhost:8080 (/ and /up)
 ```

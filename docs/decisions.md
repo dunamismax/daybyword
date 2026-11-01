@@ -2,7 +2,7 @@
 
 A numbered, append-only log of engineering decisions for Day by Word. Product
 decisions are the owner's and live in BUILD.md's Owner decisions table
-(D1–D38); this file records how they are carried out and why.
+(D1–D39); this file records how they are carried out and why.
 
 **How to use this file.** Add a new entry at the end with the next number,
 the date, who decided (`agent` or `owner`), the decision, and the reasons.
@@ -25,6 +25,8 @@ passes.
 
 **Why:** one gate keeps the app and the web from drifting (D37), and a single
 command is something every session can run before every commit.
+
+*Superseded in part by E29: `make check` is the per-commit gate, and `make check-full` runs everything.*
 
 ### E2. The plan, the enrollment, and the record are separate
 
@@ -111,6 +113,8 @@ offline.
 **Why:** reading happens at six in the morning with a paper Bible, often
 without a signal, and reading data can reveal religious belief, so it stays
 on the device unless the reader chooses otherwise.
+
+*Superseded in part by E29: at 1.0 the web keeps progress in the browser (D39).*
 
 ### E9. SQLite everywhere
 
@@ -427,6 +431,8 @@ hand in a browser's device emulation.
 tour needs are a page of Swift. No package or driver library is added.
 Screenshots are gitignored and never committed.
 
+*Superseded in part by E29: the web tour runs in `make check-full`, not `make check`.*
+
 ### E27. The book registry: USFM ids, canons with orders, and names by convention
 
 *2026-11-01, agent.* `catalog/scripture/books.json` registers every book the
@@ -494,3 +500,34 @@ committed or served, as its header asks.
 public-domain text and checking against two independent sources gives cited
 numbers without copying anyone's table; and a file per scheme keeps each
 scheme's differences reviewable line by line.
+
+### E29. The leaner path: two gates, and web progress kept in the browser
+
+*2026-11-01, agent, carrying out D39 (owner, 2026-11-01).*
+
+- **Two gates.** `make check` (the toolchain, formatting, imports, tokens
+  and colors, the catalog, the package and server tests, the app's unit
+  tests, and the String Catalog) runs before every commit. `make
+  check-full` adds the web tour, the app tour, and `make test-linux`, and
+  runs at each milestone and before every TestFlight build or deploy (and
+  in CI, which runs the web tour beside `make check`). The appearance and
+  text-size matrix of AGENTS.md §7 is checked then, not on every item.
+- **Web progress in the browser.** At 1.0 the web app keeps the reader's
+  enrollments and journal events in the browser's own storage (IndexedDB),
+  never in a cookie. To show Today, Progress, or a return preview, its
+  JavaScript sends those records to the server in the request body; the
+  server folds them with `ReadingEngine`, answers, and keeps nothing, and
+  its logs record request metadata only. So the engine stays the single
+  implementation (E4), nothing about a reader's reading reaches the
+  server's storage (D10), and export is the browser's records as JSON. The
+records do pass through the server while it computes, over HTTPS, and the
+privacy page says so plainly (P16.3); if that ever proves unwelcome, the
+engine can run in the browser as Swift compiled to WebAssembly instead.
+  P8.10 builds it; accounts and sync replace the browser as the place of
+  record after 1.0 (P28.8, Phase 14).
+
+**Why:** the full tours and the Linux run take minutes and catch little
+that the unit tests and a look at the change do not, so they belong at the
+points where a build reaches someone. Keeping web progress in the browser
+removes consent records, profile expiry, server backups, and cookies from
+1.0 without moving any reading logic into JavaScript.

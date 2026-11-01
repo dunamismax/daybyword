@@ -52,11 +52,11 @@ Today answers one question: *what do I read now?*
   - **Copy reference**, everywhere, always.
   - **Mark read**: one deliberate tap. Undo is one more tap, offered right
     away in a quiet banner and always available in History.
-- **Sessions.** A plan with morning and evening readings shows each as its
+- **Sessions** (after 1.0, D39). A plan with morning and evening readings shows each as its
   own card, labeled with the session's own name ("Morning Prayer",
   "Evening Prayer"; M'Cheyne's "Family" and "Secret"). The day is complete
   when its sessions are.
-- **Calendar plans** also say which tradition, edition, and rule produced
+- **Church-calendar plans** (after 1.0, D39) also say which tradition, edition, and rule produced
   today's readings ("1979 Book of Common Prayer · Daily Office, Year One ·
   Tuesday in the Third Week of Advent"), with a link to the source note.
 - **Finished for today** says so plainly: "That's today's reading." No
@@ -66,7 +66,7 @@ Today answers one question: *what do I read now?*
   reader asks.
 - **After a gap**, the return flow appears at the top of Today (below).
 - **No plan yet**: a short welcome and the way into choosing a plan, with a
-  search box for readers who already know their plan. Nothing else.
+  way to see every plan for readers who already know theirs. Nothing else.
 
 Today never shows Bible text (D13), statistics, a streak (D17 keeps the
 streak on Progress), promotions, rating prompts, or tips.
@@ -94,9 +94,9 @@ plans (principle 1).
 
 - **Recommendations first**, after a few practical questions: what the
   reader hopes to read, how much time feels realistic, which days they
-  expect to read, and whether they want to follow a church calendar.
-  Tradition and Bible edition are optional, and "Not sure" is always an
-  answer. Every question can be skipped.
+  expect to read (and, once church-calendar plans arrive after 1.0, whether
+  they want to follow a church calendar). "Not sure" is always an answer,
+  and every question can be skipped.
 - **Three suitable plans**, each with a concrete reason tied to the
   reader's answers ("You said about 10 minutes on weekdays; this plan
   averages 9"), a sample week, and an honest workload, side by side. The
@@ -121,7 +121,7 @@ acceptable). A recommendation is practical.
 
 Choosing to start shows, in order: the start date (or "Join today's
 readings" for a calendar plan); the schedule behavior, explained; reading
-days; sessions; how the reader reads (a physical Bible, YouVersion or
+days; sessions (after 1.0); how the reader reads (a physical Bible, YouVersion or
 Bible.com, or another app with Copy reference); and an offer of a reminder.
 Notification permission is asked for only after the reader chooses a
 reminder, never at launch.
@@ -192,7 +192,7 @@ maturity, or understanding, and nothing on it may suggest that it does.
 
 Reminders; the preferred way to read and translation; physical Bible mode;
 book-name convention (D29); appearance (Automatic, Light, Dark) and
-reference text size; backup and sync (optional, D8, D10); export of all
+reference text size; backup and sync (optional, after 1.0, D8, D10, D39); export of all
 personal data and deletion of all data; sources and permissions; and about,
 with the independence statement and the running version.
 
@@ -212,10 +212,10 @@ Paper Bibles are first-class (D26).
 
 - Asked for only when the reader chooses a reminder. Turning reminders off
   never limits the app.
-- Reminders are wall-clock times in the reader's time zone, per plan and
-  session, on the reader's chosen days.
+- Reminders are wall-clock times in the reader's time zone, per plan (and
+  per session, once sessions arrive), on the reader's chosen days.
 - Actions: **Mark read**, **Snooze**, and **Open**. A reminder stops once
-  its session is marked read.
+  the day's reading is marked read.
 - The reader can hide passage details on the Lock Screen.
 - Quiet hours and a maximum per day are respected.
 - Notification text is plain and present-tense: "Gospels at your pace:
@@ -229,20 +229,23 @@ Paper Bibles are first-class (D26).
 | **App** | Everything, offline, without an account | Show Bible text, require sign-in, track |
 | **Widget** (P8.9, P12.2) | Shows the next reading; **Mark read** from the widget; honors "hide passage details" | Show a streak, nag, or claim a reading happened that the reader did not confirm |
 | **Notification** (P8.8) | Says what is next; **Mark read**, **Snooze**, **Open** | Mention missed days, streaks, or urgency |
-| **Web** (daybyword.com) | Public plan pages anyone can read; the same Today, Plans, Progress, and Settings, with progress kept on the server only after explicit consent (D10); printable weeks | Load anything from another host, set a cookie that is not strictly necessary, or keep reading data without consent |
+| **Web** (daybyword.com) | Public plan pages anyone can read; the same Today, Plans, Progress, and Settings, with progress kept in the reader's own browser at 1.0 and nothing stored on the server (D39); printable weeks | Load anything from another host, set a cookie that is not strictly necessary, or store reading data on the server |
 
 ## Privacy by design
 
-- No account is needed for anything in the app (D8). The web keeps a
-  reader's progress only after an explicit, separate consent: "Keep my plans
-  and progress on daybyword.com" (D10).
+- No account is needed for anything, in the app or on the web (D8). At 1.0
+  the web keeps a reader's progress in their own browser; the server works
+  out today's reading from what the browser sends and keeps none of it
+  (D10, D39, E29). Keeping progress on daybyword.com, with explicit,
+  separate consent, comes with accounts after 1.0.
 - Reading history and tradition preferences are sensitive and in some laws
   special-category data (Research finding 11). They are private by default,
   exportable, and deletable at any time, in the app and on the web.
 - No analytics, advertising, tracking, or AI, ever (D12, D23). Nothing is
   sold or shared.
-- Backup and offline status are always truthful: "Backed up 2 minutes ago",
-  or "Backup unavailable offline".
+- Offline status, and backup status once sync exists, are always truthful:
+  "Offline: showing the readings saved on this device", "Backed up 2 minutes
+  ago", or "Backup unavailable offline".
 
 ## Tone
 

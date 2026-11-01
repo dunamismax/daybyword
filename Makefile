@@ -1,5 +1,6 @@
-# Day by Word: one command for each job. `make help` lists the targets, and
-# `make check` is the gate before every commit (AGENTS.md §7).
+# Day by Word: one command for each job. `make help` lists the targets.
+# `make check` is the gate before every commit, and `make check-full` runs at
+# each milestone and before every TestFlight build or deploy (AGENTS.md §7).
 
 SHELL := /bin/sh
 .DEFAULT_GOAL := help
@@ -12,7 +13,7 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 PORT ?= 8080
 
 .PHONY: help tokens generate catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format strings check-strings tour tour-app tour-web check archive testflight deploy clean
+	test-linux run serve screenshot lint format strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -88,8 +89,11 @@ tour-web: catalog ## Tour the site in a real browser through WebDriver; screensh
 	@swift build --package-path Server --quiet
 	@swift scripts/webtour.swift
 
-check: lint catalog test-packages test-server test-app check-strings tour-web ## The gate before every commit
+check: lint catalog test-packages test-server test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
+
+check-full: check tour-web tour-app test-linux ## The milestone gate: check, both tours in light and dark, and Linux
+	@echo "check-full: all passed"
 
 archive: ## Build a signed Release archive for TestFlight (docs/release.md)
 	@scripts/archive.sh

@@ -1,6 +1,6 @@
 # Continuous integration, on manual dispatch only (D31). The local `make check`
-# is the gate before every commit; this confirms it on clean machines, and
-# confirms the packages and the server on Linux.
+# is the gate before every commit; this confirms it and the web tour on clean
+# machines, and confirms the packages and the server on Linux.
 name: Check
 
 on:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   macos:
-    name: macOS (Xcode 27.2, make check)
+    name: macOS (Xcode 27.2, make check and the web tour)
     runs-on: xcode-27
     timeout-minutes: 60
     steps:
@@ -28,6 +28,8 @@ jobs:
           test -d /Applications/Firefox.app || brew install --cask firefox
       - name: make check
         run: make check
+      - name: make tour-web
+        run: make tour-web
       - name: Keep the build logs
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
