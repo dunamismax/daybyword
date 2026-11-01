@@ -43,6 +43,34 @@ func temporaryDirectory() -> URL {
     #expect(schemes.keys.sorted { $0.rawValue < $1.rawValue } == [.english])
 }
 
+@Test func readsTheRepositorysWordCounts() throws {
+    let registry = try CatalogBuild.readRegistry(from: catalogSource)
+    let english = try #require(try CatalogBuild.readVersifications(from: catalogSource, registry: registry)[.english])
+    let counts = try CatalogBuild.readWordCounts(from: catalogSource, versification: english)
+    #expect(counts.books.count == 66)
+}
+
+@Test func brokenWordCountsWriteNothing() throws {
+    let directory = temporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appending(path: "catalog")
+    let scripture = source.appending(path: "scripture")
+    try FileManager.default.createDirectory(at: scripture, withIntermediateDirectories: true)
+    for path in ["books.json", "versification"] {
+        try FileManager.default.copyItem(
+            at: catalogSource.appending(path: "scripture/\(path)"), to: scripture.appending(path: path))
+    }
+    try FileManager.default.createDirectory(at: scripture.appending(path: "words"), withIntermediateDirectories: true)
+    try Data("OBA\t1\t1 2 3\n".utf8).write(to: scripture.appending(path: "words/web.tsv"))
+    let output = directory.appendingPathComponent("Catalog.sqlite")
+
+    let error = #expect(throws: CatalogError.self) {
+        try CatalogBuild.write(from: source, to: output, mode: .development)
+    }
+    #expect(error?.problem == "OBA 1 has 21 verses in the scheme but 3 counts")
+    #expect(!FileManager.default.fileExists(atPath: output.path))
+}
+
 @Test func aBrokenVersificationWritesNothing() throws {
     let directory = temporaryDirectory()
     defer { try? FileManager.default.removeItem(at: directory) }

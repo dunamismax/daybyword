@@ -558,3 +558,27 @@ coverage, links into Bible apps) one shape to work with and makes equal
 passages compare equal; one writing per passage makes plan files easy to
 review and leaves a parser for other sources' citation styles (P28.1) as a
 separate job.
+
+### E31. Word counts from the World English Bible, numbered by the English scheme
+
+*2026-11-01, agent.* Workload estimates count words from eBible.org's
+public-domain World English Bible, stored as a number per verse in
+`catalog/scripture/words/web.tsv`, numbered by the English (KJV) scheme so
+every passage can be counted. `scripts/wordcounts.swift generate` writes
+the file from the gitignored download and states the method: a verse's
+words follow its `\v` marker, footnotes, cross-references, and headings
+are not counted, a psalm's title counts toward its first verse, and a word
+is a run between spaces or dashes holding a letter or digit. The WEB's
+Romans doxology (14:24–26) is counted as 16:25–27, and the four verses the
+WEB gives only in footnotes (Luke 17:36; Acts 8:37, 15:34, 24:7) count no
+words. `WordCounts` in `ReadingEngine` reads the file, and the catalog
+compiler refuses one that does not fit the scheme. The 66 books come to
+754,449 words, about 2,070 a day for the Bible in a year.
+
+**Why:** the WEB and the Berean Standard Bible are both public domain
+(Research finding 5), but the WEB was already downloaded and checked
+against the English scheme (E28), and its numbering differs only in where
+Romans' doxology sits. A modern translation is closer to what most readers
+read than the KJV, which runs to roughly 780,000 words (Research finding
+6) against the WEB's 754,449. The deuterocanonical
+books wait for the plan that needs them (P10.12).

@@ -115,7 +115,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
-| 3 | Scripture references | M1 Foundation | 8 | 5 |
+| 3 | Scripture references | M1 Foundation | 8 | 6 |
 | 4 | The catalog | M1 Foundation | 8 | 0 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
@@ -434,7 +434,8 @@ sources' citation styles are in [docs/roadmap.md](docs/roadmap.md).
   - *Result (agent, 2026-11-01):* `ReferenceFormat` reads and writes the format and `ReferenceFormatter` shows it (E30), with cases for each way a line can be wrong. The compiler calls it once it reads plan files (P4.3).
 - [x] **P3.5** Verse sets: union, intersection, and difference of passages, giving unique coverage, repeats, and partly read chapters. This underlies coverage (P4.4, P11.4).
   - *Result (agent, 2026-11-01):* `VerseSet` keeps each book as runs of verse positions (`Versification.position(of:in:)`), with repeats, the fewest passages that write a set, and whole or partial chapters; checked against a plain set over 500 seeded cases.
-- [ ] **P3.6 [RIGHTS]** Word counts per verse from one cleared public-domain text (BSB or WEB, Research finding 5), stored as numbers only and never as text (D13), with the counting method documented.
+- [x] **P3.6 [RIGHTS]** Word counts per verse from one cleared public-domain text (BSB or WEB, Research finding 5), stored as numbers only and never as text (D13), with the counting method documented.
+  - *Result (agent, 2026-11-01):* `catalog/scripture/words/web.tsv`, counted from the public-domain WEB by `scripts/wordcounts.swift` (method in its header and E31), read by `WordCounts` and checked by the compiler; the 66 books have 754,449 words. `web-ebible` is `cleared` for word counts. The deuterocanonical books wait for P10.12.
 - [ ] **P3.7** Workload estimates: minutes from words at 238 a minute silent and 183 aloud (Research finding 6), shown as a rounded range with the plain caveat that reflection, reading aloud, and listening change them. Add the minimum, median, and maximum per plan.
 - [ ] **P3.9** Write `docs/scripture.md`, briefly: books, canons, names, versification, the reference format, verse sets, word counts, and their sources, with STEP Bible credited.
 

@@ -4,8 +4,9 @@ import ReadingEngine
 
 /// Writes a compiled catalog database.
 ///
-/// For now this checks the book registry (`scripture/books.json`) and the
-/// versification schemes (`scripture/versification/`) and writes
+/// For now this checks the book registry (`scripture/books.json`), the
+/// versification schemes (`scripture/versification/`), and the word counts
+/// (`scripture/words/`) and writes
 /// only the catalog's metadata, so that the app and the server can be wired
 /// to a real `Catalog.sqlite` from the start. Plans, the rest of validation,
 /// and calendars arrive with BUILD.md Phase 4 (P4.3).
@@ -25,7 +26,8 @@ public enum CatalogBuild {
     /// complete. A source that fails its checks writes nothing.
     public static func write(from source: URL, to output: URL, mode: Mode) throws {
         let registry = try readRegistry(from: source)
-        _ = try readVersifications(from: source, registry: registry)
+        let schemes = try readVersifications(from: source, registry: registry)
+        _ = try readWordCounts(from: source, versification: schemes[.english]!)
         let fileManager = FileManager.default
         try fileManager.createDirectory(
             at: output.deletingLastPathComponent(),
@@ -98,6 +100,23 @@ public enum CatalogBuild {
             }
         }
         return schemes
+    }
+
+    /// Reads the word counts under `source` and checks them against the
+    /// scheme they are numbered by.
+    public static func readWordCounts(from source: URL, versification: Versification) throws -> WordCounts {
+        let url = source.appending(path: "scripture/words/web.tsv")
+        let text: String
+        do {
+            text = try String(contentsOf: url, encoding: .utf8)
+        } catch {
+            throw CatalogError(file: url, problem: "cannot be read (\(error.localizedDescription))")
+        }
+        do {
+            return try WordCounts(tsv: text, versification: versification)
+        } catch {
+            throw CatalogError(file: url, problem: error.description)
+        }
     }
 
     /// The metadata written into every catalog, in a fixed order so that two

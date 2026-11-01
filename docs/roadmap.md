@@ -81,6 +81,7 @@ were left for later.
 - [ ] **P10.9 [OWNER] [RIGHTS] [REVIEW]** **The 1979 Daily Office Lectionary** (from P6.4): agents prepare a review packet (the source pages, the golden files, and the differences found); the owner reviews it as reviewer of record (D15); agents record the review and set `review: expert`.
 - [ ] **P10.10 [OWNER] [RIGHTS] [REVIEW]** **The 1662 Table of Lessons and monthly Psalter** (from P6.5), reviewed the same way, with its territories set by D16.
 - [ ] **P10.12 [REVIEW]** **The deuterocanonical books** (for Bibles that include them): the books and additions each canon recognizes, labeled by canon in neutral words (D29).
+  - *Note (agent, 2026-11-01):* word counts cover the 66 books only (P3.6). This plan needs counts for the deuterocanonical books too; the WEB numbers Greek Esther, Daniel, and Sirach 33 differently from the English scheme, so map them as `scripts/wordcounts.swift` maps Romans.
 - [ ] **P11.6** After finishing a plan: a few next plans chosen for the books the reader wants to explore, each with its reason.
 - [ ] **P28.5** Catalog filters (pace, length, reading days, sessions, books included), once the catalog is large enough to need them. *(The part of P9.3 moved by D39.)*
 

@@ -40,8 +40,13 @@ Bibles, cited, and nothing is copied from them beyond names and orders.
 
 ## web-ebible: World English Bible (eBible.org)
 
-- **Status:** `reference`.
-- **Used for:** a second, independent check of the English counts. Every
+- **Status:** `cleared` for word counts, everywhere; `reference` for
+  chapter and verse counts.
+- **Used for:** `scripture/words/web.tsv`, the words in each verse of the 66
+  books, numbered by the English scheme, counted by
+  `scripts/wordcounts.swift` for workload estimates (BUILD.md P3.6,
+  docs/decisions.md E31). Only numbers are kept; no text is stored or shown
+  (D13). Also a second, independent check of the English counts. Every
   difference is listed by `swift scripts/versification.swift compare`: in
   the 66 books only Romans 14 and 16, where the WEB prints the closing
   doxology (KJV Romans 16:25–27) at the end of chapter 14, a placement TVTMS
@@ -50,10 +55,15 @@ Bibles, cited, and nothing is copied from them beyond names and orders.
   prints the whole Greek Esther, the KJV only the Rest of Esther from 10:4),
   and Daniel's additions (which the WEB prints inside its Greek Daniel).
 - **Obtained:** <https://ebible.org/Scriptures/eng-web_usfm.zip>, downloaded
-  2026-11-01 (SHA-256 `05b0440b…3589c8`).
-- **Basis:** eBible.org states the World English Bible is in the public
-  domain; "World English Bible" is its trademark, which Day by Word does not
-  use for anything of its own.
+  2026-11-01 (SHA-256 `05b0440b…3589c8`), the edition dated 2024-01-15 in
+  its `\id` lines.
+- **Basis:** eBible.org's copyright page in the download (`copr.htm`) says
+  "The World English Bible is in the Public Domain. That means that it is
+  not copyrighted," and that "World English Bible" is a trademark of
+  eBible.org, which Day by Word does not use for anything of its own. Word
+  counts are facts about the text, and nothing of the text ships.
+- **Attribution:** none required. Credited on the sources page as the
+  source of the workload estimates.
 - **Checked:** 2026-11-01.
 
 ## stepbible-tvtms: STEPBible-Data, TVTMS
