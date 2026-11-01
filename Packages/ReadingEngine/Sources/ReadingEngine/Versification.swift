@@ -67,9 +67,36 @@ public struct Versification: Sendable {
         entries[book]?.verses.reduce(0) { $0 + $1.count } ?? 0
     }
 
+    /// The verse's position in its book, counting from 0 at the book's first
+    /// verse, or nil if the scheme does not have it. Positions run on across
+    /// chapter ends, so Genesis 1:31 is 30 and Genesis 2:1 is 31.
+    public func position(of place: ChapterVerse, in book: BookID) -> Int? {
+        guard let entry = entries[book], let verses = verses(of: book, chapter: place.chapter),
+            verses.contains(place.verse)
+        else { return nil }
+        return entry.starts[place.chapter - entry.firstChapter] + place.verse - verses.lowerBound
+    }
+
+    /// The verse at a position in its book, or nil past the book's end.
+    public func place(at position: Int, in book: BookID) -> ChapterVerse? {
+        guard let entry = entries[book], position >= 0,
+            let index = entry.starts.lastIndex(where: { $0 <= position }),
+            position - entry.starts[index] < entry.verses[index].count
+        else { return nil }
+        return ChapterVerse(entry.firstChapter + index, entry.verses[index].lowerBound + position - entry.starts[index])
+    }
+
     private struct Book: Sendable {
         let firstChapter: Int
         let verses: [ClosedRange<Int>]
+        /// The position of each chapter's first verse in the book.
+        let starts: [Int]
+
+        init(firstChapter: Int, verses: [ClosedRange<Int>]) {
+            self.firstChapter = firstChapter
+            self.verses = verses
+            starts = Array(verses.reduce(into: [0]) { $0.append($0.last! + $1.count) }.dropLast())
+        }
     }
 
     private let entries: [BookID: Book]
