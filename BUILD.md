@@ -116,7 +116,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
-| 4 | The catalog | M1 Foundation | 8 | 4 |
+| 4 | The catalog | M1 Foundation | 8 | 8 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 0 |
@@ -133,11 +133,11 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-01):** Phases 0, 1, and 2 are finished and moved
-to [BUILD-HISTORY.md](BUILD-HISTORY.md). Build 25 is on TestFlight and
-installed on the owner's iPhone. In Phase 3 the book registry (P3.1) and
-the English versification (P3.2) are done. The owner approved a leaner
-path to 1.0 (D39). **Next: P3.3.** Nothing is deployed yet.
+**Current state (2026-11-01):** Phases 0–4 are finished and moved to
+[BUILD-HISTORY.md](BUILD-HISTORY.md): references, verse sets, word counts,
+workload, the plan format, and a compiler that checks every reference and
+claim. Build 25 is on TestFlight. There are no plan files yet (P8.1).
+**Next: P5.1.** Nothing is deployed yet.
 
 ---
 
@@ -420,23 +420,7 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 4: The catalog
 
-1.0's plans are all Day by Word's own (D39), so the catalog needs a simple
-format, a compiler that checks every reference and claim, and an honest
-sources registry. Per-use rights rules and external entries wait for
-licensed plans (roadmap).
-
-- [x] **P4.1** Give `catalog/SOURCES.md` its schema, kept to what is used: id, title, edition, creator or owner, where it was obtained, the basis for use (public domain, licence, or permission), attribution required, territories, what was checked, the date, and status (`cleared`, `pending`, `rejected`, `reference`). Add an entry for Day by Word's own original plans. *(Rewritten by D39.)*
-  - *Result (agent, 2026-11-01):* the schema heads the file, machine-readable for the compiler (id from the heading, status from the Status line), and `daybyword-original` covers Day by Word's own plans.
-- [x] **P4.2** Write `docs/catalog-format.md`: plan files with `key: value` front matter (id, title, version, summary, who it suits, schedule kind, permitted behaviors, reading days, coverage claim, books included, limitations, instructions, source note, rights id, review status) and a tab-separated schedule body in P3.4's reference format, and the rule for stable assignment ids. *(Rewritten by D39.)*
-  - *Result (agent, 2026-11-01):* written, with an example plan. Schedules are `sequence` or `day-of-month`, the two 1.0 needs; `creator` was added for the plan page (P9.4).
-- [x] **P4.3** The compiler (`swift run catalog`, called by `make catalog`): parse and validate `catalog/plans/`, verify every reference against the English scheme, and write a deterministic `build/catalog/Catalog.sqlite` with a schema version, a manifest, and a checksum. It fails on unknown sources, duplicate ids, unresolved references, and plans without a review status; release mode also fails on uncleared sources. *(Rewritten by D39: no search index at 1.0.)*
-  - *Result (agent, 2026-11-01):* `PlanFile` reads and checks plan files with line numbers, `SourcesRegistry` reads SOURCES.md, and `CatalogBuild` writes `plans` and `assignments` with a content SHA-256 (our own, since CryptoKit is not on Linux) as schema 1 (docs/catalog-format.md). Release builds leave out plans below `reviewed`. The plan model is `Plan` in `ReadingEngine`.
-- [x] **P4.4** Claims checked against the facts: the compiler computes each plan's unique coverage, repeats, and omissions, and refuses a claim the schedule does not support. A "whole Bible" claim must cover every verse of its stated canon. The computed facts feed the plan page.
-  - *Result (agent, 2026-11-01):* `PlanFacts` computes coverage, repeats, omissions, whole and partial chapters, and each reading's words; `whole-bible` and `books` claims must omit nothing. The facts are in `plan_facts` (schema 2).
-- [ ] **P4.6** Plan versions, simply: every plan file has a version, the catalog records it, and an enrollment records the version it follows. The full rules for corrections are P28.3, needed with the first correction after release. *(Rewritten by D39.)*
-- [ ] **P4.8** Integration: `make catalog` feeds the app bundle (`apple/App/Resources/Catalog.sqlite`, gitignored) and the server (opened read-only from the release). A missing catalog fails clearly, and `make check` covers unique ids, resolved references, cleared sources, and no empty assignments.
-- [ ] **P4.9** Write `docs/criteria.md`, the published selection criteria, in a page: verified references, transparent coverage, realistic workload, clear instructions, a documented basis for use, and limitations stated beside advantages. It becomes a public page in P16.5.
-- [ ] **P4.10** Write `docs/editorial.md`, briefly: review levels (`checked`, automated validation passed; `reviewed`, an editorial review against the plan's rules and AGENTS.md §3; `expert`, a named reviewer's review, as D15 requires for prayer-book plans after 1.0), and the errata process for readers' reports.
+Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 5: The reading engine
 
@@ -448,6 +432,7 @@ specification comes first, then the cases, then the code. It covers what
 - [ ] **P5.2** The case format and runner: table-driven JSON cases (catalog fixture, enrollment, events, today, expected output) in `ReadingEngine`'s tests, using invented plans with invented references and never a real plan's schedule. The same cases run on macOS and on Linux.
 - [ ] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from Foundation dates in a given time zone, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
 - [ ] **P5.4** The journal: event kinds, UUIDv7 ids, and a deterministic fold to state that gives the same result in any arrival order. Duplicate events are no-ops, and undo and redo are events. Cases cover a double tap, a retry, and recovery from an accidental completion.
+  - *Note (agent, 2026-11-01):* from P4.6: an enrollment records the plan id and version it follows.
 - [ ] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
 - [ ] **P5.6** **Work toward a finish date**: the workload per reading day is computed before the reader accepts. Redistribution stays within a limit the reader sets and is previewed before it applies. An unrealistic target is met with a later date or a narrower plan, and readings are never silently omitted.
 - [ ] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
@@ -612,26 +597,25 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-01:** P3.1a and P3.2a done (E27, E28), then the owner approved
-  D39, a leaner path to 1.0: BUILD.md was cut to the 1.0 work (103 open
-  items, down from 148), later work moved to `docs/roadmap.md`, the
-  findings and feature map to `docs/research/`, and the process lightened
-  (AGENTS.md §7–§8, E29: `make check` per commit, `make check-full` at
-  milestones). P3.1 and P3.2 are ticked under their rewritten scope.
-- **Next: P3.3**, then P3.4 (the strict plan-file reference format and the
-  formatter), P3.5–P3.7, and P3.9. Phase 4 follows with the plan format and
-  compiler; the three first-light plans are P8.1.
-- **Research downloads** (gitignored, re-fetchable; URLs and checksums in
-  `catalog/SOURCES.md`): `research/ebible/` (KJV and WEB, which P3.6 can
-  count words from), `research/stepbible/tvtms.txt`, and others.
-- **Surprises:** Douay "1 Kings" is common "1 Samuel", so any reader of
-  other sources' book names must use one convention at a time (E27). Bare
-  `/regex/` literals do not compile in `swift` scripts; use `#/…/#`.
-  Firefox windows are at least 500 px wide (phone widths are a manual
-  check), synthetic simulator taps do not open SwiftUI menu pickers, and
-  Tailscale SSH to `ubuntu-vm` needed re-authentication (Phase 7).
-- **Optional for the owner:** allow remote automation in Safari's Developer
-  settings for `DBW_WEBDRIVER=safari make tour-web`.
-- **Owner to confirm when convenient:** D34's note about adding
-  daybyword.com's entry to `ubuntu-vm-backup`. Design canvas:
-  https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf (private).
+- **2026-11-01:** finished Phases 3 and 4 (P3.3–P3.9, P4.1–P4.10), each
+  committed and pushed with `make check` green. `make test-linux` passed
+  after Phase 3; it was not rerun after Phase 4, so run it first next
+  session (P4's code is Foundation and SQLite only).
+- **What exists now:** `Passage`, `Reading`, `ReferenceFormat` (the strict
+  plan-file format), `ReferenceFormatter`, `VerseSet`, `WordCounts` (the
+  WEB, 754,449 words for the 66 books), `Workload`, and `Plan` in
+  `ReadingEngine`; `PlanFile`, `SourcesRegistry`, `PlanFacts`, and our own
+  `SHA256` in `CatalogCompiler`; `Catalog` in `ReadingData`, opened by the
+  server at start-up. Catalog schema 3 (docs/catalog-format.md). Decisions
+  E30 (passages and the format) and E31 (word counts).
+- **Next: P5.1** (`docs/engine.md`), then P5.2–P5.12. Phase 7 (hosting) is
+  independent of Phase 5. P4.6's enrollment half is noted on P5.4.
+- **`catalog/plans/` is empty** (a `.gitkeep`); the first plans are P8.1.
+  Release builds include only plans at `reviewed` (docs/catalog-format.md).
+  One-chapter books cited by verse and repeated book names are our own
+  conventions, labeled so in E30.
+- **Surprises:** in this shell `ls` is eza and `grep` a ugrep function that
+  ignores piped input; use `/bin/ls` and `/usr/bin/grep` in pipelines. The
+  WEB gives Luke 17:36 and Acts 8:37, 15:34, and 24:7 only as footnotes.
+- **For the owner, when convenient:** Safari remote automation for
+  `DBW_WEBDRIVER=safari make tour-web`; D34's `ubuntu-vm-backup` note.

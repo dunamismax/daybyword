@@ -114,3 +114,27 @@ sources' citation styles are in [docs/roadmap.md](docs/roadmap.md).
 - [x] **P3.7** Workload estimates: minutes from words at 238 a minute silent and 183 aloud (Research finding 6), shown as a rounded range with the plain caveat that reflection, reading aloud, and listening change them. Add the minimum, median, and maximum per plan.
   - *Result (agent, 2026-11-01):* `Workload` gives minutes silent to aloud, rounded to the minute below 20 and to 5 above; `PlanWorkload` gives a plan's minimum, median, and maximum. The interface adds docs/product.md's caveat ("Estimates vary.") where it shows them (P8.2, P9.4), and the compiler records each plan's figures once it compiles plans (P4.3).
 - [x] **P3.9** Write `docs/scripture.md`, briefly: books, canons, names, versification, the reference format, verse sets, word counts, and their sources, with STEP Bible credited.
+
+## Phase 4: The catalog
+
+*Moved from BUILD.md on 2026-11-01, when its last item was ticked.*
+
+1.0's plans are all Day by Word's own (D39), so the catalog needs a simple
+format, a compiler that checks every reference and claim, and an honest
+sources registry. Per-use rights rules and external entries wait for
+licensed plans (roadmap).
+
+- [x] **P4.1** Give `catalog/SOURCES.md` its schema, kept to what is used: id, title, edition, creator or owner, where it was obtained, the basis for use (public domain, licence, or permission), attribution required, territories, what was checked, the date, and status (`cleared`, `pending`, `rejected`, `reference`). Add an entry for Day by Word's own original plans. *(Rewritten by D39.)*
+  - *Result (agent, 2026-11-01):* the schema heads the file, machine-readable for the compiler (id from the heading, status from the Status line), and `daybyword-original` covers Day by Word's own plans.
+- [x] **P4.2** Write `docs/catalog-format.md`: plan files with `key: value` front matter (id, title, version, summary, who it suits, schedule kind, permitted behaviors, reading days, coverage claim, books included, limitations, instructions, source note, rights id, review status) and a tab-separated schedule body in P3.4's reference format, and the rule for stable assignment ids. *(Rewritten by D39.)*
+  - *Result (agent, 2026-11-01):* written, with an example plan. Schedules are `sequence` or `day-of-month`, the two 1.0 needs; `creator` was added for the plan page (P9.4).
+- [x] **P4.3** The compiler (`swift run catalog`, called by `make catalog`): parse and validate `catalog/plans/`, verify every reference against the English scheme, and write a deterministic `build/catalog/Catalog.sqlite` with a schema version, a manifest, and a checksum. It fails on unknown sources, duplicate ids, unresolved references, and plans without a review status; release mode also fails on uncleared sources. *(Rewritten by D39: no search index at 1.0.)*
+  - *Result (agent, 2026-11-01):* `PlanFile` reads and checks plan files with line numbers, `SourcesRegistry` reads SOURCES.md, and `CatalogBuild` writes `plans` and `assignments` with a content SHA-256 (our own, since CryptoKit is not on Linux) as schema 1 (docs/catalog-format.md). Release builds leave out plans below `reviewed`. The plan model is `Plan` in `ReadingEngine`.
+- [x] **P4.4** Claims checked against the facts: the compiler computes each plan's unique coverage, repeats, and omissions, and refuses a claim the schedule does not support. A "whole Bible" claim must cover every verse of its stated canon. The computed facts feed the plan page.
+  - *Result (agent, 2026-11-01):* `PlanFacts` computes coverage, repeats, omissions, whole and partial chapters, and each reading's words; `whole-bible` and `books` claims must omit nothing. The facts are in `plan_facts` (schema 2).
+- [x] **P4.6** Plan versions, simply: every plan file has a version, the catalog records it, and an enrollment records the version it follows. The full rules for corrections are P28.3, needed with the first correction after release. *(Rewritten by D39.)*
+  - *Result (agent, 2026-11-01):* plan files carry `version`, the catalog stores it, and `Catalog` reads it back into `Plan.version`. Recording the version in an enrollment moved to P5.4, where enrollments are built.
+- [x] **P4.8** Integration: `make catalog` feeds the app bundle (`apple/App/Resources/Catalog.sqlite`, gitignored) and the server (opened read-only from the release). A missing catalog fails clearly, and `make check` covers unique ids, resolved references, cleared sources, and no empty assignments.
+  - *Result (agent, 2026-11-01):* `Catalog` in `ReadingData` opens the catalog whole and read-only, with the book registry and versification it was compiled with (schema 3), and refuses a missing or mismatched file with what to do. The server opens it at start-up and the app's unit test reads the bundled one; `make check` also compiles in release mode (`check-catalog`). Empty assignments cannot be written (`Reading` needs a passage).
+- [x] **P4.9** Write `docs/criteria.md`, the published selection criteria, in a page: verified references, transparent coverage, realistic workload, clear instructions, a documented basis for use, and limitations stated beside advantages. It becomes a public page in P16.5.
+- [x] **P4.10** Write `docs/editorial.md`, briefly: review levels (`checked`, automated validation passed; `reviewed`, an editorial review against the plan's rules and AGENTS.md §3; `expert`, a named reviewer's review, as D15 requires for prayer-book plans after 1.0), and the errata process for readers' reports.
