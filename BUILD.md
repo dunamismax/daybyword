@@ -138,10 +138,10 @@ top-level items; sub-items roll up into their parent.
 
 **Current state (2026-11-01):** Phases 0, 1, and 2 are finished and moved
 to [BUILD-HISTORY.md](BUILD-HISTORY.md). Build 25 is on TestFlight and
-installed on the owner's iPhone. The app and the web have their shells,
-addresses, string tables, Settings, and tours; `make check` (with the web
-tour) and `make test-linux` pass. **Next: P3.1a** (started; see its Note).
-Nothing is deployed yet.
+installed on the owner's iPhone. Phase 3 has begun: the book registry
+(P3.1a) and the English versification (P3.2a) are in `catalog/scripture/`
+and checked by the compiler. **Next: P3.2b** (P3.1b waits for a primary
+source). Nothing is deployed yet.
 
 ---
 
@@ -744,7 +744,10 @@ macOS and Linux.
     - *Result (agent, 2026-11-01):* 78 books (66, the seven deuterocanonical books, and the five Greek additions as `includes` of Esther, Baruch, and Daniel), read and checked by `BookRegistry` in `ReadingEngine` and refused by `make catalog` when broken (E27). The Catholic canon has two printed orders, because the sources differ on where 1 and 2 Maccabees stand. Every order, convention, and inclusion cites its sources in the file, two independent ones for each except the NABRE order, which rests on the USCCB's own contents; differences between sources are in the books' notes and the drbo entry.
   - [ ] **P3.1b** The Greek Orthodox canon and order, with 1 Esdras, 3 Maccabees, the Prayer of Manasseh, and Psalm 151 (and 4 Maccabees as an appendix, if the sources agree). Needs a primary source (a Church of Greece edition's contents) and a second independent one, since secondary sources differ on 4 Maccabees and the Prayer of Manasseh. Douay "1 Esdras" is Ezra, so 1 Esdras needs its Douay name in the same change (the Douay appendix titles it "The Third Booke of Esdras"); the registry refuses the clash.
     - *Note (agent, 2026-11-01):* no Church of Greece (Apostoliki Diakonia) contents page was found online; Greek sites reproducing its text (for example saint.gr) mark 4 Maccabees "Παράρτημα" but state no edition. Next try: a scan of an Apostoliki Diakonia Old Testament, or a library record of its contents.
-- [ ] **P3.2 [RIGHTS]** Versification data: chapter and verse counts under the English (KJV) scheme as the default, and the Hebrew, Greek, and Latin schemes mapped from TVTMS (Research finding 5). Confirm the licence of the exact file, record attribution in `catalog/SOURCES.md`, and credit it on the sources page.
+- [ ] **P3.2 [RIGHTS]** Versification data: chapter and verse counts under the English (KJV) scheme as the default, and the Hebrew, Greek, and Latin schemes mapped from TVTMS (Research finding 5). Confirm the licence of the exact file, record attribution in `catalog/SOURCES.md`, and credit it on the sources page. Split into P3.2a and P3.2b (agent, 2026-11-01); ticked when both are.
+  - [x] **P3.2a** The English (KJV) scheme: chapter and verse counts for every registered book the KJV numbers, with every difference from two independent sources listed.
+    - *Result (agent, 2026-11-01):* `catalog/scripture/versification/english.tsv` (77 books; the Letter of Jeremiah is Baruch 6 there), counted from eBible.org's public-domain 1769 KJV by `scripts/versification.swift`, read by `Versification` and checked by the compiler (E28). The 66 books have 1,189 chapters and 31,102 verses. Every difference from the WEB and TVTMS is explained in `catalog/SOURCES.md`, where TVTMS is recorded as `cleared` (CC BY 4.0, credit "STEP Bible").
+  - [ ] **P3.2b [RIGHTS]** Hebrew, Greek, and Latin schemes mapped from TVTMS's expanded data, with the mapping rules and every change to the data recorded in `docs/scripture.md` as its licence asks, and the credit carried to the sources page (P16.5).
 - [ ] **P3.3** The reference model: a passage (book, start chapter and verse, end chapter and verse, versification); multiple passages; whole chapters; ranges across chapters; partial verses (`a` and `b`); optional verses; alternatives ("either … or …"); and the source's own displayed wording, kept wherever normalizing would lose meaning.
 - [ ] **P3.4** The parser and formatter: at least 2,000 cases drawn from the real citation styles of the launch plans and lectionaries (for example "Isa 40:1-11", "Ps 119:1-24", "Luke 2:1-14(15-20)", "Ecclus 44:1-15", "1 Kgs 19", "Song 2"), including every way they can fail.
 - [ ] **P3.5** Verse sets: union, intersection, and difference of passages under a versification, giving unique coverage, repeats, and partly read chapters. This underlies coverage (P11.4) and overlap detection (P20.2).
@@ -1057,26 +1060,34 @@ never a built-in Bible reader (D13) or an AI feature (D23).
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-01:** P1.12's upload (App Store Connect record 6829425132,
-  named "Day by Word"; build 25 processed; internal group *Owner* with the
-  owner's two Apple IDs), then P2.7–P2.12 (E24–E26). P3.1 was started and
-  stopped at the owner's request; its sources and its split into P3.1a and
-  P3.1b are in its Note, and nothing for it is committed. **Next: P3.1a.**
-- **Phases 0–2 closed (owner, 2026-11-01):** the owner installed build 25
-  from TestFlight, so P1.12 is ticked (App Store Connect had not yet shown
-  the install when checked). The D38 letters moved to Phase 8 as P8.15 and
-  P8.16, and the device teardown to Phase 9 as P9.10. All three phases are
-  now in `BUILD-HISTORY.md` (AGENTS.md §8, "Keeping BUILD.md short").
+- **2026-11-01 (second session):** P3.1a (book registry, E27) and P3.2a
+  (English versification, E28) are done, with `make check` and
+  `make test-linux` green. `catalog/SOURCES.md` exists in a first form
+  (three entries); P4.1 gives it its schema and the Wanted section.
+- **P3.1b is waiting** for a primary source for the Greek Orthodox order: no
+  Apostoliki Diakonia contents page was found online (see its Note). Skip it
+  until one is found; nothing else depends on it yet.
+- **Next: P3.2b**, Hebrew, Greek, and Latin mappings from TVTMS. Its expanded
+  data (lines 4181–27570 of the file) holds verse-by-verse mappings with
+  tests per tradition, including LXX "long verses" and duplicated passages.
+  Consider scoping it to what the launch catalog needs first (Psalms in
+  Hebrew and Greek/Latin numbering, which P3.8 builds on, and the chapter
+  splits such as Malachi 3–4 and Joel 2–3), splitting off the full LXX.
+- **Research downloads** (gitignored, re-fetchable; URLs and checksums in
+  `catalog/SOURCES.md` and `scripts/versification.swift`): `research/ebible/`
+  (KJV, WEB), `research/stepbible/tvtms.txt`, `research/douay/`,
+  `research/nova-vulgata/`, `research/westminster/`, `research/sbl/`.
+- **Surprises:** the USCCB site answered WebFetch once and then returned
+  403, so its pages may need a real browser. The Catholic canon has two
+  printed orders (Maccabees after Esther, or last), so both are registered.
+  Douay "1 Kings" is common "1 Samuel": the parser (P3.4) must read names
+  under one convention at a time (E27). Bare `/regex/` literals do not
+  compile in `swift` scripts; use `#/…/#`. Still true from before: Firefox
+  windows are at least 500 px wide (phone widths are a manual check),
+  synthetic simulator taps do not open SwiftUI menu pickers, and Tailscale
+  SSH to `ubuntu-vm` needed re-authentication (Phase 7).
 - **Optional for the owner:** allow remote automation in Safari's Developer
   settings for `DBW_WEBDRIVER=safari make tour-web`.
-- **Tools added:** geckodriver (the web tour in `make check`; CI installs it)
-  and poppler (`pdftotext`, for research PDFs). `.claude/` is gitignored.
-- **Surprises:** Distribute App reported an error right after creating the
-  App Store Connect record; `make testflight` a minute later worked
-  (docs/release.md). Synthetic simulator taps do not open SwiftUI menu
-  pickers. Firefox windows are at least 500 px wide, so phone widths stay a
-  manual check. Colima does not mount `/private/tmp`; Tailscale SSH to
-  `ubuntu-vm` needed re-authentication (Phase 7).
 - **Owner to confirm when convenient:** D34's note about adding
   daybyword.com's entry to `ubuntu-vm-backup`. Design canvas:
   https://claude.ai/artifact/4YtusMm1DX7achVUPS67Lf (private).

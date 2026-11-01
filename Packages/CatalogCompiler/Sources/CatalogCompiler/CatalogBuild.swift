@@ -4,7 +4,8 @@ import ReadingEngine
 
 /// Writes a compiled catalog database.
 ///
-/// For now this checks the book registry (`scripture/books.json`) and writes
+/// For now this checks the book registry (`scripture/books.json`) and the
+/// versification schemes (`scripture/versification/`) and writes
 /// only the catalog's metadata, so that the app and the server can be wired
 /// to a real `Catalog.sqlite` from the start. Plans, the rest of validation,
 /// and calendars arrive with BUILD.md Phase 4 (P4.3).
@@ -23,7 +24,8 @@ public enum CatalogBuild {
     /// it to `output`, replacing any file there only once the new one is
     /// complete. A source that fails its checks writes nothing.
     public static func write(from source: URL, to output: URL, mode: Mode) throws {
-        _ = try readRegistry(from: source)
+        let registry = try readRegistry(from: source)
+        _ = try readVersifications(from: source, registry: registry)
         let fileManager = FileManager.default
         try fileManager.createDirectory(
             at: output.deletingLastPathComponent(),
@@ -71,6 +73,31 @@ public enum CatalogBuild {
         } catch let error as BookRegistryError {
             throw CatalogError(file: url, problem: error.description)
         }
+    }
+
+    /// Reads every versification scheme under `source` and checks each against
+    /// the registry.
+    public static func readVersifications(
+        from source: URL, registry: BookRegistry
+    ) throws -> [Versification.Scheme: Versification] {
+        var schemes: [Versification.Scheme: Versification] = [:]
+        for scheme in Versification.Scheme.allCases {
+            let url = source.appending(path: "scripture/versification/\(scheme.rawValue).tsv")
+            let text: String
+            do {
+                text = try String(contentsOf: url, encoding: .utf8)
+            } catch {
+                throw CatalogError(file: url, problem: "cannot be read (\(error.localizedDescription))")
+            }
+            do {
+                let versification = try Versification(scheme: scheme, tsv: text)
+                try versification.check(against: registry)
+                schemes[scheme] = versification
+            } catch let error as VersificationError {
+                throw CatalogError(file: url, problem: error.description)
+            }
+        }
+        return schemes
     }
 
     /// The metadata written into every catalog, in a fixed order so that two

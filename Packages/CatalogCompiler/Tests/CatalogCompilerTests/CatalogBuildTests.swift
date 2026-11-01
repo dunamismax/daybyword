@@ -37,6 +37,31 @@ func temporaryDirectory() -> URL {
     #expect(registry.canons.map(\.id) == ["protestant", "catholic"])
 }
 
+@Test func readsTheRepositorysVersifications() throws {
+    let registry = try CatalogBuild.readRegistry(from: catalogSource)
+    let schemes = try CatalogBuild.readVersifications(from: catalogSource, registry: registry)
+    #expect(schemes.keys.sorted { $0.rawValue < $1.rawValue } == [.english])
+}
+
+@Test func aBrokenVersificationWritesNothing() throws {
+    let directory = temporaryDirectory()
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let source = directory.appending(path: "catalog")
+    let scripture = source.appending(path: "scripture")
+    try FileManager.default.createDirectory(
+        at: scripture.appending(path: "versification"), withIntermediateDirectories: true)
+    try FileManager.default.copyItem(
+        at: catalogSource.appending(path: "scripture/books.json"), to: scripture.appending(path: "books.json"))
+    try Data("GEN\t1\t31\n".utf8).write(to: scripture.appending(path: "versification/english.tsv"))
+    let output = directory.appendingPathComponent("Catalog.sqlite")
+
+    let error = #expect(throws: CatalogError.self) {
+        try CatalogBuild.write(from: source, to: output, mode: .development)
+    }
+    #expect(error?.problem == "EXO, a book of the protestant canon, is not numbered")
+    #expect(!FileManager.default.fileExists(atPath: output.path))
+}
+
 @Test func aBrokenRegistryWritesNothing() throws {
     let directory = temporaryDirectory()
     defer { try? FileManager.default.removeItem(at: directory) }

@@ -466,3 +466,31 @@ the deuterocanonical books; keeping orders apart from membership lets one
 canon be printed in more than one way without disagreement about what it
 contains; and showing a full name rather than an unsourced abbreviation keeps
 to D20's rule that facts are cited. The Greek Orthodox order is P3.1b.
+
+### E28. Versification: one file per scheme, counted from public-domain texts
+
+*2026-11-01, agent.* Each versification scheme is a plain file in
+`catalog/scripture/versification/`, one line per book: its USFM id, its first
+chapter, and each chapter's verses as a count or, where a chapter does not
+start at verse 1, a range (the King James Rest of Esther starts at 10:4).
+`Versification` in `ReadingEngine` reads it, and the catalog compiler checks
+that every book it numbers is registered and every book a canon lists is
+numbered (material a canon includes inside another book, such as the Letter
+of Jeremiah as Baruch 6, may be numbered as part of that book).
+
+The English (KJV) scheme is counted from eBible.org's public-domain 1769
+King James Version, with Apocrypha, by `scripts/versification.swift
+generate`; `compare` lists every difference from the World English Bible and
+from TVTMS's tests (catalog/SOURCES.md). The script reads downloads in the
+gitignored `research/` folder, so it is run when the counts are regenerated,
+not by `make check`; the tests pin the totals (1,189 chapters and 31,102
+verses for the 66 books) and the places where schemes differ.
+
+Hebrew, Greek, and Latin numbering will be mappings from TVTMS (P3.2b), kept
+as data derived from it under CC BY 4.0. The TVTMS file itself is never
+committed or served, as its header asks.
+
+**Why:** a count is a fact about a text's divisions, so counting from a
+public-domain text and checking against two independent sources gives cited
+numbers without copying anyone's table; and a file per scheme keeps each
+scheme's differences reviewable line by line.
