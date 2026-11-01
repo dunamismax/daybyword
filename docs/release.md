@@ -12,8 +12,18 @@ to the App Store. The web is deployed separately (`docs/deploy.md`).
 - **`apple/Config/Secrets.xcconfig`**, gitignored, with
   `DEVELOPMENT_TEAM = D9QMP3LP8H`. Copy `Secrets.example.xcconfig` to make
   it.
-- **The App Store Connect record** for bundle ID `com.daybyword.app` (D1):
-  name *Day by Word*, primary language English (U.S.), SKU `daybyword`.
+- **The App Store Connect record** for bundle ID `com.daybyword.app` (D1),
+  Apple ID 6829425132, created on 2026-11-01 by Xcode's Distribute App
+  flow: primary language English (U.S.) and SKU `com.daybyword.app` (the
+  SKU is internal and can never change). Xcode named the record
+  *DayByWord* after the product name; App Information now gives the name
+  *Day by Word* and the subtitle *Your Bible reading companion*.
+  If Distribute App reports `DistributionAppRecordProviderError` right after
+  creating a record, the record exists but App Store Connect has not caught
+  up yet: run `make testflight` again a minute later.
+- **An internal TestFlight group**, *Owner* (TestFlight → Internal
+  Testing), with automatic distribution on, holding the owner's two Apple
+  IDs, so every processed Xcode build reaches the owner's devices.
 - **An app icon** (D19). The owner's requested 2026-11-01 artwork batch is
   registered as `AppIcon` in `apple/App/Resources/Brand.xcassets`, with
   light, dark, and grayscale tinted appearances. The 1024 px originals
