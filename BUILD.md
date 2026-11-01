@@ -115,7 +115,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
-| 3 | Scripture references | M1 Foundation | 8 | 7 |
+| 3 | Scripture references | M1 Foundation | 8 | 8 |
 | 4 | The catalog | M1 Foundation | 8 | 0 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
@@ -416,29 +416,7 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 3: Scripture references
 
-All of this lives in `ReadingEngine`, with table-driven tests that run on
-macOS and Linux. It covers what the 1.0 plans need: English (KJV)
-versification and one strict reference format (D39). Other canons'
-orders, other versifications, Psalm renumbering, and a parser for other
-sources' citation styles are in [docs/roadmap.md](docs/roadmap.md).
-
-- [x] **P3.1** The book registry in `catalog/scripture/books.json`: USFM ids, the Protestant and Catholic canons with their printed orders, names and abbreviations under each naming convention (D29), and their sources. Rewritten by D39 (2026-11-01): the Greek Orthodox order (P3.1b) moved to the roadmap.
-  - [x] **P3.1a** The registry with the Protestant and Catholic canons, names, and abbreviations.
-    - *Result (agent, 2026-11-01):* 78 books (66, the seven deuterocanonical books, and the five Greek additions as `includes` of Esther, Baruch, and Daniel), read and checked by `BookRegistry` and refused by `make catalog` when broken (E27). The Catholic canon has two printed orders, because the sources differ on where 1 and 2 Maccabees stand.
-- [x] **P3.2 [RIGHTS]** Versification: the English (KJV) scheme's chapter and verse counts, with attribution for every source in `catalog/SOURCES.md`. Rewritten by D39 (2026-11-01): the Hebrew, Greek, and Latin schemes (P3.2b) moved to the roadmap.
-  - [x] **P3.2a** The English (KJV) scheme, with every difference from two independent sources listed.
-    - *Result (agent, 2026-11-01):* `catalog/scripture/versification/english.tsv` (77 books; the Letter of Jeremiah is Baruch 6 there), counted from eBible.org's public-domain 1769 KJV by `scripts/versification.swift`, read by `Versification` and checked by the compiler (E28). The 66 books have 1,189 chapters and 31,102 verses. Differences from the WEB and TVTMS are explained in `catalog/SOURCES.md`.
-- [x] **P3.3** The reference model: a passage (book, start chapter and verse, end chapter and verse) under the English scheme; a reading as one or more passages; whole chapters, and ranges across chapters. *(Rewritten by D39; partial, optional, and alternative verses are P28.2.)*
-  - *Result (agent, 2026-11-01):* `Passage` and `Reading` in `ReadingEngine` (E30), checked against the scheme as they are made, with verse counts and a whole-chapters test.
-- [x] **P3.4** The plan-file reference format and the formatter: one strict, documented format for plan files (for example `JHN 3:1-21`, `GEN 1-2`, `PSA 119:1-24; PSA 120`) that the compiler reads and checks against the English scheme, and a formatter that shows a reading under the reader's naming convention ("John 3:1–21", "Psalm 119:1–24") in full and abbreviated forms, with table-driven cases, including every way a line can be wrong. *(Rewritten by D39; a parser for other citation styles is P28.1.)*
-  - *Result (agent, 2026-11-01):* `ReferenceFormat` reads and writes the format and `ReferenceFormatter` shows it (E30), with cases for each way a line can be wrong. The compiler calls it once it reads plan files (P4.3).
-- [x] **P3.5** Verse sets: union, intersection, and difference of passages, giving unique coverage, repeats, and partly read chapters. This underlies coverage (P4.4, P11.4).
-  - *Result (agent, 2026-11-01):* `VerseSet` keeps each book as runs of verse positions (`Versification.position(of:in:)`), with repeats, the fewest passages that write a set, and whole or partial chapters; checked against a plain set over 500 seeded cases.
-- [x] **P3.6 [RIGHTS]** Word counts per verse from one cleared public-domain text (BSB or WEB, Research finding 5), stored as numbers only and never as text (D13), with the counting method documented.
-  - *Result (agent, 2026-11-01):* `catalog/scripture/words/web.tsv`, counted from the public-domain WEB by `scripts/wordcounts.swift` (method in its header and E31), read by `WordCounts` and checked by the compiler; the 66 books have 754,449 words. `web-ebible` is `cleared` for word counts. The deuterocanonical books wait for P10.12.
-- [x] **P3.7** Workload estimates: minutes from words at 238 a minute silent and 183 aloud (Research finding 6), shown as a rounded range with the plain caveat that reflection, reading aloud, and listening change them. Add the minimum, median, and maximum per plan.
-  - *Result (agent, 2026-11-01):* `Workload` gives minutes silent to aloud, rounded to the minute below 20 and to 5 above; `PlanWorkload` gives a plan's minimum, median, and maximum. The interface adds docs/product.md's caveat ("Estimates vary.") where it shows them (P8.2, P9.4), and the compiler records each plan's figures once it compiles plans (P4.3).
-- [ ] **P3.9** Write `docs/scripture.md`, briefly: books, canons, names, versification, the reference format, verse sets, word counts, and their sources, with STEP Bible credited.
+Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 4: The catalog
 

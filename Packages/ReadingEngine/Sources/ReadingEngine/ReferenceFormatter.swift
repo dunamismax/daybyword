@@ -2,8 +2,8 @@
 /// (D29): "John 3:1–21", "Genesis 1–2", "Psalm 119:1–24; Psalm 120", or,
 /// abbreviated, "Gen 1–2". Ranges take an en dash. Whole chapters are shown
 /// as chapters, a single psalm is "Psalm", and a one-chapter book is cited by
-/// its verses alone ("Jude 3–5", or "Jude" for the whole book), as the SBL
-/// Handbook does (docs/decisions.md E30).
+/// its verses alone ("Jude 3–5", or "Jude" for the whole book), by app
+/// convention (docs/decisions.md E30).
 public struct ReferenceFormatter: Sendable {
     public enum Style: Sendable {
         case full

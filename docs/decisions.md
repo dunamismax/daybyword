@@ -548,10 +548,11 @@ ids, `GEN 1`, `GEN 1-2`, `JHN 3:16`, `JHN 3:1-21`, `JHN 3:16-4:3`, joined by
 longer than it needs to be (`GEN 2-2`, `JHN 3:1-3:21`). The reader sees
 `ReferenceFormatter`'s wording under their naming convention (D29), with an
 en dash: whole chapters as chapters, a single psalm as "Psalm", and a
-one-chapter book by its verses alone ("Jude 3–5", or "Jude" for all of it),
-as the SBL Handbook cites them. Repeating the book name before each
-passage ("Psalm 119:1–24; Psalm 120") is an app convention, chosen for a
-reader finding the place in print.
+one-chapter book by its verses alone ("Jude 3–5", or "Jude" for all of it).
+The last two, and repeating the book name before each passage ("Psalm
+119:1–24; Psalm 120"), are app conventions, not rules from a cited source:
+a one-chapter book has no chapter to look for, and a reader finding the
+place in print is helped by the book's name each time.
 
 **Why:** storing verses gives every later step (verse sets, word counts,
 coverage, links into Bible apps) one shape to work with and makes equal
