@@ -1,0 +1,67 @@
+{
+  "about" : "Text, and whether it is a plan id (docs/urls.md).",
+  "cases" : [
+    {
+      "input" : "gospels-at-your-pace",
+      "output" : true
+    },
+    {
+      "input" : "mcheyne-1842",
+      "output" : true
+    },
+    {
+      "input" : "a",
+      "output" : true
+    },
+    {
+      "input" : "psalm-a-day",
+      "output" : true
+    },
+    {
+      "input" : "Psalm-a-day",
+      "output" : false
+    },
+    {
+      "input" : "-psalm",
+      "output" : false
+    },
+    {
+      "input" : "psalm-",
+      "output" : false
+    },
+    {
+      "input" : "psalm--a-day",
+      "output" : false
+    },
+    {
+      "input" : "psalm_a_day",
+      "output" : false
+    },
+    {
+      "input" : "psalm a day",
+      "output" : false
+    },
+    {
+      "input" : "",
+      "output" : false
+    },
+    {
+      "input" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "output" : true
+    },
+    {
+      "input" : "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "output" : false
+    },
+    {
+      "input" : "plan-é",
+      "output" : false
+    },
+    {
+      "input" : "1662",
+      "output" : true
+    }
+  ],
+  "fixture" : "plan-ids",
+  "version" : 1
+}

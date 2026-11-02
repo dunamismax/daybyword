@@ -1,0 +1,39 @@
+{
+  "fixture": "settings",
+  "version": 1,
+  "about": "The settings each client keeps only on the reader's device: the values, the default (which is stored as no value), the web form field and localStorage key, and the app's UserDefaults key. The app also keeps its navigation in SceneStorage under \"navigation\".",
+  "settings": [
+    {
+      "name": "appearance",
+      "values": [
+        "automatic",
+        "light",
+        "dark"
+      ],
+      "defaultValue": "automatic",
+      "web": {
+        "field": "appearance",
+        "storageKey": "dbw.appearance"
+      },
+      "app": {
+        "storageKey": "appearance"
+      }
+    },
+    {
+      "name": "reference-size",
+      "values": [
+        "standard",
+        "larger",
+        "largest"
+      ],
+      "defaultValue": "standard",
+      "web": {
+        "field": "reference-size",
+        "storageKey": "dbw.reference-size"
+      },
+      "app": {
+        "storageKey": "referenceSize"
+      }
+    }
+  ]
+}

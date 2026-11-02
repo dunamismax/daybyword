@@ -1,0 +1,161 @@
+{
+  "about" : "A reading's word count and its estimated minutes, read silently (238 words a minute) and aloud (183), and the range the reader sees.",
+  "cases" : [
+    {
+      "input" : 0,
+      "output" : {
+        "aloudMinutes" : 0,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 0
+      }
+    },
+    {
+      "input" : 1,
+      "output" : {
+        "aloudMinutes" : 0.00546448087431694,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 0.004201680672268907
+      }
+    },
+    {
+      "input" : 25,
+      "output" : {
+        "aloudMinutes" : 0.1366120218579235,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 0.10504201680672269
+      }
+    },
+    {
+      "input" : 119,
+      "output" : {
+        "aloudMinutes" : 0.6502732240437158,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 0.5
+      }
+    },
+    {
+      "input" : 120,
+      "output" : {
+        "aloudMinutes" : 0.6557377049180327,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 0.5042016806722689
+      }
+    },
+    {
+      "input" : 238,
+      "output" : {
+        "aloudMinutes" : 1.3005464480874316,
+        "minutes" : [
+          1,
+          1
+        ],
+        "silentMinutes" : 1
+      }
+    },
+    {
+      "input" : 400,
+      "output" : {
+        "aloudMinutes" : 2.185792349726776,
+        "minutes" : [
+          2,
+          2
+        ],
+        "silentMinutes" : 1.680672268907563
+      }
+    },
+    {
+      "input" : 500,
+      "output" : {
+        "aloudMinutes" : 2.73224043715847,
+        "minutes" : [
+          2,
+          3
+        ],
+        "silentMinutes" : 2.100840336134454
+      }
+    },
+    {
+      "input" : 2067,
+      "output" : {
+        "aloudMinutes" : 11.295081967213115,
+        "minutes" : [
+          9,
+          11
+        ],
+        "silentMinutes" : 8.684873949579831
+      }
+    },
+    {
+      "input" : 2380,
+      "output" : {
+        "aloudMinutes" : 13.005464480874316,
+        "minutes" : [
+          10,
+          13
+        ],
+        "silentMinutes" : 10
+      }
+    },
+    {
+      "input" : 4000,
+      "output" : {
+        "aloudMinutes" : 21.85792349726776,
+        "minutes" : [
+          17,
+          20
+        ],
+        "silentMinutes" : 16.80672268907563
+      }
+    },
+    {
+      "input" : 4500,
+      "output" : {
+        "aloudMinutes" : 24.59016393442623,
+        "minutes" : [
+          19,
+          25
+        ],
+        "silentMinutes" : 18.907563025210084
+      }
+    },
+    {
+      "input" : 4760,
+      "output" : {
+        "aloudMinutes" : 26.010928961748633,
+        "minutes" : [
+          20,
+          25
+        ],
+        "silentMinutes" : 20
+      }
+    },
+    {
+      "input" : 9000,
+      "output" : {
+        "aloudMinutes" : 49.18032786885246,
+        "minutes" : [
+          40,
+          50
+        ],
+        "silentMinutes" : 37.81512605042017
+      }
+    }
+  ],
+  "fixture" : "workload",
+  "version" : 1
+}

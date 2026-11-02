@@ -1,0 +1,2005 @@
+{
+  "about" : "Every registered book under the English (KJV) scheme: chapters, verses, WEB words, and names in each convention; and each canon's books, orders, and totals.",
+  "cases" : [
+    {
+      "input" : "english",
+      "output" : {
+        "books" : [
+          {
+            "chapters" : [
+              1,
+              50
+            ],
+            "id" : "GEN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Gen",
+                "name" : "Genesis"
+              },
+              "douay" : {
+                "abbreviation" : "Gen",
+                "name" : "Genesis"
+              },
+              "kjv" : {
+                "abbreviation" : "Gen",
+                "name" : "Genesis"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1533,
+            "words" : 35871
+          },
+          {
+            "chapters" : [
+              1,
+              40
+            ],
+            "id" : "EXO",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Exod",
+                "name" : "Exodus"
+              },
+              "douay" : {
+                "abbreviation" : "Exod",
+                "name" : "Exodus"
+              },
+              "kjv" : {
+                "abbreviation" : "Exod",
+                "name" : "Exodus"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1213,
+            "words" : 30626
+          },
+          {
+            "chapters" : [
+              1,
+              27
+            ],
+            "id" : "LEV",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Lev",
+                "name" : "Leviticus"
+              },
+              "douay" : {
+                "abbreviation" : "Lev",
+                "name" : "Leviticus"
+              },
+              "kjv" : {
+                "abbreviation" : "Lev",
+                "name" : "Leviticus"
+              }
+            },
+            "testament" : "old",
+            "verses" : 859,
+            "words" : 23234
+          },
+          {
+            "chapters" : [
+              1,
+              36
+            ],
+            "id" : "NUM",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Num",
+                "name" : "Numbers"
+              },
+              "douay" : {
+                "abbreviation" : "Num",
+                "name" : "Numbers"
+              },
+              "kjv" : {
+                "abbreviation" : "Num",
+                "name" : "Numbers"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1288,
+            "words" : 30868
+          },
+          {
+            "chapters" : [
+              1,
+              34
+            ],
+            "id" : "DEU",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Deut",
+                "name" : "Deuteronomy"
+              },
+              "douay" : {
+                "abbreviation" : "Deut",
+                "name" : "Deuteronomy"
+              },
+              "kjv" : {
+                "abbreviation" : "Deut",
+                "name" : "Deuteronomy"
+              }
+            },
+            "testament" : "old",
+            "verses" : 959,
+            "words" : 26917
+          },
+          {
+            "chapters" : [
+              1,
+              24
+            ],
+            "id" : "JOS",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Josh",
+                "name" : "Joshua"
+              },
+              "douay" : {
+                "name" : "Josue"
+              },
+              "kjv" : {
+                "abbreviation" : "Josh",
+                "name" : "Joshua"
+              }
+            },
+            "testament" : "old",
+            "verses" : 658,
+            "words" : 17657
+          },
+          {
+            "chapters" : [
+              1,
+              21
+            ],
+            "id" : "JDG",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Judg",
+                "name" : "Judges"
+              },
+              "douay" : {
+                "abbreviation" : "Judg",
+                "name" : "Judges"
+              },
+              "kjv" : {
+                "abbreviation" : "Judg",
+                "name" : "Judges"
+              }
+            },
+            "testament" : "old",
+            "verses" : 618,
+            "words" : 17838
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "RUT",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Ruth",
+                "name" : "Ruth"
+              },
+              "douay" : {
+                "abbreviation" : "Ruth",
+                "name" : "Ruth"
+              },
+              "kjv" : {
+                "abbreviation" : "Ruth",
+                "name" : "Ruth"
+              }
+            },
+            "testament" : "old",
+            "verses" : 85,
+            "words" : 2425
+          },
+          {
+            "chapters" : [
+              1,
+              31
+            ],
+            "id" : "1SA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Sam",
+                "name" : "1 Samuel"
+              },
+              "douay" : {
+                "name" : "1 Kings"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Sam",
+                "name" : "1 Samuel"
+              }
+            },
+            "testament" : "old",
+            "verses" : 810,
+            "words" : 23477
+          },
+          {
+            "chapters" : [
+              1,
+              24
+            ],
+            "id" : "2SA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Sam",
+                "name" : "2 Samuel"
+              },
+              "douay" : {
+                "name" : "2 Kings"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Sam",
+                "name" : "2 Samuel"
+              }
+            },
+            "testament" : "old",
+            "verses" : 695,
+            "words" : 19470
+          },
+          {
+            "chapters" : [
+              1,
+              22
+            ],
+            "id" : "1KI",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Kgs",
+                "name" : "1 Kings"
+              },
+              "douay" : {
+                "name" : "3 Kings"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Kgs",
+                "name" : "1 Kings"
+              }
+            },
+            "testament" : "old",
+            "verses" : 816,
+            "words" : 22993
+          },
+          {
+            "chapters" : [
+              1,
+              25
+            ],
+            "id" : "2KI",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Kgs",
+                "name" : "2 Kings"
+              },
+              "douay" : {
+                "name" : "4 Kings"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Kgs",
+                "name" : "2 Kings"
+              }
+            },
+            "testament" : "old",
+            "verses" : 719,
+            "words" : 22149
+          },
+          {
+            "chapters" : [
+              1,
+              29
+            ],
+            "id" : "1CH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Chr",
+                "name" : "1 Chronicles"
+              },
+              "douay" : {
+                "name" : "1 Paralipomenon"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Chr",
+                "name" : "1 Chronicles"
+              }
+            },
+            "testament" : "old",
+            "verses" : 942,
+            "words" : 19148
+          },
+          {
+            "chapters" : [
+              1,
+              36
+            ],
+            "id" : "2CH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Chr",
+                "name" : "2 Chronicles"
+              },
+              "douay" : {
+                "name" : "2 Paralipomenon"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Chr",
+                "name" : "2 Chronicles"
+              }
+            },
+            "testament" : "old",
+            "verses" : 822,
+            "words" : 24538
+          },
+          {
+            "chapters" : [
+              1,
+              10
+            ],
+            "id" : "EZR",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Ezra",
+                "name" : "Ezra"
+              },
+              "douay" : {
+                "name" : "1 Esdras"
+              },
+              "kjv" : {
+                "abbreviation" : "Ezra",
+                "name" : "Ezra"
+              }
+            },
+            "testament" : "old",
+            "verses" : 280,
+            "words" : 7055
+          },
+          {
+            "chapters" : [
+              1,
+              13
+            ],
+            "id" : "NEH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Neh",
+                "name" : "Nehemiah"
+              },
+              "douay" : {
+                "name" : "2 Esdras"
+              },
+              "kjv" : {
+                "abbreviation" : "Neh",
+                "name" : "Nehemiah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 406,
+            "words" : 10006
+          },
+          {
+            "chapters" : [
+              1,
+              14
+            ],
+            "id" : "TOB",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Tob",
+                "name" : "Tobit"
+              },
+              "douay" : {
+                "name" : "Tobias"
+              },
+              "kjv" : {
+                "abbreviation" : "Tob",
+                "name" : "Tobit"
+              }
+            },
+            "testament" : "old",
+            "verses" : 244
+          },
+          {
+            "chapters" : [
+              1,
+              16
+            ],
+            "id" : "JDT",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Jdt",
+                "name" : "Judith"
+              },
+              "douay" : {
+                "abbreviation" : "Jdt",
+                "name" : "Judith"
+              },
+              "kjv" : {
+                "abbreviation" : "Jdt",
+                "name" : "Judith"
+              }
+            },
+            "testament" : "old",
+            "verses" : 339
+          },
+          {
+            "chapters" : [
+              1,
+              10
+            ],
+            "id" : "EST",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Esth",
+                "name" : "Esther"
+              },
+              "douay" : {
+                "abbreviation" : "Esth",
+                "name" : "Esther"
+              },
+              "kjv" : {
+                "abbreviation" : "Esth",
+                "name" : "Esther"
+              }
+            },
+            "testament" : "old",
+            "verses" : 167,
+            "words" : 5495
+          },
+          {
+            "chapters" : [
+              10,
+              16
+            ],
+            "id" : "ESG",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Add Esth",
+                "name" : "Additions to Esther"
+              },
+              "douay" : {
+                "abbreviation" : "Add Esth",
+                "name" : "Additions to Esther"
+              },
+              "kjv" : {
+                "name" : "Rest of Esther"
+              }
+            },
+            "testament" : "old",
+            "verses" : 105
+          },
+          {
+            "chapters" : [
+              1,
+              16
+            ],
+            "id" : "1MA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Macc",
+                "name" : "1 Maccabees"
+              },
+              "douay" : {
+                "name" : "1 Machabees"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Macc",
+                "name" : "1 Maccabees"
+              }
+            },
+            "testament" : "old",
+            "verses" : 924
+          },
+          {
+            "chapters" : [
+              1,
+              15
+            ],
+            "id" : "2MA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Macc",
+                "name" : "2 Maccabees"
+              },
+              "douay" : {
+                "name" : "2 Machabees"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Macc",
+                "name" : "2 Maccabees"
+              }
+            },
+            "testament" : "old",
+            "verses" : 555
+          },
+          {
+            "chapters" : [
+              1,
+              42
+            ],
+            "id" : "JOB",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Job",
+                "name" : "Job"
+              },
+              "douay" : {
+                "abbreviation" : "Job",
+                "name" : "Job"
+              },
+              "kjv" : {
+                "abbreviation" : "Job",
+                "name" : "Job"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1070,
+            "words" : 17670
+          },
+          {
+            "chapters" : [
+              1,
+              150
+            ],
+            "id" : "PSA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Ps",
+                "name" : "Psalms"
+              },
+              "douay" : {
+                "abbreviation" : "Ps",
+                "name" : "Psalms"
+              },
+              "kjv" : {
+                "abbreviation" : "Ps",
+                "name" : "Psalms"
+              }
+            },
+            "testament" : "old",
+            "verses" : 2461,
+            "words" : 41430
+          },
+          {
+            "chapters" : [
+              1,
+              31
+            ],
+            "id" : "PRO",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Prov",
+                "name" : "Proverbs"
+              },
+              "douay" : {
+                "abbreviation" : "Prov",
+                "name" : "Proverbs"
+              },
+              "kjv" : {
+                "abbreviation" : "Prov",
+                "name" : "Proverbs"
+              }
+            },
+            "testament" : "old",
+            "verses" : 915,
+            "words" : 14522
+          },
+          {
+            "chapters" : [
+              1,
+              12
+            ],
+            "id" : "ECC",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Eccl",
+                "name" : "Ecclesiastes"
+              },
+              "douay" : {
+                "abbreviation" : "Eccl",
+                "name" : "Ecclesiastes"
+              },
+              "kjv" : {
+                "abbreviation" : "Eccl",
+                "name" : "Ecclesiastes"
+              }
+            },
+            "testament" : "old",
+            "verses" : 222,
+            "words" : 5503
+          },
+          {
+            "chapters" : [
+              1,
+              8
+            ],
+            "id" : "SNG",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Song",
+                "name" : "Song of Songs"
+              },
+              "douay" : {
+                "abbreviation" : "Cant",
+                "name" : "Canticle of Canticles"
+              },
+              "kjv" : {
+                "abbreviation" : "Song",
+                "name" : "Song of Solomon"
+              }
+            },
+            "testament" : "old",
+            "verses" : 117,
+            "words" : 2560
+          },
+          {
+            "chapters" : [
+              1,
+              19
+            ],
+            "id" : "WIS",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Wis",
+                "name" : "Wisdom"
+              },
+              "douay" : {
+                "abbreviation" : "Wis",
+                "name" : "Wisdom"
+              },
+              "kjv" : {
+                "abbreviation" : "Wis",
+                "name" : "Wisdom"
+              }
+            },
+            "testament" : "old",
+            "verses" : 436
+          },
+          {
+            "chapters" : [
+              1,
+              51
+            ],
+            "id" : "SIR",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Sir",
+                "name" : "Sirach"
+              },
+              "douay" : {
+                "abbreviation" : "Sir",
+                "name" : "Ecclesiasticus"
+              },
+              "kjv" : {
+                "abbreviation" : "Sir",
+                "name" : "Ecclesiasticus"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1393
+          },
+          {
+            "chapters" : [
+              1,
+              66
+            ],
+            "id" : "ISA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Isa",
+                "name" : "Isaiah"
+              },
+              "douay" : {
+                "name" : "Isaias"
+              },
+              "kjv" : {
+                "abbreviation" : "Isa",
+                "name" : "Isaiah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1292,
+            "words" : 35264
+          },
+          {
+            "chapters" : [
+              1,
+              52
+            ],
+            "id" : "JER",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Jer",
+                "name" : "Jeremiah"
+              },
+              "douay" : {
+                "name" : "Jeremias"
+              },
+              "kjv" : {
+                "abbreviation" : "Jer",
+                "name" : "Jeremiah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1364,
+            "words" : 40661
+          },
+          {
+            "chapters" : [
+              1,
+              5
+            ],
+            "id" : "LAM",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Lam",
+                "name" : "Lamentations"
+              },
+              "douay" : {
+                "abbreviation" : "Lam",
+                "name" : "Lamentations"
+              },
+              "kjv" : {
+                "abbreviation" : "Lam",
+                "name" : "Lamentations"
+              }
+            },
+            "testament" : "old",
+            "verses" : 154,
+            "words" : 3375
+          },
+          {
+            "chapters" : [
+              1,
+              6
+            ],
+            "id" : "BAR",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Bar",
+                "name" : "Baruch"
+              },
+              "douay" : {
+                "abbreviation" : "Bar",
+                "name" : "Baruch"
+              },
+              "kjv" : {
+                "abbreviation" : "Bar",
+                "name" : "Baruch"
+              }
+            },
+            "testament" : "old",
+            "verses" : 213
+          },
+          {
+            "id" : "LJE",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Ep Jer",
+                "name" : "Letter of Jeremiah"
+              },
+              "douay" : {
+                "abbreviation" : "Ep Jer",
+                "name" : "Letter of Jeremiah"
+              },
+              "kjv" : {
+                "abbreviation" : "Ep Jer",
+                "name" : "Epistle of Jeremiah"
+              }
+            },
+            "testament" : "old"
+          },
+          {
+            "chapters" : [
+              1,
+              48
+            ],
+            "id" : "EZK",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Ezek",
+                "name" : "Ezekiel"
+              },
+              "douay" : {
+                "name" : "Ezechiel"
+              },
+              "kjv" : {
+                "abbreviation" : "Ezek",
+                "name" : "Ezekiel"
+              }
+            },
+            "testament" : "old",
+            "verses" : 1273,
+            "words" : 37572
+          },
+          {
+            "chapters" : [
+              1,
+              12
+            ],
+            "id" : "DAN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Dan",
+                "name" : "Daniel"
+              },
+              "douay" : {
+                "abbreviation" : "Dan",
+                "name" : "Daniel"
+              },
+              "kjv" : {
+                "abbreviation" : "Dan",
+                "name" : "Daniel"
+              }
+            },
+            "testament" : "old",
+            "verses" : 357,
+            "words" : 11298
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "S3Y",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Sg Three",
+                "name" : "Song of the Three Young Men"
+              },
+              "douay" : {
+                "abbreviation" : "Sg Three",
+                "name" : "Song of the Three Young Men"
+              },
+              "kjv" : {
+                "name" : "Song of the Three Children"
+              }
+            },
+            "testament" : "old",
+            "verses" : 68
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "SUS",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Sus",
+                "name" : "Susanna"
+              },
+              "douay" : {
+                "abbreviation" : "Sus",
+                "name" : "Susanna"
+              },
+              "kjv" : {
+                "abbreviation" : "Sus",
+                "name" : "Susanna"
+              }
+            },
+            "testament" : "old",
+            "verses" : 64
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "BEL",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Bel",
+                "name" : "Bel and the Dragon"
+              },
+              "douay" : {
+                "abbreviation" : "Bel",
+                "name" : "Bel and the Dragon"
+              },
+              "kjv" : {
+                "abbreviation" : "Bel",
+                "name" : "Bel and the Dragon"
+              }
+            },
+            "testament" : "old",
+            "verses" : 42
+          },
+          {
+            "chapters" : [
+              1,
+              14
+            ],
+            "id" : "HOS",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Hos",
+                "name" : "Hosea"
+              },
+              "douay" : {
+                "name" : "Osee"
+              },
+              "kjv" : {
+                "abbreviation" : "Hos",
+                "name" : "Hosea"
+              }
+            },
+            "testament" : "old",
+            "verses" : 197,
+            "words" : 5013
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "JOL",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Joel",
+                "name" : "Joel"
+              },
+              "douay" : {
+                "abbreviation" : "Joel",
+                "name" : "Joel"
+              },
+              "kjv" : {
+                "abbreviation" : "Joel",
+                "name" : "Joel"
+              }
+            },
+            "testament" : "old",
+            "verses" : 73,
+            "words" : 1908
+          },
+          {
+            "chapters" : [
+              1,
+              9
+            ],
+            "id" : "AMO",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Amos",
+                "name" : "Amos"
+              },
+              "douay" : {
+                "abbreviation" : "Amos",
+                "name" : "Amos"
+              },
+              "kjv" : {
+                "abbreviation" : "Amos",
+                "name" : "Amos"
+              }
+            },
+            "testament" : "old",
+            "verses" : 146,
+            "words" : 3997
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "OBA",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Obad",
+                "name" : "Obadiah"
+              },
+              "douay" : {
+                "name" : "Abdias"
+              },
+              "kjv" : {
+                "abbreviation" : "Obad",
+                "name" : "Obadiah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 21,
+            "words" : 617
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "JON",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Jonah",
+                "name" : "Jonah"
+              },
+              "douay" : {
+                "name" : "Jonas"
+              },
+              "kjv" : {
+                "abbreviation" : "Jonah",
+                "name" : "Jonah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 48,
+            "words" : 1259
+          },
+          {
+            "chapters" : [
+              1,
+              7
+            ],
+            "id" : "MIC",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Mic",
+                "name" : "Micah"
+              },
+              "douay" : {
+                "name" : "Micheas"
+              },
+              "kjv" : {
+                "abbreviation" : "Mic",
+                "name" : "Micah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 105,
+            "words" : 2930
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "NAM",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Nah",
+                "name" : "Nahum"
+              },
+              "douay" : {
+                "abbreviation" : "Nah",
+                "name" : "Nahum"
+              },
+              "kjv" : {
+                "abbreviation" : "Nah",
+                "name" : "Nahum"
+              }
+            },
+            "testament" : "old",
+            "verses" : 47,
+            "words" : 1189
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "HAB",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Hab",
+                "name" : "Habakkuk"
+              },
+              "douay" : {
+                "name" : "Habacuc"
+              },
+              "kjv" : {
+                "abbreviation" : "Hab",
+                "name" : "Habakkuk"
+              }
+            },
+            "testament" : "old",
+            "verses" : 56,
+            "words" : 1372
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "ZEP",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Zeph",
+                "name" : "Zephaniah"
+              },
+              "douay" : {
+                "name" : "Sophonias"
+              },
+              "kjv" : {
+                "abbreviation" : "Zeph",
+                "name" : "Zephaniah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 53,
+            "words" : 1530
+          },
+          {
+            "chapters" : [
+              1,
+              2
+            ],
+            "id" : "HAG",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Hag",
+                "name" : "Haggai"
+              },
+              "douay" : {
+                "name" : "Aggeus"
+              },
+              "kjv" : {
+                "abbreviation" : "Hag",
+                "name" : "Haggai"
+              }
+            },
+            "testament" : "old",
+            "verses" : 38,
+            "words" : 1026
+          },
+          {
+            "chapters" : [
+              1,
+              14
+            ],
+            "id" : "ZEC",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Zech",
+                "name" : "Zechariah"
+              },
+              "douay" : {
+                "name" : "Zacharias"
+              },
+              "kjv" : {
+                "abbreviation" : "Zech",
+                "name" : "Zechariah"
+              }
+            },
+            "testament" : "old",
+            "verses" : 211,
+            "words" : 5958
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "MAL",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Mal",
+                "name" : "Malachi"
+              },
+              "douay" : {
+                "name" : "Malachias"
+              },
+              "kjv" : {
+                "abbreviation" : "Mal",
+                "name" : "Malachi"
+              }
+            },
+            "testament" : "old",
+            "verses" : 55,
+            "words" : 1672
+          },
+          {
+            "chapters" : [
+              1,
+              28
+            ],
+            "id" : "MAT",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Matt",
+                "name" : "Matthew"
+              },
+              "douay" : {
+                "abbreviation" : "Matt",
+                "name" : "Matthew"
+              },
+              "kjv" : {
+                "abbreviation" : "Matt",
+                "name" : "Matthew"
+              }
+            },
+            "testament" : "new",
+            "verses" : 1071,
+            "words" : 23023
+          },
+          {
+            "chapters" : [
+              1,
+              16
+            ],
+            "id" : "MRK",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Mark",
+                "name" : "Mark"
+              },
+              "douay" : {
+                "abbreviation" : "Mark",
+                "name" : "Mark"
+              },
+              "kjv" : {
+                "abbreviation" : "Mark",
+                "name" : "Mark"
+              }
+            },
+            "testament" : "new",
+            "verses" : 678,
+            "words" : 14379
+          },
+          {
+            "chapters" : [
+              1,
+              24
+            ],
+            "id" : "LUK",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Luke",
+                "name" : "Luke"
+              },
+              "douay" : {
+                "abbreviation" : "Luke",
+                "name" : "Luke"
+              },
+              "kjv" : {
+                "abbreviation" : "Luke",
+                "name" : "Luke"
+              }
+            },
+            "testament" : "new",
+            "verses" : 1151,
+            "words" : 24643
+          },
+          {
+            "chapters" : [
+              1,
+              21
+            ],
+            "id" : "JHN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "John",
+                "name" : "John"
+              },
+              "douay" : {
+                "abbreviation" : "John",
+                "name" : "John"
+              },
+              "kjv" : {
+                "abbreviation" : "John",
+                "name" : "John"
+              }
+            },
+            "testament" : "new",
+            "verses" : 879,
+            "words" : 18939
+          },
+          {
+            "chapters" : [
+              1,
+              28
+            ],
+            "id" : "ACT",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Acts",
+                "name" : "Acts"
+              },
+              "douay" : {
+                "abbreviation" : "Acts",
+                "name" : "Acts"
+              },
+              "kjv" : {
+                "abbreviation" : "Acts",
+                "name" : "Acts"
+              }
+            },
+            "testament" : "new",
+            "verses" : 1007,
+            "words" : 23266
+          },
+          {
+            "chapters" : [
+              1,
+              16
+            ],
+            "id" : "ROM",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Rom",
+                "name" : "Romans"
+              },
+              "douay" : {
+                "abbreviation" : "Rom",
+                "name" : "Romans"
+              },
+              "kjv" : {
+                "abbreviation" : "Rom",
+                "name" : "Romans"
+              }
+            },
+            "testament" : "new",
+            "verses" : 433,
+            "words" : 9542
+          },
+          {
+            "chapters" : [
+              1,
+              16
+            ],
+            "id" : "1CO",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Cor",
+                "name" : "1 Corinthians"
+              },
+              "douay" : {
+                "abbreviation" : "1 Cor",
+                "name" : "1 Corinthians"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Cor",
+                "name" : "1 Corinthians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 437,
+            "words" : 9501
+          },
+          {
+            "chapters" : [
+              1,
+              13
+            ],
+            "id" : "2CO",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Cor",
+                "name" : "2 Corinthians"
+              },
+              "douay" : {
+                "abbreviation" : "2 Cor",
+                "name" : "2 Corinthians"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Cor",
+                "name" : "2 Corinthians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 257,
+            "words" : 6116
+          },
+          {
+            "chapters" : [
+              1,
+              6
+            ],
+            "id" : "GAL",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Gal",
+                "name" : "Galatians"
+              },
+              "douay" : {
+                "abbreviation" : "Gal",
+                "name" : "Galatians"
+              },
+              "kjv" : {
+                "abbreviation" : "Gal",
+                "name" : "Galatians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 149,
+            "words" : 3150
+          },
+          {
+            "chapters" : [
+              1,
+              6
+            ],
+            "id" : "EPH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Eph",
+                "name" : "Ephesians"
+              },
+              "douay" : {
+                "abbreviation" : "Eph",
+                "name" : "Ephesians"
+              },
+              "kjv" : {
+                "abbreviation" : "Eph",
+                "name" : "Ephesians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 155,
+            "words" : 3095
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "PHP",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Phil",
+                "name" : "Philippians"
+              },
+              "douay" : {
+                "abbreviation" : "Phil",
+                "name" : "Philippians"
+              },
+              "kjv" : {
+                "abbreviation" : "Phil",
+                "name" : "Philippians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 104,
+            "words" : 2222
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "COL",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Col",
+                "name" : "Colossians"
+              },
+              "douay" : {
+                "abbreviation" : "Col",
+                "name" : "Colossians"
+              },
+              "kjv" : {
+                "abbreviation" : "Col",
+                "name" : "Colossians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 95,
+            "words" : 2003
+          },
+          {
+            "chapters" : [
+              1,
+              5
+            ],
+            "id" : "1TH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Thess",
+                "name" : "1 Thessalonians"
+              },
+              "douay" : {
+                "abbreviation" : "1 Thess",
+                "name" : "1 Thessalonians"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Thess",
+                "name" : "1 Thessalonians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 89,
+            "words" : 1854
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "2TH",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Thess",
+                "name" : "2 Thessalonians"
+              },
+              "douay" : {
+                "abbreviation" : "2 Thess",
+                "name" : "2 Thessalonians"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Thess",
+                "name" : "2 Thessalonians"
+              }
+            },
+            "testament" : "new",
+            "verses" : 47,
+            "words" : 1045
+          },
+          {
+            "chapters" : [
+              1,
+              6
+            ],
+            "id" : "1TI",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Tim",
+                "name" : "1 Timothy"
+              },
+              "douay" : {
+                "abbreviation" : "1 Tim",
+                "name" : "1 Timothy"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Tim",
+                "name" : "1 Timothy"
+              }
+            },
+            "testament" : "new",
+            "verses" : 113,
+            "words" : 2282
+          },
+          {
+            "chapters" : [
+              1,
+              4
+            ],
+            "id" : "2TI",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Tim",
+                "name" : "2 Timothy"
+              },
+              "douay" : {
+                "abbreviation" : "2 Tim",
+                "name" : "2 Timothy"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Tim",
+                "name" : "2 Timothy"
+              }
+            },
+            "testament" : "new",
+            "verses" : 83,
+            "words" : 1625
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "TIT",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Titus",
+                "name" : "Titus"
+              },
+              "douay" : {
+                "abbreviation" : "Titus",
+                "name" : "Titus"
+              },
+              "kjv" : {
+                "abbreviation" : "Titus",
+                "name" : "Titus"
+              }
+            },
+            "testament" : "new",
+            "verses" : 46,
+            "words" : 910
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "PHM",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Phlm",
+                "name" : "Philemon"
+              },
+              "douay" : {
+                "abbreviation" : "Phlm",
+                "name" : "Philemon"
+              },
+              "kjv" : {
+                "abbreviation" : "Phlm",
+                "name" : "Philemon"
+              }
+            },
+            "testament" : "new",
+            "verses" : 25,
+            "words" : 445
+          },
+          {
+            "chapters" : [
+              1,
+              13
+            ],
+            "id" : "HEB",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Heb",
+                "name" : "Hebrews"
+              },
+              "douay" : {
+                "abbreviation" : "Heb",
+                "name" : "Hebrews"
+              },
+              "kjv" : {
+                "abbreviation" : "Heb",
+                "name" : "Hebrews"
+              }
+            },
+            "testament" : "new",
+            "verses" : 303,
+            "words" : 6932
+          },
+          {
+            "chapters" : [
+              1,
+              5
+            ],
+            "id" : "JAS",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Jas",
+                "name" : "James"
+              },
+              "douay" : {
+                "abbreviation" : "Jas",
+                "name" : "James"
+              },
+              "kjv" : {
+                "abbreviation" : "Jas",
+                "name" : "James"
+              }
+            },
+            "testament" : "new",
+            "verses" : 108,
+            "words" : 2281
+          },
+          {
+            "chapters" : [
+              1,
+              5
+            ],
+            "id" : "1PE",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 Pet",
+                "name" : "1 Peter"
+              },
+              "douay" : {
+                "abbreviation" : "1 Pet",
+                "name" : "1 Peter"
+              },
+              "kjv" : {
+                "abbreviation" : "1 Pet",
+                "name" : "1 Peter"
+              }
+            },
+            "testament" : "new",
+            "verses" : 105,
+            "words" : 2437
+          },
+          {
+            "chapters" : [
+              1,
+              3
+            ],
+            "id" : "2PE",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 Pet",
+                "name" : "2 Peter"
+              },
+              "douay" : {
+                "abbreviation" : "2 Pet",
+                "name" : "2 Peter"
+              },
+              "kjv" : {
+                "abbreviation" : "2 Pet",
+                "name" : "2 Peter"
+              }
+            },
+            "testament" : "new",
+            "verses" : 61,
+            "words" : 1520
+          },
+          {
+            "chapters" : [
+              1,
+              5
+            ],
+            "id" : "1JN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "1 John",
+                "name" : "1 John"
+              },
+              "douay" : {
+                "abbreviation" : "1 John",
+                "name" : "1 John"
+              },
+              "kjv" : {
+                "abbreviation" : "1 John",
+                "name" : "1 John"
+              }
+            },
+            "testament" : "new",
+            "verses" : 105,
+            "words" : 2503
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "2JN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "2 John",
+                "name" : "2 John"
+              },
+              "douay" : {
+                "abbreviation" : "2 John",
+                "name" : "2 John"
+              },
+              "kjv" : {
+                "abbreviation" : "2 John",
+                "name" : "2 John"
+              }
+            },
+            "testament" : "new",
+            "verses" : 13,
+            "words" : 303
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "3JN",
+            "names" : {
+              "common" : {
+                "abbreviation" : "3 John",
+                "name" : "3 John"
+              },
+              "douay" : {
+                "abbreviation" : "3 John",
+                "name" : "3 John"
+              },
+              "kjv" : {
+                "abbreviation" : "3 John",
+                "name" : "3 John"
+              }
+            },
+            "testament" : "new",
+            "verses" : 14,
+            "words" : 296
+          },
+          {
+            "chapters" : [
+              1,
+              1
+            ],
+            "id" : "JUD",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Jude",
+                "name" : "Jude"
+              },
+              "douay" : {
+                "abbreviation" : "Jude",
+                "name" : "Jude"
+              },
+              "kjv" : {
+                "abbreviation" : "Jude",
+                "name" : "Jude"
+              }
+            },
+            "testament" : "new",
+            "verses" : 25,
+            "words" : 611
+          },
+          {
+            "chapters" : [
+              1,
+              22
+            ],
+            "id" : "REV",
+            "names" : {
+              "common" : {
+                "abbreviation" : "Rev",
+                "name" : "Revelation"
+              },
+              "douay" : {
+                "name" : "Apocalypse"
+              },
+              "kjv" : {
+                "abbreviation" : "Rev",
+                "name" : "Revelation"
+              }
+            },
+            "testament" : "new",
+            "verses" : 404,
+            "words" : 11433
+          }
+        ],
+        "canons" : [
+          {
+            "books" : [
+              "GEN",
+              "EXO",
+              "LEV",
+              "NUM",
+              "DEU",
+              "JOS",
+              "JDG",
+              "RUT",
+              "1SA",
+              "2SA",
+              "1KI",
+              "2KI",
+              "1CH",
+              "2CH",
+              "EZR",
+              "NEH",
+              "EST",
+              "JOB",
+              "PSA",
+              "PRO",
+              "ECC",
+              "SNG",
+              "ISA",
+              "JER",
+              "LAM",
+              "EZK",
+              "DAN",
+              "HOS",
+              "JOL",
+              "AMO",
+              "OBA",
+              "JON",
+              "MIC",
+              "NAM",
+              "HAB",
+              "ZEP",
+              "HAG",
+              "ZEC",
+              "MAL",
+              "MAT",
+              "MRK",
+              "LUK",
+              "JHN",
+              "ACT",
+              "ROM",
+              "1CO",
+              "2CO",
+              "GAL",
+              "EPH",
+              "PHP",
+              "COL",
+              "1TH",
+              "2TH",
+              "1TI",
+              "2TI",
+              "TIT",
+              "PHM",
+              "HEB",
+              "JAS",
+              "1PE",
+              "2PE",
+              "1JN",
+              "2JN",
+              "3JN",
+              "JUD",
+              "REV"
+            ],
+            "chapters" : 1189,
+            "id" : "protestant",
+            "orders" : {
+              "protestant" : 66
+            },
+            "verses" : 31102,
+            "words" : 754449
+          },
+          {
+            "books" : [
+              "GEN",
+              "EXO",
+              "LEV",
+              "NUM",
+              "DEU",
+              "JOS",
+              "JDG",
+              "RUT",
+              "1SA",
+              "2SA",
+              "1KI",
+              "2KI",
+              "1CH",
+              "2CH",
+              "EZR",
+              "NEH",
+              "TOB",
+              "JDT",
+              "EST",
+              "1MA",
+              "2MA",
+              "JOB",
+              "PSA",
+              "PRO",
+              "ECC",
+              "SNG",
+              "WIS",
+              "SIR",
+              "ISA",
+              "JER",
+              "LAM",
+              "BAR",
+              "EZK",
+              "DAN",
+              "HOS",
+              "JOL",
+              "AMO",
+              "OBA",
+              "JON",
+              "MIC",
+              "NAM",
+              "HAB",
+              "ZEP",
+              "HAG",
+              "ZEC",
+              "MAL",
+              "MAT",
+              "MRK",
+              "LUK",
+              "JHN",
+              "ACT",
+              "ROM",
+              "1CO",
+              "2CO",
+              "GAL",
+              "EPH",
+              "PHP",
+              "COL",
+              "1TH",
+              "2TH",
+              "1TI",
+              "2TI",
+              "TIT",
+              "PHM",
+              "HEB",
+              "JAS",
+              "1PE",
+              "2PE",
+              "1JN",
+              "2JN",
+              "3JN",
+              "JUD",
+              "REV"
+            ],
+            "chapters" : 1326,
+            "id" : "catholic",
+            "orders" : {
+              "usccb" : 73,
+              "vulgate" : 73
+            },
+            "verses" : 35206
+          }
+        ]
+      }
+    }
+  ],
+  "fixture" : "scripture",
+  "version" : 1
+}

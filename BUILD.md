@@ -113,7 +113,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
-| M | Astro/PostgreSQL alignment (first) | M0 Stack alignment | 9 | 0 |
+| M | Astro/PostgreSQL alignment (first) | M0 Stack alignment | 9 | 1 |
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
@@ -136,12 +136,11 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 19–28 | After 1.0 | roadmap | — | — |
 
 **Current state (2026-11-02):** Phases 0–4 completed the original Swift
-foundation. The code has not been rewritten: reference/workload code,
-schema-3 catalog compiler/reader and app/web shells exist; no plans,
-scheduling or journal yet. The previous handoff reports TestFlight build
-25 and no deployment; live services were not inspected here.
-**Next: PM.12**, following [docs/stack-migration.md](docs/stack-migration.md).
-The Next/Expo plan is withdrawn; this revision changes documentation only.
+foundation; PM.12 recorded its baseline and captured shared fixtures. The
+code is still SwiftUI/Hummingbird/SQLite: reference/workload code,
+schema-3 catalog compiler/reader and app/web shells; no plans, scheduling
+or journal yet, and nothing deployed. **Next: PM.13**, following
+[docs/stack-migration.md](docs/stack-migration.md).
 
 ---
 
@@ -421,7 +420,8 @@ in this planning session. Read docs/stack-migration.md and E33 first.
 Preserve the existing native app, source content and test oracle. Do not
 implement unfinished P5/P8 features as migration work.
 
-- [ ] **PM.12** Reconfirm baseline main, ff-only pull and checks; inspect the existing app container, signing identity and any live deployment. Capture reference/compiler/route/settings fixtures from the current Swift tests, including invalid inputs. Record actual data and the baseline commit before replacing anything.
+- [x] **PM.12** Reconfirm baseline main, ff-only pull and checks; inspect the existing app container, signing identity and any live deployment. Capture reference/compiler/route/settings fixtures from the current Swift tests, including invalid inputs. Record actual data and the baseline commit before replacing anything.
+  - *Result (agent, 2026-11-02):* baseline 50ee64c and its evidence are in docs/stack-migration.md's "Baseline"; tests/fixtures/ holds the captured cases, checked by Swift tests on every `make check`. Not deployed anywhere; TestFlight upload of build 25 not checked; `make test-linux` not run.
 - [ ] **PM.13** Create the pinned Astro/TypeScript web workspace, Node standalone adapter and supported Node/npm toolchain. Use server output for the API/database app and selectively prerender public pages. Keep Swift checks active; add web lint/types/unit/production-build gates and manual-dispatch CI. No mandatory Python, React island or new native project.
 - [ ] **PM.14** Define server-only Drizzle/PostgreSQL schema and reviewed generated SQL migrations; private DB/roles and immutable plan versions. Preserve schema-3 catalog semantics via a validated, deterministic compiler export/import boundary. Test fresh/repeated migrations, atomic imports, invalid claims/rights, checksums and rollback compatibility. Keep local/bundled Apple catalog SQLite distinct from server data; inspect rather than assume no existing data.
 - [ ] **PM.15** Specify and test the Swift-native/TypeScript-web domain boundary (E33): one docs/engine.md specification and versioned JSON parity fixtures, references/counts/workload first; scheduling still P5. Preserve current Swift package semantics and prove the TypeScript module in Node/browser. No Swift HTTP sidecar, duplicate rules in UI/SQL, or forced Python engine. Document wire ids, civil dates, numeric rounding and error semantics.
@@ -627,19 +627,23 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-02:** docs-only correction to final D41: Astro/PostgreSQL,
-  needed Swift native app retained, Python optional. No code, dependency,
-  data, deployment or upload change.
-- Next **PM.12**, not the withdrawn PM.1–PM.11 or P5.1.
-  docs/stack-migration.md is the implementation brief; E33 supersedes E32.
-- Existing foundation remains SwiftUI/Hummingbird/SQLite schema 3:
-  reference/workload/catalog code and shells, no plans or reading journal.
-  No PostgreSQL conversion has happened yet.
-- Preserve Morning, privacy/offline/no-account behavior, app identity,
-  rights/review gates and D39's 1.0 scope. Swift/TypeScript rule parity is
-  explicit; native SQLite is local storage, not the server DB choice.
-- Baseline/final make check and documentation checks passed. check-full,
-  new-stack and live checks were not run for this docs-only plan.
-- Previous TestFlight build 25/no-deploy report needs live verification.
-- Earlier mirror attempts saw SSH authentication and Forgejo internal-server
-  failures. Verify Codeberg synchronization before relying on the mirror.
+- **2026-11-02:** PM.12 done. Baseline 50ee64c recorded in
+  docs/stack-migration.md ("Baseline"): checks, toolchain, catalog digest,
+  simulator app data, signing, server and DNS state.
+- tests/fixtures/ (README) pins references, coverage, workload, scripture
+  totals, plan ids, invented plan files, web routes/headers/strings and
+  device settings. Swift tests in each package, the server and AppTests
+  check them; `DBW_RECORD_FIXTURES=1` rewrites outputs (review the diff).
+  PM.15's TypeScript module and PM.16's Astro site must pass the same files.
+- Next **PM.13** (Astro workspace). Pin Node/npm/Astro and record each
+  package in docs/decisions.md before adding it.
+- Found: no live site (TLS fails for daybyword.com; nothing on ubuntu-vm
+  for it; ports 4316/4321 free; the host's own PostgreSQL holds
+  127.0.0.1:5432). No shared deploy lock under /run/lock; P7.1 must find it.
+- `apple/Config/Secrets.xcconfig` is missing here; recreate it from the
+  example before `make archive`. Build 25's upload is unverified.
+- Codeberg's main matched origin at 50ee64c, so the mirror push works now.
+- Open for PM.16: `/today/` answers 200 despite the no-trailing-slash rule,
+  and assets have no Cache-Control. Decide, then update the fixture.
+- `make check` passed (60/7/31/34/16 tests); check-full and test-linux were
+  not run (not a milestone).

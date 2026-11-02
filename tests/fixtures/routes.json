@@ -1,0 +1,380 @@
+{
+  "about" : "Each address the current web answers, by GET: status, content type, cache policy, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated.",
+  "cases" : [
+    {
+      "input" : {
+        "path" : "/"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Day by Word",
+        "status" : 200,
+        "title" : "Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/today"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Today",
+        "heading" : "Today",
+        "status" : 200,
+        "title" : "Today · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Plans",
+        "status" : 200,
+        "title" : "Plans · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/progress"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Progress",
+        "heading" : "Progress",
+        "status" : 200,
+        "title" : "Progress · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/settings"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Settings",
+        "heading" : "Settings",
+        "status" : 200,
+        "title" : "Settings · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Plan",
+        "status" : 200,
+        "title" : "Plan · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day/week"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Week",
+        "status" : 200,
+        "title" : "Week · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day/week?start=2027-01-04"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Week",
+        "status" : 200,
+        "title" : "Week · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day/week?start=next-week"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Week",
+        "status" : 200,
+        "title" : "Week · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day/week?start=2027-1-4"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Plans",
+        "heading" : "Week",
+        "status" : 200,
+        "title" : "Week · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/up"
+      },
+      "output" : {
+        "cacheControl" : "no-store",
+        "contentType" : "text/plain; charset=utf-8",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/site.css"
+      },
+      "output" : {
+        "contentType" : "text/css",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/tokens.css"
+      },
+      "output" : {
+        "contentType" : "text/css",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/support.js"
+      },
+      "output" : {
+        "contentType" : "text/javascript",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/unsupported.js"
+      },
+      "output" : {
+        "contentType" : "text/javascript",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/theme.js"
+      },
+      "output" : {
+        "contentType" : "text/javascript",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/settings.js"
+      },
+      "output" : {
+        "contentType" : "text/javascript",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/copy.js"
+      },
+      "output" : {
+        "contentType" : "text/javascript",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/images/favicon-32.png"
+      },
+      "output" : {
+        "contentType" : "image/png",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/images/mark.svg"
+      },
+      "output" : {
+        "contentType" : "image/svg+xml",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/favicon.ico"
+      },
+      "output" : {
+        "contentType" : "image/vnd.microsoft.icon",
+        "status" : 200
+      }
+    },
+    {
+      "input" : {
+        "path" : "/no-such-page"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/assets/no-such-file.css"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/Psalm-a-day"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/-psalm"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm--a-day"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm_a_day"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm%20a%20day"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/Psalm/week"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/plans/psalm-a-day/month"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/today/"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "current" : "Today",
+        "heading" : "Today",
+        "status" : 200,
+        "title" : "Today · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/api/v1/plans"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "path" : "/dev/components"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Components",
+        "status" : 200,
+        "title" : "Components · Day by Word"
+      }
+    },
+    {
+      "input" : {
+        "environment" : "production",
+        "path" : "/dev/components"
+      },
+      "output" : {
+        "contentType" : "text/html; charset=utf-8",
+        "heading" : "Page not found",
+        "status" : 404,
+        "title" : "Page not found · Day by Word"
+      }
+    }
+  ],
+  "fixture" : "routes",
+  "headers" : {
+    "content-security-policy" : "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "cross-origin-opener-policy" : "same-origin",
+    "cross-origin-resource-policy" : "same-origin",
+    "permissions-policy" : "accelerometer=(), browsing-topics=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), hid=(), magnetometer=(), microphone=(), midi=(), payment=(), serial=(), usb=()",
+    "referrer-policy" : "no-referrer",
+    "x-content-type-options" : "nosniff",
+    "x-frame-options" : "DENY"
+  },
+  "version" : 1
+}

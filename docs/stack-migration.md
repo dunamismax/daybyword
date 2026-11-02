@@ -35,10 +35,7 @@ required to run Astro/Postgres.
 ## Inspected inventory and preservation
 
 Runtime source is unchanged from 97c3981; 12fa06a and 11deb74 changed docs
-only. Baseline make check passed: 54 engine, 7 data, 30 compiler, 31 server,
-15 app tests and 63 string keys. No live deployment or App Store Connect
-inspection occurred here. Prior reports of TestFlight build 25 and no
-deployment must be verified at PM.12.
+only. The recorded baseline is the next section.
 
 - Packages/ReadingEngine contains BookID/BookRegistry, Versification,
   Passage/Reading, ReferenceFormat/Formatter, VerseSet, WordCounts,
@@ -71,6 +68,50 @@ deployment must be verified at PM.12.
 - Keep Morning, D39's eight-plan 1.0 scope, neutral voice, no-account/
   offline privacy and all existing stable URLs. No SOUL.md or other-project
   code/content. BUILD-HISTORY remains untouched.
+
+## Baseline (PM.12, 2026-11-02)
+
+Recorded before anything is replaced; later items compare against it.
+
+- **Commit** 50ee64c on main, equal to origin/main after `git pull
+  --ff-only`, and to Codeberg's main (`git ls-remote`), so the mirror was
+  in sync. `make check` passed with zero warnings: 54 engine, 7 data, 30
+  compiler, 31 server and 15 app tests, 63 app string keys.
+- **Toolchain:** Swift 6.4.2, Xcode 27.2 (27B52). Node 26.13.0 and npm
+  11.20.0 are installed but nothing pins them yet (PM.13).
+- **Catalog:** schema 3, development build, 0 plans; content_sha256
+  `ac986b77…1a6d`. Its `scripture` table holds books.json and the English
+  versification; word counts reach the catalog only as plan facts.
+- **App data:** the simulator `scripts/sim-destination.sh` picks (iPhone 18
+  Pro) holds `com.daybyword.app` with saved scene state and launch
+  snapshots only: no preferences written (every setting at its default), no
+  App Group container, no database. No physical device was inspected. Local
+  data at baseline is UserDefaults `appearance` and `referenceSize` and
+  SceneStorage `navigation`, nothing else.
+- **Signing and TestFlight:** one Apple Development identity (the owner's)
+  in the keychain. `apple/Config/Secrets.xcconfig` is absent from this
+  checkout, so `make archive` needs it recreated from the example first.
+  Xcode's archives hold `com.daybyword.app` 0.1.0 (25) from 2026-11-01;
+  that the upload reached App Store Connect was not checked (it needs the
+  owner's sign-in).
+- **Live deployment:** none. daybyword.com and www resolve to the host
+  directly (not proxied) and the TLS handshake fails, since no site serves
+  the name. On ubuntu-vm (read-only look) there is no
+  `/srv/www/daybyword.com` and no Caddy site file for it; 127.0.0.1:4316
+  and :4321 are free. The host already runs a PostgreSQL on 127.0.0.1:5432
+  and another project's container on a loopback port, so this project's
+  database must stay on its private Docker network. No shared deploy lock
+  was found under `/run/lock`; P7.1 must find the real one.
+- **Fixtures:** [tests/fixtures/](../tests/fixtures/README.md) captures
+  references (87 inputs, 53 invalid), coverage, workload, scripture
+  totals (1,189 chapters, 31,102 verses, 754,449 words for the 66 books),
+  plan ids, 45 invented plan files (39 refused), 34 web addresses, the
+  security headers, 64 web strings and the device settings. Swift tests
+  check every one.
+- **Behaviour to decide in PM.16, not silently change:** `/today/` (a
+  trailing slash) answers 200 although docs/urls.md says addresses have
+  none; assets carry no Cache-Control; a missing asset gets the HTML "Page
+  not found" page; `/api/v1/…` is 404 until PM.16 claims it.
 
 ## Target layout
 

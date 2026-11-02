@@ -1,0 +1,84 @@
+{
+  "about" : "Each reading's words, and the plan's lightest, middle (the mean of the two middle readings, rounded, for an even number), and heaviest readings' words.",
+  "cases" : [
+    {
+      "input" : [
+        300
+      ],
+      "output" : {
+        "maximum" : 300,
+        "median" : 300,
+        "minimum" : 300
+      }
+    },
+    {
+      "input" : [
+        500,
+        100,
+        300
+      ],
+      "output" : {
+        "maximum" : 500,
+        "median" : 300,
+        "minimum" : 100
+      }
+    },
+    {
+      "input" : [
+        400,
+        100,
+        300,
+        200
+      ],
+      "output" : {
+        "maximum" : 400,
+        "median" : 250,
+        "minimum" : 100
+      }
+    },
+    {
+      "input" : [
+        1,
+        2
+      ],
+      "output" : {
+        "maximum" : 2,
+        "median" : 2,
+        "minimum" : 1
+      }
+    },
+    {
+      "input" : [
+        1,
+        4
+      ],
+      "output" : {
+        "maximum" : 4,
+        "median" : 3,
+        "minimum" : 1
+      }
+    },
+    {
+      "input" : [
+        3,
+        3,
+        3
+      ],
+      "output" : {
+        "maximum" : 3,
+        "median" : 3,
+        "minimum" : 3
+      }
+    },
+    {
+      "input" : [
+
+      ],
+      "output" : {
+
+      }
+    }
+  ],
+  "fixture" : "plan-workload",
+  "version" : 1
+}

@@ -1,0 +1,1500 @@
+{
+  "about" : "Plan-file reading text (docs/decisions.md E30) and, under the English (KJV) scheme, its shortest writing, passages, verse count, WEB word count, estimated minutes, and display in each naming convention; or the first error's kind and message.",
+  "cases" : [
+    {
+      "input" : "GEN 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          }
+        },
+        "minutes" : [
+          3,
+          4
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:31",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1",
+        "verses" : 31,
+        "words" : 734
+      }
+    },
+    {
+      "input" : "GEN 1-2",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          }
+        },
+        "minutes" : [
+          6,
+          7
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "2:25",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1-2",
+        "verses" : 56,
+        "words" : 1340
+      }
+    },
+    {
+      "input" : "JHN 3:16",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "John 3:16",
+            "full" : "John 3:16"
+          },
+          "douay" : {
+            "abbreviated" : "John 3:16",
+            "full" : "John 3:16"
+          },
+          "kjv" : {
+            "abbreviated" : "John 3:16",
+            "full" : "John 3:16"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "JHN",
+            "end" : "3:16",
+            "start" : "3:16"
+          }
+        ],
+        "text" : "JHN 3:16",
+        "verses" : 1,
+        "words" : 25
+      }
+    },
+    {
+      "input" : "JHN 3:1-21",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "John 3:1–21",
+            "full" : "John 3:1–21"
+          },
+          "douay" : {
+            "abbreviated" : "John 3:1–21",
+            "full" : "John 3:1–21"
+          },
+          "kjv" : {
+            "abbreviated" : "John 3:1–21",
+            "full" : "John 3:1–21"
+          }
+        },
+        "minutes" : [
+          2,
+          3
+        ],
+        "passages" : [
+          {
+            "book" : "JHN",
+            "end" : "3:21",
+            "start" : "3:1"
+          }
+        ],
+        "text" : "JHN 3:1-21",
+        "verses" : 21,
+        "words" : 461
+      }
+    },
+    {
+      "input" : "JHN 3:16-4:3",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "John 3:16–4:3",
+            "full" : "John 3:16–4:3"
+          },
+          "douay" : {
+            "abbreviated" : "John 3:16–4:3",
+            "full" : "John 3:16–4:3"
+          },
+          "kjv" : {
+            "abbreviated" : "John 3:16–4:3",
+            "full" : "John 3:16–4:3"
+          }
+        },
+        "minutes" : [
+          2,
+          3
+        ],
+        "passages" : [
+          {
+            "book" : "JHN",
+            "end" : "4:3",
+            "start" : "3:16"
+          }
+        ],
+        "text" : "JHN 3:16-4:3",
+        "verses" : 24,
+        "words" : 474
+      }
+    },
+    {
+      "input" : "PSA 119:1-24; PSA 120",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          }
+        },
+        "minutes" : [
+          2,
+          2
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "119:24",
+            "start" : "119:1"
+          },
+          {
+            "book" : "PSA",
+            "end" : "120:7",
+            "start" : "120:1"
+          }
+        ],
+        "text" : "PSA 119:1-24; PSA 120",
+        "verses" : 31,
+        "words" : 415
+      }
+    },
+    {
+      "input" : "GEN 50; EXO 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 50; Exod 1",
+            "full" : "Genesis 50; Exodus 1"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 50; Exod 1",
+            "full" : "Genesis 50; Exodus 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 50; Exod 1",
+            "full" : "Genesis 50; Exodus 1"
+          }
+        },
+        "minutes" : [
+          5,
+          6
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "50:26",
+            "start" : "50:1"
+          },
+          {
+            "book" : "EXO",
+            "end" : "1:22",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 50; EXO 1",
+        "verses" : 48,
+        "words" : 1071
+      }
+    },
+    {
+      "input" : "ESG 10",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Add Esth 10",
+            "full" : "Additions to Esther 10"
+          },
+          "douay" : {
+            "abbreviated" : "Add Esth 10",
+            "full" : "Additions to Esther 10"
+          },
+          "kjv" : {
+            "abbreviated" : "Rest of Esther 10",
+            "full" : "Rest of Esther 10"
+          }
+        },
+        "passages" : [
+          {
+            "book" : "ESG",
+            "end" : "10:13",
+            "start" : "10:4"
+          }
+        ],
+        "text" : "ESG 10",
+        "verses" : 10
+      }
+    },
+    {
+      "input" : "JUD 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Jude",
+            "full" : "Jude"
+          },
+          "douay" : {
+            "abbreviated" : "Jude",
+            "full" : "Jude"
+          },
+          "kjv" : {
+            "abbreviated" : "Jude",
+            "full" : "Jude"
+          }
+        },
+        "minutes" : [
+          3,
+          3
+        ],
+        "passages" : [
+          {
+            "book" : "JUD",
+            "end" : "1:25",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "JUD 1",
+        "verses" : 25,
+        "words" : 611
+      }
+    },
+    {
+      "input" : "PSA 117; PSA 117",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 117; Ps 117",
+            "full" : "Psalm 117; Psalm 117"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 117; Ps 117",
+            "full" : "Psalm 117; Psalm 117"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 117; Ps 117",
+            "full" : "Psalm 117; Psalm 117"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "117:2",
+            "start" : "117:1"
+          },
+          {
+            "book" : "PSA",
+            "end" : "117:2",
+            "start" : "117:1"
+          }
+        ],
+        "text" : "PSA 117; PSA 117",
+        "verses" : 4,
+        "words" : 50
+      }
+    },
+    {
+      "input" : "GEN 1:1-31",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1",
+            "full" : "Genesis 1"
+          }
+        },
+        "minutes" : [
+          3,
+          4
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:31",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1",
+        "verses" : 31,
+        "words" : 734
+      }
+    },
+    {
+      "input" : "GEN 1:1-2:25",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1–2",
+            "full" : "Genesis 1–2"
+          }
+        },
+        "minutes" : [
+          6,
+          7
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "2:25",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1-2",
+        "verses" : 56,
+        "words" : 1340
+      }
+    },
+    {
+      "input" : "GEN 1:1-2:3",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1:1–2:3",
+            "full" : "Genesis 1:1–2:3"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1:1–2:3",
+            "full" : "Genesis 1:1–2:3"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1:1–2:3",
+            "full" : "Genesis 1:1–2:3"
+          }
+        },
+        "minutes" : [
+          3,
+          4
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "2:3",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1:1-2:3",
+        "verses" : 34,
+        "words" : 796
+      }
+    },
+    {
+      "input" : "ESG 10:4-13",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Add Esth 10",
+            "full" : "Additions to Esther 10"
+          },
+          "douay" : {
+            "abbreviated" : "Add Esth 10",
+            "full" : "Additions to Esther 10"
+          },
+          "kjv" : {
+            "abbreviated" : "Rest of Esther 10",
+            "full" : "Rest of Esther 10"
+          }
+        },
+        "passages" : [
+          {
+            "book" : "ESG",
+            "end" : "10:13",
+            "start" : "10:4"
+          }
+        ],
+        "text" : "ESG 10",
+        "verses" : 10
+      }
+    },
+    {
+      "input" : "PSA 119:1-24; PSA 120:1-7",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 119:1–24; Ps 120",
+            "full" : "Psalm 119:1–24; Psalm 120"
+          }
+        },
+        "minutes" : [
+          2,
+          2
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "119:24",
+            "start" : "119:1"
+          },
+          {
+            "book" : "PSA",
+            "end" : "120:7",
+            "start" : "120:1"
+          }
+        ],
+        "text" : "PSA 119:1-24; PSA 120",
+        "verses" : 31,
+        "words" : 415
+      }
+    },
+    {
+      "input" : "1SA 3",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "1 Sam 3",
+            "full" : "1 Samuel 3"
+          },
+          "douay" : {
+            "abbreviated" : "1 Kings 3",
+            "full" : "1 Kings 3"
+          },
+          "kjv" : {
+            "abbreviated" : "1 Sam 3",
+            "full" : "1 Samuel 3"
+          }
+        },
+        "minutes" : [
+          2,
+          3
+        ],
+        "passages" : [
+          {
+            "book" : "1SA",
+            "end" : "3:21",
+            "start" : "3:1"
+          }
+        ],
+        "text" : "1SA 3",
+        "verses" : 21,
+        "words" : 486
+      }
+    },
+    {
+      "input" : "PSA 23",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 23",
+            "full" : "Psalm 23"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 23",
+            "full" : "Psalm 23"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 23",
+            "full" : "Psalm 23"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "23:6",
+            "start" : "23:1"
+          }
+        ],
+        "text" : "PSA 23",
+        "verses" : 6,
+        "words" : 118
+      }
+    },
+    {
+      "input" : "PSA 120-122",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 120–122",
+            "full" : "Psalms 120–122"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 120–122",
+            "full" : "Psalms 120–122"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 120–122",
+            "full" : "Psalms 120–122"
+          }
+        },
+        "minutes" : [
+          1,
+          2
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "122:9",
+            "start" : "120:1"
+          }
+        ],
+        "text" : "PSA 120-122",
+        "verses" : 24,
+        "words" : 326
+      }
+    },
+    {
+      "input" : "PSA 119:169-120:7",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 119:169–120:7",
+            "full" : "Psalms 119:169–120:7"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 119:169–120:7",
+            "full" : "Psalms 119:169–120:7"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 119:169–120:7",
+            "full" : "Psalms 119:169–120:7"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "120:7",
+            "start" : "119:169"
+          }
+        ],
+        "text" : "PSA 119:169-120:7",
+        "verses" : 15,
+        "words" : 199
+      }
+    },
+    {
+      "input" : "JUD 1:3-5",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Jude 3–5",
+            "full" : "Jude 3–5"
+          },
+          "douay" : {
+            "abbreviated" : "Jude 3–5",
+            "full" : "Jude 3–5"
+          },
+          "kjv" : {
+            "abbreviated" : "Jude 3–5",
+            "full" : "Jude 3–5"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "JUD",
+            "end" : "1:5",
+            "start" : "1:3"
+          }
+        ],
+        "text" : "JUD 1:3-5",
+        "verses" : 3,
+        "words" : 109
+      }
+    },
+    {
+      "input" : "OBA 1:21",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Obad 21",
+            "full" : "Obadiah 21"
+          },
+          "douay" : {
+            "abbreviated" : "Abdias 21",
+            "full" : "Abdias 21"
+          },
+          "kjv" : {
+            "abbreviated" : "Obad 21",
+            "full" : "Obadiah 21"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "OBA",
+            "end" : "1:21",
+            "start" : "1:21"
+          }
+        ],
+        "text" : "OBA 1:21",
+        "verses" : 1,
+        "words" : 20
+      }
+    },
+    {
+      "input" : "PHM 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Phlm",
+            "full" : "Philemon"
+          },
+          "douay" : {
+            "abbreviated" : "Phlm",
+            "full" : "Philemon"
+          },
+          "kjv" : {
+            "abbreviated" : "Phlm",
+            "full" : "Philemon"
+          }
+        },
+        "minutes" : [
+          2,
+          2
+        ],
+        "passages" : [
+          {
+            "book" : "PHM",
+            "end" : "1:25",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "PHM 1",
+        "verses" : 25,
+        "words" : 445
+      }
+    },
+    {
+      "input" : "SNG 2",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Song 2",
+            "full" : "Song of Songs 2"
+          },
+          "douay" : {
+            "abbreviated" : "Cant 2",
+            "full" : "Canticle of Canticles 2"
+          },
+          "kjv" : {
+            "abbreviated" : "Song 2",
+            "full" : "Song of Solomon 2"
+          }
+        },
+        "minutes" : [
+          1,
+          2
+        ],
+        "passages" : [
+          {
+            "book" : "SNG",
+            "end" : "2:17",
+            "start" : "2:1"
+          }
+        ],
+        "text" : "SNG 2",
+        "verses" : 17,
+        "words" : 338
+      }
+    },
+    {
+      "input" : "REV 21:1-4",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Rev 21:1–4",
+            "full" : "Revelation 21:1–4"
+          },
+          "douay" : {
+            "abbreviated" : "Apocalypse 21:1–4",
+            "full" : "Apocalypse 21:1–4"
+          },
+          "kjv" : {
+            "abbreviated" : "Rev 21:1–4",
+            "full" : "Revelation 21:1–4"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "REV",
+            "end" : "21:4",
+            "start" : "21:1"
+          }
+        ],
+        "text" : "REV 21:1-4",
+        "verses" : 4,
+        "words" : 117
+      }
+    },
+    {
+      "input" : "OBA 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Obad",
+            "full" : "Obadiah"
+          },
+          "douay" : {
+            "abbreviated" : "Abdias",
+            "full" : "Abdias"
+          },
+          "kjv" : {
+            "abbreviated" : "Obad",
+            "full" : "Obadiah"
+          }
+        },
+        "minutes" : [
+          3,
+          3
+        ],
+        "passages" : [
+          {
+            "book" : "OBA",
+            "end" : "1:21",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "OBA 1",
+        "verses" : 21,
+        "words" : 617
+      }
+    },
+    {
+      "input" : "GEN 1:1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1:1",
+            "full" : "Genesis 1:1"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1:1",
+            "full" : "Genesis 1:1"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1:1",
+            "full" : "Genesis 1:1"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:1",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1:1",
+        "verses" : 1,
+        "words" : 10
+      }
+    },
+    {
+      "input" : "GEN 1:2",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1:2",
+            "full" : "Genesis 1:2"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1:2",
+            "full" : "Genesis 1:2"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1:2",
+            "full" : "Genesis 1:2"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:2",
+            "start" : "1:2"
+          }
+        ],
+        "text" : "GEN 1:2",
+        "verses" : 1,
+        "words" : 25
+      }
+    },
+    {
+      "input" : "GEN 1:1-2",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1:1–2",
+            "full" : "Genesis 1:1–2"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1:1–2",
+            "full" : "Genesis 1:1–2"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1:1–2",
+            "full" : "Genesis 1:1–2"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:2",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1:1-2",
+        "verses" : 2,
+        "words" : 35
+      }
+    },
+    {
+      "input" : "PSA 3:1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Ps 3:1",
+            "full" : "Psalm 3:1"
+          },
+          "douay" : {
+            "abbreviated" : "Ps 3:1",
+            "full" : "Psalm 3:1"
+          },
+          "kjv" : {
+            "abbreviated" : "Ps 3:1",
+            "full" : "Psalm 3:1"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "PSA",
+            "end" : "3:1",
+            "start" : "3:1"
+          }
+        ],
+        "text" : "PSA 3:1",
+        "verses" : 1,
+        "words" : 25
+      }
+    },
+    {
+      "input" : "LUK 17:36",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Luke 17:36",
+            "full" : "Luke 17:36"
+          },
+          "douay" : {
+            "abbreviated" : "Luke 17:36",
+            "full" : "Luke 17:36"
+          },
+          "kjv" : {
+            "abbreviated" : "Luke 17:36",
+            "full" : "Luke 17:36"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "LUK",
+            "end" : "17:36",
+            "start" : "17:36"
+          }
+        ],
+        "text" : "LUK 17:36",
+        "verses" : 1,
+        "words" : 0
+      }
+    },
+    {
+      "input" : "ROM 16:25-27",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Rom 16:25–27",
+            "full" : "Romans 16:25–27"
+          },
+          "douay" : {
+            "abbreviated" : "Rom 16:25–27",
+            "full" : "Romans 16:25–27"
+          },
+          "kjv" : {
+            "abbreviated" : "Rom 16:25–27",
+            "full" : "Romans 16:25–27"
+          }
+        },
+        "minutes" : [
+          1,
+          1
+        ],
+        "passages" : [
+          {
+            "book" : "ROM",
+            "end" : "16:27",
+            "start" : "16:25"
+          }
+        ],
+        "text" : "ROM 16:25-27",
+        "verses" : 3,
+        "words" : 80
+      }
+    },
+    {
+      "input" : "GEN 1; TOB 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Gen 1; Tob 1",
+            "full" : "Genesis 1; Tobit 1"
+          },
+          "douay" : {
+            "abbreviated" : "Gen 1; Tobias 1",
+            "full" : "Genesis 1; Tobias 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Gen 1; Tob 1",
+            "full" : "Genesis 1; Tobit 1"
+          }
+        },
+        "passages" : [
+          {
+            "book" : "GEN",
+            "end" : "1:31",
+            "start" : "1:1"
+          },
+          {
+            "book" : "TOB",
+            "end" : "1:22",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "GEN 1; TOB 1",
+        "verses" : 53
+      }
+    },
+    {
+      "input" : "TOB 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Tob 1",
+            "full" : "Tobit 1"
+          },
+          "douay" : {
+            "abbreviated" : "Tobias 1",
+            "full" : "Tobias 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Tob 1",
+            "full" : "Tobit 1"
+          }
+        },
+        "passages" : [
+          {
+            "book" : "TOB",
+            "end" : "1:22",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "TOB 1",
+        "verses" : 22
+      }
+    },
+    {
+      "input" : "SIR 1",
+      "output" : {
+        "display" : {
+          "common" : {
+            "abbreviated" : "Sir 1",
+            "full" : "Sirach 1"
+          },
+          "douay" : {
+            "abbreviated" : "Sir 1",
+            "full" : "Ecclesiasticus 1"
+          },
+          "kjv" : {
+            "abbreviated" : "Sir 1",
+            "full" : "Ecclesiasticus 1"
+          }
+        },
+        "passages" : [
+          {
+            "book" : "SIR",
+            "end" : "1:30",
+            "start" : "1:1"
+          }
+        ],
+        "text" : "SIR 1",
+        "verses" : 30
+      }
+    },
+    {
+      "input" : "",
+      "output" : {
+        "error" : "empty",
+        "message" : "a reading is missing, or has an empty passage between \"; \" separators"
+      }
+    },
+    {
+      "input" : "GEN 1; ",
+      "output" : {
+        "error" : "empty",
+        "message" : "a reading is missing, or has an empty passage between \"; \" separators"
+      }
+    },
+    {
+      "input" : "GEN 1; ; GEN 2",
+      "output" : {
+        "error" : "empty",
+        "message" : "a reading is missing, or has an empty passage between \"; \" separators"
+      }
+    },
+    {
+      "input" : "gen 1",
+      "output" : {
+        "error" : "notABook",
+        "message" : "\"gen\" is not a USFM book id"
+      }
+    },
+    {
+      "input" : "Gen 1",
+      "output" : {
+        "error" : "notABook",
+        "message" : "\"Gen\" is not a USFM book id"
+      }
+    },
+    {
+      "input" : "Genesis 1",
+      "output" : {
+        "error" : "notABook",
+        "message" : "\"Genesis\" is not a USFM book id"
+      }
+    },
+    {
+      "input" : "1 Samuel 3",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"1 Samuel 3\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN ",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN \" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : " GEN 1",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\" GEN 1\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1 ",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1 \" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN  1",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN  1\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1 - 2",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1 - 2\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:1 -3",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:1 -3\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN\t1",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN\t1\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1;GEN 2",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1;GEN 2\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1,2",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1,2\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1;  GEN 2",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\" GEN 2\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN x",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN x\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 01",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 01\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:05",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:05\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 0",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 0\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:0",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:0\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN -1",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN -1\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1000",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1000\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1.5",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1.5\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1a",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1a\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1–2",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1–2\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1-",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1-\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN -",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN -\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:2-",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:2-\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1:2:3",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1:2:3\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1-2-3",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1-2-3\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 1-2:3",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 1-2:3\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 50-EXO 1",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN 50-EXO 1\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "GEN 2-2",
+      "output" : {
+        "error" : "redundant",
+        "message" : "\"GEN 2-2\" should be written \"GEN 2\""
+      }
+    },
+    {
+      "input" : "GEN 1:5-5",
+      "output" : {
+        "error" : "redundant",
+        "message" : "\"GEN 1:5-5\" should be written \"GEN 1:5\""
+      }
+    },
+    {
+      "input" : "JHN 3:1-3:21",
+      "output" : {
+        "error" : "redundant",
+        "message" : "\"JHN 3:1-3:21\" should be written \"JHN 3:1-21\""
+      }
+    },
+    {
+      "input" : "JHN 3:16-3:16",
+      "output" : {
+        "error" : "redundant",
+        "message" : "\"JHN 3:16-3:16\" should be written \"JHN 3:16\""
+      }
+    },
+    {
+      "input" : "LJE 1",
+      "output" : {
+        "error" : "unknownBook",
+        "message" : "LJE is not numbered in this scheme"
+      }
+    },
+    {
+      "input" : "XYZ 1",
+      "output" : {
+        "error" : "unknownBook",
+        "message" : "XYZ is not numbered in this scheme"
+      }
+    },
+    {
+      "input" : "GEN 51",
+      "output" : {
+        "error" : "noSuchChapter",
+        "message" : "GEN has no chapter 51"
+      }
+    },
+    {
+      "input" : "GEN 50-51",
+      "output" : {
+        "error" : "noSuchChapter",
+        "message" : "GEN has no chapter 51"
+      }
+    },
+    {
+      "input" : "GEN 1:32",
+      "output" : {
+        "error" : "noSuchVerse",
+        "message" : "GEN has no verse 1:32"
+      }
+    },
+    {
+      "input" : "PSA 51:21",
+      "output" : {
+        "error" : "noSuchVerse",
+        "message" : "PSA has no verse 51:21"
+      }
+    },
+    {
+      "input" : "ESG 10:1-3",
+      "output" : {
+        "error" : "noSuchVerse",
+        "message" : "ESG has no verse 10:1"
+      }
+    },
+    {
+      "input" : "GEN 3-2",
+      "output" : {
+        "error" : "endsBeforeItStarts",
+        "message" : "GEN 3:1-2:1 ends before it starts"
+      }
+    },
+    {
+      "input" : "GEN 1:9-5",
+      "output" : {
+        "error" : "endsBeforeItStarts",
+        "message" : "GEN 1:9-1:5 ends before it starts"
+      }
+    },
+    {
+      "input" : "GEN 2:1-1:5",
+      "output" : {
+        "error" : "endsBeforeItStarts",
+        "message" : "GEN 2:1-1:5 ends before it starts"
+      }
+    },
+    {
+      "input" : "GEN 1; GEN 51; gen 2",
+      "output" : {
+        "error" : "noSuchChapter",
+        "message" : "GEN has no chapter 51"
+      }
+    },
+    {
+      "input" : "GEN １",
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"GEN １\" is not written as BOOK 1, BOOK 1-2, BOOK 1:2, BOOK 1:2-3, or BOOK 1:2-3:4"
+      }
+    },
+    {
+      "input" : "ＧＥＮ 1",
+      "output" : {
+        "error" : "notABook",
+        "message" : "\"ＧＥＮ\" is not a USFM book id"
+      }
+    }
+  ],
+  "fixture" : "references",
+  "version" : 1
+}
