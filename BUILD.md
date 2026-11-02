@@ -655,3 +655,5 @@ only when Phase 18 is finished or an item points there.
 - Previous handoff reports TestFlight build 25 and no deployment; PM.1
   must verify rather than assume either. Old source/history stays until
   the replacement passes parity; existing completed phase counts stand.
+- **Mirror blocker:** GitHub pushes succeed; the Codeberg SSH push fails
+  (publickey), and this session's SSH agent has no identities.
