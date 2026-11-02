@@ -7,6 +7,10 @@ path spell the same thing (`daybyword://plans/psalm-a-day` is
 `https://daybyword.com/plans/psalm-a-day`). Universal links (P12.8) will let
 daybyword.com addresses open the app directly, using these same paths.
 
+**Migration contract (D40):** keep every address and deep link below.
+PM.5 maps web paths to Next App Router; PM.6 maps app links to Expo Router.
+Legacy code pointers at the bottom are the porting oracle until replaced.
+
 ## The addresses
 
 | Path | Web | App | What it shows |
@@ -26,16 +30,17 @@ Addresses for the server's own use, never linked from a page a reader sees:
 `/up` (the health check), `/assets/…` (the site's own files), and
 `/dev/components` (the component gallery, in development only).
 
-Reserved for later phases, so nothing else takes them: `/api/v1/…` (sync,
-P14), `/about`, `/privacy`, `/sources`, `/criteria`, and `/support` (public
-pages, P16), and `/.well-known/…` (universal links and passkeys, P12.8 and
+Reserve `/api/v1/…` for versioned Next Route Handlers: Phase M public
+catalog delivery and later authenticated sync (P14). Never expose DB access
+to a client. Reserve `/about`, `/privacy`, `/sources`, `/criteria`, and
+`/support` (public pages, P16), and `/.well-known/…` (universal links and passkeys, P12.8 and
 P14).
 
 ## Rules
 
 - **Plan ids** are one to 64 lowercase ASCII letters and digits, in words
   joined by single hyphens (`gospels-at-your-pace`, `mcheyne-1842`).
-  `ReadingEngine`'s `PlanID` is the single check, used by the catalog
+  The shared engine's `PlanID` check (ported at PM.3) is used by the catalog
   compiler, the server, and the app. An address with any other id is not
   found.
 - **Lowercase, no trailing slash, no file extensions.** The app also accepts
@@ -53,10 +58,15 @@ P14).
 - **Unknown addresses** get the site's own "Page not found" page with status
   404 on the web, and change nothing in the app.
 
-## Where the code is
+## Where the current legacy code is
 
 - Web: the routes in `Server/Sources/DayByWordWeb/Application+build.swift`,
   tested in `Server/Tests/DayByWordWebTests/ServerTests.swift`.
 - App: `AppRoute` in `apple/App/Navigation/AppRoute.swift`, tested in
   `apple/AppTests/NavigationTests.swift`. Both test files cover every row of
   the table above.
+
+After Phase M, update these pointers to apps/web/app and apps/mobile/app
+and their route-contract tests. Preserve /assets URLs or explicit
+redirects when moving files to Next public; /_next assets are local too.
+Private API inputs use request bodies, never address parameters.

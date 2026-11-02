@@ -7,6 +7,18 @@ light and dark), and its values are in `design/tokens.json`, from which the
 app's color assets and the web's `tokens.css` are generated (P2.4). Change a
 token there first, regenerate, and commit both (AGENTS.md §5).
 
+## Stack migration
+
+D40/Phase M preserves this identity and every token. The current generator
+still writes Swift assets and Server/Public/assets/tokens.css. PM.5/PM.6
+replace those outputs with shared TypeScript/React Native values and
+Tailwind/shadcn semantic CSS variables, with the same contrast checks.
+shadcn supplies web component structure, not a new palette or navigation
+design. Use React Native controls for mobile; preserve Dynamic Type,
+spoken references, settings, focus, motion and light/dark behavior.
+Existing owner-supplied artwork stays in design/images; no new art is
+needed for the rewrite.
+
 ## Character
 
 Light and open: generous space, soft rounded cards, and the system sans

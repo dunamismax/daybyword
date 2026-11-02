@@ -2,7 +2,7 @@
 
 A numbered, append-only log of engineering decisions for Day by Word. Product
 decisions are the owner's and live in BUILD.md's Owner decisions table
-(D1–D39); this file records how they are carried out and why.
+(D1–D40); this file records how they are carried out and why.
 
 **How to use this file.** Add a new entry at the end with the next number,
 the date, who decided (`agent` or `owner`), the decision, and the reasons.
@@ -10,6 +10,10 @@ Never edit or delete an old entry's decision. To change one, add a new entry
 that supersedes it, and add a single line under the old entry pointing to
 the new one (*Superseded by E12*). Every third-party package needs an entry
 here before it is added (AGENTS.md §5).
+
+**Current direction:** D40 and E32 govern the rewrite. Old implementation
+entries below document the still-present Swift baseline; do not use them
+to select the stack for new work. Pure product/data rules remain in force.
 
 Entries E1–E17 were recorded together on 2026-10-30, seeded from BUILD.md's
 Engineering foundations and the owner's decisions.
@@ -57,6 +61,9 @@ twice is a no-op, and the fold gives the same answer in any arrival order.
 
 ### E4. One engine, everywhere
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 4, D5).* `ReadingEngine`, a Swift
 package that uses Foundation only, is the single implementation of
 references, schedules, progress, and reminder rules. The app, its widgets
@@ -81,6 +88,9 @@ server never have to agree on a calendar computation at run time.
 
 ### E6. A compiled, versioned catalog
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 6).* `catalog/` (plain-text plans,
 rule tables, scripture data, and `SOURCES.md`) compiles into a deterministic
 `Catalog.sqlite` with a schema version and a checksum. It is bundled in the
@@ -93,6 +103,9 @@ computed, and rights are enforced, before anything reaches a reader. A
 read-only artifact cannot be edited in production by accident.
 
 ### E7. Civil dates, not instants
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, owner (Engineering foundation 7).* Plans and enrollments speak
 in `CivilDate` (year, month, day), never a Foundation `Date` standing for a
@@ -118,6 +131,9 @@ on the device unless the reader chooses otherwise.
 
 ### E9. SQLite everywhere
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 9, D5).* The system `SQLite3`
 library is used through `ReadingData`'s own small wrapper on iOS and on
 Linux, for the catalog, the app's journal, and the server's databases. WAL
@@ -127,6 +143,9 @@ mode is used on the server, with migrations versioned in code.
 simple backups (the online backup API), and no third-party driver.
 
 ### E10. Few dependencies
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, owner (Engineering foundation 10).* The Apple app has zero
 third-party runtime dependencies; its approved build tools are XcodeGen and
@@ -143,6 +162,9 @@ easier to keep correct when nearly everything is its own.
 
 ### E11. Modern browsers, server-rendered pages, a strict CSP
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 11, D30).* The server renders
 semantic HTML, and the project's own JavaScript adds the web app's
 interactivity. The targets are the current and previous major versions of
@@ -155,6 +177,9 @@ and a strict CSP makes "nothing loads from elsewhere" a property the browser
 enforces.
 
 ### E12. Shared design tokens
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, owner (Engineering foundation 12).* `design/tokens.json`
 generates both the Swift color assets and the web's `tokens.css`, and tests
@@ -174,6 +199,9 @@ a format we parse ourselves needs no dependency.
 
 ### E14. A date override for tests
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 14); the last sentence is the
 agent's.* Debug builds accept `-today YYYY-MM-DD`, and the development
 server accepts `?today=YYYY-MM-DD`, so tests and screenshots can pin any
@@ -184,6 +212,9 @@ date is a test that fails next month.
 
 ### E15. Internationalized from the start
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, owner (Engineering foundation 15).* Every interface string goes
 through a String Catalog on Apple platforms and the server's string tables
 on the web, English first.
@@ -192,6 +223,9 @@ on the web, English first.
 the first screen costs almost nothing.
 
 ### E16. Swift on the server: Hummingbird 2 and SQLite
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, owner (D5).* The web is served by a Swift server built on
 Hummingbird 2, with SQLite, sharing `ReadingEngine` and `ReadingData` with
@@ -225,6 +259,9 @@ no code that could.
 
 ### E18. ReadingData's SQLite wrapper
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-10-30, agent.* `ReadingData` talks to SQLite through its own small
 wrapper over the C API: a `Database` class (one connection, opened read-only,
 read-write, or create), `execute` for parameterless statements such as
@@ -244,6 +281,9 @@ threading rules out of every caller. Typed row decoding, migrations, and
 the backup API are added to this wrapper when an item needs them.
 
 ### E19. Server-rendered HTML through the project's own `HTML` type
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, agent.* The server writes its pages with a small `HTML` type of
 its own (`Server/Sources/DayByWordWeb/HTML.swift`): markup is written as
@@ -265,6 +305,9 @@ Swift. If the pages outgrow string literals, a result-builder DSL of our own
 can replace them behind the same functions.
 
 ### E20. The server's packages
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-10-30, agent.* `Server/Package.swift` depends directly on:
 
@@ -316,6 +359,9 @@ read-only, so a Linux run can never change the checkout.
 
 ### E22. The pinned toolchain on Linux comes from our own verified installer
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-11-01, agent; supersedes E21's use of swiftly.* On Linux everywhere (the
 `make test-linux` container, the CI Linux job, and the server),
 `scripts/linux/install-swift.sh <version> <prefix>` downloads the Ubuntu
@@ -339,6 +385,9 @@ refresh the file and record the new fingerprints here.
 
 ### E23. Design tokens generated by a Swift script
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-11-01, agent.* `scripts/tokens.swift` (run by `make tokens`) reads
 `design/tokens.json` and writes the app's `apple/Shared/Colors.xcassets`
 (one color set per token with light and dark values, plus `AccentColor`),
@@ -361,6 +410,9 @@ server build without running it.
 
 ### E24. The app's shell: routes, and restoring the reader's place
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-11-01, agent.* The app's three sections are a SwiftUI `TabView`, each
 tab with its own `NavigationStack` bound to a path of `Destination` values,
 and Settings is a sheet opened from a toolbar button on each tab's root
@@ -381,6 +433,9 @@ navigation never becomes reading data. Data saved by an older version that
 cannot be decoded is ignored, and the reader starts on Today.
 
 ### E25. Interface strings: one String Catalog and a typed web table
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-11-01, agent.* The app and the widget share one String Catalog,
 `apple/Shared/Localizable.xcstrings`, compiled into both bundles. English
@@ -403,6 +458,9 @@ into a compile error. Until a second language exists, `text(_:)` always
 answers in English; the reader's language will then come from the request.
 
 ### E26. Tours: an XCUITest and our own WebDriver client
+
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
 
 *2026-11-01, agent.* The app tour is an XCUITest (`TourTests`) that launches
 the app with the reader's appearance set to light and then dark, visits
@@ -503,6 +561,9 @@ scheme's differences reviewable line by line.
 
 ### E29. The leaner path: two gates, and web progress kept in the browser
 
+*Implementation superseded by E32 (D40); retain the applicable behavior and
+data invariants.*
+
 *2026-11-01, agent, carrying out D39 (owner, 2026-11-01).*
 
 - **Two gates.** `make check` (the toolchain, formatting, imports, tokens
@@ -583,3 +644,61 @@ Romans' doxology sits. A modern translation is closer to what most readers
 read than the KJV, which runs to roughly 780,000 words (Research finding
 6) against the WEB's 754,449. The deuterocanonical
 books wait for the plan that needs them (P10.12).
+
+### E32. The unified stack, local shared engine and migration precedence
+
+*2026-11-02, owner (D40); implementation plan recorded in Phase M and
+docs/stack-migration.md.* This is a planned replacement, not a completed
+migration.
+
+- Next.js App Router/React/TypeScript with Tailwind and shadcn/ui replaces
+  Hummingbird/HTML strings/vanilla modules. Build standalone Node output in
+  Docker Compose behind the existing host Caddy; no hosted platform is
+  required. Expo/React Native replaces the main SwiftUI app. Preserve iOS
+  26 minimum, App Store identity, native extension capabilities and Morning.
+- One pure TypeScript engine replaces the Swift packages' reading logic,
+  imported by server, mobile, browser offline code and compiler. Native
+  widgets/actions may use small adapters around snapshots/commands, with
+  no second scheduling/fold implementation. Verify their runtime boundary.
+- Drizzle owns server PostgreSQL schema and reviewed, committed migrations.
+  Its initial data is public catalog content, not reader history. A
+  deterministic versioned catalog artifact replaces runtime Catalog.sqlite,
+  imported into Postgres and bundled/cached on clients. Preserve source
+  formats, numeric data, compiler validation, rights and review filters.
+- The Expo device uses local SQLite and the browser IndexedDB. Clients
+  call Next APIs for network services, never Postgres. Local shared-engine
+  evaluation replaces E29's requirement to send reading records to the
+  server to compute; no account or network is required for local reading.
+  A genuinely necessary stateless endpoint may compute transiently under
+  the same no-storage/no-body-logging rule. Consent still gates future sync.
+- Better Auth with its Drizzle/Postgres adapter is selected for Phase 14,
+  retaining optional passkeys/recovery and the no-email/no-password product
+  requirement. Validate that flow and mobile support when the phase opens.
+  No auth service or schema is installed solely for migration. Stripe
+  waits for a real billing need. Tauri is the future desktop choice if
+  needed; Android remains after 1.0 using Expo. D23 excludes AI SDKs.
+- Pin the compatible toolchain/workspace/test dependencies at PM.2 and
+  record exact versions and any additional package choices before adding
+  them. Port fixtures from the old implementation first. Maintain legacy
+  checks while targets are active; the final Make/CI gate tests Node,
+  PostgreSQL, production standalone output and native Expo builds.
+- Keep strict production nonce CSP, no external loads or telemetry,
+  metadata-only logs and private DB networking. Backups become nightly
+  pg_dump plus encrypted off-server copy and isolated restore testing from
+  the first DB deployment. D34 still restricts changes to this project.
+
+**Why:** the owner wants the same core stack across projects. Sharing
+TypeScript preserves one implementation across offline clients and the
+server. Keeping local stores and deferring auth retains the approved
+privacy and 1.0 scope, while PostgreSQL supplies the requested server data
+layer. Phase M ports the foundation, not the unbuilt features. Completed
+phases and old entries remain historical evidence rather than being
+rewritten as if the new implementation had already passed.
+
+**Supersession:** implementation details of E4, E6–E16, E18–E26 and E29
+yield to this entry where they specify Swift, Foundation, SQLite on the
+server, Hummingbird, XcodeGen, no npm/frameworks, old test tooling or
+server-only computation. E1/E29's gate cadence, E2/E3's version/journal
+invariants, E5's compile-time calendars, E7's civil dates, E8's local-first
+rule, E17's privacy, and E27–E31's source/reference/count semantics survive.
+No old decision is evidence that a new-stack check has passed.

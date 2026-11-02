@@ -1,10 +1,11 @@
 # BUILD.md: The Build Plan
 
-This is the master plan for **Day by Word**, a Bible reading companion: a
-native iPhone and iPad app built in SwiftUI, and a web version at
-[daybyword.com](https://daybyword.com) served by a Swift server on the
-owner's own machine. AI agent sessions build it step by step, working under
-[AGENTS.md](AGENTS.md).
+This is the master plan for **Day by Word**, a Bible reading companion for
+iPhone, iPad and [daybyword.com](https://daybyword.com), self-hosted by the
+owner. **D40 (2026-11-02) replaces the Swift stack with Next.js, React,
+Tailwind/shadcn, PostgreSQL/Drizzle, Docker Compose and Expo.** The code is
+still the Swift foundation; **Phase M is the first work**, before every
+existing phase. Sessions work under [AGENTS.md](AGENTS.md).
 
 > **Day by Word.** Your Bible reading companion.
 > *Find your plan. Read your Bible. Keep your place.*
@@ -58,7 +59,7 @@ dispute (AGENTS.md §3).
    in [docs/research/competitors.md](docs/research/competitors.md), and the
    work after 1.0 in [docs/roadmap.md](docs/roadmap.md). Read those only
    when an item points there.
-2. Work the **first open `- [ ]` item in the earliest incomplete phase**,
+2. **Finish Phase M before any existing phase.** Work the **first open `- [ ]` item in the earliest incomplete phase**,
    skipping items whose gate is still closed and items marked [OWNER] that
    are waiting on the owner personally (AGENTS.md §4). Items marked
    *(parallel-safe)* may be done in any order within their phase, and Phase
@@ -108,10 +109,13 @@ Agents do every item themselves (D3). The markers describe the kind of work:
 
 Update the **Done** column whenever you tick or untick a box. "Items" counts
 top-level items; sub-items roll up into their parent. D39 (2026-11-01)
-trimmed the path to 1.0 from 148 open items to 103.
+trimmed the path to 1.0 from 148 open items to 103. D40 adds the
+11-item rewrite phase first; historical completion counts are unchanged
+and do not certify new-stack parity.
 
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
+| M | Unified-stack rewrite (first) | M0 Stack migration | 11 | 0 |
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
@@ -133,11 +137,13 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-01):** Phases 0–4 are finished and moved to
-[BUILD-HISTORY.md](BUILD-HISTORY.md): references, verse sets, word counts,
-workload, the plan format, and a compiler that checks every reference and
-claim. Build 25 is on TestFlight. There are no plan files yet (P8.1).
-**Next: P5.1.** Nothing is deployed yet.
+**Current state (2026-11-02):** the existing Swift foundation completed
+Phases 0–4 (history in [BUILD-HISTORY.md](BUILD-HISTORY.md)). Catalog schema
+3, reference/coverage/workload code and app/web shells exist; scheduling
+and the journal do not. No plan files yet. The previous handoff reports
+TestFlight build 25 and no deployment; this session did not inspect those
+services. **Next: PM.1**, following [docs/stack-migration.md](docs/stack-migration.md).
+This session planned the rewrite only; no implementation or deployment.
 
 ---
 
@@ -310,12 +316,12 @@ Engineering consequences go in `docs/decisions.md`.
 
 | ID | Question | Decision |
 |---|---|---|
-| D1 | Name and identifiers | **Day by Word** at daybyword.com, tagline "Your Bible reading companion", line "Find your plan. Read your Bible. Keep your place." Bundle ID **`com.daybyword.app`**, with extensions under it (for example `com.daybyword.app.widgets`) and the App Group `group.com.daybyword.app`. Xcode project and scheme `DayByWord`; URL scheme `daybyword://`; server product `DayByWordServer` (owner, 2026-10-30). |
+| D1 | Name and identifiers | **Day by Word** at daybyword.com, tagline "Your Bible reading companion", line "Find your plan. Read your Bible. Keep your place." Bundle ID **`com.daybyword.app`**, with extensions under it (for example `com.daybyword.app.widgets`) and the App Group `group.com.daybyword.app`. Xcode project and scheme `DayByWord`; URL scheme `daybyword://`; legacy server product `DayByWordServer` (owner, 2026-10-30; replaced by Next.js in D40). |
 | D2 | The name, given daybyword.org (Research finding 2) | **Keep Day by Word, with no trademark search or legal review**; the owner accepts the risk (owner, 2026-10-30). Agents never contact daybyword.org's operators, and any claim that arrives goes to the owner. |
 | D3 | Who builds and decides | **Agents, autonomously** (owner, 2026-10-30), as Beautiful Corner's D21: agents build everything, decide every open question (recorded as `(agent, date)` with reasons), and do every item, including server work (D34), deploys, TestFlight, and App Store Connect. The only limits are the host's safety rules (the owner's credentials, payments, and messages sent in the owner's name still need the owner) and honesty. Agents may install the developer tools the work needs on the owner's Mac (Homebrew formulae and casks, Swift toolchains through swiftly, user-local tools), but never use `sudo` or change system settings. |
 | D4 | Repository visibility and license | **Public, all rights reserved** (owner, 2026-10-30): a `LICENSE` file says so (P1.2), and plans, data, and fonts keep their own rights. Every push publishes, so beta feedback stays anonymized and letter drafts stay generic. |
-| D5 | Platforms and stack | **A native iPhone and iPad app in SwiftUI, and daybyword.com served by a Swift server built on Hummingbird 2, with SQLite** (owner, 2026-10-30). **One engine, written once in Swift** (`ReadingEngine`), is used by the app, its extensions, the server, and the catalog compiler. Hummingbird 2 was chosen over Vapor 4, and SQLite over PostgreSQL (owner). The recommendation at the time had been a Rails site with a second, Ruby engine; the owner chose one language. |
-| D6 | Android | **The installable web app for now; decide on native Android after version 1.0** (owner, 2026-10-30). The options then are a native Kotlin app, or the Swift SDK for Android sharing `ReadingEngine` (Research finding 12). |
+| D5 | Platforms and stack | **Superseded by D40 (owner, 2026-11-02).** Originally SwiftUI, Hummingbird 2, SQLite and one Swift engine (owner, 2026-10-30). Current target: Next.js/React/Tailwind/shadcn web, Expo mobile, one TypeScript engine, PostgreSQL/Drizzle server data, Docker Compose. |
+| D6 | Android | **The installable web app for now; native Android remains after 1.0** (owner, 2026-10-30). D40 (owner, 2026-11-02) selects **Expo** when that gate opens, replacing the former Kotlin/Swift SDK alternatives. |
 | D7 | Minimum iOS version | **iOS and iPadOS 26**, built with Xcode 27 and the iOS 27 SDK (owner, 2026-10-30). |
 | D8 | Accounts | **Optional, with passkeys and one-time recovery codes**: no passwords, no email, and no third-party sign-in. The free core never needs an account (owner, 2026-10-30). On the web, adding a passkey turns a browser profile (D10) into an account. |
 | D9 | Outbound email | **None at version 1.0** (owner, 2026-10-30). Support mail arrives through Cloudflare Email Routing (D28). |
@@ -336,7 +342,7 @@ Engineering consequences go in `docs/decisions.md`.
 | D24 | Groups | **After version 1.0, private by default** (owner, 2026-10-30): churches publish a permitted plan with a join link or QR code; readers join the group's current day or start at the beginning where the plan allows; individual completion and notes are never visible to leaders by default. |
 | D25 | Validation | **No interviews or pilot; build straight to version 1.0 and learn after launch** (owner, 2026-10-30). The brief had recommended 15–20 interviews and a four-week pilot. A short beta for bugs comes before release (D36), and the after-launch learning loop is P18.9. |
 | D26 | Ways to read at launch | **Paper Bible mode, YouVersion and Bible.com, and Copy reference everywhere** (owner, 2026-10-30). Bible Gateway, ESV.org, Olive Tree, Logos, Blue Letter Bible, and audio services come after launch (Phase 19), each tested on a device first. Automatic sync with another app is promised only where a supported integration has been verified. |
-| D27 | Hosting | **Self-hosted on ubuntu-vm, built on the server** (owner, 2026-10-30): each deploy builds a release from a clean copy of `origin/main` with the pinned Swift toolchain, runs it under systemd behind the shared Caddy, keeps SQLite in shared storage, and takes nightly encrypted off-server backups. No Docker. |
+| D27 | Hosting | **Self-hosted on ubuntu-vm behind the existing Caddy; Docker Compose, standalone Node and private PostgreSQL** (D40, owner, 2026-11-02). Build immutable images from clean origin/main, use Drizzle migrations and nightly encrypted off-server pg_dump backups. This supersedes the original Swift/systemd/SQLite/no-Docker implementation choice of 2026-10-30; D34 isolation rules remain. |
 | D28 | Support email | **support@daybyword.com**, a Cloudflare Email Routing catch-all to the owner's inbox, receive-only (owner, 2026-10-30). |
 | D29 | Book names, canon, and tradition labels | **Reader's choice** (owner, 2026-10-30). Book ids are USFM codes. Display names default to common English (Song of Songs, Sirach), and a setting offers other traditions' names (for example Song of Solomon, Canticle of Canticles, Ecclesiasticus). Every plan states the canon it assumes and the books it includes. Tradition labels are neutral and precise. Psalms show the plan's own numbering, with the other numbering beside it where they differ. |
 | D30 | Web browsers | **Modern browsers only** (owner, 2026-10-30): the web app requires JavaScript and targets the current and previous major versions of Safari, Chrome, Firefox, and Edge, on desktop and mobile, and older browsers get a plain notice. Pages stay semantic and accessible (WCAG 2.2 AA), and public plan pages are rendered on the server so they can be found and shared. |
@@ -348,7 +354,8 @@ Engineering consequences go in `docs/decisions.md`.
 | D36 | A beta before release | **A short beta for bugs** (owner, 2026-10-30): a few weeks on TestFlight and the web with readers the owner invites, as a quality check, not a validation study (P18.3). |
 | D37 | Build order | **The app and the web together** (owner, 2026-10-30): each feature lands on both in the same phase. *Revised by D39 (owner, 2026-11-01): a feature on both lands on both within the same milestone, not necessarily the same commit.* |
 | D38 | Outside permissions | **Pursue all four once a usable build exists** ([GATE DEMO]; owner, 2026-10-30): Cambridge University Press (the 1662 tables in the UK), Anglican House (the 2019 Daily Office as a references-only schedule), the Consultation on Common Texts (the RCL and its daily readings), and partnership inquiries to ministries whose plans readers ask for (for example BibleProject and the Navigators), with no suggestion of existing agreement. Agents draft each letter, and the owner confirms it before it is sent in the owner's name. *Revised by D39 (owner, 2026-11-01): the letters concern plans that now come after 1.0, so they wait until those plans are being built (P8.15 and P8.16 moved to the roadmap).* |
-| D39 | A leaner path to version 1.0 | **Approved by the owner in full, 2026-11-01**, after an agent's review found the plan sized for a larger product than 1.0 needs. (1) **First light** ships three original plans: Gospels at your pace, the Bible in a year, and Proverbs through the month (which exercises *Follow the calendar* by day of the month without church-year rules). (2) **The 1.0 catalog is Day by Word's own eight original plans** (P10.1–P10.7, P10.11). M'Cheyne, the 1979 and 1662 prayer-book plans, the deuterocanonical books, the church-year engine (Phase 6), and the D38 letters and D15 reviews they need follow after 1.0. (3) **Scripture work covers what those plans need**: English (KJV) versification, one strict reference format for plan files, verse sets, and word counts. Other canons' orders, other versifications, Psalm renumbering, and a parser for every citation style come later. (4) **The web at 1.0** renders public plan pages on the server and keeps each reader's progress in their own browser; the server computes with the engine from what the browser sends and stores nothing. Accounts, passkeys, backup, and sync (Phase 14) come after 1.0. (5) **The app and the web** stay one product, but a web counterpart may land later in the same milestone (D37). (6) **Two independent sources** (D20) are required for calendar and lectionary facts, as D20 says, and not for other facts such as book names. (7) **Process**: this file holds only the work to 1.0 (findings, the feature map, and later phases moved to `docs/`); `make check` is the per-commit gate and `make check-full` (the web and app tours, light and dark, and Linux) runs at milestones and before releases; related items may share a commit; and decision entries record real choices only (AGENTS.md §7, §8). |
+| D39 | A leaner path to version 1.0 | **Approved by the owner in full, 2026-11-01**, after an agent's review found the plan sized for a larger product than 1.0 needs. (1) **First light** ships three original plans: Gospels at your pace, the Bible in a year, and Proverbs through the month (which exercises *Follow the calendar* by day of the month without church-year rules). (2) **The 1.0 catalog is Day by Word's own eight original plans** (P10.1–P10.7, P10.11). M'Cheyne, the 1979 and 1662 prayer-book plans, the deuterocanonical books, the church-year engine (Phase 6), and the D38 letters and D15 reviews they need follow after 1.0. (3) **Scripture work covers what those plans need**: English (KJV) versification, one strict reference format for plan files, verse sets, and word counts. Other canons' orders, other versifications, Psalm renumbering, and a parser for every citation style come later. (4) **The web at 1.0** renders public plan pages on the server and keeps each reader's progress in their own browser; the original implementation computes on the server without storing what the browser sends (local shared-engine computation replaces that detail under D40/E32). Accounts, passkeys, backup, and sync (Phase 14) come after 1.0. (5) **The app and the web** stay one product, but a web counterpart may land later in the same milestone (D37). (6) **Two independent sources** (D20) are required for calendar and lectionary facts, as D20 says, and not for other facts such as book names. (7) **Process**: this file holds only the work to 1.0 (findings, the feature map, and later phases moved to `docs/`); `make check` is the per-commit gate and `make check-full` (the web and app tours, light and dark, and Linux) runs at milestones and before releases; related items may share a commit; and decision entries record real choices only (AGENTS.md §7, §8). |
+| D40 | Unified stack and rewrite first | **Owner, 2026-11-02:** rewrite the existing foundation before feature work to Next.js App Router + React + Tailwind + shadcn/ui, standalone Node; PostgreSQL with Drizzle TypeScript schema/migrations; Docker Compose behind host Caddy and Cloudflare TLS; Expo for the existing mobile app. Shared reading logic becomes pure TypeScript so offline clients use the same engine. Server data is public catalog only at 1.0; local SQLite/IndexedDB remain device stores under D10/D39. Better Auth is the account implementation when Phase 14 opens; Stripe only for a future billing need; Tauri only if desktop is needed. D23 still excludes all AI features/SDKs. Supersedes old stack/tooling/hosting and server-only computation details (D5, D27, parts of D1/D6/D39); preserves product scope, design, app identity, minimum iOS, rights, privacy and review gates. The 2026-11-02 session reviews and changes docs only; the next session implements Phase M. |
 
 ---
 
@@ -364,8 +371,9 @@ README.md has the architecture and layout.
    the reader did (E2).
 3. **An append-only event journal** with UUIDv7 ids, folded
    deterministically into state; undo is an event (E3).
-4. **One engine, everywhere**: `ReadingEngine` is the only implementation
-   of the reading logic, tested on macOS and Linux (E4).
+4. **One engine, everywhere**: `packages/reading-engine`, pure TypeScript,
+   imported by Next.js, Expo, browser offline code and the compiler,
+   with parity cases across runtimes (E4 as superseded by E32).
 5. **Calendars computed once, at compile time**, when church calendars
    arrive after 1.0 (E5).
 6. **A compiled, versioned catalog** that refuses unverified references,
@@ -374,18 +382,23 @@ README.md has the architecture and layout.
    (E7).
 8. **Local-first**: the app works offline without an account, and at 1.0
    the web keeps progress in the browser (E8, D39).
-9. **SQLite everywhere**, through `ReadingData`'s own wrapper (E9, E18).
-10. **Few dependencies**: none at runtime in the app; Hummingbird 2 and its
-    packages on the server; the web's own vanilla JavaScript (E10, E20).
+9. **PostgreSQL/Drizzle on the server**, expo-sqlite/IndexedDB on devices;
+   no direct Postgres connection from any client (E32).
+10. **Only needed dependencies**: the D40 stack, pinned and audited;
+    Better Auth/billing wait for their product phases, no AI SDK (E32).
 11. **Modern browsers, server-rendered pages, a strict CSP** (E11, E19).
 12. **Shared design tokens** for the app and the web (E12, E23).
 13. **Our own simple formats**: `key: value` front matter, tab-separated
     schedules, JSON registries (E13).
-14. **A date override for tests**: `-today YYYY-MM-DD` and `?today=` (E14).
-15. **Internationalized from the start** (E15, E25).
+14. **A date override for tests**, absent/ignored in production; port the
+    existing app launch and web test hooks (E14, E32).
+15. **Internationalized from the start**, shared typed TypeScript strings
+    and native extension resources as needed (E15, E25, E32).
 
 ### Milestones
 
+- **M0 Stack migration** (Phase M): replace and verify the existing
+  foundation on D40's stack; feature work and production provisioning wait.
 - **M1 Foundation** (Phases 1–7): the app and the server run in the chosen
   design; references, the catalog, and the engine are correct and tested;
   daybyword.com is deployed and marked as in development.
@@ -401,6 +414,28 @@ README.md has the architecture and layout.
   and Android, sustainability, and operations.
 
 ---
+
+## Phase M: Unified-stack rewrite (do first)
+
+**Owner-directed, 2026-11-02 (D40).** Finish before every existing phase.
+[docs/stack-migration.md](docs/stack-migration.md) is the implementation
+brief: inspected inventory, target paths, data mapping, source links,
+runtime constraints, test parity and removal rules. E32 records precedence.
+The planning session has not performed or ticked any rewrite work.
+Preserve completed product behavior and all unfinished item ids; do not
+restart completed editorial/rights work or implement P5 early.
+
+- [ ] **PM.1** Reconfirm the baseline and preserve parity fixtures before changes: clean main, ff-only pull, legacy checks and Linux result; inspect app container/preferences, existing bundle/App Store identifiers and any live deployment without altering them. Capture reference, compiler, route, component, string and settings assertions from the inspected code/tests. Record the baseline commit and actual data; do not rely on the prior TestFlight/no-deploy report.
+- [ ] **PM.2** Create the pinned npm/strict TypeScript workspace and toolchain compatibility matrix (Node, Next/React, Expo/React Native, Tailwind/shadcn, Postgres). Establish new lint/type/test/import-boundary commands beside explicit legacy checks, preserving a passing default gate for retained targets. Update README prerequisites and exact commands; manual-dispatch CI remains D31.
+- [ ] **PM.3** Port the existing reference/plan/workload types into the pure TypeScript engine, with shared oracle fixtures run under Node on macOS/Linux, browser and Expo/Hermes. Preserve all validation, naming, serialization, counts, omissions/repeats and rounding. No second engine; scheduling specification and implementation remain P5.
+- [ ] **PM.4** Port the catalog compiler and source/rights/review guards. Specify and emit the deterministic versioned JSON catalog; define server-only Drizzle/Postgres schema and committed SQL migrations; import release artifacts transactionally and idempotently. Compare normalized schema-3 content, version/checksum semantics and invalid-input behavior. Test real Postgres, fresh/repeated migration/import, empty catalog, failure rollback and retained plan versions. No reader tables.
+- [ ] **PM.5** Replace the Hummingbird web shell with Next App Router, React, Tailwind and shadcn components styled from Morning tokens. Port every existing route, sample/component, Settings choice, copy action, string, asset and error/health behavior. Prove production standalone SSR/hydration, nonce CSP, same-origin loads, no telemetry, privacy-safe logs and no shared caching of private results.
+- [ ] **PM.6** Replace the SwiftUI app shell with Expo for iPhone/iPad, retaining bundle/extension/App Group ids, URLs, App Store identity, durable preferences, widget placeholder, localized strings and accessibility. Build locally and prove an in-place legacy-app upgrade. Verify the native extension/action approach for future reminders, widgets and App Intents; record SDK limits and minimal reproducible adapters/config plugins, never a second reading engine. No new Android/desktop release scope.
+- [ ] **PM.7** Establish versioned catalog/API/storage contracts and local adapters under the shared packages. Bundle/cache approved catalog data so shells and existing reference functions work offline without server access; no DB client or secret in web/mobile bundles. Describe the future journal/export upgrade contract without inventing P5's unfinished event model. Clients use Next APIs for network services and the same engine locally; Better Auth stays Phase 14.
+- [ ] **PM.8** Build the standalone Docker image and Compose web/Postgres/migration-import jobs, with private DB network, stable volume, restricted project DB/roles, loopback web port, non-root runtime, health dependencies, graceful shutdown and bounded logs/resources. Smoke-test the built image and migrations, including static assets/workspace tracing, not only the dev server.
+- [ ] **PM.9** Implement and locally rehearse the fresh deploy/check-live/backup/restore scripts and Caddy site template described in docs/deploy.md, with immutable releases, shared-lock use, compatible migration/code rollback and nightly encrypted off-server pg_dump. Prove restore in isolation; document planned versus discovered host paths/ports and the Cloudflare DNS-module/token/Full (strict) requirements. Live provisioning and cutover remain P7; no changes to other projects or the shared Caddy binary.
+- [ ] **PM.10** Run replacement parity and release qualification: all existing test assertions, browser/app tours in light/dark, phone width/200% web text, AX5/VoiceOver mobile, offline, in-place settings retention, native widget placeholder and extension feasibility. Run new-stack Linux/Postgres and production Compose checks. Record evidence and fix differences; no claim of finished P5/P8/P12 features.
+- [ ] **PM.11** Retire obsolete Swift app/server/packages/toolchain scripts and generated outputs once their replacements pass; keep only justified native adapters/build tooling, original source data and historical decisions. Switch make check/check-full/serve/run/archive/testflight and manual CI fully to the new stack; update all owning docs and paths, run check-full again and record limits. Move this finished phase to BUILD-HISTORY under §8; then resume **P5.1**, with hosting on the new stack in P7.
 
 ## Phase 0: Owner foundations
 
@@ -424,13 +459,14 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 5: The reading engine
 
-`ReadingEngine` is the only implementation (Engineering foundation 4). The
-specification comes first, then the cases, then the code. It covers what
+After Phase M, `packages/reading-engine` (TypeScript) is the only
+implementation (Engineering foundation 4, E32). The specification comes
+first, then the cases, then the code. It covers what
 1.0's plans need; sessions and church-year schedules wait (roadmap).
 
 - [ ] **P5.1** Write `docs/engine.md`, the specification, for what 1.0 needs: plan versions, assignments, enrollments, the journal and its event kinds, assignment states, the three behaviors, reading days and rest days, pausing, late logging, undo, partial completion, skips, the return choices and their previews, changing an enrollment, progress measures, and reminder rules. Each rule has a worked example and the plain wording the reader sees. *(Rewritten by D39.)*
-- [ ] **P5.2** The case format and runner: table-driven JSON cases (catalog fixture, enrollment, events, today, expected output) in `ReadingEngine`'s tests, using invented plans with invented references and never a real plan's schedule. The same cases run on macOS and on Linux.
-- [ ] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from Foundation dates in a given time zone, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
+- [ ] **P5.2** The case format and runner: table-driven JSON cases (catalog fixture, enrollment, events, today, expected output) in `packages/reading-engine` tests, using invented plans with invented references and never a real plan's schedule. The same cases run on macOS and on Linux.
+- [ ] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from instants in a given IANA time zone, without using JavaScript Date as a plan day, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
 - [ ] **P5.4** The journal: event kinds, UUIDv7 ids, and a deterministic fold to state that gives the same result in any arrival order. Duplicate events are no-ops, and undo and redo are events. Cases cover a double tap, a retry, and recovery from an accidental completion.
   - *Note (agent, 2026-11-01):* from P4.6: an enrollment records the plan id and version it follows.
 - [ ] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
@@ -448,18 +484,19 @@ Moved to after 1.0 by D39 (2026-11-01); its items are in
 
 ## Phase 7: Hosting at daybyword.com
 
-The site goes live early, marked as in development (D35). Agents provision
-and deploy under D34's standing permission and its rules, and write every
-script fresh, fitting the server's conventions (Research finding 14). At
-1.0 the server stores no reader data (D39), so backups (P7.5) wait for
-accounts.
+The site goes live early, marked as in development (D35). Phase M prepares
+and locally rehearses the Compose image, scripts, Drizzle migrations and
+backup/restore tools. This phase verifies the actual host and performs
+the first production provisioning and deployment under D34. At 1.0 the
+DB holds public catalog data only; nightly Postgres backups still begin
+with the first deployment (D40).
 
-- [ ] **P7.1** Write `docs/deploy.md`: `/srv/www/daybyword.com` with `releases/`, `current`, `shared/storage`, and `shared/env` (secrets such as the VAPID private key, root-owned, mode 600); the system user `daybyword`; a free port (4316 unless the server says otherwise; check first); the pinned Swift toolchain through swiftly in a system location; the systemd unit with filesystem protections; the Caddy site in `/etc/caddy/sites/` with www redirecting permanently to the apex; security headers; logs; and rollback.
-- [ ] **P7.2** `make deploy` (`deploy/deploy.sh`): over `ssh root@ubuntu-vm`, inside the shared deploy lock, fast-forward the server's clone; build a candidate as an unprivileged user from a clean `git archive` of `origin/main` with the pinned toolchain (a release build, plus the package and server tests on Linux); compile the catalog in release mode; install the release; run the server's migrations; boot-check on a spare port; switch `current`; restart; check `/up`; and restore the previous release on any failure. The checkout is never a web root.
-- [ ] **P7.3** Provision the server as `docs/deploy.md` says (D34): record how the owner's other sites answer, archive `/etc/caddy`, add the user, directories, toolchain, environment file, unit, and Caddy site beside the existing ones without editing any other, and check the other sites again afterward.
-- [ ] **P7.4** The first deploy (after P0.4), then check every name: daybyword.com serves over HTTPS, www redirects permanently with the path kept, and the headers are right. Confirm that the owner's other sites answer exactly as before.
-- [ ] **P7.6** A post-deploy check (`make check-live`): status codes, redirects, TLS, security headers, secure cookies, and no requests to other hosts. `make deploy` runs it and prints only failures.
-- [ ] **P7.7** Until launch (P18.5): `robots.txt` disallows crawling, every page carries `noindex`, and a quiet line says the site is in development.
+- [ ] **P7.1** Verify and finalize docs/deploy.md against ubuntu-vm: actual shared lock, release/env paths, free loopback port (4316 planned), stable Compose project/volume, project database/roles, host Caddy site path and module/certificate capability. Fill in the checked-in deploy configuration with verified values and secret names only. No Swift toolchain/systemd app service.
+- [ ] **P7.2** Qualify PM.9's make deploy on the host under the shared lock: clean origin/main image, release-mode catalog, one-shot Drizzle migrations/import, candidate boot on a spare port, readiness, static assets/SSR/CSP, activation, and compatible image/config rollback. Verify no DB port exposure or private data in logs/caches; retain DB volumes across releases.
+- [ ] **P7.3** Provision only daybyword resources (D34): record other-site responses, archive /etc/caddy, install project Compose/env/DB/backup resources and its own Caddy site, validate/reload, recheck other sites. Arrange a missing Cloudflare DNS module through the owner without replacing the shared proxy unilaterally; owner verifies scoped token and Full (strict) when proxied. Run nightly pg_dump and encrypted off-server transfer from day one, with an isolated restore drill recorded.
+- [ ] **P7.4** First deploy after DNS verification (P0.4), with make check-full first; apex HTTPS, permanent www redirect retaining path, correct headers and nonce CSP, valid origin certificate/renewal, healthy catalog/DB, and unchanged other-site responses. Record deployed commit/image/catalog/schema.
+- [ ] **P7.6** Run make check-live: status/redirect/TLS/security headers, necessary cookies only, asset/SSR hydration, no third-party loads and readiness. make deploy runs it and reports failures; exercise rollback without dropping/restoring the live DB blindly.
+- [ ] **P7.7** Until launch (P18.5): robots.txt disallows crawling, every page carries noindex, and a quiet line says the site is in development.
 
 ## Phase 8: First light
 
@@ -476,9 +513,9 @@ list.
 - [ ] **P8.5** Opening a reading (D26): an adapter for YouVersion and Bible.com that builds the best link it can (the passage, or the chapter where that is the limit, said plainly) in the reader's chosen translation, opening the app where it is installed, and Copy reference everywhere. Test it on a device and record the date, app version, link format, and limits in `docs/destinations.md`.
 - [ ] **P8.6** Physical Bible mode: references at the desk-glance size, a keep-the-screen-awake option, book and chapter called out for finding the place in print, and no link.
 - [ ] **P8.7** The return flow over P5.8: a short welcome, the choices that apply with their previews, and a confirmation. History is never altered.
-- [ ] **P8.8** iOS reminders over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
-- [ ] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
-- [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). The browser sends its events with each request, and the server computes with `ReadingEngine` and keeps nothing, not even in logs. A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
+- [ ] **P8.8** Expo local iOS notifications and verified native actions over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
+- [ ] **P8.9** The Expo/native adapter's small and Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent/App Group adapter following PM.6's verified command/journal contract, with the TypeScript engine folding it once) and an obvious way to undo in the app.
+- [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). The browser imports the shared TypeScript engine for local/offline computation (D40); Next APIs serve the public catalog and retain no reader data, not even in logs. A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
 - [ ] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans, queues marks made offline with their event ids, and says clearly when it is offline.
 - [ ] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
@@ -523,28 +560,29 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
 
 ## Phase 12: Widgets and Apple integration
 
-- [ ] **P12.1** The App Group and the capabilities the extensions need, registered through Xcode's automatic signing on the owner's account (D33).
+- [ ] **P12.1** The App Group and extension capabilities configured reproducibly through Expo config plugins/native adapters, registered through Xcode's automatic signing on the owner's account (D33).
 - [ ] **P12.2** Widgets: small (the next reading), medium (today's readings), and Lock Screen accessories, each with interactive **Mark read** and the hide-passage option honored. *(Rewritten by D39; the large widget is P28.6.)*
-- [ ] **P12.4** App Intents and App Shortcuts: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
+- [ ] **P12.4** App Intents and App Shortcuts through PM.6's native adapter boundary: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
 - [ ] **P12.6** iPad: a sidebar layout and readable widths. Check that it runs on a Mac with Apple silicon as an iPad app. *(Rewritten by D39: comparison is P9.6.)*
 
 ## Phase 13: Paper and calendars
 
-- [ ] **P13.1** The weekly printable checklist: a clean page through the web's print stylesheet and an iOS PDF through the share sheet, with checkboxes, references, the plan label, and the source note. Large print is an option. *(Rewritten by D39: per-use rights rules are P4.5.)*
+- [ ] **P13.1** The weekly printable checklist through Next print CSS and Expo print/share adapters: a clean page through the web's print stylesheet and an iOS PDF through the share sheet, with checkboxes, references, the plan label, and the source note. Large print is an option. *(Rewritten by D39: per-use rights rules are P4.5.)*
 - [ ] **P13.4** Calendar export: an `.ics` file of upcoming readings (all-day or at the reminder time). *(Rewritten by D39; the subscription URL is P28.7.)*
 - [ ] **P13.5** Print and export tests: page breaks and large print.
 
 ## Phase 14: Accounts, backup, and sync
 
 Moved to after 1.0 by D39 (2026-11-01); its items are in
-[docs/roadmap.md](docs/roadmap.md). At 1.0 the app keeps everything on the
+[docs/roadmap.md](docs/roadmap.md). At 1.0 the Expo app keeps everything on the
 device (included in the device's own backups), the web keeps progress in
-the browser, and both offer export and deletion (P8.10, P8.13).
+the browser, and both offer export and deletion (P8.10, P8.13). Better Auth with
+Drizzle/Postgres supplies accounts when Phase 14 opens (D40).
 
 ## Phase 15: The web app: install and offline
 
 - [ ] **P15.1** An installable web app: the manifest (name, icons from the owner's files, colors from the tokens), checked through Add to Home Screen on iPhone and installation on Android.
-- [ ] **P15.2** Offline, finished: a service worker keeps the assets and the active plans' coming weeks, queues marks, and never caches another reader's data.
+- [ ] **P15.2** Offline in Next/React, finished: a service worker keeps the assets and the active plans' coming weeks, keeps the shared TypeScript engine and IndexedDB journal usable offline, queues idempotent work for future consented sync, and never caches private API responses or nonce-bearing HTML in a shared cache.
 - [ ] **P15.4** Keyboard use throughout, and sharing through the Web Share API with a copy-link fallback. *(Rewritten by D39.)*
 - [ ] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
 - [ ] **P15.6** Browser tests for every web flow at phone and desktop widths in Safari and Chrome, with Firefox and Edge checked by hand at each release.
@@ -557,7 +595,7 @@ the browser, and both offer export and deletion (P8.10, P8.13).
 - [ ] **P16.4** The cookie statement, inside the privacy page: every cookie and browser storage key, what it holds, and why it is strictly necessary. *(Rewritten by D39.)*
 - [ ] **P16.5** Sources, permissions, and criteria pages, generated from the catalog and `catalog/SOURCES.md`, with every required credit line.
 - [ ] **P16.6** The accessibility statement: WCAG 2.2 AA, what was tested, known gaps, and how to report a barrier.
-- [ ] **P16.7** The App Store package in `docs/app-store/`: the privacy manifest with accurate required-reason declarations; the privacy label (target "Data Not Collected" without an account, and accurate once accounts exist); age rating; export compliance; name, subtitle, description with the independence statement, and keywords; support and privacy URLs; review notes; and screenshots automated by UI tests in light and dark.
+- [ ] **P16.7** The Expo app's App Store package in `docs/app-store/`: the privacy manifest with accurate required-reason declarations; the privacy label (target "Data Not Collected" without an account, and accurate once accounts exist); age rating; export compliance; name, subtitle, description with the independence statement, and keywords; support and privacy URLs; review notes; and screenshots automated by UI tests in light and dark.
 - [ ] **P16.8** Favicons and icons from the owner's files (D19); custom 404 and 500 pages; and a sitemap.
 - [ ] **P16.9** A link check in `make check`: every internal link resolves, pages validate as HTML, and nothing loads from another host.
 
@@ -568,7 +606,7 @@ the browser, and both offer export and deletion (P8.10, P8.13).
 - [ ] **P17.3** The web at 200% text and 400% zoom (320 CSS pixels) without loss; forced colors; keyboard alone with visible focus and a skip link.
 - [ ] **P17.4** Time: daylight saving changes, travel across zones and the date line, midnight, leap days, and a device clock set wrong, all tested end to end for Today and reminders.
 - [ ] **P17.5** An airplane-mode test of every offline feature, in the app and on the web.
-- [ ] **P17.7** Security: a strict CSP with no `unsafe-*`, rate limits on every form and API call, request-size limits, secure cookies, dependency updates reviewed for advisories, no secrets in the app binary, Keychain for tokens, and suitable file-protection classes.
+- [ ] **P17.7** Security: a production nonce CSP with no `unsafe-*`, tested against Next hydration and the selected shadcn primitives; rate limits on every form and API call, request-size limits, secure cookies, dependency updates reviewed for advisories, no secrets in JS/native bundles, server-only Drizzle imports, private Postgres networking, SecureStore/Keychain for future tokens, and suitable file-protection classes.
 - [ ] **P17.9** Reminders, field-tested: a week of real reminders on a device across settings, with misses investigated.
 - [ ] **P17.10** UI and browser tests for every critical flow in M2 and M3.
 - [ ] **P17.11** A full review of every reader-facing string against AGENTS.md §3 (tone, neutrality, no guilt, no spiritual claims about records).
@@ -597,25 +635,23 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-01:** finished Phases 3 and 4 (P3.3–P3.9, P4.1–P4.10), each
-  committed and pushed with `make check` green. `make test-linux` passed
-  after Phase 3; it was not rerun after Phase 4, so run it first next
-  session (P4's code is Foundation and SQLite only).
-- **What exists now:** `Passage`, `Reading`, `ReferenceFormat` (the strict
-  plan-file format), `ReferenceFormatter`, `VerseSet`, `WordCounts` (the
-  WEB, 754,449 words for the 66 books), `Workload`, and `Plan` in
-  `ReadingEngine`; `PlanFile`, `SourcesRegistry`, `PlanFacts`, and our own
-  `SHA256` in `CatalogCompiler`; `Catalog` in `ReadingData`, opened by the
-  server at start-up. Catalog schema 3 (docs/catalog-format.md). Decisions
-  E30 (passages and the format) and E31 (word counts).
-- **Next: P5.1** (`docs/engine.md`), then P5.2–P5.12. Phase 7 (hosting) is
-  independent of Phase 5. P4.6's enrollment half is noted on P5.4.
-- **`catalog/plans/` is empty** (a `.gitkeep`); the first plans are P8.1.
-  Release builds include only plans at `reviewed` (docs/catalog-format.md).
-  One-chapter books cited by verse and repeated book names are our own
-  conventions, labeled so in E30.
-- **Surprises:** in this shell `ls` is eza and `grep` a ugrep function that
-  ignores piped input; use `/bin/ls` and `/usr/bin/grep` in pipelines. The
-  WEB gives Luke 17:36 and Acts 8:37, 15:34, and 24:7 only as footnotes.
-- **For the owner, when convenient:** Safari remote automation for
-  `DBW_WEBDRIVER=safari make tour-web`; D34's `ubuntu-vm-backup` note.
+- **2026-11-02:** documentation-only review for the owner's D40 stack
+  change. No rewrite, dependencies, runtime configuration, server changes,
+  deploy or TestFlight upload performed.
+- **Next: PM.1**, not P5.1. Finish Phase M first; use
+  docs/stack-migration.md for the inspected inventory, port contracts and
+  parity checks, and docs/deploy.md for the planned Compose/Caddy/DB layout.
+- The code remains the Swift foundation at baseline 97c3981: references,
+  plan types, catalog compiler/reader schema 3 and shells. There are no
+  plan files, scheduling implementation, journal, sync or accounts.
+- Preserve Morning, local-first/no-account/offline behavior, app and URL
+  identity, numeric scripture data, rights/review gates and D39 scope.
+  Postgres is for server catalog data at 1.0; Better Auth waits for Phase
+  14, Android/desktop/billing stay gated, and D23 still forbids AI features.
+- Baseline make check passed: 54 engine, 7 data, 30 compiler, 31 server,
+  15 app tests; 63 string keys. Final make check and documentation checks
+  passed; check-full was not run for this docs-only plan. No new-stack or
+  live-service checks claimed.
+- Previous handoff reports TestFlight build 25 and no deployment; PM.1
+  must verify rather than assume either. Old source/history stays until
+  the replacement passes parity; existing completed phase counts stand.

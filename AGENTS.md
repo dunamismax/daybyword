@@ -1,8 +1,12 @@
 # Working on Day by Word
 
-Day by Word is a Bible reading companion: a native iPhone and iPad app built
-in SwiftUI, and a web version at daybyword.com served by a Swift server
-(Hummingbird 2) on the owner's own machine. It helps Christians choose a
+Day by Word is a Bible reading companion: an iPhone and iPad app and a web
+version at daybyword.com, self-hosted by the owner. D40 (2026-11-02) directs
+the rewrite to Next.js/React/Tailwind/shadcn, PostgreSQL/Drizzle, Docker
+Compose and Expo. The checked-in implementation is still SwiftUI and
+Hummingbird; BUILD.md Phase M must replace it before feature work resumes.
+Read [docs/stack-migration.md](docs/stack-migration.md) for the inventory,
+target layout and parity requirements. It helps Christians choose a
 reading plan, know what to read today, and keep a trustworthy record of
 their reading, while they read in their own Bible: paper, app, or audio. Its
 line is *Find your plan. Read your Bible. Keep your place.* Every AI agent
@@ -38,7 +42,7 @@ tools.
 
 1. Read [BUILD.md](BUILD.md) in full once per session: "How agents use this
    file", the finished-product definition, the product principles, the
-   Owner decisions table (D1–D39), the Engineering foundations, the phases
+   Owner decisions table (D1–D40), the Engineering foundations, the phases
    to version 1.0, and the Handoff notes at the bottom. Do not read
    `BUILD-HISTORY.md`, `docs/roadmap.md` (the work after 1.0), or
    `docs/research/` unless an item or a check points there (§8, "Keeping
@@ -57,7 +61,10 @@ a church, tradition, or faith story to them.
 
 ## 2. The session loop
 
-1. Find the **first unchecked `- [ ]` item in the earliest phase that is not
+1. **Phase M is first, before Phases 0–18.** Do not start P5 or later work
+   until the rewrite's exit checks pass. Historical completed phases stay
+   historical; their new-stack parity is verified in Phase M.
+   Find the **first unchecked `- [ ]` item in the earliest phase that is not
    complete**, skipping items whose gate is still closed and [OWNER] steps
    still waiting on the owner (§4). The design session (P2.3) was a hard
    stop until the owner chose the design; it finished on 2026-11-01 (D18).
@@ -167,7 +174,7 @@ Apple Developer account through Xcode and App Store Connect (D33). Decide
 on the evidence, and write the reasoning down where the next agent will find
 it: a new decision goes in BUILD.md's Owner decisions table as
 `(agent, date)` with its reasons, or in `docs/decisions.md` for
-engineering. The owner's answers in D1–D39 are the product's direction. An
+engineering. The owner's answers in D1–D40 are the product's direction. An
 agent may refine how one is carried out, but never reverses one without
 asking the owner.
 
@@ -212,99 +219,114 @@ Handoff notes.
 
 ## 5. Stack and engineering rules
 
-BUILD.md's Engineering foundations summarize these, and `docs/decisions.md`
-records each decision with its reasons.
+D40 is the current stack decision. The Swift implementation remains only
+until Phase M proves its replacement. Historical engineering entries remain
+in docs/decisions.md, superseded by E32 where they name the old stack.
+[docs/stack-migration.md](docs/stack-migration.md) defines the porting
+contracts; [docs/deploy.md](docs/deploy.md) defines the planned host layout.
 
-- **One engine, everywhere.** `Packages/ReadingEngine` (references,
-  schedules, progress, reminder rules) is the single implementation of the
-  reading logic. The app, the widgets and other extensions, the server, and
-  the catalog compiler all use it. No app view, server route, JavaScript
-  module, or SQL query reimplements engine logic; the web's JavaScript asks
-  the server. Change `docs/engine.md` and add a case first, then the code.
-- **Packages** (`Packages/`): `ReadingEngine`, `ReadingData` (the SQLite
-  wrapper, the catalog reader, the journal, the sync client), and
-  `CatalogCompiler` (the `catalog` tool) use Foundation only, build on
-  Linux, and are tested on macOS and on Linux. The server runs them on
-  Linux, and both platforms must give the same answers.
-- **Apple app** (`apple/`): Swift 6 language mode with complete concurrency
-  checking, SwiftUI, Observation (`@Observable`), WidgetKit, App Intents,
-  UserNotifications, and the system `SQLite3`. Xcode 27 and the iOS 27 SDK,
-  with iOS 26 as the deployment target (D7). The project is generated from
-  `apple/project.yml` by XcodeGen: never hand-edit `*.xcodeproj`, and run
-  `make generate`. The app target holds UI and composition only.
-- **Server** (`Server/`): `DayByWordServer` on Hummingbird 2 (D5), with
-  SQLite through `ReadingData` and WAL mode. It renders semantic HTML on the
-  server, serves the project's own JavaScript and CSS, and provides the sync
-  API. Check current official documentation (through Context7 where
-  available) before relying on a Hummingbird or Swift API you have not used
-  in this repository.
-- **The toolchain is pinned** in `.swift-version` and used everywhere: this
-  Mac, CI, and the server. Change it in one commit with `make check` green
-  on both macOS and Linux.
-- **Calendar rules live only in the compiler.** Church-year and lectionary
-  rules are evaluated at compile time in `CatalogCompiler`, and the engine
-  looks dated appointments up. Never reimplement a lectionary rule anywhere
-  else.
-- **The catalog** is compiled from `catalog/` (`make catalog`) into a
-  read-only database. It is never edited in place or in production, and
-  reader data never goes in it.
-- **The journal is append-only.** Every reader action is an event with a
-  UUIDv7 id. State is a deterministic fold, and undo is an event. Never
-  mutate or delete events, except to carry out a reader's own deletion
-  request. Writes are idempotent, so retries never double-count.
-- **Dates are civil dates.** Plans, enrollments, and events speak in
-  `CivilDate`, never a Foundation `Date` standing for a day. The reader's
-  "today" is resolved once, at the edge, from their device's time zone.
-  Reminders are wall-clock times with an IANA zone.
-- **Tests**: Swift Testing for the packages, the server (with
-  HummingbirdTesting), and the app's unit tests; XCTest for UI tests;
-  browser tests through WebDriver for the web (a decision entry records the
-  client). Every engine rule has table-driven cases. Every calendar and
-  lectionary rule has a test citing its source, with golden files across
-  years. Every bug gets a test.
-- **Dependencies**: zero third-party runtime dependencies in the Apple app;
-  the approved build tools are XcodeGen and Apple's `swift format`. The
-  server may use Hummingbird 2 and the Swift Server Work Group packages it
-  brings; any other package needs a decision entry first, and every package
-  is pinned. The web's JavaScript is the project's own vanilla ES modules,
-  with no npm, no bundler, and no third-party scripts. Never add analytics,
-  advertising, tracking, crash-reporting, session-replay, affiliate,
-  remote-font, or CDN code, any SDK that phones home, or any AI model or
-  service (D23).
-- **Nothing from elsewhere.** A strict Content Security Policy: no remote
-  fonts, scripts, styles, images, or frames. Links out are fine; loads from
-  elsewhere are not.
-- **Modern browsers** (D30): the current and previous major versions of
-  Safari, Chrome, Firefox, and Edge, desktop and mobile. The web app may
-  require JavaScript, older browsers get a plain notice, and pages stay
-  semantic and accessible. Public plan pages are rendered on the server.
-- **Offline first in the app.** Everything except sync works in airplane
-  mode. The web caches the active plans and queues marks made offline.
-- **Personal data** (D10): kept on the device by default, and on the server
-  only after explicit consent. At version 1.0 the server keeps none: the web
-  keeps progress in the reader's browser and sends it with each request for
-  the engine to compute from (D39). Server logs never record passages, plans, or
-  reading events; log request metadata only. Never put personal data in a
-  URL. The one exception is the secret, revocable calendar-feed token,
-  which is a credential and is handled as one.
-- **Design**: follow `docs/design.md` and `design/tokens.json`. Use the
-  generated color assets and CSS custom properties, never raw colors.
-  Change a token first, regenerate, and commit both.
-- **Accessibility**: Dynamic Type through AX5, VoiceOver, Reduce Motion, and
-  sufficient contrast in light and dark on Apple platforms; WCAG 2.2 AA on
-  the web. Color is never the only carrier of meaning: assignment states
-  always have words or symbols too.
-- **Serving**: only a release built from `origin/main` is served
-  (`docs/deploy.md`). The checkout and the repository are never a web root.
-- **Secrets**: never commit `.p8` keys, certificates, provisioning profiles,
-  `apple/Config/Secrets.xcconfig`, VAPID private keys, server environment
-  files, or `.env` files. Server secrets live in `shared/env` on the server
-  (root-owned, mode 600), never in the app binary or a web page.
-- **Formatting**: `swift format` with the repository's `.swift-format`
-  (linted by `make check`); JavaScript and CSS follow `docs/web.md`.
-- Write code that reads like the surrounding code, and keep abstractions in
-  proportion to a real need. Everything here is written fresh (D22): never
-  copy code or scripts from the owner's other repositories.
+- **One engine, everywhere.** `packages/reading-engine` is pure TypeScript
+  for references, schedules, progress and reminder rules. Next.js, Expo,
+  the compiler and browser offline code import that same implementation.
+  No view, Route Handler, SQL query or native extension reimplements it.
+  For new engine work write docs/engine.md and cases before code.
+- **Web/API** (`apps/web`): Next.js App Router, React, TypeScript,
+  Tailwind CSS and locally owned shadcn/ui components. Build
+  `output: 'standalone'` for a plain Node server, no Vercel services or
+  hosting-specific dependencies. Semantic server-rendered public pages,
+  same-origin assets and a production nonce CSP; no `unsafe-inline` or
+  `unsafe-eval` production escape. Test hydration and offline navigation.
+- **Mobile** (`apps/mobile`): Expo/React Native for iPhone and iPad.
+  Preserve the app, extension and App Group ids (D1), iOS/iPadOS 26
+  minimum (D7), URLs, settings and App Store record. Use local native
+  development/release builds. Expo Go cannot prove extension parity.
+  Small native modules/config plugins may bridge widgets, notifications,
+  App Intents, storage migration and signing; they contain no second
+  engine. Generated native projects are not hand-maintained sources.
+- **Storage**: server PostgreSQL through server-only Drizzle TypeScript
+  schema and committed generated SQL migrations in `packages/db`.
+  Generate, review, migrate; never push schema directly in production.
+  Clients never import the DB package or connect directly to Postgres.
+  Local Expo SQLite and browser IndexedDB preserve offline behavior;
+  they do not replace or expose the server DB.
+- **Data boundaries**: at 1.0 PostgreSQL stores public compiled catalog
+  data and migration metadata only (D39). Reader data stays local and is
+  never required for SSR. Clients call Next APIs for public catalog
+  delivery and later explicit-consent sync/auth; the same engine computes
+  locally offline. No personal data in URLs or logs, except the later
+  secret revocable calendar-feed credential (handled as a credential).
+  Logs retain method,
+  route pattern, status and duration only, including proxy logs.
+- **Accounts and optional stack**: Better Auth with Drizzle/Postgres is
+  the Phase 14 choice, preserving D8's optional passkey/recovery rules.
+  Do not add accounts now. Stripe waits for an approved billing need.
+  D23 excludes the Vercel AI SDK and all model features. Tauri waits for
+  a justified desktop client; Expo Android stays behind D6 after 1.0.
+- **Toolchains/dependencies**: pin compatible supported Node/npm,
+  Next/React, Expo/React Native, Postgres and build tools; commit one npm
+  workspace lockfile. Review licenses, advisories, telemetry and native
+  compatibility. E32 approves the requested stack in principle; record
+  exact packages and real additional choices before adding them.
+  No analytics, advertising, tracking, remote fonts, CDN code,
+  session replay, crash-reporting services or SDKs that phone home.
+  Disable framework/tooling telemetry and do not require hosted EAS/OTA.
+- **Calendar rules** live only in the TypeScript catalog compiler.
+  Church-year and lectionary rules are evaluated at compile time;
+  the engine looks up dated appointments.
+- **Catalog**: plain-text sources in `catalog/` compile to a deterministic,
+  versioned release artifact, bundled for mobile/offline and imported
+  transactionally into Postgres. Never edit the artifact/DB in production.
+  All existing rights/review/reference/coverage checks survive the port.
+  Reader data never goes in a public catalog.
+- **Journal**: append-only events with UUIDv7 ids; deterministic fold,
+  idempotent writes and undo as an event. Delete only for a reader's own
+  deletion request. Its implementation is still P5/P8, not a migration
+  shortcut through server state.
+- **Dates**: civil dates for days, never JavaScript `Date` instants used
+  as plan days. Resolve today at the device edge once; reminders use
+  wall-clock times and an IANA zone. No server-zone default.
+- **Tests**: port the current Swift test vectors before retiring their
+  oracle. Shared cases run in Node on macOS/Linux and in browser/mobile
+  runtimes; integration tests use real PostgreSQL, production Next
+  standalone output and Expo builds. Table-driven engine cases,
+  source-citing calendar golden tests and a test for every bug.
+- **Design/accessibility**: Morning in docs/design.md and
+  design/tokens.json generates Tailwind/shadcn CSS and React Native
+  tokens. Change tokens first and commit outputs. No raw colors or
+  replacement artwork. shadcn DOM components are web-only. Dynamic Type
+  through AX5, VoiceOver, Reduce Motion, light/dark contrast on mobile;
+  WCAG 2.2 AA, keyboard and 320px/zoom checks on the web. States always
+  have words or symbols; color alone never carries their meaning.
+- **Browsers** (D30): current and previous Safari, Chrome, Firefox and
+  Edge, desktop/mobile. Public plan pages are server rendered; older
+  browsers receive a plain notice.
+- **Serving**: Docker Compose from clean origin/main releases under
+  `/srv/www/daybyword.com`. Planned source files:
+  `deploy/compose.yaml`, `deploy/Dockerfile`,
+  `deploy/caddy/daybyword.com`; host site file
+  `/etc/caddy/sites/daybyword.com`. Inspect the actual host first.
+  Project name `daybyword`; Node container port 3000 maps only to
+  `127.0.0.1:4316` (verify free). DB `daybyword`, runtime role
+  `daybyword_app`; Postgres 5432 stays private to the Docker network,
+  with no production host port. No second proxy or platform dashboard.
+- **TLS/backups**: keep host Caddy; prefer its Cloudflare DNS module and
+  a zone-scoped token, with Cloudflare Full (strict) when proxied.
+  Missing shared modules/account settings require coordination under
+  D34, not changes to other projects. Nightly `pg_dump`, encrypted
+  off-server copies, retention and an isolated restore drill begin with
+  the first Postgres deploy, even before accounts.
+- **Secrets**: root-owned mode-600 `shared/env` on the server, protected
+  Caddy environment for DNS credentials, never images or public bundles.
+  Never commit .env files, signing keys/profiles/certificates or the
+  legacy `apple/Config/Secrets.xcconfig`. Public-prefixed Expo/Next
+  variables cannot contain secrets.
+- **Formatting/localization**: shared typed interface strings, English
+  first, and extension resources where needed. Phase M pins JS/TS/CSS
+  format/lint rules and replaces the Swift-only gates without weakening
+  checks. Keep source provenance for the numeric scripture datasets.
+- **Project code**: write fresh code that reads like its surroundings,
+  with abstractions proportionate to a real need. Copy no code, scripts
+  or content from the owner's other repositories (D22).
 
 ## 6. Plans, references, and rights
 
@@ -363,13 +385,15 @@ records each decision with its reasons.
 
 An item is done only when all of these hold:
 
-1. `make check` passes: the toolchain, formatting, imports, design tokens
-   and raw colors, the catalog compile and integrity suite, the package and
-   server tests, the app's unit tests, and the String Catalog. The build has
-   zero warnings in the touched targets (xcodebuild prints warnings only for
-   files it recompiles, so touch the sources or clean before trusting that).
-2. User-visible work is seen working once, where it runs: Apple work in the
-   iOS Simulator (pick the device with `scripts/sim-destination.sh`), with
+1. `make check` passes. Until PM.2 this is the existing Swift gate.
+   During migration it covers retained legacy targets and their replacements;
+   PM.11 leaves the new-stack gate in docs/stack-migration.md as the sole
+   default. It covers toolchains, format/lint/types/imports, tokens/contrast,
+   catalog integrity, shared-engine, real DB/API and mobile unit tests,
+   and interface strings. Touched targets build with zero warnings.
+2. User-visible work is seen working once, where it runs: mobile work in
+   an Expo native development build in the iOS Simulator (use the legacy
+   simulator script until PM replaces it), with
    VoiceOver labels on new controls; web work in a real browser with
    `make serve`, with the console free of errors and CSP violations.
    Widgets, notification actions, and App Intents are exercised where they
@@ -385,9 +409,11 @@ An item is done only when all of these hold:
 
 **At each milestone, and before every TestFlight build or deploy**, run
 `make check-full` (`make check`, the web tour in light and dark at desktop
-and narrow widths, the app tour in light and dark, and the packages and
-server on Linux), and check by hand what the tours cannot: a phone width
-and 200% text on the web, one large Dynamic Type size, and dark mode in the
+and narrow widths, the app tour in light and dark, and the shared
+TypeScript/compiler, Node server and PostgreSQL on Linux after migration;
+keep the legacy checks until replaced). Check by hand what the tours
+cannot: a phone width and 200% text on the web, one large Dynamic Type
+size, and dark mode in the
 new screens. Fix what it finds before shipping.
 
 Never claim verification you did not perform. If a step could not be run (no
@@ -474,8 +500,8 @@ Letters go out only after the owner confirms each one (D38).
 
 **Developer tools** (D3): on the owner's Mac, agents may install the
 developer tools the work needs without asking: Homebrew formulae and casks,
-Swift toolchains through swiftly, and user-local tools. Prefer well-known,
-maintained tools from their official sources, and record in README.md's
+Node/npm, Docker/Compose, Expo and Apple build tools, and user-local tools.
+Prefer well-known, maintained tools from their official sources, and record in README.md's
 prerequisites any tool a script or `make check` depends on. This does not
 cover `sudo`, macOS system or security settings, paid software, or adding a
 package dependency (§5 and `docs/decisions.md` govern that).

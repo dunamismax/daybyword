@@ -1,87 +1,79 @@
-# The web's JavaScript and CSS
+# Web implementation rules
 
-daybyword.com is rendered on the server (docs/decisions.md E11, E19). The
-project's own JavaScript adds the web app's interactivity, and its own CSS
-styles every page. This note is the style guide for both; Swift is formatted
-by `swift format` with the repository's `.swift-format` and linted by
-`make check`.
+**Target under D40 / Phase M (2026-11-02).** The current implementation is
+still Hummingbird with CSS/vanilla modules in Server/Public. Phase M
+replaces it with Next.js App Router, React, strict TypeScript, Tailwind
+CSS and locally owned shadcn/ui components in apps/web. This guide governs
+the replacement and all later web phases; docs/stack-migration.md maps the
+legacy routes/components/tests. It does not claim the new files exist.
 
-## Rules for both
+## Rendering and boundaries
 
-- **Everything is ours.** No npm, no bundler, no framework, no third-party
-  script, stylesheet, or font, and nothing loaded from another host
-  (AGENTS.md §5). The Content Security Policy enforces it.
-- **Modern browsers only** (D30): the current and previous major versions
-  of Safari, Chrome, Firefox, and Edge. Use what they all support without a
-  prefix or a polyfill; older browsers get a plain notice.
-- **Files live in `Server/Public/`**, are served as they are written, and
-  are small enough to read in one sitting.
-- Two-space indentation, UTF-8, a final newline, and lines under 100
-  characters.
+- Use the Node runtime and `output: 'standalone'`. No Vercel-specific
+  runtime, hosted data/auth, remote assets or CDN requirement.
+- Public plan pages are semantic server-rendered HTML with truthful
+  metadata. Client components own browser interaction and local storage;
+  never read browser records during SSR or upload them just to render.
+- All reading rules live in packages/reading-engine. Import that same
+  pure TypeScript code for offline browser evaluation. Views, Route
+  Handlers and SQL do not reimplement scheduling, coverage or progress.
+- Next Route Handlers provide catalog delivery and later consented
+  sync/auth. Validate request/response contracts; keep personal records out
+  of URLs, logs and error messages. DB and secret modules are server-only.
+- Version 1.0 keeps reading records in IndexedDB, not cookies or
+  localStorage. localStorage is permitted for non-sensitive appearance
+  preferences. No auth/session cookie is needed just to use the core.
+- Use bounded requests, metadata-only logs, no-store for private responses
+  and no shared/Cloudflare caching of personal responses. Offline code
+  keeps approved catalog data and local events only.
 
-## JavaScript
+## Styling and components
 
-- ES modules only (`<script type="module" src="/assets/…">`), with no inline
-  scripts and no `eval`, so the CSP never needs `unsafe-inline` or
-  `unsafe-eval`.
-- `const` by default, `let` when a value changes, never `var`. Strict
-  equality. Semicolons at the end of statements.
-- Named exports, one module per job (for example `marking.js`,
-  `offline.js`), and no globals.
-- **No engine logic.** The browser never decides what to read, whether a day
-  is complete, or what a catch-up choice does; it asks the server, which
-  asks `ReadingEngine` (E4). JavaScript renders answers, sends the reader's
-  actions, and queues them while offline.
-- Progressive enhancement where it is cheap: links and forms work as plain
-  HTML first, and scripts improve them.
-- Talk to the server with `fetch` and JSON. Never put personal data in a URL
-  (E17).
-- Interface text comes from the server's string tables (E15), rendered into
-  the page or returned by the API, never written in a script.
-- No `localStorage` for reading data; the offline queue lives in IndexedDB
-  and holds only what the reader has chosen to keep (D10).
-- Name things for what they are in the reader's words: `reading`, `plan`,
-  `today`, `markRead`.
+- Generate CSS custom properties and Tailwind theme/shadcn semantic
+  variables from design/tokens.json, including light/dark/automatic and the
+  existing reference-size preference. Do not import shadcn's default
+  palette, remote fonts, icon pack or decorative assets.
+- Reuse only the shadcn components the interface needs, checked into the
+  project with their licenses. Audit their focus behavior and inline styles
+  against the CSP. Keep accessible native elements for simple controls.
+- Styles use Tailwind utilities and small local stylesheets where useful.
+  No raw colors; rem-based text, 320 CSS px reflow, 200% text/400% zoom,
+  visible keyboard focus and reduced-motion support. Preserve Morning.
+- React Native uses its own controls with the generated tokens, not web
+  shadcn components.
 
-## CSS
+## CSP, assets and tooling
 
-- One stylesheet per concern (`site.css` for the layout, `tokens.css`
-  generated from `design/tokens.json`), loaded with `<link>`; no inline
-  styles, so the CSP never needs `unsafe-inline` for styles.
-- **No raw colors.** Every color is a custom property from the generated
-  `tokens.css` (E12). Until the tokens exist, placeholder pages use CSS
-  system colors (`Canvas`, `CanvasText`).
-- Light and dark follow `prefers-color-scheme`, and the reader's own choice
-  in Settings overrides it.
-- Sizes in `rem` so that text scales with the reader's settings; layouts
-  hold at 320 CSS pixels and at 200% text (WCAG 2.2 AA).
-- Class names describe what a thing is (`.reading`, `.plan-card`), in
-  lowercase with hyphens. No utility-class systems.
-- Respect `prefers-reduced-motion`; keep visible focus styles on every
-  control.
+- Keep a strict same-origin production CSP without unsafe-inline or
+  unsafe-eval. Next hydration/streaming uses per-request nonces and dynamic
+  rendering as required by the pinned release. Put the matching nonce on
+  the rendering request and response; verify errors and navigation too.
+- Do not cache nonce-bearing rendered HTML as static/public pages. Do not
+  weaken CSP to fix a shadcn primitive emitting forbidden inline styles;
+  adapt/select the component and verify it under the built production app.
+- A localhost-only development policy may allow documented tooling needs.
+  Test the actual standalone production server separately.
+- All images, fonts, scripts and styles are local; URLs opened by the
+  reader may leave the site. Disable framework telemetry. Do not load
+  analytics, tracking, model or third-party browser services.
+- A single pinned workspace lockfile and formatter/linter/type checks
+  replace the no-npm/no-bundler rules. Use typed shared English strings,
+  named exports, two-space indentation, UTF-8 and final newlines.
+- Copy public and .next/static into the standalone image and trace
+  workspace packages/catalog data. Test real image assets, not only dev.
 
-## The page shell
+## Shell, routes and support
 
-Every page shares one layout (`Server/Sources/DayByWordWeb/Pages.swift`):
-a skip link, the header with the wordmark and the section switcher (the
-current section carries `aria-current="page"`), the page's `main`, and a
-footer with the independence statement. An unknown address gets the site's
-own "Page not found" page with status 404.
+Preserve the skip link, header wordmark and Today/Plans/Progress/Settings
+navigation, aria-current, one main and heading, footer independence
+statement, custom 404 and every stable route in docs/urls.md.
+Keep /dev/components and test date overrides out of production.
+Keep /up no-store and informative only about readiness.
 
-## Unsupported browsers
-
-D30 supports the current and previous major versions of Safari, Chrome,
-Firefox, and Edge. Each page holds a plain notice, hidden by default, that
-says the web app needs a recent browser and that pages still work for
-reading:
-
-- `support.js` (a module) shows it when any feature the web app relies on
-  is missing: `structuredClone`, `Array.prototype.findLast`,
-  `Object.groupBy`, the CSS `:has()` selector, and container queries. Every
-  browser D30 covers has all of them; raise the list when a newer feature
-  becomes essential.
-- `unsupported.js` (a `nomodule`, deferred classic script, written in the
-  oldest JavaScript) shows it in browsers that cannot load modules at all.
-- A `noscript` copy covers JavaScript turned off.
-
-The notice's words are in the page, never in the scripts.
+D30 still targets current/previous Safari, Chrome, Firefox and Edge on
+desktop/mobile. Port the unsupported-browser and noscript notices without
+crashing the notice itself; public server-rendered content remains usable.
+Port the current tour's route/theme/settings/focus/overflow assertions to
+the new browser harness, and check CSP/console under standalone output.
+Retain print CSS and service-worker paths across upgrades; offline caches
+must have versioning, cleanup, no cross-reader data and no stale private SSR.

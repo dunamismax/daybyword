@@ -15,14 +15,17 @@ It will be a native iPhone and iPad app and a web version at
 independent Christian project with no denominational affiliation, and it
 does not speak for any church, ministry, or publisher.
 
-**Status (2026-11-01):** the foundation is being built. The app and the
-site have their three sections, Settings, and shared addresses, with
-placeholders where plans will go; the first build is on TestFlight for the
-owner; the shared packages pass their tests on macOS and Linux; and
-daybyword.com is not serving yet.
-[BUILD.md](BUILD.md) is the plan and records its current state, finished
-phases move to [BUILD-HISTORY.md](BUILD-HISTORY.md), and
-[AGENTS.md](AGENTS.md) governs how the work is done.
+**Status (2026-11-02):** the existing Swift foundation has app/web shells,
+Scripture references and catalog tooling; scheduling and plan content are
+still to come. The owner has selected a unified stack: Next.js/React,
+Tailwind/shadcn, PostgreSQL/Drizzle, Docker Compose and Expo.
+**Implementation has not started.** [BUILD.md Phase M](BUILD.md#phase-m-unified-stack-rewrite-do-first)
+comes before all feature work, and [the migration brief](docs/stack-migration.md)
+maps the inspected code, data and tests to the target architecture.
+[AGENTS.md](AGENTS.md) governs the work; completed phases remain in
+[BUILD-HISTORY.md](BUILD-HISTORY.md). The prior handoff reports a
+TestFlight build and no deployment; this documentation review did not
+inspect either service.
 
 ## What it will do
 
@@ -47,49 +50,49 @@ phases move to [BUILD-HISTORY.md](BUILD-HISTORY.md), and
   and export and deletion are there at any time. Optional sync, with
   passkeys, follows after 1.0.
 
-## The plan at a glance
+## The target stack (D40)
 
 | | |
 |---|---|
-| App | iPhone and iPad in SwiftUI, iOS 26 and later. Android readers use the installable web app until a native Android decision after 1.0 |
-| Web | daybyword.com, served by a Swift server on Hummingbird 2 with SQLite: public plan pages and the web app (progress kept in the browser at 1.0), for current browsers |
-| Engine | One Swift package, `ReadingEngine`, shared by the app, its widgets, the server, and the catalog compiler |
-| Plans | Compiled from plain-text sources in `catalog/`, with every reference verified, every coverage claim computed, and every source's rights recorded |
-| Hosting | The owner's Ubuntu server behind Caddy, built on the server from `main` at each deploy |
-| Path | Foundation, then first light (Today and three original plans), then version 1.0 with eight original plans, a short beta, and the App Store; then [the roadmap](docs/roadmap.md) (D39) |
+| App | Expo / React Native for iPhone and iPad, iOS 26+; local builds, native adapters for Apple integration as needed |
+| Web | Next.js App Router + React + TypeScript, Tailwind CSS and shadcn/ui styled with Morning tokens; standalone Node output |
+| Engine | One pure TypeScript package shared by Next, Expo, browser offline code and the catalog compiler |
+| Server data | PostgreSQL through Drizzle TypeScript schema and committed SQL migrations; public catalog only at 1.0 |
+| Local data | Expo SQLite and browser IndexedDB; no account required, no client connection to server Postgres |
+| Plans | Existing plain-text catalog sources and rights evidence; deterministic compiler artifact imported into Postgres and bundled on mobile |
+| Hosting | Project Docker Compose on ubuntu-vm, loopback web port behind host Caddy, Cloudflare TLS, nightly encrypted off-server pg_dump backups |
+| Later, only when needed | Better Auth for optional accounts after 1.0; Stripe for billing; Tauri for desktop; Expo Android after D6 |
+| Excluded | Bible text, analytics and AI features, including any model SDK (D13/D23) |
 
-## Architecture
+## Target architecture
 
-At version 1.0 (D39); sync, accounts, calendar feeds, and web push follow
-after it ([docs/roadmap.md](docs/roadmap.md)).
+~~~text
+catalog/ + SOURCES.md ── TypeScript compiler ── versioned release artifact
+                                                │              │
+                                    Drizzle → PostgreSQL     bundled/cached
+                                                │              │
+Caddy/Cloudflare → Compose Next.js standalone ← HTTPS → Expo / browser
+                  public SSR + catalog API       local SQLite / IndexedDB
+                        │                              │
+                        └──── same TypeScript engine ──┘
+~~~
 
-```
-┌──────────────── iPhone and iPad (SwiftUI, Swift 6) ────────────────┐
-│ Today · Plans · Progress      Widgets · Notification actions ·     │
-│                               App Intents                          │
-│   ReadingEngine (references, schedules, progress, reminder rules)  │
-│   ReadingData (SQLite: catalog and the reader's journal)           │
-└────────────────────────────────────────────────────────────────────┘
-┌──────────────── a browser at daybyword.com ────────────────────────┐
-│   the web app's own JavaScript; the reader's events kept here      │
-└───────────────────────────────┬────────────────────────────────────┘
-                                │ HTTPS: events sent, nothing stored
-┌───────────────────────────────▼────────────────────────────────────┐
-│ ubuntu-vm: Caddy → DayByWordServer (Hummingbird 2, systemd)        │
-│   public plan pages · web app (Today, Plans, Progress)             │
-│   the same ReadingEngine and ReadingData · Catalog.sqlite (read-only)│
-└────────────────────────────────────────────────────────────────────┘
-catalog/ (plans, scripture data, SOURCES.md)
-   └─ swift run catalog ──► Catalog.sqlite ──► app bundle + server release
-```
+At 1.0 personal records remain in the device/browser; local computations
+use the shared engine. Future consented sync and Better Auth run through
+Next APIs and server-only Drizzle. PostgreSQL is never reachable from a
+client. See [the migration brief](docs/stack-migration.md) for workspace
+paths, data contracts and native integration boundaries, and
+[deployment planning](docs/deploy.md) for Compose/Caddy paths, ports,
+database naming, TLS, backups and rollback. These are planned conventions,
+not claims that infrastructure has been provisioned.
 
-## Repository layout
+## Current repository layout (legacy, until Phase M)
 
 ```
 AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
 catalog/                  SOURCES.md, scripture/ (book registry, versification); plans to come
-Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
-Packages/ReadingData/     the SQLite wrapper, catalog reader, journal, and sync client
+Packages/ReadingEngine/   references, plan types, coverage and workload (scheduling still open)
+Packages/ReadingData/     SQLite wrapper and catalog reader (journal/sync still open)
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
 Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
 apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
@@ -99,14 +102,21 @@ scripts/                  helpers behind the Makefile (simulator choice, Linux t
 .github/workflows/        CI, run by hand (D31)
 ```
 
-Still to come, as BUILD.md's phases reach them: the rest of `catalog/` (plan
-sources, the Hebrew, Greek, and Latin schemes, and word counts) and `deploy/` (the
-server's unit, Caddy site, and scripts). [The artwork inventory](design/images/README.md)
+Numeric scripture data is present, including WEB word counts. Plan files
+are still absent; Hebrew/Greek/Latin schemes wait until after 1.0.
+Phase M creates the new workspace and Compose deployment files; the layout
+above documents the inspected legacy source, not the target structure.
+[The artwork inventory](design/images/README.md)
 records the app icon, web exports, sharing image, and twelve plan covers.
 
-## Prerequisites
+## Current prerequisites (legacy checks)
 
-Confirmed on the owner's Mac on 2026-10-30:
+These run the code still checked in. PM.2 will pin and document supported
+Node/npm, Next/React, Expo/React Native, Postgres and test-tool versions;
+Docker Compose and local Apple build tools are required for the target.
+No hosted build, auth or model account is needed for migration.
+
+Legacy tools confirmed on the owner's Mac on 2026-10-30:
 
 - macOS 27.2 on Apple silicon.
 - **Xcode 27.2** (27B52), which ships **Swift 6.4.2**, the version pinned
@@ -129,7 +139,7 @@ Confirmed on the owner's Mac on 2026-10-30:
   Apple Developer account, and `apple/Config/Secrets.xcconfig` with the
   team ID (copy `Secrets.example.xcconfig`; see `docs/release.md`).
 
-## Quick start
+## Current quick start (legacy, still runnable)
 
 From a clean checkout:
 
