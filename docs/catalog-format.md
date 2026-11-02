@@ -8,17 +8,14 @@ nothing reads plan files at run time. The scripture data it is checked
 against is described in `docs/scripture.md`, and its rights in
 `catalog/SOURCES.md`.
 
-## D40 migration contract
+## Final stack alignment
 
-The source grammar, ids, validation, computed claims and rights/review
-rules below remain current. The compiled SQLite section describes the
-existing schema-3 oracle only. PM.4 replaces its runtime format with a
-deterministic versioned JSON artifact and a Drizzle/Postgres importer,
-carrying the same semantics plus offline numeric workload data.
-See docs/stack-migration.md for field mapping, immutable plan versions,
-checksums, atomic builds and import/migration acceptance tests.
-After the new compiler passes parity, update this document with its actual
-artifact schema and commands. Never build new features on server SQLite.
+D41 retains the source grammar, native read-only catalog and compiler
+rights/claims checks below. This is the existing SQLite schema-3 artifact,
+not the future server database. PM.14 defines deterministic export/import
+into server-only Drizzle/PostgreSQL tables, with plan id/version keys,
+transactional idempotence and checksum/parity checks. Do not migrate the
+native catalog into a remote DB or weaken release review filters.
 
 ## A plan file
 
@@ -109,7 +106,7 @@ history must keep meaning the same reading across versions of the plan:
 - A reading removed from a sequence leaves its id unused for good.
 - A day-of-month plan's ids are its days, so they never change.
 
-## The compiled catalog (legacy schema 3, until PM.4)
+## The compiled catalog
 
 `make catalog` writes `build/catalog/Catalog.sqlite` (and copies it into the
 app's bundle), replacing the old file only once the new one is complete. A

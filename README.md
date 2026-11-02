@@ -15,17 +15,15 @@ It will be a native iPhone and iPad app and a web version at
 independent Christian project with no denominational affiliation, and it
 does not speak for any church, ministry, or publisher.
 
-**Status (2026-11-02):** the existing Swift foundation has app/web shells,
-Scripture references and catalog tooling; scheduling and plan content are
-still to come. The owner has selected a unified stack: Next.js/React,
-Tailwind/shadcn, PostgreSQL/Drizzle, Docker Compose and Expo.
-**Implementation has not started.** [BUILD.md Phase M](BUILD.md#phase-m-unified-stack-rewrite-do-first)
-comes before all feature work, and [the migration brief](docs/stack-migration.md)
-maps the inspected code, data and tests to the target architecture.
-[AGENTS.md](AGENTS.md) governs the work; completed phases remain in
-[BUILD-HISTORY.md](BUILD-HISTORY.md). The prior handoff reports a
-TestFlight build and no deployment; this documentation review did not
-inspect either service.
+**Status (2026-11-02):** final target is Astro + PostgreSQL/Drizzle, with
+Swift retained for this project's existing iPhone/iPad app. Python is
+optional tooling only when needed. The earlier Next/Expo plan was never
+implemented and is withdrawn. The code still contains the original
+Swift/Hummingbird/SQLite foundation; this revision changes docs only.
+[BUILD.md Phase M](BUILD.md#phase-m-align-with-the-final-stack-do-first)
+starts at PM.12 before feature work; [the migration brief](docs/stack-migration.md)
+maps the code/data/tests and [deployment plan](docs/deploy.md) specifies
+the planned host boundaries. No live deploy or app upload was performed.
 
 ## What it will do
 
@@ -50,49 +48,39 @@ inspect either service.
   and export and deletion are there at any time. Optional sync, with
   passkeys, follows after 1.0.
 
-## The target stack (D40)
+## Final target (D41)
 
-| | |
+| Area | Stack and scope |
 |---|---|
-| App | Expo / React Native for iPhone and iPad, iOS 26+; local builds, native adapters for Apple integration as needed |
-| Web | Next.js App Router + React + TypeScript, Tailwind CSS and shadcn/ui styled with Morning tokens; standalone Node output |
-| Engine | One pure TypeScript package shared by Next, Expo, browser offline code and the catalog compiler |
-| Server data | PostgreSQL through Drizzle TypeScript schema and committed SQL migrations; public catalog only at 1.0 |
-| Local data | Expo SQLite and browser IndexedDB; no account required, no client connection to server Postgres |
-| Plans | Existing plain-text catalog sources and rights evidence; deterministic compiler artifact imported into Postgres and bundled on mobile |
-| Hosting | Project Docker Compose on ubuntu-vm, loopback web port behind host Caddy, Cloudflare TLS, nightly encrypted off-server pg_dump backups |
-| Later, only when needed | Better Auth for optional accounts after 1.0; Stripe for billing; Tauri for desktop; Expo Android after D6 |
-| Excluded | Bible text, analytics and AI features, including any model SDK (D13/D23) |
+| Web | Astro/TypeScript, Node adapter standalone; prerender public content where useful |
+| Interaction | Astro Actions and API endpoints; React islands/Tailwind/shadcn only where needed |
+| Server DB | PostgreSQL + server-only Drizzle schema and reviewed SQL migrations |
+| Native | Existing SwiftUI/Observation iPhone/iPad app; pinned Swift 6.4.2, iOS/iPadOS 26+ |
+| Local native data | Existing ReadingData/SQLite for offline use; no direct Postgres connection |
+| Rules | Swift native and TypeScript web modules, one specification/shared parity fixtures (E33) |
+| Hosting | Project Compose behind existing Caddy/Cloudflare, private Postgres, pg_dump/off-server restore checks |
+| Optional later | Better Auth in Phase 14; Swift desktop only if needed; Python utilities only for a real task |
+| Excluded | Bible text, analytics/model features, mandatory Python, Next/Expo/Tauri rewrites |
 
-## Target architecture
+Native clients call Astro APIs over HTTPS. At 1.0 personal records stay
+in the app/browser; PostgreSQL holds public catalog data only. The catalog
+source format, rights evidence, Morning design and eight-plan release
+scope remain. The engine boundary and deterministic compiler export into
+Postgres are explicit migration tasks, not completed work.
 
-~~~text
-catalog/ + SOURCES.md ── TypeScript compiler ── versioned release artifact
-                                                │              │
-                                    Drizzle → PostgreSQL     bundled/cached
-                                                │              │
-Caddy/Cloudflare → Compose Next.js standalone ← HTTPS → Expo / browser
-                  public SSR + catalog API       local SQLite / IndexedDB
-                        │                              │
-                        └──── same TypeScript engine ──┘
-~~~
+## Current architecture (legacy until Phase M)
 
-At 1.0 personal records remain in the device/browser; local computations
-use the shared engine. Future consented sync and Better Auth run through
-Next APIs and server-only Drizzle. PostgreSQL is never reachable from a
-client. See [the migration brief](docs/stack-migration.md) for workspace
-paths, data contracts and native integration boundaries, and
-[deployment planning](docs/deploy.md) for Compose/Caddy paths, ports,
-database naming, TLS, backups and rollback. These are planned conventions,
-not claims that infrastructure has been provisioned.
+The layout and commands below describe code that is still runnable.
+Hummingbird/server SQLite will be replaced; the Swift native app remains.
+See docs/stack-migration.md for the target layout.
 
-## Current repository layout (legacy, until Phase M)
+## Current repository layout
 
 ```
 AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
 catalog/                  SOURCES.md, scripture/ (book registry, versification); plans to come
-Packages/ReadingEngine/   references, plan types, coverage and workload (scheduling still open)
-Packages/ReadingData/     SQLite wrapper and catalog reader (journal/sync still open)
+Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
+Packages/ReadingData/     SQLite wrapper and catalog reader; journal/sync still open
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
 Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
 apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
@@ -102,21 +90,17 @@ scripts/                  helpers behind the Makefile (simulator choice, Linux t
 .github/workflows/        CI, run by hand (D31)
 ```
 
-Numeric scripture data is present, including WEB word counts. Plan files
-are still absent; Hebrew/Greek/Latin schemes wait until after 1.0.
-Phase M creates the new workspace and Compose deployment files; the layout
-above documents the inspected legacy source, not the target structure.
-[The artwork inventory](design/images/README.md)
+Still to come, as BUILD.md's phases reach them: the rest of `catalog/` (plan
+sources and the Hebrew, Greek, and Latin schemes) and `deploy/` (the
+server's unit, Caddy site, and scripts). [The artwork inventory](design/images/README.md)
 records the app icon, web exports, sharing image, and twelve plan covers.
 
-## Current prerequisites (legacy checks)
+## Current prerequisites and target additions
 
-These run the code still checked in. PM.2 will pin and document supported
-Node/npm, Next/React, Expo/React Native, Postgres and test-tool versions;
-Docker Compose and local Apple build tools are required for the target.
-No hosted build, auth or model account is needed for migration.
-
-Legacy tools confirmed on the owner's Mac on 2026-10-30:
+PM.13 pins supported Astro/Node/npm/Drizzle/pg versions and a lockfile.
+Compose/Postgres are needed for the new web gate. Python/uv/ruff are not
+required unless a utility needs Python. Retain these existing Apple tools,
+confirmed on the owner's Mac on 2026-10-30:
 
 - macOS 27.2 on Apple silicon.
 - **Xcode 27.2** (27B52), which ships **Swift 6.4.2**, the version pinned
@@ -139,7 +123,7 @@ Legacy tools confirmed on the owner's Mac on 2026-10-30:
   Apple Developer account, and `apple/Config/Secrets.xcconfig` with the
   team ID (copy `Secrets.example.xcconfig`; see `docs/release.md`).
 
-## Current quick start (legacy, still runnable)
+## Quick start
 
 From a clean checkout:
 

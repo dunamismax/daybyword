@@ -10,11 +10,10 @@ today, and keep a trustworthy record of their reading, while they read in
 their own Bible: paper, app, or audio. *Find your plan. Read your Bible.
 Keep your place.*
 
-**Stack direction (D40, 2026-11-02):** these product rules survive the
-rewrite. Next.js/React implements the web, Expo/React Native the app, and a
-shared TypeScript engine supplies the reading rules. PostgreSQL holds
-public catalog data at 1.0, not personal records. Native adapters preserve
-Apple integration; changing frameworks does not remove product features.
+**Stack correction D41:** Astro/TypeScript web with PostgreSQL/Drizzle;
+the existing native Swift app stays. Python is optional tooling. Product
+rules are unchanged. E33 requires Swift/web engine parity; server-side
+compute refers to Astro, not a retained Swift HTTP service.
 
 ## The reader we design for
 
@@ -39,7 +38,7 @@ secondary area for preferences.
   somewhere else. When the system relaunches it after ending it in the
   background, the reader returns to the same tab and the same place within
   each tab; when the reader closes the app themselves, it starts on Today
-  again (docs/decisions.md E24, ported under E32).
+  again (docs/decisions.md E24).
 - Every destination has a stable address: `daybyword://` routes in the app
   and readable URLs on the web (`docs/urls.md`, P2.9). The two mirror each
   other, so a shared plan link opens the same plan in either.
@@ -240,9 +239,9 @@ Paper Bibles are first-class (D26).
 ## Privacy by design
 
 - No account is needed for anything, in the app or on the web (D8). At 1.0
-  the web keeps a reader's progress in their own browser; the browser evaluates the shared TypeScript engine locally, including
-  offline, and Next APIs provide public catalog delivery (D10, D39, D40,
-  E32). No upload of personal records is required for computation. Keeping progress on daybyword.com, with explicit,
+  the web keeps a reader's progress in their own browser; the server works
+  out today's reading from what the browser sends and keeps none of it
+  (D10, D39, E29). Keeping progress on daybyword.com, with explicit,
   separate consent, comes with accounts after 1.0.
 - Reading history and tradition preferences are sensitive and in some laws
   special-category data (Research finding 11). They are private by default,

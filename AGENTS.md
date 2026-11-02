@@ -1,12 +1,12 @@
 # Working on Day by Word
 
-Day by Word is a Bible reading companion: an iPhone and iPad app and a web
-version at daybyword.com, self-hosted by the owner. D40 (2026-11-02) directs
-the rewrite to Next.js/React/Tailwind/shadcn, PostgreSQL/Drizzle, Docker
-Compose and Expo. The checked-in implementation is still SwiftUI and
-Hummingbird; BUILD.md Phase M must replace it before feature work resumes.
-Read [docs/stack-migration.md](docs/stack-migration.md) for the inventory,
-target layout and parity requirements. It helps Christians choose a
+Day by Word is a Bible reading companion: a native iPhone and iPad app built
+in SwiftUI, and an Astro web version at daybyword.com backed by
+PostgreSQL/Drizzle on the owner's own machine (final direction D41).
+The code is still the original Swift/Hummingbird/SQLite foundation;
+BUILD.md Phase M aligns it first. Read docs/stack-migration.md.
+Swift is justified by the existing native app; Python is optional tooling,
+not a required language or rewrite. It helps Christians choose a
 reading plan, know what to read today, and keep a trustworthy record of
 their reading, while they read in their own Bible: paper, app, or audio. Its
 line is *Find your plan. Read your Bible. Keep your place.* Every AI agent
@@ -42,7 +42,7 @@ tools.
 
 1. Read [BUILD.md](BUILD.md) in full once per session: "How agents use this
    file", the finished-product definition, the product principles, the
-   Owner decisions table (D1–D40), the Engineering foundations, the phases
+   Owner decisions table (D1–D41), the Engineering foundations, the phases
    to version 1.0, and the Handoff notes at the bottom. Do not read
    `BUILD-HISTORY.md`, `docs/roadmap.md` (the work after 1.0), or
    `docs/research/` unless an item or a check points there (§8, "Keeping
@@ -61,9 +61,7 @@ a church, tradition, or faith story to them.
 
 ## 2. The session loop
 
-1. **Phase M is first, before Phases 0–18.** Do not start P5 or later work
-   until the rewrite's exit checks pass. Historical completed phases stay
-   historical; their new-stack parity is verified in Phase M.
+1. Finish **Phase M first**, starting at PM.12; PM.1–PM.11 are withdrawn.
    Find the **first unchecked `- [ ]` item in the earliest phase that is not
    complete**, skipping items whose gate is still closed and [OWNER] steps
    still waiting on the owner (§4). The design session (P2.3) was a hard
@@ -174,7 +172,7 @@ Apple Developer account through Xcode and App Store Connect (D33). Decide
 on the evidence, and write the reasoning down where the next agent will find
 it: a new decision goes in BUILD.md's Owner decisions table as
 `(agent, date)` with its reasons, or in `docs/decisions.md` for
-engineering. The owner's answers in D1–D40 are the product's direction. An
+engineering. The owner's answers in D1–D41 are the product's direction. An
 agent may refine how one is carried out, but never reverses one without
 asking the owner.
 
@@ -219,114 +217,97 @@ Handoff notes.
 
 ## 5. Stack and engineering rules
 
-D40 is the current stack decision. The Swift implementation remains only
-until Phase M proves its replacement. Historical engineering entries remain
-in docs/decisions.md, superseded by E32 where they name the old stack.
-[docs/stack-migration.md](docs/stack-migration.md) defines the porting
-contracts; [docs/deploy.md](docs/deploy.md) defines the planned host layout.
+**D41/E33 supersede the previous D40/E32 Next/Expo plan.** The implementation
+has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
 
-- **One engine, everywhere.** `packages/reading-engine` is pure TypeScript
-  for references, schedules, progress and reminder rules. Next.js, Expo,
-  the compiler and browser offline code import that same implementation.
-  No view, Route Handler, SQL query or native extension reimplements it.
-  For new engine work write docs/engine.md and cases before code.
-- **Web/API** (`apps/web`): Next.js App Router, React, TypeScript,
-  Tailwind CSS and locally owned shadcn/ui components. Build
-  `output: 'standalone'` for a plain Node server, no Vercel services or
-  hosting-specific dependencies. Semantic server-rendered public pages,
-  same-origin assets and a production nonce CSP; no `unsafe-inline` or
-  `unsafe-eval` production escape. Test hydration and offline navigation.
-- **Mobile** (`apps/mobile`): Expo/React Native for iPhone and iPad.
-  Preserve the app, extension and App Group ids (D1), iOS/iPadOS 26
-  minimum (D7), URLs, settings and App Store record. Use local native
-  development/release builds. Expo Go cannot prove extension parity.
-  Small native modules/config plugins may bridge widgets, notifications,
-  App Intents, storage migration and signing; they contain no second
-  engine. Generated native projects are not hand-maintained sources.
-- **Storage**: server PostgreSQL through server-only Drizzle TypeScript
-  schema and committed generated SQL migrations in `packages/db`.
-  Generate, review, migrate; never push schema directly in production.
-  Clients never import the DB package or connect directly to Postgres.
-  Local Expo SQLite and browser IndexedDB preserve offline behavior;
-  they do not replace or expose the server DB.
-- **Data boundaries**: at 1.0 PostgreSQL stores public compiled catalog
-  data and migration metadata only (D39). Reader data stays local and is
-  never required for SSR. Clients call Next APIs for public catalog
-  delivery and later explicit-consent sync/auth; the same engine computes
-  locally offline. No personal data in URLs or logs, except the later
-  secret revocable calendar-feed credential (handled as a credential).
-  Logs retain method,
-  route pattern, status and duration only, including proxy logs.
-- **Accounts and optional stack**: Better Auth with Drizzle/Postgres is
-  the Phase 14 choice, preserving D8's optional passkey/recovery rules.
-  Do not add accounts now. Stripe waits for an approved billing need.
-  D23 excludes the Vercel AI SDK and all model features. Tauri waits for
-  a justified desktop client; Expo Android stays behind D6 after 1.0.
-- **Toolchains/dependencies**: pin compatible supported Node/npm,
-  Next/React, Expo/React Native, Postgres and build tools; commit one npm
-  workspace lockfile. Review licenses, advisories, telemetry and native
-  compatibility. E32 approves the requested stack in principle; record
-  exact packages and real additional choices before adding them.
-  No analytics, advertising, tracking, remote fonts, CDN code,
-  session replay, crash-reporting services or SDKs that phone home.
-  Disable framework/tooling telemetry and do not require hosted EAS/OTA.
-- **Calendar rules** live only in the TypeScript catalog compiler.
-  Church-year and lectionary rules are evaluated at compile time;
-  the engine looks up dated appointments.
-- **Catalog**: plain-text sources in `catalog/` compile to a deterministic,
-  versioned release artifact, bundled for mobile/offline and imported
-  transactionally into Postgres. Never edit the artifact/DB in production.
-  All existing rights/review/reference/coverage checks survive the port.
-  Reader data never goes in a public catalog.
-- **Journal**: append-only events with UUIDv7 ids; deterministic fold,
-  idempotent writes and undo as an event. Delete only for a reader's own
-  deletion request. Its implementation is still P5/P8, not a migration
-  shortcut through server state.
-- **Dates**: civil dates for days, never JavaScript `Date` instants used
-  as plan days. Resolve today at the device edge once; reminders use
-  wall-clock times and an IANA zone. No server-zone default.
-- **Tests**: port the current Swift test vectors before retiring their
-  oracle. Shared cases run in Node on macOS/Linux and in browser/mobile
-  runtimes; integration tests use real PostgreSQL, production Next
-  standalone output and Expo builds. Table-driven engine cases,
-  source-citing calendar golden tests and a test for every bug.
-- **Design/accessibility**: Morning in docs/design.md and
-  design/tokens.json generates Tailwind/shadcn CSS and React Native
-  tokens. Change tokens first and commit outputs. No raw colors or
-  replacement artwork. shadcn DOM components are web-only. Dynamic Type
-  through AX5, VoiceOver, Reduce Motion, light/dark contrast on mobile;
-  WCAG 2.2 AA, keyboard and 320px/zoom checks on the web. States always
-  have words or symbols; color alone never carries their meaning.
-- **Browsers** (D30): current and previous Safari, Chrome, Firefox and
-  Edge, desktop/mobile. Public plan pages are server rendered; older
-  browsers receive a plain notice.
-- **Serving**: Docker Compose from clean origin/main releases under
-  `/srv/www/daybyword.com`. Planned source files:
-  `deploy/compose.yaml`, `deploy/Dockerfile`,
-  `deploy/caddy/daybyword.com`; host site file
-  `/etc/caddy/sites/daybyword.com`. Inspect the actual host first.
-  Project name `daybyword`; Node container port 3000 maps only to
-  `127.0.0.1:4316` (verify free). DB `daybyword`, runtime role
-  `daybyword_app`; Postgres 5432 stays private to the Docker network,
-  with no production host port. No second proxy or platform dashboard.
-- **TLS/backups**: keep host Caddy; prefer its Cloudflare DNS module and
-  a zone-scoped token, with Cloudflare Full (strict) when proxied.
-  Missing shared modules/account settings require coordination under
-  D34, not changes to other projects. Nightly `pg_dump`, encrypted
-  off-server copies, retention and an isolated restore drill begin with
-  the first Postgres deploy, even before accounts.
-- **Secrets**: root-owned mode-600 `shared/env` on the server, protected
-  Caddy environment for DNS credentials, never images or public bundles.
-  Never commit .env files, signing keys/profiles/certificates or the
-  legacy `apple/Config/Secrets.xcconfig`. Public-prefixed Expo/Next
-  variables cannot contain secrets.
-- **Formatting/localization**: shared typed interface strings, English
-  first, and extension resources where needed. Phase M pins JS/TS/CSS
-  format/lint rules and replaces the Swift-only gates without weakening
-  checks. Keep source provenance for the numeric scripture datasets.
-- **Project code**: write fresh code that reads like its surroundings,
-  with abstractions proportionate to a real need. Copy no code, scripts
-  or content from the owner's other repositories (D22).
+- **Web**: Astro/TypeScript with @astrojs/node standalone for APIs,
+  Actions and database work. Prerender public content where useful;
+  entirely static sites/tools may be served directly by Caddy. This
+  project needs a Node runtime for app APIs, not a static-only deployment.
+  Add React islands only for real interaction; Tailwind/shadcn may be used
+  where useful, preserving Morning rather than imposing a new UI.
+- **Server data**: PostgreSQL through server-only Drizzle schema and
+  reviewed generated SQL migrations. No server SQLite, better-sqlite3,
+  libSQL, Litestream or SQLite-file access from Python. Each project has
+  an isolated DB/user, private network and persistent volume. No direct
+  DB connection or credentials in browser/native clients.
+- **Native**: retain the existing SwiftUI iPhone/iPad app, @Observable,
+  WidgetKit, App Intents and UserNotifications. Swift 6.4.2 in
+  .swift-version, Swift 6 mode/complete concurrency; Xcode 27/iOS 27 SDK,
+  iOS/iPadOS 26 minimum (D7). Keep XcodeGen/project.yml and existing
+  make run/test-app/archive commands working. Do not hand-edit generated
+  xcodeproj files. A future Mac target uses SwiftUI only when needed;
+  no new native platform is implied by this stack change.
+- **Local native data**: existing ReadingData/system SQLite remains
+  justified for offline reading and catalog access. SwiftData or GRDB are
+  choices for a demonstrated storage need, not mandatory substitutions.
+  They never replace the PostgreSQL server or connect to it directly.
+  Native network operations call Astro API endpoints over HTTPS.
+- **Reading logic**: one docs/engine.md specification, versioned wire
+  contracts and shared JSON cases. Swift ReadingEngine owns native rules;
+  a TypeScript domain module owns Astro/browser rules. This explicit E33
+  exception replaces the former single-language engine assumption.
+  Test both runtimes against identical oracle fixtures; no rules in views,
+  Actions, routes, SQL or utility scripts. New engine rules require cases
+  and specification updates before code, with parity before completion.
+- **Packages/compiler**: retain needed Swift native/domain/compiler
+  packages and their Linux/macOS tests. The compiler's catalog rights,
+  coverage and source checks survive. PM.14 specifies deterministic
+  export/import from the schema-3 catalog into Postgres; keep bundled,
+  read-only native catalog artifacts apart from mutable server data.
+  Calendar rules stay compiler-only, never rebuilt in app views/routes.
+- **Python only when needed**: use uv environments/dependencies/runs and
+  ruff if Python utility work is justified. Typer/httpx/Pydantic are
+  optional per task; no mandatory dependency bundle or mass script port.
+  Reports/maintenance query Postgres with a suitable least-privilege
+  connection, not Python sqlite3 against server files. Recurring jobs
+  use systemd timers. No standalone Python backend is required.
+- **Scope**: keep D39's offline/no-account core, local native records and
+  browser IndexedDB. At 1.0 the server stores public catalog data only;
+  transient compute requests must not persist personal records.
+  Better Auth inside Astro with Drizzle/Postgres waits for Phase 14;
+  preserve optional passkey/recovery requirements. Billing stays gated.
+  D23 excludes all AI features/model SDKs despite general stack options.
+  No Next.js, Expo or Tauri migration.
+- **Versioning/dependencies**: pin supported Node/npm/Astro/Drizzle/pg
+  versions and a lockfile; retain pinned Swift. Document real extra
+  packages in decisions.md before adding. No analytics, tracking,
+  advertising, session replay, remote fonts/CDNs or phone-home services.
+  Disable build/framework telemetry. Never copy other-project code (D22).
+- **Dates/journal**: civil dates, resolved at the device edge; never Date
+  instants as reading days. Reminders use wall-clock/IANA time zones.
+  Events use UUIDv7, append-only deterministic folds, idempotent retries
+  and undo events; deletion only at the reader's request.
+- **Tests/gates**: preserve make check for active Swift targets and add
+  Astro lint/type/unit/build, real Postgres migrations/import and parity
+  tests. make check-full adds native/browser tours and Linux. Keep
+  manual-dispatch CI (D31); port existing assertions before retiring tools.
+- **Design/accessibility**: design/tokens.json and docs/design.md remain
+  authoritative. Generate Apple assets plus web CSS/Tailwind variables
+  as needed; no raw colors/new art. AX5/VoiceOver/Reduce Motion and WCAG
+  2.2 AA, light/dark/zoom/keyboard checks remain. State always has words
+  or symbols, not color alone. Interface strings stay localizable.
+- **Security**: same-origin assets only, strict production CSP without
+  unsafe-inline/unsafe-eval; test any islands/shadcn style behavior.
+  Logs contain method/route pattern/status/duration only, never request
+  bodies, concrete plan paths, tokens or personal data. Private API
+  responses are no-store, excluded from shared caches. No personal data
+  in URLs except the protected future revocable calendar-feed credential.
+- **Host layout (planned)**: deploy/compose.yaml, deploy/Dockerfile,
+  deploy/caddy/daybyword.com; /srv/www/daybyword.com/releases and shared/env
+  (root-owned 0600); host /etc/caddy/sites/daybyword.com. Project daybyword,
+  loopback 127.0.0.1:4316 (verify free) to Node container port 4321;
+  private Postgres 5432, database daybyword, role daybyword_app, stable
+  project volume and separate migration credential. Inspect actual paths
+  and shared lock before changes; only origin/main releases are served.
+- **TLS/backups**: keep host Caddy/Cloudflare Full (strict) when proxied,
+  valid origin certs; prefer scoped DNS challenge when the shared module
+  is available. Coordinate shared-binary changes, never edit other sites.
+  Nightly pg_dump, encrypted off-server copies, retention and isolated
+  restore checks start with the first Postgres deploy.
+- **Secrets**: never commit .env, signing keys/certificates/profiles,
+  Secrets.xcconfig, DB credentials or DNS tokens. No secrets in public
+  variables, bundles, images or logs. Read docs/deploy.md before host work.
 
 ## 6. Plans, references, and rights
 
@@ -385,15 +366,15 @@ contracts; [docs/deploy.md](docs/deploy.md) defines the planned host layout.
 
 An item is done only when all of these hold:
 
-1. `make check` passes. Until PM.2 this is the existing Swift gate.
-   During migration it covers retained legacy targets and their replacements;
-   PM.11 leaves the new-stack gate in docs/stack-migration.md as the sole
-   default. It covers toolchains, format/lint/types/imports, tokens/contrast,
-   catalog integrity, shared-engine, real DB/API and mobile unit tests,
-   and interface strings. Touched targets build with zero warnings.
-2. User-visible work is seen working once, where it runs: mobile work in
-   an Expo native development build in the iOS Simulator (use the legacy
-   simulator script until PM replaces it), with
+1. `make check` passes: retain the current Swift gate during migration
+   and add Astro/TypeScript, real Postgres and cross-runtime parity checks.
+   This includes the toolchain, formatting, imports, design tokens
+   and raw colors, the catalog compile and integrity suite, the package and
+   server tests, the app's unit tests, and the String Catalog. The build has
+   zero warnings in the touched targets (xcodebuild prints warnings only for
+   files it recompiles, so touch the sources or clean before trusting that).
+2. User-visible work is seen working once, where it runs: Apple work in the
+   iOS Simulator (pick the device with `scripts/sim-destination.sh`), with
    VoiceOver labels on new controls; web work in a real browser with
    `make serve`, with the console free of errors and CSP violations.
    Widgets, notification actions, and App Intents are exercised where they
@@ -409,11 +390,9 @@ An item is done only when all of these hold:
 
 **At each milestone, and before every TestFlight build or deploy**, run
 `make check-full` (`make check`, the web tour in light and dark at desktop
-and narrow widths, the app tour in light and dark, and the shared
-TypeScript/compiler, Node server and PostgreSQL on Linux after migration;
-keep the legacy checks until replaced). Check by hand what the tours
-cannot: a phone width and 200% text on the web, one large Dynamic Type
-size, and dark mode in the
+and narrow widths, the app tour in light and dark, and the packages and
+Astro/Postgres and the retained Swift packages on Linux), and check by hand what the tours cannot: a phone width
+and 200% text on the web, one large Dynamic Type size, and dark mode in the
 new screens. Fix what it finds before shipping.
 
 Never claim verification you did not perform. If a step could not be run (no
@@ -500,8 +479,9 @@ Letters go out only after the owner confirms each one (D38).
 
 **Developer tools** (D3): on the owner's Mac, agents may install the
 developer tools the work needs without asking: Homebrew formulae and casks,
-Node/npm, Docker/Compose, Expo and Apple build tools, and user-local tools.
-Prefer well-known, maintained tools from their official sources, and record in README.md's
+needed Node/npm and Swift tools, uv/ruff only for justified Python work,
+and user-local tools. Prefer well-known,
+maintained tools from their official sources, and record in README.md's
 prerequisites any tool a script or `make check` depends on. This does not
 cover `sudo`, macOS system or security settings, paid software, or adding a
 package dependency (§5 and `docs/decisions.md` govern that).

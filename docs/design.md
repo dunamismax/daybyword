@@ -7,17 +7,13 @@ light and dark), and its values are in `design/tokens.json`, from which the
 app's color assets and the web's `tokens.css` are generated (P2.4). Change a
 token there first, regenerate, and commit both (AGENTS.md §5).
 
-## Stack migration
+## Stack alignment
 
-D40/Phase M preserves this identity and every token. The current generator
-still writes Swift assets and Server/Public/assets/tokens.css. PM.5/PM.6
-replace those outputs with shared TypeScript/React Native values and
-Tailwind/shadcn semantic CSS variables, with the same contrast checks.
-shadcn supplies web component structure, not a new palette or navigation
-design. Use React Native controls for mobile; preserve Dynamic Type,
-spoken references, settings, focus, motion and light/dark behavior.
-Existing owner-supplied artwork stays in design/images; no new art is
-needed for the rewrite.
+D41 preserves Morning and the native Swift token generator. Phase M
+ports web outputs to Astro; Tailwind/shadcn may consume generated tokens
+where components are needed, without replacing the palette. Native
+SwiftUI/AX5/VoiceOver and existing artwork remain. Update generated web
+paths only with the implementation; no redesign or image generation.
 
 ## Character
 

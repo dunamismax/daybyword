@@ -3,31 +3,16 @@
 How a build of the Day by Word app gets from `main` to TestFlight, and later
 to the App Store. The web is deployed separately (`docs/deploy.md`).
 
-## D40 transition
+## Final stack scope
 
-**This file's commands and apple/ paths describe the existing Swift
-release tooling.** This planning session has not built or uploaded an
-Expo app. Do not release a legacy build as completion of Phase M.
+D41 keeps the native Swift app and release tooling. No Expo migration,
+replacement App Store record or forced new platform is required. Preserve
+bundle/extension/App Group ids, signing, settings and any local records;
+SwiftData/GRDB are optional decisions only for a real need. Astro API
+changes require contract/parity tests with the native app. Swift remains
+pinned in .swift-version and the commands below remain the native path.
 
-PM.6 preserves the existing bundle id, App Store Connect record, signing
-team, extension/App Group ids, entitlements, URL scheme, marketing version
-and monotonically increasing build numbers. Test an in-place upgrade on a
-legacy installation so preferences and any discovered data survive.
-Use local Expo native builds/prebuild plus Xcode signing/archive/export;
-no hosted EAS account or OTA service is required. Native targets/plugins
-must be reproducible after regeneration. Never commit signing secrets or
-hand-edit generated native projects as the source of configuration.
-
-PM.11 replaces make archive/testflight and updates this document with
-verified new paths/commands before the next upload. Run make check-full,
-including the production API contract and native extensions, before every
-TestFlight/App Store build. Account/billing/AI services are not added.
-Audit the actual React Native/Expo dependency privacy manifests and
-required-reason APIs; do not reuse the old privacy manifest blindly.
-Phase M requires local release qualification; P8.14 remains the next
-usable TestFlight milestone, and Apple/owner approval rules still apply.
-
-## What is needed once (existing app identity)
+## What is needed once
 
 - **Xcode signed in to the owner's Apple Developer account** (D33, BUILD.md
   P0.6): team `D9QMP3LP8H`, an individual membership. Automatic signing
@@ -54,7 +39,7 @@ usable TestFlight milestone, and Apple/owner approval rules still apply.
   are in `design/images/`; this removes the missing-icon blocker, but does
   not establish that a build has been uploaded or processed.
 
-## Existing Swift build commands (until replaced at PM.11)
+## Each build
 
 ```sh
 make check-full   # required before every TestFlight build

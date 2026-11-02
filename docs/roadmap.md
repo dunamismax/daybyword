@@ -10,12 +10,12 @@ when an open item, a document, or a failing check points here. Agents do
 not work items from this file before 1.0 unless the owner asks. When a
 phase here becomes the next work, move it back into BUILD.md whole.
 
-**Stack override (D40, 2026-11-02):** all future items use the Phase M
-Next.js/React/Tailwind/shadcn + TypeScript + Postgres/Drizzle + Expo
-architecture. Native adapters may expose Apple capabilities without a
-second engine. Better Auth is the later auth choice, Stripe only if
-billing is needed, Tauri only if a desktop client is justified.
-No AI SDK/features. These are stack updates, not newly opened product gates.
+**Final stack D41:** future web work is Astro/PostgreSQL/Drizzle, native
+Swift only for actual Apple clients, Python utilities only when needed.
+Better Auth integrates inside Astro when accounts open. React islands
+are optional, no Expo/Tauri/Next migration. E33 requires rule parity.
+Native/local SQLite does not imply a SQLite server. Baseline Postgres
+backups move before first deployment; later reader-data safeguards remain.
 
 The markers mean what BUILD.md says they mean.
 
@@ -23,7 +23,7 @@ The markers mean what BUILD.md says they mean.
 
 ## Phase 6: Church calendars and lectionaries (after 1.0, D39)
 
-All of this happens at compile time in `packages/catalog-compiler` (Engineering
+All of this happens at compile time in `CatalogCompiler` (Engineering
 foundation 5). Cite the governing source, book and page, for every rule in
 `docs/calendar-rules.md`, and label any rule without a printed source as an
 "app convention", with the reason.
@@ -38,9 +38,9 @@ foundation 5). Cite the governing source, book and page, for every rule in
 
 ## Phase 14: Accounts, backup, and sync (after 1.0, D39)
 
-- [ ] **P14.1** Optional accounts through Better Auth inside Next.js with its Drizzle/Postgres adapter (D8, D40), not a hosted provider. First verify the pinned version supports the no-email/no-password passkey and one-time recovery-code flow, Expo client, associated domains and session revocation; record any adapter work and test it before enabling accounts. Preserve minimal data, protected sessions, rate limits and secure native token storage.
+- [ ] **P14.1** Accounts with passkeys (D8): Better Auth inside Astro with Drizzle/Postgres; verify no-email/no-password passkeys and recovery support in the pinned version and `AuthenticationServices` on iOS through associated domains, one-time recovery codes, opaque sessions stored hashed, minimal data, and rate-limited sign-in.
 - [ ] **P14.2** The sync API (`/api/v1`): events since a cursor, idempotent uploads by event id, a JSON error envelope, rate limits, request-size limits, and authentication on every call.
-- [ ] **P14.3** The Expo sync client through Next /api/v1 and the shared reading-data contracts: background refresh, retries with backoff, and visible status ("Backed up 2 minutes ago", or "Backup unavailable offline"). No direct Postgres access.
+- [ ] **P14.3** The Swift iOS sync client in `ReadingData` calling Astro APIs over HTTPS, never Postgres: background refresh, retries with backoff, and a visible status ("Backed up 2 minutes ago", or "Backup unavailable offline").
 - [ ] **P14.4** Joining histories: turning a web browser profile into an account, and adding the app's local history to an account, each previewed first, with no double counting.
 - [ ] **P14.5** Export (JSON and CSV) and deletion everywhere: in-app account deletion that removes everything on the server, with backups expiring on their published schedule (D10).
 - [ ] **P14.6** Sync tests: offline changes on two devices, retries, clock skew, interrupted uploads, accidental completions recovered, and the engine cases run over synced journals.
@@ -73,7 +73,7 @@ were left for later.
 
 ### Hosting
 
-- [ ] **P7.5** Extend the nightly pg_dump/off-server backup and isolated restore system established in PM.9/P7.3 for consented reader data: published retention/deletion expiry, protected role/bootstrap recovery, integrity/checksum/row-count/catalog/schema/commit manifests, restore under the correct grants and no replay of deleted history. Change only daybyword.com's own ubuntu-vm-backup entry (D34). The public catalog remains reproducible from source. *(D40 moves baseline Postgres backup setup before first deploy; this item retains the later reader-data work.)*
+- [ ] **P7.5** Reader-data backup safeguards extending PM.18/P7.3's nightly PostgreSQL pg_dump system: each copy checked and listed in a manifest (integrity, checksum, row counts, live commit), carried off the server age-encrypted through daybyword.com's own entry in `ubuntu-vm-backup` (D34), with a restore drill run once and written up. Rehearse isolated restores, roles/grants and published retention/deletion expiry. Public catalog content remains reproducible. D41 requires baseline backups from first Postgres deploy.
 
 ### Plans, choosing, and the launch catalog
 
@@ -81,14 +81,14 @@ were left for later.
 - [ ] **P8.16 [OWNER] [GATE DEMO]** The owner confirms each letter. Agents send it from the owner's address, or the owner sends it, and agents record each response's status in `catalog/SOURCES.md`. The letters themselves stay off the repository. *(Formerly P0.8; moved here at the owner's request, 2026-11-01.)*
 - [ ] **P9.5** The canon check before enrollment: when a plan appoints books the reader's Bible may not contain (D29), explain it before enrollment and offer an appropriate alternative or, where permissions allow, a clearly labeled adaptation. Original schedules are preserved.
 - [ ] **P9.6** Plan comparison: two or three plans side by side (workload, coverage, length, behaviors, sessions).
-- [ ] **P9.7** Search over public plan metadata using PostgreSQL full-text search through Drizzle/Next, with an offline local metadata index where needed. No server search over private reading records. *(D40 replaces the server FTS5 choice.)*
+- [ ] **P9.7** Search over public plan metadata using PostgreSQL full-text search through Astro/Drizzle; local native search may use a local index.
 - [ ] **P9.8** External directory entries (P4.7), clearly labeled, with a link out to the publisher.
 - [ ] **P9.10** A hands-on competitive teardown on a device: onboarding, missed-day behavior in practice (YouVersion's "Catch Me Up", Sola's rescheduling, ReadingPlan's pace), links out, widgets, and reminders, recorded in `docs/research/competitors.md`, confirming the remaining † rows of the feature map. Needs a session with an iPhone that may have these apps installed; do it before settling P9.1–P9.6. *(Formerly P2.2b; moved here at the owner's request, 2026-11-01.)*
 - [ ] **P10.8 [RIGHTS] [REVIEW]** **M'Cheyne's Calendar for Daily Readings** (1842): transcribed from an identified public-domain printing and proofread twice against its page images; four readings a day with M'Cheyne's own labels ("Family" and "Secret"); permits follow-the-calendar and at-my-pace behaviors; the source note gives the printing and pages.
 - [ ] **P10.9 [OWNER] [RIGHTS] [REVIEW]** **The 1979 Daily Office Lectionary** (from P6.4): agents prepare a review packet (the source pages, the golden files, and the differences found); the owner reviews it as reviewer of record (D15); agents record the review and set `review: expert`.
 - [ ] **P10.10 [OWNER] [RIGHTS] [REVIEW]** **The 1662 Table of Lessons and monthly Psalter** (from P6.5), reviewed the same way, with its territories set by D16.
 - [ ] **P10.12 [REVIEW]** **The deuterocanonical books** (for Bibles that include them): the books and additions each canon recognizes, labeled by canon in neutral words (D29).
-  - *Note (agent, 2026-11-01):* word counts cover the 66 books only (P3.6). This plan needs counts for the deuterocanonical books too; the WEB numbers Greek Esther, Daniel, and Sirach 33 differently from the English scheme, so preserve E31's Romans mapping method in the TypeScript generator.
+  - *Note (agent, 2026-11-01):* word counts cover the 66 books only (P3.6). This plan needs counts for the deuterocanonical books too; the WEB numbers Greek Esther, Daniel, and Sirach 33 differently from the English scheme, so map them as `scripts/wordcounts.swift` maps Romans.
 - [ ] **P11.6** After finishing a plan: a few next plans chosen for the books the reader wants to explore, each with its reason.
 - [ ] **P28.5** Catalog filters (pace, length, reading days, sessions, books included), once the catalog is large enough to need them. *(The part of P9.3 moved by D39.)*
 
@@ -97,11 +97,11 @@ were left for later.
 - [ ] **P12.3** StandBy, and a Control Center control for marking today's reading read.
 - [ ] **P12.5** Notifications, finished: actionable, privacy-aware, grouped by plan, and Time Sensitive only if the reader chooses it.
 - [ ] **P12.7** Spotlight indexing of plans in the catalog and the reader's own plans.
-- [ ] **P12.8** Universal links and associated domains configured through Expo: apple-app-site-association served by Next at daybyword.com, so plan/shared links open the app, with webcredentials for Better Auth passkeys (P14.1).
+- [ ] **P12.8** Universal links: `apple-app-site-association` served by daybyword.com, so plan pages and shared links open in the app, with `webcredentials` for passkeys (P14.1).
 - [ ] **P12.9** On-device diagnostics through MetricKit, kept on the device and included in support reports only when the reader chooses (no third-party crash reporting).
 - [ ] **P13.2** The whole-plan printout, where permitted: the full schedule from a chosen start date and reading days, with the source note and required credit.
 - [ ] **P13.3** A bookmark card: this month's readings sized to slip into a Bible, where permitted.
-- [ ] **P15.3** Web push reminders: VAPID keys on the server only, schedules computed by the shared TypeScript engine's reminder rules, delivery by a scheduled job, and permission requested only when the reader sets a reminder. Notifications show the passage only if the reader allows it. A decision entry records any library. Confirm the platform facts of Research finding 10.
+- [ ] **P15.3** Web push reminders: VAPID keys on the server only, schedules computed by `ReadingEngine`'s reminder rules, delivery by a scheduled job, and permission requested only when the reader sets a reminder. Notifications show the passage only if the reader allows it. A decision entry records any library. Confirm the platform facts of Research finding 10.
 - [ ] **P17.6** Performance budgets in `docs/performance.md`: app launch to Today, the widget timeline, server time for Today and plan pages, and page weight, each measured and checked where measurable.
 - [ ] **P17.8** Pseudo-localization (long strings, right-to-left) to catch layout breakage before other languages arrive.
 - [ ] **P28.6** The large widget (this week's checklist). *(The part of P12.2 moved by D39.)*
@@ -164,9 +164,9 @@ conventions differ between traditions.
 
 ## Phase 24: Apple Watch, Mac, and Android
 
-- [ ] **P24.1** An Apple Watch companion: the next reading, Mark read, a complication and Smart Stack widget. Use a phone bridge for prepared snapshots/idempotent commands or authenticated Next APIs after consent, with a measured offline contract; never create a separate native reading engine. Record the runtime choice before implementation.
-- [ ] **P24.2** The Mac: assess the iPad app on Apple silicon first; if a dedicated desktop app is useful, use Tauri calling Next APIs, with local storage/shared TypeScript logic for offline behavior and no direct Postgres connection (D40).
-- [ ] **P24.3 [GATE D6]** Android after version 1.0 using Expo (D40), with home-screen widgets and notification actions verified on Android; reuse the shared TypeScript engine and Next APIs, never a direct database connection.
+- [ ] **P24.1** An Apple Watch app: the next reading, **Mark read**, a complication, and a Smart Stack widget, sharing `ReadingEngine`.
+- [ ] **P24.2** The Mac: prefer the existing iPad app on Apple silicon; add a native SwiftUI multiplatform target only if actual use justifies it. No Tauri/Expo conversion (D41).
+- [ ] **P24.3 [GATE D6]** Android, after version 1.0: revisit platform/language requirements under D41 (Apple Swift does not establish Android support), record the decision, and build it with home-screen widgets and notification actions.
 - [ ] **P24.4 [OWNER] [GATE D6]** A Google Play developer account (a payment in the owner's name), if P24.3 goes ahead.
 - [ ] **P24.5 [GATE D6]** The engine's cases in Android's continuous integration, if P24.3 goes ahead.
 
@@ -182,7 +182,7 @@ conventions differ between traditions.
 
 - [ ] **P26.1** Write `docs/operations.md`: the incident runbook, a quarterly backup-restore drill, log rotation, and the support inbox routine.
 - [ ] **P26.2** Annual verification: each autumn, compare the coming year's computed lectionaries with published tables, fix discrepancies with tests, and extend the catalog window.
-- [ ] **P26.3** Maintain the pinned Node/npm, Next/React/Tailwind/shadcn, Expo/React Native/native SDKs, Drizzle/Better Auth when enabled, PostgreSQL and container dependencies; review advisories/licenses and version compatibility, rehearse migrations/restore, and run make check-full before deployment or uploads. Apple toolchain upgrades remain required for native adapters and signing. *(D40 replaces Swift/Hummingbird platform maintenance.)*
+- [ ] **P26.3** A yearly platform upgrade after each September Xcode release (new SDK, deprecations, the deployment target), and needed Swift, Astro/Node/Drizzle/Postgres updates as they come, with `make check` green.
 - [ ] **P26.4** A yearly rights review: every permission's term, territories, and credit line still current, and every review date renewed.
 - [ ] **P26.5** The errata routine: readers' reports checked against the source, fixed as a new plan version with a changelog (P4.6), and the reader thanked.
 - [ ] **P26.6** Retention: idle web browser profiles expire on schedule with notice (D10), and backups expire as published.

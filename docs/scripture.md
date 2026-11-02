@@ -7,12 +7,10 @@ never stores or shows Bible text (D13). The code is in
 source's rights record in `catalog/SOURCES.md`. Decisions E27, E28, E30,
 and E31 in `docs/decisions.md` give the reasons.
 
-**D40 migration:** Packages/ReadingEngine and the Swift generator paths
-below identify the current source and provenance. PM.3/PM.4 port their
-semantics/tests to packages/reading-engine and packages/catalog-compiler
-in TypeScript. Preserve the existing numeric files and their rights
-records; no new Bible text or retranscription is needed. Update executable
-paths after parity, retaining the original generation history.
+**D41 alignment:** native Swift source/provenance below stays. The Astro
+TypeScript domain module must pass the same reference/count/workload
+fixtures (E33). Preserve numeric data and rights evidence; no new text
+downloads or retranscription are needed.
 
 ## Books, canons, and names
 

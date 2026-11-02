@@ -2,7 +2,7 @@
 
 A numbered, append-only log of engineering decisions for Day by Word. Product
 decisions are the owner's and live in BUILD.md's Owner decisions table
-(D1–D40); this file records how they are carried out and why.
+(D1–D41); this file records how they are carried out and why.
 
 **How to use this file.** Add a new entry at the end with the next number,
 the date, who decided (`agent` or `owner`), the decision, and the reasons.
@@ -11,7 +11,7 @@ that supersedes it, and add a single line under the old entry pointing to
 the new one (*Superseded by E12*). Every third-party package needs an entry
 here before it is added (AGENTS.md §5).
 
-**Current direction:** D40 and E32 govern the rewrite. Old implementation
+**Current direction:** D41 and E33 govern alignment; D40/E32 are withdrawn. Old implementation
 entries below document the still-present Swift baseline; do not use them
 to select the stack for new work. Pure product/data rules remain in force.
 
@@ -647,6 +647,8 @@ books wait for the plan that needs them (P10.12).
 
 ### E32. The unified stack, local shared engine and migration precedence
 
+*Withdrawn before implementation; superseded by E33 under final D41.*
+
 *2026-11-02, owner (D40); implementation plan recorded in Phase M and
 docs/stack-migration.md.* This is a planned replacement, not a completed
 migration.
@@ -702,3 +704,52 @@ server-only computation. E1/E29's gate cadence, E2/E3's version/journal
 invariants, E5's compile-time calendars, E7's civil dates, E8's local-first
 rule, E17's privacy, and E27–E31's source/reference/count semantics survive.
 No old decision is evidence that a new-stack check has passed.
+
+
+### E33. Final Astro/PostgreSQL stack; languages only for demonstrated needs
+
+*2026-11-02, agent implementing the owner's final D41 correction.* This is
+a documentation plan; no runtime migration has happened. E32's Next/Expo
+and all-TypeScript proposal is withdrawn. Earlier implementation
+supersession pointers through E32 now resolve to this entry.
+
+Astro/TypeScript with the Node standalone adapter replaces Hummingbird's
+HTTP layer. PostgreSQL/Drizzle replaces server SQLite. Public pages can
+prerender; Actions/endpoints handle server work and Swift clients. React
+islands/Tailwind/shadcn are optional per UI need. Docker Compose, host Caddy,
+Cloudflare TLS, private DB/roles and nightly pg_dump/off-server restore
+verification remain. No SQLite server replication or Litestream.
+
+The existing Apple app justifies SwiftUI/Observation and its pinned Swift
+toolchain. Keep its native domain/data/compiler packages, WidgetKit and
+App Intents, identity and offline local SQLite. No Expo/Tauri rewrite.
+SwiftData/GRDB require an actual need and dependency decision; a native Mac
+target is still later work. Python is not mandatory. If utility work
+needs it, use uv/ruff and task-specific dependencies; Postgres reports
+cannot use sqlite3 file access.
+
+**Engine boundary choice:** replacing the HTTP layer with Astro while
+retaining native Swift removes the former same-language engine advantage.
+Use one specification and versioned oracle fixtures with a Swift native
+engine and a pure TypeScript web engine. This replaces E4's literal
+single-implementation rule; it does not permit business rules in views,
+routes, SQL or scripts. Cross-runtime parity is a required gate for every
+rule. This avoids a new Swift HTTP/worker service as a hidden requirement
+of the Astro runtime; it costs two domain implementations and stronger
+parity maintenance. Record mismatches and resolve against the specification,
+not by silently changing one client's result. Preserve existing Swift
+reference/compiler tests before porting TypeScript behavior.
+
+Catalog source files, numeric data, source rights, release filters and
+immutable ids remain authoritative. Define a deterministic export/import
+contract for the existing compiler's schema-3 catalog; Drizzle owns the
+server schema/migrations, while bundled native catalogs remain rebuildable
+read-only artifacts. Do not derive a new plan or claim during migration.
+
+D10/D39 local privacy, append-only records, civil dates and milestone gates
+remain. Server data at 1.0 is public catalog only. Better Auth/Astro with
+Drizzle/Postgres is the later optional account implementation; verify
+passkey-only/recovery behavior then. D23 excludes model features/SDKs.
+PM.12–PM.20 replace the withdrawn PM.1–PM.11. Future agents pin exact
+versions and additional packages before implementation. No new stack
+checks, deploy or upload is claimed by this decision.

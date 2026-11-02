@@ -1,126 +1,98 @@
-# Deployment plan
+# Astro/PostgreSQL deployment plan
 
-**Planned, not provisioned or verified live (2026-11-02).** D40 replaces
-the former Swift/systemd/no-Docker design. Phase M builds the files below;
-P7 provisions and deploys them. This document is not evidence that a port,
-path, module, database, certificate, backup job, or service already exists.
+**D41, planned only (2026-11-02).** Nothing was provisioned or deployed
+during this review. PM.18 builds/rehearses scripts; P7 verifies the host and
+performs first production deployment. Do not treat planned paths as live
+evidence. No server SQLite, Litestream or mandatory Python service.
 
-## Project boundaries
+## Isolation and layout
 
-Host: `ubuntu-vm`, reached under D34's standing permission. Root operations
-are limited to this project's resources. Record the other sites' HTTP
-results before and after every server change, use the host's existing
-shared deploy lock (discover and record its exact path before use), and
-archive `/etc/caddy` before any Caddy change. Never edit another site's
-configuration, database, service, proxy, or backup entry.
-
-| Resource | Planned convention |
+| Resource | Planned convention; inspect before use |
 |---|---|
-| Source | Clean `origin/main` archive; main pushes to GitHub and Codeberg |
-| Root | `/srv/www/daybyword.com`; checkout is never a web root |
-| Releases | `releases/<commit>/` with immutable Compose configuration/image reference; `current` selects the active release |
-| Persistent files | `shared/env` (root-owned 0600), `shared/storage`, `shared/backups`; no secrets in releases/images |
-| Compose source | `deploy/compose.yaml`; project name `daybyword`; web, postgres and one-shot migration/import jobs |
-| Data volume | Explicit project volume `daybyword_postgres_data`, stable across release directories; never `down -v` during deploy/rollback |
-| Web listener | Container `0.0.0.0:3000` published only at `127.0.0.1:4316`; check availability first and record any replacement |
-| Candidate listener | A verified free loopback port for smoke testing; never displace another app |
-| Postgres | `postgres:5432` inside the project's private Docker network; no host port mapping in production |
-| Database / role | `daybyword` / `daybyword_app`; separate protected migrator/import role; no shared app role or superuser runtime |
-| Proxy source / host file | `deploy/caddy/daybyword.com` → `/etc/caddy/sites/daybyword.com`, after confirming host includes that directory |
-| Domains | `daybyword.com`; permanent `www` → apex redirect retaining path/query |
-| Readiness | `/up`, no-store; checks app and compatible catalog/DB availability, returns no secret data |
+| Host | ubuntu-vm under D34; existing shared Caddy |
+| Release root | /srv/www/daybyword.com/releases/<commit>, current pointer |
+| Persistent resources | shared/env (root-owned 0600), shared/storage, shared/backups |
+| Source files | deploy/compose.yaml, deploy/Dockerfile, deploy/caddy/daybyword.com |
+| Compose project | daybyword; web, postgres, one-shot migration/catalog import |
+| Web listener | container 0.0.0.0:4321, published only at 127.0.0.1:4316 if free |
+| Postgres | private Docker network port 5432; no production host port |
+| DB/role | daybyword / daybyword_app; separate migration/import credential |
+| Volume | explicit daybyword_postgres_data; stable across release directories |
+| Host Caddy site | /etc/caddy/sites/daybyword.com after verifying include convention |
+| Health | /up, no-store, ready only with compatible DB/catalog |
+| Shared deploy lock | discover and record the existing host path; never invent a new parallel lock |
 
-Use a dedicated Compose Postgres service for this project. Reusing a
-native Postgres service is permitted only after inspecting it and keeping
-an isolated database/roles without altering another project's setup.
-Do not install a second Caddy, Coolify, or Dokploy. Keep the host proxy.
+Record other sites' responses before/after every server change. Archive
+/etc/caddy before touching it. Add only this site's configuration; never
+edit another site's file, DB, service, user or backup entry. No second
+Caddy, Coolify or Dokploy. Missing shared DNS modules need coordinated
+host work, not unilateral proxy replacement. No live host access occurred
+for this documentation revision.
 
-## Runtime and secrets
+## Application and secrets
 
-The web image is a pinned, multi-stage, non-root Node build with Next
-`output: 'standalone'`. Copy standalone output, `public`, `.next/static`,
-workspace runtime files and the release catalog. Set the monorepo tracing
-root. Test the image itself; a passing dev server is insufficient.
-Keep migration/import tooling and generated SQL available in a separate
-build target/job. Do not install tools into a running production container.
+Use @astrojs/node standalone. This app needs runtime API/Actions/database
+work; static public routes may prerender. A pure static content deployment
+can be served directly by Caddy, but it cannot replace runtime APIs.
+Build a pinned non-root Node image from a clean origin/main archive, copy
+the built client/server assets and required migrations/catalog resources,
+and test the actual image. No checkout as web root or runtime bind mount.
 
-Document and validate runtime `NODE_ENV`, `HOSTNAME`, `PORT`,
-`DATABASE_URL`, separate migration credentials, `DBW_COMMIT`, public origin
-and catalog version/digest. These replace `DBW_HOST`, `DBW_PORT`,
-`DBW_PUBLIC_DIR` and `DBW_CATALOG` from the Swift server.
-Only public configuration may have a `NEXT_PUBLIC_` or `EXPO_PUBLIC_` prefix.
-No signing key, database URL or secret may appear in a bundle, build arg,
-image layer, repository, log or diagnostic page. Disable framework/tool
-telemetry. No auth, Stripe, VAPID or model secret is needed at 1.0.
+Document runtime HOST/PORT, public origin, DATABASE_URL, separate migrator
+credentials, DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
+DBW_PORT, DBW_PUBLIC_DIR and DBW_CATALOG need explicit mapping/removal.
+Only public config may use client-exposed environment variables. No secrets
+in build args, layers, logs, JS/native bundles or repository. Framework/
+build telemetry is disabled. No auth/model/billing secret is needed at 1.0.
 
-Use Postgres readiness and explicit Compose dependency conditions; process
-startup alone is not database readiness. Bound resources and log retention,
-restart policy and graceful shutdown are part of PM.8. Retain shared data
-and do not overwrite it when replacing images.
+Postgres readiness must precede one-shot migration/import and candidate
+readiness. Use bounded connection pools, restart/resource/log limits and
+graceful shutdown. Persist only project data; never down -v during release.
 
-## Caddy and Cloudflare
+## Proxy/TLS
 
-Inspect the host Caddy version, module list, imported site-file convention,
-certificate setup and service environment before preparing changes.
-Use the `caddy-dns/cloudflare` module and ACME DNS challenge with a token
-scoped to daybyword.com's DNS when available. The token belongs in
-protected host Caddy environment, never a site file or client bundle.
-If the shared binary lacks the module, record the dependency and prepare
-a tested custom-build/rollback procedure for the owner to coordinate;
-replacing the shared Caddy binary is outside a daybyword-only site edit.
-An existing valid certificate can serve during that coordination.
+Preserve Caddy and Cloudflare. When DNS is proxied use Full (strict), with
+a valid origin certificate; never Flexible. Prefer the Cloudflare DNS
+challenge with the host's caddy-dns/cloudflare module and a zone-scoped
+token in protected host environment. Inspect modules/certificates first;
+the owner handles account settings and shared binary coordination.
+Verify apex HTTPS, permanent www redirect retaining path/query, renewal,
+headers and actual Astro CSP/island behavior. No remote resources.
+Do not cache private APIs or personal HTML. Proxy/app logs omit bodies,
+cookies/tokens, query strings and concrete plan paths; retain route pattern,
+method, status and duration only.
 
-The owner verifies Cloudflare settings: proxied DNS uses **Full (strict)**,
-with a valid origin certificate; never Flexible. Do not sign in as the
-owner. Verify apex/www DNS, origin and public HTTPS, renewal and redirects.
-Archive config, validate it, reload, and compare other-site checks.
-Keep HSTS and security headers coordinated with the app's nonce CSP;
-never replace its CSP with a conflicting static policy.
-No CDN caching of private API results or nonce-bearing HTML. Access logs
-must omit/redact concrete plan paths, query strings, bodies, tokens and
-cookies, keeping method, route pattern, status and duration only.
+## Release and rollback
 
-## Release sequence and rollback
+1. Run make check-full and push main. Under the existing shared lock,
+   resolve clean origin/main and record active image/config/schema/catalog.
+2. Back up the project database. Apply reviewed generated Drizzle SQL once
+   with migration credentials; import release-cleared catalog atomically
+   and idempotently. No production schema push.
+3. Boot the candidate on a verified spare loopback port. Verify /up,
+   routes/assets/SSR, any Actions/islands, CSP and matching catalog digest.
+4. Activate only this project's web container/release. Run check-live over
+   public apex/www and compare other sites. Retain previous image/config.
+5. On failure roll back compatible code/config. Use expand/contract SQL;
+   never assume code rollback reverses destructive SQL, delete volumes or
+   blindly restore over newer reader records. Rehearse DB recovery apart.
 
-PM builds and rehearses this sequence locally; P7 executes it on the host.
+Retain the in-development/noindex/robots block until P18.5.
 
-1. Run `make check-full`; push main. Under the shared lock, resolve a clean
-   `origin/main` commit, record the active image/config/schema/catalog, and
-   build the immutable candidate. No bind-mounted repository as runtime.
-2. Back up the project DB before migrations. Start/verify Postgres and run
-   reviewed Drizzle SQL once with the migrator role, then transactionally
-   import the compiler's release artifact. No production `drizzle-kit push`.
-3. Boot the candidate on a spare loopback port, check readiness, routes,
-   assets, SSR, CSP/hydration and catalog digest. Migrations must remain
-   compatible with the active release during this check.
-4. Switch only daybyword's active web container/config, retaining the old
-   image and release pointer. Check public apex/www, headers, TLS and
-   `make check-live`; compare the other sites again.
-5. On failure restore the previous compatible image/config. A code
-   rollback never automatically undoes a destructive DB migration.
-   Prefer expand/contract SQL; rehearse restore separately when schema
-   compatibility cannot be kept. Never restore over newer reader records
-   without a reviewed recovery procedure.
+## Backups and jobs
 
-Until launch retain the in-development line, `noindex` and robots block.
-Record the actual commit, image digest, paths, lock and checks in the
-handoff after provisioning; no placeholder value is a successful deploy.
+Start nightly pg_dump with the first Postgres deployment, even while the
+DB holds only reproducible public catalog data. Use a compatible client,
+custom-format dump, checksums/manifest (schema/migrations/catalog/commit/
+time), encrypted off-server transfer, retention and failure reporting.
+Use systemd timers for recurring jobs; shell/pg tools suffice unless a
+Python utility is actually needed. If used, Python runs through uv with
+ruff and only needed libraries; use a least-privilege Postgres driver.
 
-## Nightly backup and restore
-
-Start nightly `pg_dump` backups with the first Postgres deployment, even
-though version 1.0 holds only reproducible catalog data. Use a compatible
-client and custom-format dump, protected credentials, checksum/manifest
-(DB version, schema migrations, catalog digest, app commit, time), encrypted
-off-server copying through only daybyword.com's `ubuntu-vm-backup` entry,
-and explicit retention and failure reporting. Keep a temporary dump out
-of public directories and remove it after verified encrypted transfer.
-Back up role/bootstrap requirements and protected configuration separately;
-`pg_dump` of one database alone does not capture cluster roles.
-
-Test `pg_restore` into a separate database with least-privilege grants,
-check catalog/migration invariants and application readiness, and record
-the result before first production deployment and quarterly thereafter.
-A file existing on the server is not an off-server or restore test.
-Once Phase 14 stores reader data, update consent, deletion/backup expiry
-and the restore procedure before collecting any of it.
+Only daybyword.com's entry in ubuntu-vm-backup may change. Protect role/
+grant/bootstrap and environment recovery separately: a database dump does
+not capture all cluster roles. Test restore into an isolated database,
+reapply restricted grants, check catalog/migrations and app readiness.
+Record a restore before first deploy and quarterly afterward. No backup
+is proved by merely creating a file on the same server. Phase 14 must
+update retention, consent and deletion behavior before storing reader data.
