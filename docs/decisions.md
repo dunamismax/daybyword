@@ -717,7 +717,7 @@ Astro/TypeScript with the Node standalone adapter replaces Hummingbird's
 HTTP layer. PostgreSQL/Drizzle replaces server SQLite. Public pages can
 prerender; Actions/endpoints handle server work and Swift clients. React
 islands/Tailwind/shadcn are optional per UI need. Docker Compose, host Caddy,
-Cloudflare TLS, private DB/roles and nightly pg_dump/off-server restore
+Caddy's own TLS on owner-managed DNS-only Cloudflare records, private DB/roles and nightly pg_dump/off-server restore
 verification remain. No SQLite server replication or Litestream.
 
 The existing Apple app justifies SwiftUI/Observation and its pinned Swift

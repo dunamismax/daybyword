@@ -58,7 +58,7 @@ the planned host boundaries. No live deploy or app upload was performed.
 | Native | Existing SwiftUI/Observation iPhone/iPad app; pinned Swift 6.4.2, iOS/iPadOS 26+ |
 | Local native data | Existing ReadingData/SQLite for offline use; no direct Postgres connection |
 | Rules | Swift native and TypeScript web modules, one specification/shared parity fixtures (E33) |
-| Hosting | Project Compose behind existing Caddy/Cloudflare, private Postgres, pg_dump/off-server restore checks |
+| Hosting | Project Compose behind host Caddy (owner-managed DNS-only Cloudflare records), private Postgres, pg_dump/off-server restore checks |
 | Optional later | Better Auth in Phase 14; Swift desktop only if needed; Python utilities only for a real task |
 | Excluded | Bible text, analytics/model features, mandatory Python, Next/Expo/Tauri rewrites |
 

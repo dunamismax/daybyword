@@ -19,7 +19,7 @@ Phase M now starts at PM.12 and precedes all feature work.
 | Reading logic | Swift ReadingEngine | Swift native + pure TypeScript web, one spec and mandatory shared parity cases (E33) |
 | Compiler | Swift CatalogCompiler, rights/claims checks | Retain needed domain/compiler code; define deterministic server export/import |
 | General tools | Make/shell/Swift helpers | Keep justified working tools; Python only if a task needs it, using uv/ruff |
-| Deployment | make deploy is unimplemented | Project Compose Astro/Postgres behind host Caddy/Cloudflare |
+| Deployment | make deploy is unimplemented | Project Compose Astro/Postgres behind host Caddy (DNS-only Cloudflare records) |
 | Backups | Not provisioned here | Nightly pg_dump, encrypted off-server copy, tested restore; no Litestream |
 | Accounts | Deferred after 1.0 | Better Auth inside Astro with Drizzle/Postgres when Phase 14 opens |
 | Other targets | iPhone/iPad exist; Mac later | SwiftUI multiplatform only when native desktop is actually needed |

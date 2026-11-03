@@ -300,9 +300,11 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
   private Postgres 5432, database daybyword, role daybyword_app, stable
   project volume and separate migration credential. Inspect actual paths
   and shared lock before changes; only origin/main releases are served.
-- **TLS/backups**: keep host Caddy/Cloudflare Full (strict) when proxied,
-  valid origin certs; prefer scoped DNS challenge when the shared module
-  is available. Coordinate shared-binary changes, never edit other sites.
+- **TLS/backups**: DNS is owner-managed, DNS-only (not proxied) Cloudflare
+  records pointing at the server's public IP; host Caddy is the reverse
+  proxy and obtains its own Let's Encrypt certificates. No Cloudflare DNS
+  challenge, Caddy DNS plugin, token or proxy/SSL-mode work; never change
+  Cloudflare settings. Coordinate shared-binary changes, never edit other sites.
   Nightly pg_dump, encrypted off-server copies, retention and isolated
   restore checks start with the first Postgres deploy.
 - **Secrets**: never commit .env, signing keys/certificates/profiles,

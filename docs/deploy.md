@@ -51,11 +51,12 @@ graceful shutdown. Persist only project data; never down -v during release.
 
 ## Proxy/TLS
 
-Preserve Caddy and Cloudflare. When DNS is proxied use Full (strict), with
-a valid origin certificate; never Flexible. Prefer the Cloudflare DNS
-challenge with the host's caddy-dns/cloudflare module and a zone-scoped
-token in protected host environment. Inspect modules/certificates first;
-the owner handles account settings and shared binary coordination.
+DNS is owner-managed, DNS-only (not proxied) Cloudflare records pointing at
+the server's public IP; host Caddy is the reverse proxy and obtains and renews
+its own Let's Encrypt certificates. There is no Cloudflare DNS challenge,
+caddy-dns plugin, Caddy Cloudflare token or SSL/TLS-mode setting in this
+stack: do not plan or add any. Record changes and Cloudflare account settings
+are the owner's; shared binary changes need coordination.
 Verify apex HTTPS, permanent www redirect retaining path/query, renewal,
 headers and actual Astro CSP/island behavior. No remote resources.
 Do not cache private APIs or personal HTML. Proxy/app logs omit bodies,
