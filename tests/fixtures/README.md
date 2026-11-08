@@ -14,6 +14,7 @@ TypeScript web module and the Astro site must give the same outputs
 | `scripture.json` | Every registered book's chapters, verses, words, and names; each canon's books, orders, and totals | same |
 | `plan-ids.json` | Which text is a plan id | same |
 | `plan-files.json` | Invented plan files and what the compiler reads and computes, or its first problem | `CatalogCompilerTests/FixtureTests.swift` |
+| `catalog-export.json` | An invented release catalog as `catalog export` writes it (PM.14), whose checksum the PostgreSQL import recomputes; not in the cases format | `CatalogCompilerTests/CatalogExportTests.swift`, `web/test/` |
 | `routes.json` | Each web address's status, content type, cache policy, title, heading, and current section; the security headers | `DayByWordWebTests/FixtureTests.swift` |
 | `strings.json` | The web's interface text by key | same |
 | `settings.json` | The settings kept on the reader's device, on the web and in the app (written by hand) | the server tests and `apple/AppTests/SettingsFixtureTests.swift` |

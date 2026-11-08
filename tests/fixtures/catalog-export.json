@@ -1,0 +1,283 @@
+{
+  "buildMode" : "release",
+  "contentSha256" : "d8d90a25b89a36084b314b8a38cd55a3ba9479166d85bc6e885c4aa8b02d65a8",
+  "format" : "daybyword-catalog-export",
+  "formatVersion" : 1,
+  "plans" : [
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "position" : 1,
+          "reading" : "PRO 1",
+          "words" : 512
+        },
+        {
+          "id" : 2,
+          "position" : 2,
+          "reading" : "PRO 2",
+          "words" : 308
+        },
+        {
+          "id" : 3,
+          "position" : 3,
+          "reading" : "PRO 3",
+          "words" : 522
+        },
+        {
+          "id" : 4,
+          "position" : 4,
+          "reading" : "PRO 4",
+          "words" : 408
+        },
+        {
+          "id" : 5,
+          "position" : 5,
+          "reading" : "PRO 5",
+          "words" : 336
+        },
+        {
+          "id" : 6,
+          "position" : 6,
+          "reading" : "PRO 6",
+          "words" : 538
+        },
+        {
+          "id" : 7,
+          "position" : 7,
+          "reading" : "PRO 7",
+          "words" : 404
+        },
+        {
+          "id" : 8,
+          "position" : 8,
+          "reading" : "PRO 8",
+          "words" : 520
+        },
+        {
+          "id" : 9,
+          "position" : 9,
+          "reading" : "PRO 9",
+          "words" : 281
+        },
+        {
+          "id" : 10,
+          "position" : 10,
+          "reading" : "PRO 10",
+          "words" : 525
+        },
+        {
+          "id" : 11,
+          "position" : 11,
+          "reading" : "PRO 11",
+          "words" : 514
+        },
+        {
+          "id" : 12,
+          "position" : 12,
+          "reading" : "PRO 12",
+          "words" : 464
+        },
+        {
+          "id" : 13,
+          "position" : 13,
+          "reading" : "PRO 13",
+          "words" : 384
+        },
+        {
+          "id" : 14,
+          "position" : 14,
+          "reading" : "PRO 14",
+          "words" : 573
+        },
+        {
+          "id" : 15,
+          "position" : 15,
+          "reading" : "PRO 15",
+          "words" : 516
+        },
+        {
+          "id" : 16,
+          "position" : 16,
+          "reading" : "PRO 16",
+          "words" : 517
+        },
+        {
+          "id" : 17,
+          "position" : 17,
+          "reading" : "PRO 17",
+          "words" : 463
+        },
+        {
+          "id" : 18,
+          "position" : 18,
+          "reading" : "PRO 18",
+          "words" : 361
+        },
+        {
+          "id" : 19,
+          "position" : 19,
+          "reading" : "PRO 19",
+          "words" : 483
+        },
+        {
+          "id" : 20,
+          "position" : 20,
+          "reading" : "PRO 20",
+          "words" : 479
+        },
+        {
+          "id" : 21,
+          "position" : 21,
+          "reading" : "PRO 21",
+          "words" : 486
+        },
+        {
+          "id" : 22,
+          "position" : 22,
+          "reading" : "PRO 22",
+          "words" : 458
+        },
+        {
+          "id" : 23,
+          "position" : 23,
+          "reading" : "PRO 23",
+          "words" : 551
+        },
+        {
+          "id" : 24,
+          "position" : 24,
+          "reading" : "PRO 24",
+          "words" : 538
+        },
+        {
+          "id" : 25,
+          "position" : 25,
+          "reading" : "PRO 25",
+          "words" : 503
+        },
+        {
+          "id" : 26,
+          "position" : 26,
+          "reading" : "PRO 26",
+          "words" : 464
+        },
+        {
+          "id" : 27,
+          "position" : 27,
+          "reading" : "PRO 27",
+          "words" : 442
+        },
+        {
+          "id" : 28,
+          "position" : 28,
+          "reading" : "PRO 28",
+          "words" : 479
+        },
+        {
+          "id" : 29,
+          "position" : 29,
+          "reading" : "PRO 29",
+          "words" : 425
+        },
+        {
+          "id" : 30,
+          "position" : 30,
+          "reading" : "PRO 30",
+          "words" : 620
+        },
+        {
+          "id" : 31,
+          "position" : 31,
+          "reading" : "PRO 31",
+          "words" : 448
+        }
+      ],
+      "behaviors" : "calendar",
+      "books" : "PRO",
+      "canon" : "protestant",
+      "coverage" : "books",
+      "creator" : "Day by Word",
+      "facts" : {
+        "omitted" : "",
+        "partialChapters" : 0,
+        "repeats" : "",
+        "uniqueVerses" : 915,
+        "verses" : 915,
+        "wholeChapters" : 31,
+        "wordsMaximum" : 620,
+        "wordsMedian" : 479,
+        "wordsMinimum" : 281
+      },
+      "id" : "monthly-plan",
+      "instructions" : "Read one a day.",
+      "limitations" : "None worth saying.",
+      "readingDays" : 7,
+      "review" : "reviewed",
+      "rights" : "daybyword-original",
+      "rightsStatus" : "cleared",
+      "schedule" : "day-of-month",
+      "source" : "Invented for the tests.",
+      "suits" : "The tests.",
+      "summary" : "Readings for the tests.",
+      "title" : "A monthly test plan",
+      "version" : 1
+    },
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "position" : 1,
+          "reading" : "MRK 1",
+          "words" : 879
+        },
+        {
+          "id" : 2,
+          "position" : 2,
+          "reading" : "LUK 15:1-10; JHN 3:16",
+          "words" : 237
+        }
+      ],
+      "behaviors" : "pace, finish-date",
+      "books" : "MRK, LUK, JHN",
+      "canon" : "protestant",
+      "coverage" : "selection",
+      "creator" : "Day by Word",
+      "facts" : {
+        "omitted" : "MRK 2-16; LUK 1-14; LUK 15:11-24:53; JHN 1:1-3:15; JHN 3:17-21:25",
+        "partialChapters" : 2,
+        "repeats" : "",
+        "uniqueVerses" : 56,
+        "verses" : 56,
+        "wholeChapters" : 1,
+        "wordsMaximum" : 879,
+        "wordsMedian" : 558,
+        "wordsMinimum" : 237
+      },
+      "id" : "test-plan",
+      "instructions" : "Read one a day.",
+      "limitations" : "None worth saying.",
+      "readingDays" : 5,
+      "review" : "reviewed",
+      "rights" : "daybyword-original",
+      "rightsStatus" : "cleared",
+      "schedule" : "sequence",
+      "source" : "Invented for the tests.",
+      "suits" : "The tests.",
+      "summary" : "Readings for the tests.",
+      "title" : "A test plan",
+      "version" : 1
+    }
+  ],
+  "schemaVersion" : 3,
+  "scripture" : [
+    {
+      "content" : "{\n  \"format\": 1,\n  \"conventions\": [\n    {\n      \"id\": \"common\",\n      \"label\": \"Common English\",\n      \"example\": \"Song of Songs, Sirach\",\n      \"rule\": \"USFM 3.0's English names, with the qualifiers \\\"(Hebrew)\\\" and \\\"(Greek)\\\" dropped from Esther and Daniel, because each canon's entry says what its form of a book contains. Where USFM and the SBL Handbook differ, the name follows the source listed in the book's note. Abbreviations are the SBL Handbook's.\",\n      \"sources\": [\"usfm-3\", \"sbl-handbook-2\"]\n    },\n    {\n      \"id\": \"kjv\",\n      \"label\": \"King James\",\n      \"example\": \"Song of Solomon, Ecclesiasticus\",\n      \"rule\": \"The names in the contents of the 1769 Oxford King James Bible, where they differ from the common names. Roman numerals are written as Arabic numerals (\\\"I. Samuel\\\" is \\\"1 Samuel\\\"), and the words \\\"The\\\", \\\"The Epistle to the\\\", \\\"The Epistle of\\\", and \\\"To the\\\" are dropped from the front (\\\"The Acts\\\" is \\\"Acts\\\"). An abbreviation is given only where the SBL Handbook lists that name; otherwise the full name is shown.\",\n      \"sources\": [\"kjv-1769\", \"sbl-handbook-2\"]\n    },\n    {\n      \"id\": \"douay\",\n      \"label\": \"Douay-Rheims\",\n      \"example\": \"Canticle of Canticles, Apocalypse\",\n      \"rule\": \"The short names of the Douay-Rheims Bible in Challoner's revision, where they name a book differently from the common names (a longer form of the same name, such as \\\"Acts of Apostles\\\", is not an override), as drbo.org's contents give them and checked against the book titles of the Challoner text. Roman numerals are written as Arabic numerals. An abbreviation is given only where the SBL Handbook lists that name; otherwise the full name is shown.\",\n      \"sources\": [\"douay-challoner\", \"drbo\", \"sbl-handbook-2\"]\n    }\n  ],\n  \"books\": [\n    { \"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\" },\n    { \"id\": \"EXO\", \"testament\": \"old\", \"name\": \"Exodus\", \"abbreviation\": \"Exod\" },\n    { \"id\": \"LEV\", \"testament\": \"old\", \"name\": \"Leviticus\", \"abbreviation\": \"Lev\" },\n    { \"id\": \"NUM\", \"testament\": \"old\", \"name\": \"Numbers\", \"abbreviation\": \"Num\" },\n    { \"id\": \"DEU\", \"testament\": \"old\", \"name\": \"Deuteronomy\", \"abbreviation\": \"Deut\" },\n    { \"id\": \"JOS\", \"testament\": \"old\", \"name\": \"Joshua\", \"abbreviation\": \"Josh\",\n      \"names\": { \"douay\": { \"name\": \"Josue\" } } },\n    { \"id\": \"JDG\", \"testament\": \"old\", \"name\": \"Judges\", \"abbreviation\": \"Judg\" },\n    { \"id\": \"RUT\", \"testament\": \"old\", \"name\": \"Ruth\", \"abbreviation\": \"Ruth\" },\n    { \"id\": \"1SA\", \"testament\": \"old\", \"name\": \"1 Samuel\", \"abbreviation\": \"1 Sam\",\n      \"names\": { \"douay\": { \"name\": \"1 Kings\" } } },\n    { \"id\": \"2SA\", \"testament\": \"old\", \"name\": \"2 Samuel\", \"abbreviation\": \"2 Sam\",\n      \"names\": { \"douay\": { \"name\": \"2 Kings\" } } },\n    { \"id\": \"1KI\", \"testament\": \"old\", \"name\": \"1 Kings\", \"abbreviation\": \"1 Kgs\",\n      \"names\": { \"douay\": { \"name\": \"3 Kings\" } } },\n    { \"id\": \"2KI\", \"testament\": \"old\", \"name\": \"2 Kings\", \"abbreviation\": \"2 Kgs\",\n      \"names\": { \"douay\": { \"name\": \"4 Kings\" } } },\n    { \"id\": \"1CH\", \"testament\": \"old\", \"name\": \"1 Chronicles\", \"abbreviation\": \"1 Chr\",\n      \"names\": { \"douay\": { \"name\": \"1 Paralipomenon\" } } },\n    { \"id\": \"2CH\", \"testament\": \"old\", \"name\": \"2 Chronicles\", \"abbreviation\": \"2 Chr\",\n      \"names\": { \"douay\": { \"name\": \"2 Paralipomenon\" } } },\n    { \"id\": \"EZR\", \"testament\": \"old\", \"name\": \"Ezra\", \"abbreviation\": \"Ezra\",\n      \"names\": { \"douay\": { \"name\": \"1 Esdras\" } } },\n    { \"id\": \"NEH\", \"testament\": \"old\", \"name\": \"Nehemiah\", \"abbreviation\": \"Neh\",\n      \"names\": { \"douay\": { \"name\": \"2 Esdras\" } } },\n    { \"id\": \"TOB\", \"testament\": \"old\", \"name\": \"Tobit\", \"abbreviation\": \"Tob\",\n      \"names\": { \"douay\": { \"name\": \"Tobias\" } } },\n    { \"id\": \"JDT\", \"testament\": \"old\", \"name\": \"Judith\", \"abbreviation\": \"Jdt\" },\n    { \"id\": \"EST\", \"testament\": \"old\", \"name\": \"Esther\", \"abbreviation\": \"Esth\",\n      \"note\": \"USFM calls this book \\\"Esther (Hebrew)\\\"; the Catholic canon's Esther includes the Greek additions (ESG).\" },\n    { \"id\": \"ESG\", \"testament\": \"old\", \"name\": \"Additions to Esther\", \"abbreviation\": \"Add Esth\",\n      \"note\": \"The Greek additions to Esther where a Bible prints them apart, as the King James Bible does. USFM calls this id \\\"Esther Greek\\\"; the name is the SBL Handbook's.\",\n      \"names\": { \"kjv\": { \"name\": \"Rest of Esther\" } } },\n    { \"id\": \"1MA\", \"testament\": \"old\", \"name\": \"1 Maccabees\", \"abbreviation\": \"1 Macc\",\n      \"names\": { \"douay\": { \"name\": \"1 Machabees\" } } },\n    { \"id\": \"2MA\", \"testament\": \"old\", \"name\": \"2 Maccabees\", \"abbreviation\": \"2 Macc\",\n      \"names\": { \"douay\": { \"name\": \"2 Machabees\" } } },\n    { \"id\": \"JOB\", \"testament\": \"old\", \"name\": \"Job\", \"abbreviation\": \"Job\" },\n    { \"id\": \"PSA\", \"testament\": \"old\", \"name\": \"Psalms\", \"abbreviation\": \"Ps\" },\n    { \"id\": \"PRO\", \"testament\": \"old\", \"name\": \"Proverbs\", \"abbreviation\": \"Prov\" },\n    { \"id\": \"ECC\", \"testament\": \"old\", \"name\": \"Ecclesiastes\", \"abbreviation\": \"Eccl\" },\n    { \"id\": \"SNG\", \"testament\": \"old\", \"name\": \"Song of Songs\", \"abbreviation\": \"Song\",\n      \"names\": {\n        \"kjv\": { \"name\": \"Song of Solomon\", \"abbreviation\": \"Song\" },\n        \"douay\": { \"name\": \"Canticle of Canticles\", \"abbreviation\": \"Cant\" }\n      },\n      \"note\": \"drbo.org's contents say \\\"Canticles\\\"; the Gutenberg text's title, \\\"Solomon's Canticle of Canticles\\\", gives the Douay name.\" },\n    { \"id\": \"WIS\", \"testament\": \"old\", \"name\": \"Wisdom\", \"abbreviation\": \"Wis\",\n      \"note\": \"USFM and the TCU guide's SBL table say \\\"Wisdom of Solomon\\\"; the University of Divinity's SBL table, the USCCB, the 1769 King James Bible, and the Douay-Rheims say \\\"Wisdom\\\".\" },\n    { \"id\": \"SIR\", \"testament\": \"old\", \"name\": \"Sirach\", \"abbreviation\": \"Sir\",\n      \"names\": {\n        \"kjv\": { \"name\": \"Ecclesiasticus\", \"abbreviation\": \"Sir\" },\n        \"douay\": { \"name\": \"Ecclesiasticus\", \"abbreviation\": \"Sir\" }\n      } },\n    { \"id\": \"ISA\", \"testament\": \"old\", \"name\": \"Isaiah\", \"abbreviation\": \"Isa\",\n      \"names\": { \"douay\": { \"name\": \"Isaias\" } } },\n    { \"id\": \"JER\", \"testament\": \"old\", \"name\": \"Jeremiah\", \"abbreviation\": \"Jer\",\n      \"names\": { \"douay\": { \"name\": \"Jeremias\" } } },\n    { \"id\": \"LAM\", \"testament\": \"old\", \"name\": \"Lamentations\", \"abbreviation\": \"Lam\" },\n    { \"id\": \"BAR\", \"testament\": \"old\", \"name\": \"Baruch\", \"abbreviation\": \"Bar\",\n      \"note\": \"The Catholic canon's Baruch has six chapters, the sixth being the Letter of Jeremiah (LJE).\" },\n    { \"id\": \"LJE\", \"testament\": \"old\", \"name\": \"Letter of Jeremiah\", \"abbreviation\": \"Ep Jer\",\n      \"note\": \"The name is USFM's; the SBL Handbook says \\\"Epistle of Jeremiah\\\".\",\n      \"names\": { \"kjv\": { \"name\": \"Epistle of Jeremiah\", \"abbreviation\": \"Ep Jer\" } } },\n    { \"id\": \"EZK\", \"testament\": \"old\", \"name\": \"Ezekiel\", \"abbreviation\": \"Ezek\",\n      \"names\": { \"douay\": { \"name\": \"Ezechiel\" } } },\n    { \"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\",\n      \"note\": \"USFM calls this book \\\"Daniel (Hebrew)\\\"; the Catholic canon's Daniel includes the Greek additions (S3Y, SUS, BEL).\" },\n    { \"id\": \"S3Y\", \"testament\": \"old\", \"name\": \"Song of the Three Young Men\", \"abbreviation\": \"Sg Three\",\n      \"note\": \"USFM writes \\\"Song of the 3 Young Men\\\"; the spelling is the SBL Handbook's.\",\n      \"names\": { \"kjv\": { \"name\": \"Song of the Three Children\" } } },\n    { \"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\",\n      \"note\": \"The 1769 contents say \\\"The Story of Susanna\\\"; the common name is kept.\" },\n    { \"id\": \"BEL\", \"testament\": \"old\", \"name\": \"Bel and the Dragon\", \"abbreviation\": \"Bel\",\n      \"note\": \"The 1769 contents say \\\"The Idol Bel, and the Dragon\\\"; the common name is kept.\" },\n    { \"id\": \"HOS\", \"testament\": \"old\", \"name\": \"Hosea\", \"abbreviation\": \"Hos\",\n      \"names\": { \"douay\": { \"name\": \"Osee\" } } },\n    { \"id\": \"JOL\", \"testament\": \"old\", \"name\": \"Joel\", \"abbreviation\": \"Joel\" },\n    { \"id\": \"AMO\", \"testament\": \"old\", \"name\": \"Amos\", \"abbreviation\": \"Amos\" },\n    { \"id\": \"OBA\", \"testament\": \"old\", \"name\": \"Obadiah\", \"abbreviation\": \"Obad\",\n      \"names\": { \"douay\": { \"name\": \"Abdias\" } } },\n    { \"id\": \"JON\", \"testament\": \"old\", \"name\": \"Jonah\", \"abbreviation\": \"Jonah\",\n      \"names\": { \"douay\": { \"name\": \"Jonas\" } } },\n    { \"id\": \"MIC\", \"testament\": \"old\", \"name\": \"Micah\", \"abbreviation\": \"Mic\",\n      \"names\": { \"douay\": { \"name\": \"Micheas\" } } },\n    { \"id\": \"NAM\", \"testament\": \"old\", \"name\": \"Nahum\", \"abbreviation\": \"Nah\" },\n    { \"id\": \"HAB\", \"testament\": \"old\", \"name\": \"Habakkuk\", \"abbreviation\": \"Hab\",\n      \"names\": { \"douay\": { \"name\": \"Habacuc\" } } },\n    { \"id\": \"ZEP\", \"testament\": \"old\", \"name\": \"Zephaniah\", \"abbreviation\": \"Zeph\",\n      \"names\": { \"douay\": { \"name\": \"Sophonias\" } } },\n    { \"id\": \"HAG\", \"testament\": \"old\", \"name\": \"Haggai\", \"abbreviation\": \"Hag\",\n      \"names\": { \"douay\": { \"name\": \"Aggeus\" } } },\n    { \"id\": \"ZEC\", \"testament\": \"old\", \"name\": \"Zechariah\", \"abbreviation\": \"Zech\",\n      \"names\": { \"douay\": { \"name\": \"Zacharias\" } } },\n    { \"id\": \"MAL\", \"testament\": \"old\", \"name\": \"Malachi\", \"abbreviation\": \"Mal\",\n      \"names\": { \"douay\": { \"name\": \"Malachias\" } } },\n    { \"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\" },\n    { \"id\": \"MRK\", \"testament\": \"new\", \"name\": \"Mark\", \"abbreviation\": \"Mark\" },\n    { \"id\": \"LUK\", \"testament\": \"new\", \"name\": \"Luke\", \"abbreviation\": \"Luke\" },\n    { \"id\": \"JHN\", \"testament\": \"new\", \"name\": \"John\", \"abbreviation\": \"John\" },\n    { \"id\": \"ACT\", \"testament\": \"new\", \"name\": \"Acts\", \"abbreviation\": \"Acts\" },\n    { \"id\": \"ROM\", \"testament\": \"new\", \"name\": \"Romans\", \"abbreviation\": \"Rom\" },\n    { \"id\": \"1CO\", \"testament\": \"new\", \"name\": \"1 Corinthians\", \"abbreviation\": \"1 Cor\" },\n    { \"id\": \"2CO\", \"testament\": \"new\", \"name\": \"2 Corinthians\", \"abbreviation\": \"2 Cor\" },\n    { \"id\": \"GAL\", \"testament\": \"new\", \"name\": \"Galatians\", \"abbreviation\": \"Gal\" },\n    { \"id\": \"EPH\", \"testament\": \"new\", \"name\": \"Ephesians\", \"abbreviation\": \"Eph\" },\n    { \"id\": \"PHP\", \"testament\": \"new\", \"name\": \"Philippians\", \"abbreviation\": \"Phil\" },\n    { \"id\": \"COL\", \"testament\": \"new\", \"name\": \"Colossians\", \"abbreviation\": \"Col\" },\n    { \"id\": \"1TH\", \"testament\": \"new\", \"name\": \"1 Thessalonians\", \"abbreviation\": \"1 Thess\" },\n    { \"id\": \"2TH\", \"testament\": \"new\", \"name\": \"2 Thessalonians\", \"abbreviation\": \"2 Thess\" },\n    { \"id\": \"1TI\", \"testament\": \"new\", \"name\": \"1 Timothy\", \"abbreviation\": \"1 Tim\" },\n    { \"id\": \"2TI\", \"testament\": \"new\", \"name\": \"2 Timothy\", \"abbreviation\": \"2 Tim\" },\n    { \"id\": \"TIT\", \"testament\": \"new\", \"name\": \"Titus\", \"abbreviation\": \"Titus\" },\n    { \"id\": \"PHM\", \"testament\": \"new\", \"name\": \"Philemon\", \"abbreviation\": \"Phlm\" },\n    { \"id\": \"HEB\", \"testament\": \"new\", \"name\": \"Hebrews\", \"abbreviation\": \"Heb\" },\n    { \"id\": \"JAS\", \"testament\": \"new\", \"name\": \"James\", \"abbreviation\": \"Jas\" },\n    { \"id\": \"1PE\", \"testament\": \"new\", \"name\": \"1 Peter\", \"abbreviation\": \"1 Pet\" },\n    { \"id\": \"2PE\", \"testament\": \"new\", \"name\": \"2 Peter\", \"abbreviation\": \"2 Pet\" },\n    { \"id\": \"1JN\", \"testament\": \"new\", \"name\": \"1 John\", \"abbreviation\": \"1 John\" },\n    { \"id\": \"2JN\", \"testament\": \"new\", \"name\": \"2 John\", \"abbreviation\": \"2 John\" },\n    { \"id\": \"3JN\", \"testament\": \"new\", \"name\": \"3 John\", \"abbreviation\": \"3 John\" },\n    { \"id\": \"JUD\", \"testament\": \"new\", \"name\": \"Jude\", \"abbreviation\": \"Jude\" },\n    { \"id\": \"REV\", \"testament\": \"new\", \"name\": \"Revelation\", \"abbreviation\": \"Rev\",\n      \"names\": { \"douay\": { \"name\": \"Apocalypse\" } } }\n  ],\n  \"canons\": [\n    {\n      \"id\": \"protestant\",\n      \"label\": \"66 books\",\n      \"description\": \"The 39 books of the Old Testament and the 27 of the New, as Protestant Bibles print them.\",\n      \"orders\": [\n        {\n          \"id\": \"protestant\",\n          \"label\": \"The order of most Protestant Bibles\",\n          \"sources\": [\"kjv-1769\", \"westminster-1647\"],\n          \"books\": [\n            \"GEN\", \"EXO\", \"LEV\", \"NUM\", \"DEU\", \"JOS\", \"JDG\", \"RUT\", \"1SA\", \"2SA\", \"1KI\", \"2KI\", \"1CH\", \"2CH\",\n            \"EZR\", \"NEH\", \"EST\", \"JOB\", \"PSA\", \"PRO\", \"ECC\", \"SNG\", \"ISA\", \"JER\", \"LAM\", \"EZK\", \"DAN\",\n            \"HOS\", \"JOL\", \"AMO\", \"OBA\", \"JON\", \"MIC\", \"NAM\", \"HAB\", \"ZEP\", \"HAG\", \"ZEC\", \"MAL\",\n            \"MAT\", \"MRK\", \"LUK\", \"JHN\", \"ACT\", \"ROM\", \"1CO\", \"2CO\", \"GAL\", \"EPH\", \"PHP\", \"COL\", \"1TH\", \"2TH\",\n            \"1TI\", \"2TI\", \"TIT\", \"PHM\", \"HEB\", \"JAS\", \"1PE\", \"2PE\", \"1JN\", \"2JN\", \"3JN\", \"JUD\", \"REV\"\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": \"catholic\",\n      \"label\": \"73 books\",\n      \"description\": \"The 46 books of the Old Testament, including Tobit, Judith, 1 and 2 Maccabees, Wisdom, Sirach, and Baruch, with the Greek additions to Esther and Daniel, and the 27 of the New, as Catholic Bibles print them.\",\n      \"includes\": {\n        \"EST\": [\"ESG\"],\n        \"BAR\": [\"LJE\"],\n        \"DAN\": [\"S3Y\", \"SUS\", \"BEL\"]\n      },\n      \"includesSources\": [\"usccb-nabre\", \"douay-challoner\"],\n      \"orders\": [\n        {\n          \"id\": \"usccb\",\n          \"label\": \"The order of the New American Bible, Revised Edition\",\n          \"sources\": [\"usccb-nabre\"],\n          \"books\": [\n            \"GEN\", \"EXO\", \"LEV\", \"NUM\", \"DEU\", \"JOS\", \"JDG\", \"RUT\", \"1SA\", \"2SA\", \"1KI\", \"2KI\", \"1CH\", \"2CH\",\n            \"EZR\", \"NEH\", \"TOB\", \"JDT\", \"EST\", \"1MA\", \"2MA\", \"JOB\", \"PSA\", \"PRO\", \"ECC\", \"SNG\", \"WIS\", \"SIR\",\n            \"ISA\", \"JER\", \"LAM\", \"BAR\", \"EZK\", \"DAN\",\n            \"HOS\", \"JOL\", \"AMO\", \"OBA\", \"JON\", \"MIC\", \"NAM\", \"HAB\", \"ZEP\", \"HAG\", \"ZEC\", \"MAL\",\n            \"MAT\", \"MRK\", \"LUK\", \"JHN\", \"ACT\", \"ROM\", \"1CO\", \"2CO\", \"GAL\", \"EPH\", \"PHP\", \"COL\", \"1TH\", \"2TH\",\n            \"1TI\", \"2TI\", \"TIT\", \"PHM\", \"HEB\", \"JAS\", \"1PE\", \"2PE\", \"1JN\", \"2JN\", \"3JN\", \"JUD\", \"REV\"\n          ]\n        },\n        {\n          \"id\": \"vulgate\",\n          \"label\": \"The order of the Nova Vulgata and the Douay-Rheims, with Maccabees last\",\n          \"sources\": [\"nova-vulgata\", \"douay-challoner\"],\n          \"books\": [\n            \"GEN\", \"EXO\", \"LEV\", \"NUM\", \"DEU\", \"JOS\", \"JDG\", \"RUT\", \"1SA\", \"2SA\", \"1KI\", \"2KI\", \"1CH\", \"2CH\",\n            \"EZR\", \"NEH\", \"TOB\", \"JDT\", \"EST\", \"JOB\", \"PSA\", \"PRO\", \"ECC\", \"SNG\", \"WIS\", \"SIR\",\n            \"ISA\", \"JER\", \"LAM\", \"BAR\", \"EZK\", \"DAN\",\n            \"HOS\", \"JOL\", \"AMO\", \"OBA\", \"JON\", \"MIC\", \"NAM\", \"HAB\", \"ZEP\", \"HAG\", \"ZEC\", \"MAL\", \"1MA\", \"2MA\",\n            \"MAT\", \"MRK\", \"LUK\", \"JHN\", \"ACT\", \"ROM\", \"1CO\", \"2CO\", \"GAL\", \"EPH\", \"PHP\", \"COL\", \"1TH\", \"2TH\",\n            \"1TI\", \"2TI\", \"TIT\", \"PHM\", \"HEB\", \"JAS\", \"1PE\", \"2PE\", \"1JN\", \"2JN\", \"3JN\", \"JUD\", \"REV\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"sources\": [\n    {\n      \"id\": \"usfm-3\",\n      \"title\": \"USFM 3.0 documentation, \\\"Book Identifiers\\\"\",\n      \"publisher\": \"United Bible Societies (ubsicap)\",\n      \"url\": \"https://ubsicap.github.io/usfm/identification/books.html\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"Every book id, and the common English names.\"\n    },\n    {\n      \"id\": \"sbl-handbook-2\",\n      \"title\": \"The SBL Handbook of Style, 2nd ed. (2014), §8.3, as tabulated by two university guides that cite it\",\n      \"publisher\": \"SBL Press\",\n      \"url\": \"https://divinity.libguides.com/styleguide/bible\",\n      \"alsoChecked\": \"W. L. Adams Center for Writing, Texas Christian University, \\\"Formatting Papers in SBL Style\\\" (copy in research/sbl/)\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"Every abbreviation, and the spellings noted under ESG, S3Y, and WIS.\"\n    },\n    {\n      \"id\": \"kjv-1769\",\n      \"title\": \"The Holy Bible (King James Version), Oxford, 1769, as revised by Benjamin Blayney: contents, on Wikisource\",\n      \"publisher\": \"Wikisource transcription of the Oxford printing\",\n      \"url\": \"https://en.wikisource.org/wiki/Bible_(King_James)\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"The King James names, and the 66-book order.\"\n    },\n    {\n      \"id\": \"westminster-1647\",\n      \"title\": \"The Westminster Confession of Faith, chapter I, section II (Edinburgh: Evan Tyler, 1647), in Philip Schaff, The Creeds of Christendom, vol. 3\",\n      \"publisher\": \"Christian Classics Ethereal Library\",\n      \"url\": \"https://www.ccel.org/ccel/schaff/creeds3.iv.xvii.ii.html\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"A second, independent source for the 66-book order.\"\n    },\n    {\n      \"id\": \"usccb-nabre\",\n      \"title\": \"New American Bible, Revised Edition: contents\",\n      \"publisher\": \"United States Conference of Catholic Bishops\",\n      \"url\": \"https://bible.usccb.org/bible\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"The 73-book canon and its order, and the Greek additions held in Esther, Baruch, and Daniel.\"\n    },\n    {\n      \"id\": \"nova-vulgata\",\n      \"title\": \"Nova Vulgata, Bibliorum Sacrorum Editio: Vetus Testamentum and Novum Testamentum contents\",\n      \"publisher\": \"Holy See\",\n      \"url\": \"https://www.vatican.va/archive/bible/nova_vulgata/documents/nova-vulgata_index_lt.html\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"The 73-book order with 1 and 2 Maccabees last.\"\n    },\n    {\n      \"id\": \"douay-challoner\",\n      \"title\": \"The Holy Bible, Douay-Rheims, revised by Richard Challoner (1749–1752): contents and book titles, Project Gutenberg eBook #1581\",\n      \"publisher\": \"Project Gutenberg\",\n      \"url\": \"https://www.gutenberg.org/ebooks/1581\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"The Douay-Rheims names as book titles, the order with Maccabees last, and Esther in 16 chapters, Baruch in 6 (the sixth the Epistle of Jeremias), and Daniel in 14.\"\n    },\n    {\n      \"id\": \"drbo\",\n      \"title\": \"Douay-Rheims Bible Online: contents\",\n      \"publisher\": \"drbo.org\",\n      \"url\": \"https://www.drbo.org/\",\n      \"checked\": \"2026-11-01\",\n      \"usedFor\": \"The short forms of the Douay-Rheims names. Its contents give 1–4 Kings and 1–2 Esdras where the Gutenberg text titles the first two \\\"Samuel, otherwise called the First (Second) Book of Kings\\\" and the second Esdras \\\"Nehemias\\\"; the short forms follow drbo.org.\"\n    }\n  ]\n}\n",
+      "name" : "books.json"
+    },
+    {
+      "content" : "# The English (KJV) versification: each line is a book's USFM id, its first\n# chapter, and each chapter's verses in turn, as a count (verses 1 to N) or\n# a range (F-N) where a chapter does not start at verse 1.\n# Counted from the King James Version (1769 text, with Apocrypha), public\n# domain, from eBible.org (eng-kjv, USFM, 2026-09-26) by\n# scripts/versification.swift, which also lists every difference from the\n# World English Bible and from STEPBible-Data's TVTMS (BUILD.md P3.2a).\n# Do not edit by hand.\nGEN\t1\t31 25 24 26 32 22 24 22 29 32 32 20 18 24 21 16 27 33 38 18 34 24 20 67 34 35 46 22 35 43 55 32 20 31 29 43 36 30 23 23 57 38 34 34 28 34 31 22 33 26\nEXO\t1\t22 25 22 31 23 30 25 32 35 29 10 51 22 31 27 36 16 27 25 26 36 31 33 18 40 37 21 43 46 38 18 35 23 35 35 38 29 31 43 38\nLEV\t1\t17 16 17 35 19 30 38 36 24 20 47 8 59 57 33 34 16 30 37 27 24 33 44 23 55 46 34\nNUM\t1\t54 34 51 49 31 27 89 26 23 36 35 16 33 45 41 50 13 32 22 29 35 41 30 25 18 65 23 31 40 16 54 42 56 29 34 13\nDEU\t1\t46 37 29 49 33 25 26 20 29 22 32 32 18 29 23 22 20 22 21 20 23 30 25 22 19 19 26 68 29 20 30 52 29 12\nJOS\t1\t18 24 17 24 15 27 26 35 27 43 23 24 33 15 63 10 18 28 51 9 45 34 16 33\nJDG\t1\t36 23 31 24 31 40 25 35 57 18 40 15 25 20 20 31 13 31 30 48 25\nRUT\t1\t22 23 18 22\n1SA\t1\t28 36 21 22 12 21 17 22 27 27 15 25 23 52 35 23 58 30 24 42 15 23 29 22 44 25 12 25 11 31 13\n2SA\t1\t27 32 39 12 25 23 29 18 13 19 27 31 39 33 37 23 29 33 43 26 22 51 39 25\n1KI\t1\t53 46 28 34 18 38 51 66 28 29 43 33 34 31 34 34 24 46 21 43 29 53\n2KI\t1\t18 25 27 44 27 33 20 29 37 36 21 21 25 29 38 20 41 37 37 21 26 20 37 20 30\n1CH\t1\t54 55 24 43 26 81 40 40 44 14 47 40 14 17 29 43 27 17 19 8 30 19 32 31 31 32 34 21 30\n2CH\t1\t17 18 17 22 14 42 22 18 31 19 23 16 22 15 19 14 19 34 11 37 20 12 21 27 28 23 9 27 36 27 21 33 25 33 27 23\nEZR\t1\t11 70 13 24 17 22 28 36 15 44\nNEH\t1\t11 20 32 23 19 19 73 18 38 39 36 47 31\nTOB\t1\t22 14 17 21 22 17 18 21 6 12 19 22 18 15\nJDT\t1\t16 28 10 15 24 21 32 36 14 23 23 20 20 19 13 25\nEST\t1\t22 23 15 17 14 14 10 17 32 3\nESG\t10\t4-13 12 6 18 19 16 24\n1MA\t1\t64 70 60 61 68 63 50 32 73 89 74 53 53 49 41 24\n2MA\t1\t36 32 40 50 27 31 42 36 29 38 38 45 26 46 39\nJOB\t1\t22 13 26 21 27 30 21 22 35 22 20 25 28 22 35 22 16 21 29 29 34 30 17 25 6 14 23 28 25 31 40 22 33 37 16 33 24 41 30 24 34 17\nPSA\t1\t6 12 8 8 12 10 17 9 20 18 7 8 6 7 5 11 15 50 14 9 13 31 6 10 22 12 14 9 11 12 24 11 22 22 28 12 40 22 13 17 13 11 5 26 17 11 9 14 20 23 19 9 6 7 23 13 11 11 17 12 8 12 11 10 13 20 7 35 36 5 24 20 28 23 10 12 20 72 13 19 16 8 18 12 13 17 7 18 52 17 16 15 5 23 11 13 12 9 9 5 8 28 22 35 45 48 43 13 31 7 10 10 9 8 18 19 2 29 176 7 8 9 4 8 5 6 5 6 8 8 3 18 3 3 21 26 9 8 24 13 10 7 12 15 21 10 20 14 9 6\nPRO\t1\t33 22 35 27 23 35 27 36 18 32 31 28 25 35 33 33 28 24 29 30 31 29 35 34 28 28 27 28 27 33 31\nECC\t1\t18 26 22 16 20 12 29 17 18 20 10 14\nSNG\t1\t17 17 11 16 16 13 13 14\nWIS\t1\t16 24 19 20 23 25 30 21 18 21 26 27 19 31 19 29 21 25 22\nSIR\t1\t30 18 31 31 15 37 36 19 18 31 34 18 26 27 20 30 32 33 30 32 28 27 28 34 26 29 30 26 28 25 31 24 31 26 20 26 31 34 35 30 24 25 33 23 26 20 25 25 16 29 30\nISA\t1\t31 22 26 6 30 13 25 22 21 34 16 6 22 32 9 14 14 7 25 6 17 25 18 23 12 21 13 29 24 33 9 20 24 17 10 22 38 22 8 31 29 25 28 28 25 13 15 22 26 11 23 15 12 17 13 12 21 14 21 22 11 12 19 12 25 24\nJER\t1\t19 37 25 31 31 30 34 22 26 25 23 17 27 22 21 21 27 23 15 18 14 30 40 10 38 24 22 17 32 24 40 44 26 22 19 32 21 28 18 16 18 22 13 30 5 28 7 47 39 46 64 34\nLAM\t1\t22 22 66 22 22\nBAR\t1\t22 35 37 37 9 73\nEZK\t1\t28 10 27 17 17 14 27 18 11 22 25 28 23 23 8 63 24 32 14 49 32 31 49 27 17 21 36 26 21 26 18 32 33 31 15 38 28 23 29 49 26 20 27 31 25 24 23 35\nDAN\t1\t21 49 30 37 31 28 28 27 27 21 45 13\nS3Y\t1\t68\nSUS\t1\t64\nBEL\t1\t42\nHOS\t1\t11 23 5 19 15 11 16 14 17 15 12 14 16 9\nJOL\t1\t20 32 21\nAMO\t1\t15 16 15 13 27 14 17 14 15\nOBA\t1\t21\nJON\t1\t17 10 10 11\nMIC\t1\t16 13 12 13 15 16 20\nNAM\t1\t15 13 19\nHAB\t1\t17 20 19\nZEP\t1\t18 15 20\nHAG\t1\t15 23\nZEC\t1\t21 13 10 14 11 15 14 23 17 12 17 14 9 21\nMAL\t1\t14 17 18 6\nMAT\t1\t25 23 17 25 48 34 29 34 38 42 30 50 58 36 39 28 27 35 30 34 46 46 39 51 46 75 66 20\nMRK\t1\t45 28 35 41 43 56 37 38 50 52 33 44 37 72 47 20\nLUK\t1\t80 52 38 44 39 49 50 56 62 42 54 59 35 35 32 31 37 43 48 47 38 71 56 53\nJHN\t1\t51 25 36 54 47 71 53 59 41 42 57 50 38 31 27 33 26 40 42 31 25\nACT\t1\t26 47 26 37 42 15 60 40 43 48 30 25 52 28 41 40 34 28 41 38 40 30 35 27 27 32 44 31\nROM\t1\t32 29 31 25 21 23 25 39 33 21 36 21 14 23 33 27\n1CO\t1\t31 16 23 21 13 20 40 13 27 33 34 31 13 40 58 24\n2CO\t1\t24 17 18 18 21 18 16 24 15 18 33 21 14\nGAL\t1\t24 21 29 31 26 18\nEPH\t1\t23 22 21 32 33 24\nPHP\t1\t30 30 21 23\nCOL\t1\t29 23 25 18\n1TH\t1\t10 20 13 18 28\n2TH\t1\t12 17 18\n1TI\t1\t20 15 16 16 25 21\n2TI\t1\t18 26 17 22\nTIT\t1\t16 15 15\nPHM\t1\t25\nHEB\t1\t14 18 19 16 14 20 28 13 28 39 40 29 25\nJAS\t1\t27 26 18 17 20\n1PE\t1\t25 25 22 19 14\n2PE\t1\t21 22 18\n1JN\t1\t10 29 24 21 21\n2JN\t1\t13\n3JN\t1\t14\nJUD\t1\t25\nREV\t1\t20 29 22 11 14 17 17 13 21 11 19 17 18 20 8 21 18 24 21 15 27 21\n",
+      "name" : "versification/english.tsv"
+    }
+  ]
+}

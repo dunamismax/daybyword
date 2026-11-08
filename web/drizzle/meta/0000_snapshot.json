@@ -1,0 +1,612 @@
+{
+  "id": "f40688fe-698a-4314-b5c1-92cdcc888ce4",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.assignments": {
+      "name": "assignments",
+      "schema": "",
+      "columns": {
+        "plan_id": {
+          "name": "plan_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_version": {
+          "name": "plan_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reading": {
+          "name": "reading",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "words": {
+          "name": "words",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "assignments_plan_id_plan_version_plans_id_version_fk": {
+          "name": "assignments_plan_id_plan_version_plans_id_version_fk",
+          "tableFrom": "assignments",
+          "tableTo": "plans",
+          "columnsFrom": ["plan_id", "plan_version"],
+          "columnsTo": ["id", "version"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "assignments_plan_id_plan_version_id_pk": {
+          "name": "assignments_plan_id_plan_version_id_pk",
+          "columns": ["plan_id", "plan_version", "id"]
+        }
+      },
+      "uniqueConstraints": {
+        "assignments_position": {
+          "name": "assignments_position",
+          "nullsNotDistinct": false,
+          "columns": ["plan_id", "plan_version", "position"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "assignments_id": {
+          "name": "assignments_id",
+          "value": "\"assignments\".\"id\" >= 1"
+        },
+        "assignments_position_from_1": {
+          "name": "assignments_position_from_1",
+          "value": "\"assignments\".\"position\" >= 1"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.catalog_current": {
+      "name": "catalog_current",
+      "schema": "",
+      "columns": {
+        "singleton": {
+          "name": "singleton",
+          "type": "smallint",
+          "primaryKey": true,
+          "notNull": true,
+          "default": 1
+        },
+        "import_id": {
+          "name": "import_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activated_at": {
+          "name": "activated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "catalog_current_import_id_catalog_imports_id_fk": {
+          "name": "catalog_current_import_id_catalog_imports_id_fk",
+          "tableFrom": "catalog_current",
+          "tableTo": "catalog_imports",
+          "columnsFrom": ["import_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "catalog_current_singleton": {
+          "name": "catalog_current_singleton",
+          "value": "\"catalog_current\".\"singleton\" = 1"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.catalog_import_plans": {
+      "name": "catalog_import_plans",
+      "schema": "",
+      "columns": {
+        "import_id": {
+          "name": "import_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_id": {
+          "name": "plan_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_version": {
+          "name": "plan_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "catalog_import_plans_import_id_catalog_imports_id_fk": {
+          "name": "catalog_import_plans_import_id_catalog_imports_id_fk",
+          "tableFrom": "catalog_import_plans",
+          "tableTo": "catalog_imports",
+          "columnsFrom": ["import_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "catalog_import_plans_plan_id_plan_version_plans_id_version_fk": {
+          "name": "catalog_import_plans_plan_id_plan_version_plans_id_version_fk",
+          "tableFrom": "catalog_import_plans",
+          "tableTo": "plans",
+          "columnsFrom": ["plan_id", "plan_version"],
+          "columnsTo": ["id", "version"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "catalog_import_plans_import_id_plan_id_pk": {
+          "name": "catalog_import_plans_import_id_plan_id_pk",
+          "columns": ["import_id", "plan_id"]
+        }
+      },
+      "uniqueConstraints": {
+        "catalog_import_plans_position": {
+          "name": "catalog_import_plans_position",
+          "nullsNotDistinct": false,
+          "columns": ["import_id", "position"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.catalog_imports": {
+      "name": "catalog_imports",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "catalog_imports_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "content_sha256": {
+          "name": "content_sha256",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "format_version": {
+          "name": "format_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "schema_version": {
+          "name": "schema_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "build_mode": {
+          "name": "build_mode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_count": {
+          "name": "plan_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "imported_at": {
+          "name": "imported_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "catalog_imports_contentSha256_unique": {
+          "name": "catalog_imports_contentSha256_unique",
+          "nullsNotDistinct": false,
+          "columns": ["content_sha256"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "catalog_imports_sha256": {
+          "name": "catalog_imports_sha256",
+          "value": "\"catalog_imports\".\"content_sha256\" ~ '^[0-9a-f]{64}$'"
+        },
+        "catalog_imports_build_mode": {
+          "name": "catalog_imports_build_mode",
+          "value": "\"catalog_imports\".\"build_mode\" in ('release', 'development')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.plan_facts": {
+      "name": "plan_facts",
+      "schema": "",
+      "columns": {
+        "plan_id": {
+          "name": "plan_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_version": {
+          "name": "plan_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "verses": {
+          "name": "verses",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unique_verses": {
+          "name": "unique_verses",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "repeats": {
+          "name": "repeats",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "omitted": {
+          "name": "omitted",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "whole_chapters": {
+          "name": "whole_chapters",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "partial_chapters": {
+          "name": "partial_chapters",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "words_minimum": {
+          "name": "words_minimum",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "words_median": {
+          "name": "words_median",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "words_maximum": {
+          "name": "words_maximum",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "plan_facts_plan_id_plan_version_plans_id_version_fk": {
+          "name": "plan_facts_plan_id_plan_version_plans_id_version_fk",
+          "tableFrom": "plan_facts",
+          "tableTo": "plans",
+          "columnsFrom": ["plan_id", "plan_version"],
+          "columnsTo": ["id", "version"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "plan_facts_plan_id_plan_version_pk": {
+          "name": "plan_facts_plan_id_plan_version_pk",
+          "columns": ["plan_id", "plan_version"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.plans": {
+      "name": "plans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "creator": {
+          "name": "creator",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "suits": {
+          "name": "suits",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "schedule": {
+          "name": "schedule",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "behaviors": {
+          "name": "behaviors",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reading_days": {
+          "name": "reading_days",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "coverage": {
+          "name": "coverage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "canon": {
+          "name": "canon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "books": {
+          "name": "books",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "limitations": {
+          "name": "limitations",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "instructions": {
+          "name": "instructions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rights": {
+          "name": "rights",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rights_status": {
+          "name": "rights_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "review": {
+          "name": "review",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content_sha256": {
+          "name": "content_sha256",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_import_id": {
+          "name": "first_import_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "plans_first_import_id_catalog_imports_id_fk": {
+          "name": "plans_first_import_id_catalog_imports_id_fk",
+          "tableFrom": "plans",
+          "tableTo": "catalog_imports",
+          "columnsFrom": ["first_import_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "plans_id_version_pk": {
+          "name": "plans_id_version_pk",
+          "columns": ["id", "version"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "plans_id": {
+          "name": "plans_id",
+          "value": "\"plans\".\"id\" ~ '^[a-z0-9]+(-[a-z0-9]+)*$'"
+        },
+        "plans_version": {
+          "name": "plans_version",
+          "value": "\"plans\".\"version\" >= 1"
+        },
+        "plans_reading_days": {
+          "name": "plans_reading_days",
+          "value": "\"plans\".\"reading_days\" between 1 and 7"
+        },
+        "plans_schedule": {
+          "name": "plans_schedule",
+          "value": "\"plans\".\"schedule\" in ('sequence', 'day-of-month')"
+        },
+        "plans_coverage": {
+          "name": "plans_coverage",
+          "value": "\"plans\".\"coverage\" in ('whole-bible', 'books', 'selection')"
+        },
+        "plans_review": {
+          "name": "plans_review",
+          "value": "\"plans\".\"review\" in ('checked', 'reviewed', 'expert')"
+        },
+        "plans_rights_status": {
+          "name": "plans_rights_status",
+          "value": "\"plans\".\"rights_status\" in ('cleared', 'pending')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.scripture_resources": {
+      "name": "scripture_resources",
+      "schema": "",
+      "columns": {
+        "import_id": {
+          "name": "import_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "scripture_resources_import_id_catalog_imports_id_fk": {
+          "name": "scripture_resources_import_id_catalog_imports_id_fk",
+          "tableFrom": "scripture_resources",
+          "tableTo": "catalog_imports",
+          "columnsFrom": ["import_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "scripture_resources_import_id_name_pk": {
+          "name": "scripture_resources_import_id_name_pk",
+          "columns": ["import_id", "name"]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

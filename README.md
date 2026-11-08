@@ -98,9 +98,8 @@ records the app icon, web exports, sharing image, and twelve plan covers.
 
 ## Current prerequisites and target additions
 
-PM.14 adds Drizzle/pg and a local PostgreSQL for the web gate. Python,
-uv, and ruff are not required unless a utility needs Python. The web
-workspace (PM.13, decision E34) needs:
+Python, uv, and ruff are not required unless a utility needs Python. The
+web workspace (PM.13 and PM.14, decisions E34 and E35) needs:
 
 - **Node 26.13.0** (`.node-version`) and **npm 11.20.0**
   (`web/package.json`'s `packageManager`); `make check` refuses any other.
@@ -109,6 +108,11 @@ workspace (PM.13, decision E34) needs:
   `make web-install` runs `npm ci` from `web/package-lock.json`; Astro's
   telemetry is off through `ASTRO_TELEMETRY_DISABLED`, set by the Makefile.
 - **curl**, used by `scripts/web-smoke.sh` (macOS includes it).
+- **PostgreSQL 17**'s server binaries (`initdb`, `pg_ctl`) on the PATH for
+  `make test-db`, which starts a throwaway cluster on a Unix socket and
+  deletes it after: `brew install postgresql@17` and add
+  `$(brew --prefix postgresql@17)/bin` to the PATH. Nothing needs to be
+  running, and no other database is touched.
 
 Retain these existing Apple tools, confirmed on the owner's Mac on
 2026-10-30:
@@ -148,7 +152,7 @@ make serve     # serve the site at http://localhost:8080 (/ and /up)
 `make help` lists every target. Others worth knowing: `make test-linux`
 (the packages and server on Linux), `make test-ui` (the app's UI tests),
 `make check-web` (the web app's lint, types, tests, and production build,
-booted and checked), `make format`, `make screenshot`, `make archive` and `make testflight`
+booted and checked; the catalog export; schema drift; and `make test-db`), `make format`, `make screenshot`, `make archive` and `make testflight`
 (`docs/release.md`), and `make clean`. Set `SIM_DEVICE` to a simulator's
 name or UDID to choose a device, and `PORT` to serve elsewhere.
 

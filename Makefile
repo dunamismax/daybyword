@@ -18,7 +18,8 @@ export ASTRO_TELEMETRY_DISABLED := 1
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format \
-	web-install lint-web types-web test-web build-web smoke-web check-web strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
+	web-install lint-web types-web test-web build-web smoke-web check-web \
+	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -107,7 +108,27 @@ build-web: web-install ## Build the web app for production (web/dist)
 smoke-web: build-web ## Boot the production web build and check what it serves
 	@scripts/web-smoke.sh
 
-check-web: lint-web types-web test-web smoke-web ## The web part of make check
+check-web: lint-web types-web test-web smoke-web check-export db-drift test-db ## The web part of make check
+
+CATALOG_EXPORT := build/catalog/catalog-export.json
+
+catalog-export: check-catalog ## Export the release catalog as JSON for the PostgreSQL import
+	@swift run --package-path Packages/CatalogCompiler --quiet catalog export \
+		--catalog build/catalog/Catalog-release.sqlite --output $(CATALOG_EXPORT)
+
+check-export: catalog-export web-install ## Check the release catalog's export as the import will
+	@cd web && node scripts/catalog-import.ts --check ../$(CATALOG_EXPORT)
+
+db-generate: web-install ## Generate a SQL migration in web/drizzle/ from web/src/db/schema.ts (NAME=…)
+	@cd web && npx drizzle-kit generate $(if $(NAME),--name $(NAME))
+
+db-drift: web-install ## Fail if web/src/db/schema.ts has changes no migration in web/drizzle/ holds
+	@scripts/db-drift.sh
+
+test-db: catalog-export web-install ## Test migrations, the catalog import, and the roles on a throwaway PostgreSQL
+	@echo "== web database tests"
+	@cd web && DBW_TEST_DB=1 DBW_REPOSITORY_EXPORT="$(CURDIR)/$(CATALOG_EXPORT)" \
+		../scripts/with-postgres.sh npx vitest run
 
 strings: build ## Add the app's new interface strings to its String Catalog and drop stale ones
 	@swift scripts/strings.swift sync

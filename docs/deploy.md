@@ -16,7 +16,7 @@ evidence. No server SQLite, Litestream or mandatory Python service.
 | Compose project | daybyword; web, postgres, one-shot migration/catalog import |
 | Web listener | container 0.0.0.0:4321, published only at 127.0.0.1:4316 if free |
 | Postgres | private Docker network port 5432; no production host port |
-| DB/role | daybyword / daybyword_app; separate migration/import credential |
+| DB/role | daybyword; `daybyword_app` (web, read-only) and `daybyword_migrate` (migration/import jobs), from `web/db/roles.sql` (PM.14) |
 | Volume | explicit daybyword_postgres_data; stable across release directories |
 | Host Caddy site | /etc/caddy/sites/daybyword.com after verifying include convention |
 | Health | /up, no-store, ready only with compatible DB/catalog |
@@ -38,8 +38,8 @@ Build a pinned non-root Node image from a clean origin/main archive, copy
 the built client/server assets and required migrations/catalog resources,
 and test the actual image. No checkout as web root or runtime bind mount.
 
-Document runtime HOST/PORT, public origin, DATABASE_URL, separate migrator
-credentials, DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
+Document runtime HOST/PORT, public origin, DBW_DATABASE_URL (the web as
+daybyword_app; the jobs as daybyword_migrate, PM.14), DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
 DBW_PORT, DBW_PUBLIC_DIR and DBW_CATALOG need explicit mapping/removal.
 Only public config may use client-exposed environment variables. No secrets
 in build args, layers, logs, JS/native bundles or repository. Framework/

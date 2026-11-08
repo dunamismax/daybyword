@@ -787,3 +787,40 @@ failing on warnings, vitest, the production build, and
 loopback port and checks `/up` against the captured fixture, a
 prerendered `/`, no cross-host loads, and a 404. CI (manual, D31) sets up
 the pinned Node and npm on macOS and adds a Linux `make check-web` job.
+
+
+### E35. The PostgreSQL catalog: packages, versions, and the import boundary
+
+*2026-11-08, agent (PM.14).* Packages: **drizzle-orm 0.45.4** and
+**pg 8.23.1** (runtime, server-only), **drizzle-kit 0.31.11** and
+**@types/pg 8.23.1** (development). They are the stable releases; Drizzle's
+1.0 is still a release candidate, so it waits. node-postgres is the
+reference driver and needs no native build. PostgreSQL **17** is the
+server major, matching the Homebrew `postgresql@17` already here; the
+deploy image (PM.18) must use the same major.
+
+**The boundary.** The Swift compiler stays the rights and claims gate and
+writes a deterministic JSON export of the compiled schema-3 catalog
+(`catalog export`); the TypeScript importer recomputes the compiler's
+content checksum, refuses anything a release may not serve, and writes the
+export in one locked transaction. A JSON document was chosen over reading
+the SQLite file from Node, which would add a SQLite driver to the web
+image (AGENTS.md §5 forbids server SQLite access) and tie the server to
+the file's bytes. Plans are immutable by (id, version), enforced by the
+importer and by triggers; `catalog_current` alone moves, which makes
+re-imports no-ops and a rollback a re-import. Two roles from
+`web/db/roles.sql`: the web reads; only the one-shot jobs write.
+
+**Compatibility.** Migrations are additive while two builds may share a
+database, and a job refuses a database with migrations it does not know.
+The first two migrations create everything; nothing older exists, so no
+upgrade path was tested yet. `make test-db` uses a throwaway cluster on a
+Unix socket (`scripts/with-postgres.sh`) rather than Docker, so `make
+check` needs no container runtime.
+
+`npm audit` reports two development-only advisories: esbuild ≤0.24.2's
+development server (inside drizzle-kit's loader; Day by Word never runs
+esbuild's server) and minimatch's glob amplification (inside
+typescript-eslint). Production dependencies have none. Revisit when
+drizzle-kit and typescript-eslint update. esbuild's install scripts stay
+unapproved; drizzle-kit runs without them.

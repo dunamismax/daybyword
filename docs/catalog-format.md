@@ -11,11 +11,10 @@ against is described in `docs/scripture.md`, and its rights in
 ## Final stack alignment
 
 D41 retains the source grammar, native read-only catalog and compiler
-rights/claims checks below. This is the existing SQLite schema-3 artifact,
-not the future server database. PM.14 defines deterministic export/import
-into server-only Drizzle/PostgreSQL tables, with plan id/version keys,
-transactional idempotence and checksum/parity checks. Do not migrate the
-native catalog into a remote DB or weaken release review filters.
+rights/claims checks below. The SQLite schema-3 catalog stays the app's
+bundled artifact; the server reads the same content from PostgreSQL through
+the export below ("The export", "The server catalog", PM.14). Do not migrate
+the native catalog into a remote DB or weaken release review filters.
 
 ## A plan file
 
@@ -154,3 +153,57 @@ It refuses a claim the schedule does not support: a `whole-bible` or `books`
 plan must leave nothing out, and the error names the first passages missing.
 A `selection` claims no coverage to check. The sample week depends on the
 reader's start date and reading days, so the engine computes it (P8.2).
+
+## The export
+
+`make catalog-export` writes `build/catalog/catalog-export.json` from the
+release catalog (`catalog export`, `CatalogExport.swift`): the document the
+server's PostgreSQL import reads. It holds the schema-3 data exactly as
+compiled, so the same catalog always exports the same bytes:
+
+- `format` (`daybyword-catalog-export`), `formatVersion` (1, raised when the
+  document's meaning changes), `schemaVersion` (3), `buildMode`, and
+  `contentSha256`, the catalog's own checksum;
+- `plans`, in the compiler's order (by file name), each with every
+  `plans` column in camel case, its `rightsStatus` from `SOURCES.md` at
+  export, its `facts`, and its `assignments` by position;
+- `scripture`, the `scripture` table's resources by name.
+
+The importer (`web/src/catalog/export.ts`) recomputes `contentSha256` the
+way the compiler does and refuses any difference, so it writes only the
+catalog the compiler checked. It also refuses another format or schema; a
+development build (unless asked, for local work); in a release, a plan
+below `reviewed` or whose rights are not `cleared`; a `whole-bible` or
+`books` claim with omissions; and assignments out of order.
+`tests/fixtures/catalog-export.json` pins an invented release export that
+the Swift and TypeScript tests both read.
+
+## The server catalog
+
+PostgreSQL's schema is `web/src/db/schema.ts`; drizzle-kit generates its SQL
+into `web/drizzle/` (`make db-generate NAME=…`), and each migration is read
+and committed. `make db-drift` fails when the schema has a change no
+migration holds. The migration job (`web/scripts/db-migrate.ts`) and the
+import job (`web/scripts/catalog-import.ts`) run once per deploy as
+`daybyword_migrate`; the web server connects as `daybyword_app`, which may
+only read (`web/db/roles.sql`).
+
+- `plans`, `plan_facts`, and `assignments` are keyed by plan id **and
+  version**. A version, once imported, never changes: importing different
+  content under the same version is refused (raise the version), and the
+  database refuses any update or delete of an imported row.
+- Each import is a `catalog_imports` row with its checksum;
+  `catalog_import_plans` says which plan versions it holds and in what order,
+  `scripture_resources` holds its scripture, and `catalog_current` names the
+  import being served.
+- An import is one transaction under a lock: all of it is written and
+  served, or nothing changes. Importing the same export again writes
+  nothing; importing an earlier export serves it again (a rollback), with
+  every version kept.
+- A job refuses a database missing one of its migrations, or holding one it
+  does not know (a newer build migrated it).
+
+`make test-db` runs all of this against a throwaway PostgreSQL 17
+(`scripts/with-postgres.sh`, a Unix socket only), with the fixture and the
+repository's own release export.
+
