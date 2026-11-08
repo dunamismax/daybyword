@@ -113,7 +113,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
-| M | Astro/PostgreSQL alignment (first) | M0 Stack alignment | 9 | 1 |
+| M | Astro/PostgreSQL alignment (first) | M0 Stack alignment | 9 | 2 |
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
@@ -135,11 +135,11 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-02):** Phases 0–4 completed the original Swift
-foundation; PM.12 recorded its baseline and captured shared fixtures. The
-code is still SwiftUI/Hummingbird/SQLite: reference/workload code,
-schema-3 catalog compiler/reader and app/web shells; no plans, scheduling
-or journal yet, and nothing deployed. **Next: PM.13**, following
+**Current state (2026-11-08):** Phases 0–4 completed the original Swift
+foundation; PM.12 recorded its baseline and fixtures, and PM.13 added the
+pinned Astro workspace in `web/` to `make check`. The Swift server still
+serves every page; no plans, scheduling or journal yet, and nothing
+deployed. **Next: PM.14**, following
 [docs/stack-migration.md](docs/stack-migration.md).
 
 ---
@@ -422,7 +422,8 @@ implement unfinished P5/P8 features as migration work.
 
 - [x] **PM.12** Reconfirm baseline main, ff-only pull and checks; inspect the existing app container, signing identity and any live deployment. Capture reference/compiler/route/settings fixtures from the current Swift tests, including invalid inputs. Record actual data and the baseline commit before replacing anything.
   - *Result (agent, 2026-11-02):* baseline 50ee64c and its evidence are in docs/stack-migration.md's "Baseline"; tests/fixtures/ holds the captured cases, checked by Swift tests on every `make check`. Not deployed anywhere; TestFlight upload of build 25 not checked; `make test-linux` not run.
-- [ ] **PM.13** Create the pinned Astro/TypeScript web workspace, Node standalone adapter and supported Node/npm toolchain. Use server output for the API/database app and selectively prerender public pages. Keep Swift checks active; add web lint/types/unit/production-build gates and manual-dispatch CI. No mandatory Python, React island or new native project.
+- [x] **PM.13** Create the pinned Astro/TypeScript web workspace, Node standalone adapter and supported Node/npm toolchain. Use server output for the API/database app and selectively prerender public pages. Keep Swift checks active; add web lint/types/unit/production-build gates and manual-dispatch CI. No mandatory Python, React island or new native project.
+  - *Result (agent, 2026-11-08):* `web/` on Astro 7.4.7 + @astrojs/node 11.1.11 (server output, `session: false`), Node 26.13.0/npm 11.20.0 pinned and checked, exact lockfile; packages in E34. `make check` runs `check-web` (eslint, prettier, `astro check`, vitest, production build booted by `scripts/web-smoke.sh`); CI adds pinned Node and a Linux web job (not dispatched). Only `/up` and a prerendered placeholder `/` exist; no security headers yet (PM.16).
 - [ ] **PM.14** Define server-only Drizzle/PostgreSQL schema and reviewed generated SQL migrations; private DB/roles and immutable plan versions. Preserve schema-3 catalog semantics via a validated, deterministic compiler export/import boundary. Test fresh/repeated migrations, atomic imports, invalid claims/rights, checksums and rollback compatibility. Keep local/bundled Apple catalog SQLite distinct from server data; inspect rather than assume no existing data.
 - [ ] **PM.15** Specify and test the Swift-native/TypeScript-web domain boundary (E33): one docs/engine.md specification and versioned JSON parity fixtures, references/counts/workload first; scheduling still P5. Preserve current Swift package semantics and prove the TypeScript module in Node/browser. No Swift HTTP sidecar, duplicate rules in UI/SQL, or forced Python engine. Document wire ids, civil dates, numeric rounding and error semantics.
 - [ ] **PM.16** Replace Hummingbird routes/pages with Astro layouts/pages, Actions for forms and src/pages/api/v1 endpoints for app clients. Preserve stable URLs, /up, component gallery (dev only), strings, copy/settings, Morning tokens, assets and accessibility. Add React islands/Tailwind/shadcn only for a demonstrated UI need. Prove standalone production rendering, islands if present, strict CSP, no external loads/telemetry, privacy-safe logs and no private shared caching.
@@ -627,23 +628,25 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-02:** PM.12 done. Baseline 50ee64c recorded in
-  docs/stack-migration.md ("Baseline"): checks, toolchain, catalog digest,
-  simulator app data, signing, server and DNS state.
-- tests/fixtures/ (README) pins references, coverage, workload, scripture
-  totals, plan ids, invented plan files, web routes/headers/strings and
-  device settings. Swift tests in each package, the server and AppTests
-  check them; `DBW_RECORD_FIXTURES=1` rewrites outputs (review the diff).
-  PM.15's TypeScript module and PM.16's Astro site must pass the same files.
-- Next **PM.13** (Astro workspace). Pin Node/npm/Astro and record each
-  package in docs/decisions.md before adding it.
-- Found: no live site (TLS fails for daybyword.com; nothing on ubuntu-vm
-  for it; ports 4316/4321 free; the host's own PostgreSQL holds
-  127.0.0.1:5432). No shared deploy lock under /run/lock; P7.1 must find it.
-- `apple/Config/Secrets.xcconfig` is missing here; recreate it from the
-  example before `make archive`. Build 25's upload is unverified.
-- Codeberg's main matched origin at 50ee64c, so the mirror push works now.
-- Open for PM.16: `/today/` answers 200 despite the no-trailing-slash rule,
-  and assets have no Cache-Control. Decide, then update the fixture.
-- `make check` passed (60/7/31/34/16 tests); check-full and test-linux were
-  not run (not a milestone).
+- **2026-11-08:** PM.13 done. `web/` is the Astro workspace (E34): Node
+  26.13.0 (`.node-version`) and npm 11.20.0 enforced by
+  `scripts/check-toolchain.sh`; exact pins and `package-lock.json`.
+- `make check` now runs `check-web` first: eslint + prettier, `astro check`
+  (fails on warnings), vitest (`/up` against tests/fixtures/routes.json),
+  `astro build`, and `scripts/web-smoke.sh` booting the standalone build on
+  a free port. Telemetry off via the Makefile, dev toolbar off, sessions
+  off. Seen in the browser pane: no console messages, one request.
+- TypeScript is held at 6.0.3: @astrojs/check and typescript-eslint do not
+  accept 7.0 yet. fsevents' install script is deliberately unapproved.
+- CI gained setup-node v7.1.0 (pinned SHA) and a `web-linux` job; not
+  dispatched this session.
+- Next **PM.14** (Drizzle/Postgres). Homebrew postgresql@17 is installed
+  locally; record drizzle-orm, drizzle-kit and pg in decisions.md first.
+  The host's own PostgreSQL holds 127.0.0.1:5432, so this project's DB
+  stays on its private Docker network.
+- Carried over: no shared deploy lock found under /run/lock (P7.1);
+  `apple/Config/Secrets.xcconfig` missing here (recreate before
+  `make archive`); build 25's upload unverified.
+- Open for PM.16: `/today/` answers 200 despite the no-trailing-slash rule
+  (Astro is set to `trailingSlash: "never"`), assets have no Cache-Control,
+  and the Astro app sends no security headers yet.

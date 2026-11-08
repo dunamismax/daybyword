@@ -77,12 +77,13 @@ See docs/stack-migration.md for the target layout.
 ## Current repository layout
 
 ```
-AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .swift-format
+AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .node-version  .swift-format
 catalog/                  SOURCES.md, scripture/ (book registry, versification); plans to come
 Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
 Packages/ReadingData/     SQLite wrapper and catalog reader; journal/sync still open
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
 Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
+web/                      the Astro web app (Node standalone), replacing Server/ through Phase M
 apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
 design/                   Morning tokens, mockups, image brief, and finished artwork
 docs/                     decisions, product rules, release, web style, and more as they land
@@ -97,10 +98,20 @@ records the app icon, web exports, sharing image, and twelve plan covers.
 
 ## Current prerequisites and target additions
 
-PM.13 pins supported Astro/Node/npm/Drizzle/pg versions and a lockfile.
-Compose/Postgres are needed for the new web gate. Python/uv/ruff are not
-required unless a utility needs Python. Retain these existing Apple tools,
-confirmed on the owner's Mac on 2026-10-30:
+PM.14 adds Drizzle/pg and a local PostgreSQL for the web gate. Python,
+uv, and ruff are not required unless a utility needs Python. The web
+workspace (PM.13, decision E34) needs:
+
+- **Node 26.13.0** (`.node-version`) and **npm 11.20.0**
+  (`web/package.json`'s `packageManager`); `make check` refuses any other.
+  Install Node from nodejs.org or a version manager that reads
+  `.node-version`, then `npm install --global npm@11.20.0` if needed.
+  `make web-install` runs `npm ci` from `web/package-lock.json`; Astro's
+  telemetry is off through `ASTRO_TELEMETRY_DISABLED`, set by the Makefile.
+- **curl**, used by `scripts/web-smoke.sh` (macOS includes it).
+
+Retain these existing Apple tools, confirmed on the owner's Mac on
+2026-10-30:
 
 - macOS 27.2 on Apple silicon.
 - **Xcode 27.2** (27B52), which ships **Swift 6.4.2**, the version pinned
@@ -128,7 +139,7 @@ confirmed on the owner's Mac on 2026-10-30:
 From a clean checkout:
 
 ```sh
-make check       # lint, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
+make check       # lint, the web gate, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
 make check-full  # check, the web and app tours in light and dark, and Linux: at milestones and before releases
 make run       # build, boot the newest iPhone simulator, install, and launch the app
 make serve     # serve the site at http://localhost:8080 (/ and /up)
@@ -136,7 +147,8 @@ make serve     # serve the site at http://localhost:8080 (/ and /up)
 
 `make help` lists every target. Others worth knowing: `make test-linux`
 (the packages and server on Linux), `make test-ui` (the app's UI tests),
-`make format`, `make screenshot`, `make archive` and `make testflight`
+`make check-web` (the web app's lint, types, tests, and production build,
+booted and checked), `make format`, `make screenshot`, `make archive` and `make testflight`
 (`docs/release.md`), and `make clean`. Set `SIM_DEVICE` to a simulator's
 name or UDID to choose a device, and `PORT` to serve elsewhere.
 

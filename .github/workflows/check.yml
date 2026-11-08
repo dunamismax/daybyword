@@ -1,6 +1,6 @@
 # Continuous integration, on manual dispatch only (D31). The local `make check`
 # is the gate before every commit; this confirms it and the web tour on clean
-# machines, and confirms the packages and the server on Linux.
+# machines, and confirms the packages, the server, and the web app on Linux.
 name: Check
 
 on:
@@ -21,6 +21,12 @@ jobs:
           sudo xcode-select --switch /Applications/Xcode_27.2.app
           xcodebuild -version
           swift --version
+      - name: Node, as .node-version pins it
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - name: npm, as web/package.json pins it
+        run: npm install --global npm@11.20.0
       - name: Install XcodeGen, and Firefox and geckodriver for the web tour
         run: |
           brew install xcodegen
@@ -46,3 +52,18 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: make test-linux
         run: make test-linux
+
+  web-linux:
+    name: Linux (the web app's lint, types, tests, and production build)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Node, as .node-version pins it
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - name: npm, as web/package.json pins it
+        run: npm install --global npm@11.20.0
+      - name: make check-web
+        run: make check-web

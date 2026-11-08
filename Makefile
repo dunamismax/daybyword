@@ -11,9 +11,14 @@ PACKAGES := ReadingEngine ReadingData CatalogCompiler
 SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 	Server/Sources Server/Tests Server/Package.swift apple
 PORT ?= 8080
+WEB_STAMP := web/node_modules/.package-lock.json
+
+# Astro's build telemetry stays off everywhere (AGENTS.md §5, decision E34).
+export ASTRO_TELEMETRY_DISABLED := 1
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
+	test-linux run serve screenshot lint format \
+	web-install lint-web types-web test-web build-web smoke-web check-web strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -73,8 +78,36 @@ lint: ## Check the toolchain, formatting, imports, design tokens, and raw colors
 	@swift scripts/tokens.swift check
 	@scripts/check-colors.sh
 
-format: ## Format the Swift sources in place
+format: web-install ## Format the Swift and web sources in place
 	@swift format format --in-place --recursive --parallel $(SWIFT_SOURCES)
+	@cd web && npx prettier --write --log-level warn .
+
+web-install: $(WEB_STAMP) ## Install the web workspace's pinned packages from its lockfile
+
+$(WEB_STAMP): web/package.json web/package-lock.json
+	@cd web && npm ci --no-audit --loglevel=error
+	@touch $@
+
+lint-web: web-install ## Lint and check the formatting of the web sources
+	@echo "== web lint"
+	@cd web && npx eslint . && npx prettier --check --log-level warn .
+
+types-web: web-install ## Type-check the web sources and Astro files
+	@echo "== web types"
+	@cd web && npx astro check --minimumSeverity warning --minimumFailingSeverity warning
+
+test-web: web-install ## Run the web unit tests
+	@echo "== web tests"
+	@cd web && npx vitest run
+
+build-web: web-install ## Build the web app for production (web/dist)
+	@echo "== web build"
+	@cd web && npx astro build --silent
+
+smoke-web: build-web ## Boot the production web build and check what it serves
+	@scripts/web-smoke.sh
+
+check-web: lint-web types-web test-web smoke-web ## The web part of make check
 
 strings: build ## Add the app's new interface strings to its String Catalog and drop stale ones
 	@swift scripts/strings.swift sync
@@ -93,7 +126,7 @@ tour-web: catalog ## Tour the site in a real browser through WebDriver; screensh
 	@swift build --package-path Server --quiet
 	@swift scripts/webtour.swift
 
-check: lint catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit
+check: lint check-web catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
 check-full: check tour-web tour-app test-linux ## The milestone gate: check, both tours in light and dark, and Linux
@@ -109,4 +142,4 @@ deploy: ## Deploy origin/main to daybyword.com
 	@echo "deploy: not built yet (BUILD.md P7.2)" >&2; exit 1
 
 clean: ## Remove build products and the generated Xcode project
-	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj
+	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj web/dist web/.astro web/node_modules

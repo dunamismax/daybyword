@@ -128,8 +128,8 @@ deploy/                      Compose, Dockerfile, Caddy site and scripts
 tools/                       only if additional utilities are actually needed
 ~~~
 
-Pin compatible supported Astro/Node/npm/Drizzle/pg and optional UI/test
-dependencies at PM.13. No floating production images or framework
+PM.13 (2026-11-08) created `web/` with pinned Node/npm/Astro and its
+lint, type, test, and production-build gates (E34); PM.14 pins Drizzle/pg. No floating production images or framework
 telemetry. Keep Swift checks until their owning targets are retired,
 which does not include the retained Apple app.
 

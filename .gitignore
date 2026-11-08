@@ -26,6 +26,11 @@ apple/Config/Secrets.xcconfig
 *.mobileprovision
 *.provisionprofile
 
+# The web workspace's packages and build products
+web/node_modules/
+web/dist/
+web/.astro/
+
 # Compiled catalogs (built by make catalog)
 Catalog.sqlite
 Catalog.sqlite-*

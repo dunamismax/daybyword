@@ -753,3 +753,37 @@ passkey-only/recovery behavior then. D23 excludes model features/SDKs.
 PM.12–PM.20 replace the withdrawn PM.1–PM.11. Future agents pin exact
 versions and additional packages before implementation. No new stack
 checks, deploy or upload is claimed by this decision.
+
+
+### E34. The web workspace's toolchain and packages
+
+*2026-11-08, agent (PM.13).* `web/` is an npm workspace pinned to
+**Node 26.13.0** (`.node-version`, Active LTS since October 2026) and
+**npm 11.20.0** (`packageManager`, `engines` with `engine-strict`), with
+exact versions (`save-exact`) and a committed `package-lock.json`.
+`scripts/check-toolchain.sh` refuses any other Node or npm.
+
+Runtime packages: **astro 7.4.7** and **@astrojs/node 11.1.11** (server
+output, standalone mode). Development packages: **@astrojs/check 0.9.12**
+and **typescript 6.0.3** for `astro check`; **@types/node 26.6.6**;
+**vitest 5.1.0** for unit tests; **eslint 10.14.0**, **@eslint/js 10.0.1**,
+**typescript-eslint 8.72.1** and **eslint-plugin-astro 3.2.1** for lint;
+**prettier 3.9.10** and **prettier-plugin-astro 1.1.2** for formatting.
+
+**Why these:** each is the official or standard tool for its job in an
+Astro project, and nothing else was added (no React, Tailwind, shadcn or
+Playwright yet: each waits for a demonstrated need, E33). TypeScript stays
+on 6.0 because @astrojs/check (`^5 || ^6`) and typescript-eslint
+(`<6.1`) do not yet support TypeScript 7.0; move when both do. Astro's
+telemetry is disabled by `ASTRO_TELEMETRY_DISABLED=1` in the Makefile,
+its development toolbar is off, and `session: false` removes the Node
+adapter's filesystem session store, since the server keeps no reader data
+at 1.0 (D10, D39). fsevents' install script is left unapproved: it is an
+optional macOS file watcher the build does not need.
+
+`make check` now runs `check-web`: eslint and prettier, `astro check`
+failing on warnings, vitest, the production build, and
+`scripts/web-smoke.sh`, which boots `dist/server/entry.mjs` on a free
+loopback port and checks `/up` against the captured fixture, a
+prerendered `/`, no cross-host loads, and a 404. CI (manual, D31) sets up
+the pinned Node and npm on macOS and adds a Linux `make check-web` job.
