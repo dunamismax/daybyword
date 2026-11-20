@@ -13,7 +13,7 @@ DBW_RELEASE_DIR=${DBW_RELEASE_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}
 DBW_RELEASE=${DBW_RELEASE:-$(cat "$DBW_ROOT/current-release" 2>/dev/null || echo none)}
 export DBW_PROJECT DBW_PORT DBW_RELEASE
 
-# Takes the host's shared deploy lock (P7.1: /run/astro-deploy/lock, which
+# Takes the host's shared deploy lock (P7.1: /run/web-deploy/lock, which
 # `with-deploy-lock COMMAND` holds on fd 9 for the whole command), or
 # accepts it when the caller already holds it that way.
 take_lock() {

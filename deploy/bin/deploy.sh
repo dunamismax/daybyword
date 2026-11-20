@@ -23,7 +23,7 @@ release=${DBW_RELEASE:?DBW_RELEASE names the commit being deployed}
 . "$(dirname "$0")/common.sh"
 
 commit=${DBW_COMMIT:-$release}
-lock=${DBW_DEPLOY_LOCK:-/run/astro-deploy/lock}
+lock=${DBW_DEPLOY_LOCK:-/run/web-deploy/lock}
 candidate_port=${DBW_CANDIDATE_PORT:-4319}
 bin=$(dirname "$0")
 

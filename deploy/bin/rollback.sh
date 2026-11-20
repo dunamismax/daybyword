@@ -10,7 +10,7 @@ set -eu
 # shellcheck source=deploy/bin/common.sh
 . "$(dirname "$0")/common.sh"
 
-lock=${DBW_DEPLOY_LOCK:-/run/astro-deploy/lock}
+lock=${DBW_DEPLOY_LOCK:-/run/web-deploy/lock}
 take_lock "$lock"
 
 previous=$(cat "$DBW_ROOT/previous-release" 2>/dev/null || true)

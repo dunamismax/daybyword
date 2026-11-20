@@ -18,7 +18,7 @@ server SQLite, Litestream or mandatory Python service.
   to other sites), candidate checks on 4319, PostgreSQL 18.6 on the
   internal network only, volume `daybyword_postgres_data`. The host's own
   PostgreSQL on 127.0.0.1:5432 is untouched.
-- Lock: `with-deploy-lock` (flock on `/run/astro-deploy/lock`).
+- Lock: `with-deploy-lock` (flock on `/run/web-deploy/lock`).
 - Caddy: `/etc/caddy/sites/daybyword.com.caddy` only; `/etc/caddy` was
   archived first to `/root/caddy-archives/`; validated, then reloaded.
 - Timers: `daybyword-backup.timer` (nightly) and
@@ -70,7 +70,7 @@ Encryption and the off-server copy of `shared/backups` are the host's
 | Volume | explicit daybyword_postgres_data; stable across release directories |
 | Host Caddy site | /etc/caddy/sites/daybyword.com.caddy, imported by the main Caddyfile's `import /etc/caddy/sites/*.caddy` |
 | Health | /up, no-store, ready only with compatible DB/catalog |
-| Shared deploy lock | the host's `with-deploy-lock COMMAND` (flock on `/run/astro-deploy/lock`, fd 9), which the scripts recognise |
+| Shared deploy lock | the host's `with-deploy-lock COMMAND` (flock on `/run/web-deploy/lock`, fd 9), which the scripts recognise |
 
 Record other sites' responses before/after every server change. Archive
 /etc/caddy before touching it. Add only this site's configuration; never

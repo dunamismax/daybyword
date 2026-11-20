@@ -18,7 +18,7 @@ base=${dump%.dump}
 image=$(sed -n 's/^ *image: \(postgres:.*\)$/\1/p' "$DBW_RELEASE_DIR/deploy/compose.yaml" | head -n 1)
 [ -n "$image" ] || fail "no PostgreSQL image in deploy/compose.yaml"
 container="${DBW_PROJECT}-restore-check-$$"
-trap 'docker rm -f "$container" >/dev/null 2>&1 || true' EXIT
+trap 'docker rm -fv "$container" >/dev/null 2>&1 || true' EXIT
 docker run -d --name "$container" --network none \
   -e POSTGRES_DB=daybyword -e POSTGRES_PASSWORD=restore-check-only \
   "$image" >/dev/null
