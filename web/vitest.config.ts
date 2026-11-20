@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config";
 
 // test/db/ needs a real PostgreSQL and runs only through make test-db;
-// test/build/ needs the production build and runs only through make smoke-web.
+// test/production/ needs the production build and runs only through make smoke-web.
 const database = process.env["DBW_TEST_DB"] === "1";
 const build = process.env["DBW_TEST_BUILD"] === "1";
 
@@ -10,9 +10,9 @@ export default defineConfig({
     include: database
       ? ["test/db/**/*.test.ts"]
       : build
-        ? ["test/build/**/*.test.ts"]
+        ? ["test/production/**/*.test.ts"]
         : ["test/**/*.test.ts"],
-    exclude: database || build ? [] : ["test/db/**", "test/build/**"],
+    exclude: database || build ? [] : ["test/db/**", "test/production/**"],
     environment: "node",
     fileParallelism: !database,
     testTimeout: database || build ? 30_000 : 5_000,

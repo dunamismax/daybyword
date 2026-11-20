@@ -62,7 +62,7 @@ P14).
 ## Where the code is
 
 - Web: SvelteKit's `web/src/routes/` (plan ids matched in `web/src/params.ts`),
-  tested against tests/fixtures/routes.json in `web/test/build/server.test.ts`.
+  tested against tests/fixtures/routes.json in `web/test/production/server.test.ts`.
   The Swift server's routes (`Server/Sources/DayByWordWeb/Application+build.swift`)
   stay until PM.20 retires them.
 - App: `AppRoute` in `apple/App/Navigation/AppRoute.swift`, tested in

@@ -969,7 +969,7 @@ files log as `static`. Hooks alone could not reach static files or
 adapter-node's redirects.
 
 **Differences from the Swift server**, each tested in
-`web/test/build/server.test.ts`: `/today/` redirects (308) to `/today`
+`web/test/production/server.test.ts`: `/today/` redirects (308) to `/today`
 instead of answering 200 (docs/urls.md has no trailing slashes);
 `/assets/site.css` and `/assets/tokens.css` are gone, their rules now in
 one fingerprinted stylesheet (they were the site's own files, never

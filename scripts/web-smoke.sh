@@ -2,7 +2,7 @@
 # Boots the production SvelteKit server (web/server.ts around web/build,
 # adapter-node) on a free loopback port and checks that it serves the health
 # check, the home page and a 404, so `make check` proves the real production
-# output (BUILD.md PM.21, PM.16); web/test/build/ then checks every route.
+# output (BUILD.md PM.21, PM.16); web/test/production/ then checks every route.
 set -eu
 cd "$(dirname "$0")/../web"
 
