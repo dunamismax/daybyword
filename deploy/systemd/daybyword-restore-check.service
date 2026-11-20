@@ -1,0 +1,11 @@
+[Unit]
+Description=Restore daybyword.com's newest backup into a throwaway database and check it
+Documentation=file:///srv/www/daybyword.com/current/docs/deploy.md
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/www/daybyword.com/current
+ExecStart=/srv/www/daybyword.com/current/deploy/bin/restore-check.sh
+Nice=10

@@ -1,0 +1,12 @@
+[Unit]
+Description=Back up daybyword.com's PostgreSQL database (pg_dump)
+Documentation=file:///srv/www/daybyword.com/current/docs/deploy.md
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/www/daybyword.com/current
+ExecStart=/srv/www/daybyword.com/current/deploy/bin/backup.sh
+Nice=10
+IOSchedulingClass=idle

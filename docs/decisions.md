@@ -982,3 +982,29 @@ headers included, answers as before.
 so far is two small scripts that already worked. A wrapper of a few dozen
 lines is smaller than a Caddy rule set kept in step with the app, and the
 headers stay with the code that is tested.
+
+
+### E39. Deploying with Compose and shell, rehearsed in Docker before the host
+
+*2026-11-20, agent (PM.18).* `deploy/` holds the image, the Compose project,
+the Caddy site file, systemd timers and POSIX shell scripts (deploy,
+rollback, check-live, backup, restore check, rehearse), listed in
+docs/deploy.md. Choices: the image is built on the host from a release
+directory that already holds the catalog export, so no Swift toolchain is
+needed there; base images are pinned by multi-platform index digest; the
+web container runs as `node` with a read-only root, no capabilities and
+memory and process limits, on loopback only; PostgreSQL has no host port
+and sits on an internal network; a candidate is checked on a spare port
+before the live service is switched; rollback switches images and never
+restores over the live database (migrations stay additive, E35); `/up`
+reports ready only once the web role sees a current catalog. Backups are
+custom-format `pg_dump`s with a checksum and manifest kept 14 days; the
+monthly restore check uses a throwaway, network-less PostgreSQL. The
+scripts take the host's lock path rather than inventing one (P7.1).
+
+**Why:** shell and Compose are already on the host and need nothing
+installed; every step can be rehearsed end to end on the Mac
+(`make rehearse-deploy`, which found that a release tag is not a valid
+`DBW_COMMIT` and that Compose resolves every image tag even to exec), so
+P7 meets only the host's own questions: its lock, Caddy include, free
+port and backup entry.

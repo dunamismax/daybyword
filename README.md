@@ -134,8 +134,9 @@ Retain these existing Apple tools, confirmed on the owner's Mac on
   `make test-domain-browser`, docs/engine.md). Safari works too once "Allow remote
   automation" is on in Safari's Developer settings:
   `DBW_WEBDRIVER=safari make tour-web`.
-- For `make test-linux`, a running container runtime: Docker Desktop, or
-  Colima (`brew install colima docker`, then `colima start`). The first run
+- For `make test-linux` and `make rehearse-deploy`, a running container
+  runtime with Compose v2: Docker Desktop, or Colima (`brew install colima
+  docker docker-compose`, then `colima start`). The first run
   downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB).
 - For device builds and TestFlight only: Xcode signed in to the owner's
   Apple Developer account, and `apple/Config/Secrets.xcconfig` with the

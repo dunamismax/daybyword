@@ -19,7 +19,7 @@ WEB_STAMP := web/node_modules/.package-lock.json
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
-	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
+	catalog-export check-export db-generate db-drift test-db rehearse-deploy strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -166,6 +166,9 @@ archive: ## Build a signed Release archive for TestFlight (docs/release.md)
 
 testflight: ## Upload build/DayByWord.xcarchive to App Store Connect (docs/release.md)
 	@scripts/testflight.sh
+
+rehearse-deploy: catalog-export ## Rehearse deploy, backup, restore check, redeploy and rollback in Docker, on a throwaway project
+	@deploy/bin/rehearse.sh
 
 deploy: ## Deploy origin/main to daybyword.com
 	@echo "deploy: not built yet (BUILD.md P7.2)" >&2; exit 1

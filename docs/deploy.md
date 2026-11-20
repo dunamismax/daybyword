@@ -1,9 +1,34 @@
 # SvelteKit/PostgreSQL deployment plan
 
-**D41, as D42 revised it (2026-11-20); planned only.** Nothing was provisioned or deployed
-during this review. PM.18 builds/rehearses scripts; P7 verifies the host and
-performs first production deployment. Do not treat planned paths as live
+**D41, as D42 revised it (2026-11-20).** PM.18 built the files below and
+rehearsed them on the owner's Mac in Docker (`make rehearse-deploy`); P7
+verifies the host and performs the first production deployment. Nothing is
+provisioned or deployed yet: do not treat planned host paths as live
 evidence. No server SQLite, Litestream or mandatory Python service.
+
+## The files (PM.18)
+
+| File | What it does |
+|---|---|
+| `deploy/Dockerfile` | The web image: `vite build`, then a runtime stage with only drizzle-orm and pg, `server.ts`, the jobs, `drizzle/` and the release's catalog export, as the unprivileged `node` user; Node pinned by index digest |
+| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4316 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
+| `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file |
+| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on 127.0.0.1:4317, activate, check, record `current-release`; rolls back if the activated release fails |
+| `deploy/bin/rollback.sh` | Switches the web back to `previous-release`'s image, keeping the database |
+| `deploy/bin/check-live.sh` | Checks a base URL: `/up`, the sections, 404s, headers and policy, no cookie or third-party load, noindex, stylesheet; with https, also www's redirect, the certificate and HSTS (P7.6) |
+| `deploy/bin/backup.sh` | `pg_dump` (custom format) with SHA-256 and a manifest (release, migrations, catalog digest), 14 days kept in `shared/backups` (0700) |
+| `deploy/bin/restore-check.sh` | Restores the newest dump into a throwaway PostgreSQL with no network, recreates the roles, checks migrations, catalog and the web role's reads against the manifest |
+| `deploy/systemd/` | `daybyword-backup.timer` (nightly 03:20) and `daybyword-restore-check.timer` (monthly), checked with `systemd-analyze verify` |
+| `deploy/caddy/daybyword.com` | The site file: apex to 127.0.0.1:4316 with HSTS, www redirected permanently with path and query, no access log |
+| `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, redeploy, rollback, logs, teardown |
+
+The env file (`shared/env`, root 0600) holds `POSTGRES_PASSWORD`,
+`DBW_APP_PASSWORD` and `DBW_MIGRATE_PASSWORD` (hex); the scripts take
+`DBW_ROOT`, `DBW_PORT`, `DBW_DEPLOY_LOCK` (required: the host's lock, P7.1)
+and `DBW_RELEASE` from the environment. `/up` answers OK only once the
+database answers and a catalog is current, as the read-only web role.
+Encryption and the off-server copy of `shared/backups` are the host's
+`ubuntu-vm-backup` entry (P7.3).
 
 ## Isolation and layout
 
