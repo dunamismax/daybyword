@@ -20,9 +20,28 @@ sha=$(git rev-parse HEAD)
 
 make --no-print-directory catalog-export >/dev/null
 dir="$root/releases/$sha"
-ssh -o BatchMode=yes "$host" "test -f $root/shared/env && rm -rf $dir && mkdir -p $dir/build/catalog"
-git archive --format=tar "$sha" | ssh -o BatchMode=yes "$host" "tar -x -C $dir"
-scp -q build/catalog/catalog-export.json "$host:$dir/build/catalog/"
-ssh -o BatchMode=yes "$host" "cd $dir && DBW_RELEASE=$sha with-deploy-lock deploy/bin/deploy.sh" 2>&1 |
-  grep -vE '^ (Container|Network|Volume|Image) |^ [0-9a-f]{12} '
+if ssh -o BatchMode=yes "$host" "test \"\$(cat '$root/current-release')\" = '$sha' && test \"\$(readlink -f '$root/current')\" = '$dir'"; then
+  deploy/bin/check-live.sh https://daybyword.com
+  exit 0
+fi
+stage=$(ssh -o BatchMode=yes "$host" "mktemp -d '$root/.staging.XXXXXXXX'")
+case "$stage" in "$root"/.staging.*) ;; *) exit 1 ;; esac
+trap 'ssh -o BatchMode=yes "$host" "rm -rf -- $stage"' EXIT
+git archive --format=tar "$sha" | ssh -o BatchMode=yes "$host" "tar -x -C '$stage' && mkdir -p '$stage/build/catalog'"
+scp -q build/catalog/catalog-export.json "$host:$stage/build/catalog/"
+ssh -o BatchMode=yes "$host" "with-deploy-lock sh -s -- '$stage' '$dir' '$sha' '$root'" <<'REMOTE'
+set -eu
+stage=$1 dir=$2 sha=$3 root=$4
+if [ ! -d "$dir" ]; then
+  chmod 0755 "$stage"
+  mv -T "$stage" "$dir"
+elif ! diff -qr "$stage" "$dir" >/dev/null; then
+  echo "existing release differs from the staged commit" >&2
+  exit 1
+fi
+cd "$dir"
+DBW_RELEASE=$sha deploy/bin/deploy.sh
+test "$(cat "$root/current-release")" = "$sha"
+test "$(readlink -f "$root/current")" = "$dir"
+REMOTE
 deploy/bin/check-live.sh https://daybyword.com

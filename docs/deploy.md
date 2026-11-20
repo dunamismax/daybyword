@@ -15,7 +15,7 @@ server SQLite, Litestream or mandatory Python service.
   `current-release`, `previous-release`, `shared/env` (root 0600, hex
   passwords generated on the host), `shared/backups` (0700).
 - Compose project `daybyword`: web on 127.0.0.1:4318 (4316 and 4317 belong
-  to other sites), candidate checks on 4319, PostgreSQL 18.6 on the
+  to other sites), candidate checks on a Docker-assigned loopback port, PostgreSQL 18.6 on the
   internal network only, volume `daybyword_postgres_data`. The host's own
   PostgreSQL on 127.0.0.1:5432 is untouched.
 - Lock: `with-deploy-lock` (flock on `/run/web-deploy/lock`).
@@ -37,7 +37,7 @@ server SQLite, Litestream or mandatory Python service.
 | `deploy/Dockerfile` | The web image: `vite build`, then a runtime stage with only drizzle-orm and pg, `server.ts`, the jobs, `drizzle/` and the release's catalog export, as the unprivileged `node` user; Node pinned by index digest |
 | `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4318 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
 | `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file |
-| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on 127.0.0.1:4319, activate, check, record `current-release`; rolls back if the activated release fails |
+| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on a Docker-assigned loopback port, activate, check, record `current-release`; rolls back if the activated release fails |
 | `deploy/bin/rollback.sh` | Switches the web back to `previous-release`'s image, keeping the database |
 | `deploy/bin/check-live.sh` | Checks a base URL: `/up`, the sections, 404s, headers and policy, no cookie or third-party load, noindex, stylesheet; with https, also www's redirect, the certificate and HSTS (P7.6) |
 | `deploy/bin/backup.sh` | `pg_dump` (custom format) with SHA-256 and a manifest (release, migrations, catalog digest), 14 days kept in `shared/backups` (0700) |

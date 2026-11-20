@@ -24,7 +24,7 @@ release=${DBW_RELEASE:?DBW_RELEASE names the commit being deployed}
 
 commit=${DBW_COMMIT:-$release}
 lock=${DBW_DEPLOY_LOCK:-/run/web-deploy/lock}
-candidate_port=${DBW_CANDIDATE_PORT:-4319}
+candidate_port=${DBW_CANDIDATE_PORT:-}
 bin=$(dirname "$0")
 
 take_lock "$lock"
@@ -47,10 +47,12 @@ fi
 say "migrating and importing the catalog"
 compose run --rm -T migrate
 
-say "checking the candidate on 127.0.0.1:$candidate_port"
+say "starting a loopback-only candidate"
 candidate="${DBW_PROJECT}-candidate"
 docker rm -f "$candidate" >/dev/null 2>&1 || true
 compose run -d --name "$candidate" -p "127.0.0.1:$candidate_port:3000" web >/dev/null
+candidate_port=$(docker port "$candidate" 3000/tcp | sed -n 's/^127\.0\.0\.1://p')
+[ -n "$candidate_port" ] || fail "Docker did not publish a loopback candidate port"
 if ! wait_for "http://127.0.0.1:$candidate_port/up" || ! "$bin/check-live.sh" "http://127.0.0.1:$candidate_port"; then
   docker logs "$candidate" 2>&1 | tail -n 20 >&2
   docker rm -f "$candidate" >/dev/null
