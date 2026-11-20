@@ -314,7 +314,7 @@ docs/deploy.md.
 - **Host layout (planned)**: deploy/compose.yaml, deploy/Dockerfile,
   deploy/caddy/daybyword.com; /srv/www/daybyword.com/releases and shared/env
   (root-owned 0600); host /etc/caddy/sites/daybyword.com. Project daybyword,
-  loopback 127.0.0.1:4316 (verify free) to the adapter-node container
+  loopback 127.0.0.1:4318 (4316/4317 are taken) to the adapter-node container
   port 3000 (`node server.ts`; the origin from Caddy's Host header or
   `paths.origin`, since SvelteKit 3 dropped ORIGIN); private PostgreSQL 18 on 5432, database daybyword, role daybyword_app, stable
   project volume and separate migration credential. Inspect actual paths

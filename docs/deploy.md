@@ -11,15 +11,15 @@ evidence. No server SQLite, Litestream or mandatory Python service.
 | File | What it does |
 |---|---|
 | `deploy/Dockerfile` | The web image: `vite build`, then a runtime stage with only drizzle-orm and pg, `server.ts`, the jobs, `drizzle/` and the release's catalog export, as the unprivileged `node` user; Node pinned by index digest |
-| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4316 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
+| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4318 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
 | `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file |
-| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on 127.0.0.1:4317, activate, check, record `current-release`; rolls back if the activated release fails |
+| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on 127.0.0.1:4319, activate, check, record `current-release`; rolls back if the activated release fails |
 | `deploy/bin/rollback.sh` | Switches the web back to `previous-release`'s image, keeping the database |
 | `deploy/bin/check-live.sh` | Checks a base URL: `/up`, the sections, 404s, headers and policy, no cookie or third-party load, noindex, stylesheet; with https, also www's redirect, the certificate and HSTS (P7.6) |
 | `deploy/bin/backup.sh` | `pg_dump` (custom format) with SHA-256 and a manifest (release, migrations, catalog digest), 14 days kept in `shared/backups` (0700) |
 | `deploy/bin/restore-check.sh` | Restores the newest dump into a throwaway PostgreSQL with no network, recreates the roles, checks migrations, catalog and the web role's reads against the manifest |
 | `deploy/systemd/` | `daybyword-backup.timer` (nightly 03:20) and `daybyword-restore-check.timer` (monthly), checked with `systemd-analyze verify` |
-| `deploy/caddy/daybyword.com` | The site file: apex to 127.0.0.1:4316 with HSTS, www redirected permanently with path and query, no access log |
+| `deploy/caddy/daybyword.com.caddy` | The site file: apex to 127.0.0.1:4318 with HSTS, www redirected permanently with path and query, no access log |
 | `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, redeploy, rollback, logs, teardown |
 
 The env file (`shared/env`, root 0600) holds `POSTGRES_PASSWORD`,
@@ -39,13 +39,13 @@ Encryption and the off-server copy of `shared/backups` are the host's
 | Persistent resources | shared/env (root-owned 0600), shared/storage, shared/backups |
 | Source files | deploy/compose.yaml, deploy/Dockerfile, deploy/caddy/daybyword.com |
 | Compose project | daybyword; web (adapter-node), postgres (PostgreSQL 18), one-shot migration/catalog import |
-| Web listener | adapter-node in the container on 0.0.0.0:3000 (`HOST`, `PORT`), published only at 127.0.0.1:4316 if free |
+| Web listener | adapter-node in the container on 0.0.0.0:3000 (`HOST`, `PORT`), published only at 127.0.0.1:4318 (4316 and 4317 are other sites') |
 | Postgres | private Docker network port 5432; no production host port |
 | DB/role | daybyword; `daybyword_app` (web, read-only) and `daybyword_migrate` (migration/import jobs), from `web/db/roles.sql` (PM.14) |
 | Volume | explicit daybyword_postgres_data; stable across release directories |
-| Host Caddy site | /etc/caddy/sites/daybyword.com after verifying include convention |
+| Host Caddy site | /etc/caddy/sites/daybyword.com.caddy, imported by the main Caddyfile's `import /etc/caddy/sites/*.caddy` |
 | Health | /up, no-store, ready only with compatible DB/catalog |
-| Shared deploy lock | discover and record the existing host path; never invent a new parallel lock |
+| Shared deploy lock | the host's `with-deploy-lock COMMAND` (flock on `/run/astro-deploy/lock`, fd 9), which the scripts recognise |
 
 Record other sites' responses before/after every server change. Archive
 /etc/caddy before touching it. Add only this site's configuration; never

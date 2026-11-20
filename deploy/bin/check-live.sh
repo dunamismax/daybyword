@@ -5,7 +5,7 @@
 # certificate and the www redirect.
 #
 #   deploy/bin/check-live.sh https://daybyword.com
-#   deploy/bin/check-live.sh http://127.0.0.1:4316
+#   deploy/bin/check-live.sh http://127.0.0.1:4318
 set -eu
 base=${1:?usage: check-live.sh BASE-URL}
 base=${base%/}
@@ -20,6 +20,7 @@ for path in / /today /plans /progress /settings /plans/gospels-at-your-pace; do
 done
 [ "$(status /no-such-page)" = 404 ] || problem "an unknown address is not 404"
 [ "$(status /dev/components)" = 404 ] || problem "the component gallery is served"
+curl -fsS "$base/robots.txt" | grep -q '^Disallow: /$' || problem "robots.txt does not block crawling (P7.7)"
 
 headers=$(curl -fsS -D - -o /dev/null "$base/today")
 for header in 'content-security-policy: default-src' 'x-content-type-options: nosniff' \

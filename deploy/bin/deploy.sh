@@ -2,7 +2,7 @@
 # Deploys the release in this directory (docs/deploy.md, "Release and
 # rollback"), under the host's shared deploy lock:
 #
-#   DBW_RELEASE=<commit> DBW_DEPLOY_LOCK=<the host's lock> deploy/bin/deploy.sh
+#   DBW_RELEASE=<commit> with-deploy-lock deploy/bin/deploy.sh
 #
 # DBW_RELEASE tags the image; DBW_COMMIT, the commit Settings shows,
 # defaults to it.
@@ -23,18 +23,11 @@ release=${DBW_RELEASE:?DBW_RELEASE names the commit being deployed}
 . "$(dirname "$0")/common.sh"
 
 commit=${DBW_COMMIT:-$release}
-lock=${DBW_DEPLOY_LOCK:?DBW_DEPLOY_LOCK names the host\'s shared deploy lock (P7.1)}
-candidate_port=${DBW_CANDIDATE_PORT:-4317}
+lock=${DBW_DEPLOY_LOCK:-/run/astro-deploy/lock}
+candidate_port=${DBW_CANDIDATE_PORT:-4319}
 bin=$(dirname "$0")
 
-# The shared lock: flock where the host has it, a lock directory otherwise.
-if command -v flock >/dev/null 2>&1; then
-  exec 9>"$lock"
-  flock -w 900 9 || fail "could not take the deploy lock $lock"
-else
-  until mkdir "$lock.d" 2>/dev/null; do sleep 1; done
-  trap 'rmdir "$lock.d"' EXIT
-fi
+take_lock "$lock"
 
 [ -f "$DBW_RELEASE_DIR/build/catalog/catalog-export.json" ] || fail "no catalog export in the release"
 say "building daybyword-web:$release"

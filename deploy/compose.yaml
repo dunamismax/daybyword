@@ -44,7 +44,7 @@ services:
     environment:
       DBW_DATABASE_URL: postgresql://daybyword_app:${DBW_APP_PASSWORD}@postgres:5432/daybyword
     ports:
-      - "127.0.0.1:${DBW_PORT:-4316}:3000"
+      - "127.0.0.1:${DBW_PORT:-4318}:3000"
     networks: [database, web]
     depends_on:
       postgres: { condition: service_healthy }

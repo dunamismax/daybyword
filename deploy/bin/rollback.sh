@@ -5,19 +5,13 @@
 # still reads it. Never restores a backup over the live database and never
 # removes a volume.
 #
-#   DBW_DEPLOY_LOCK=<the host's lock> deploy/bin/rollback.sh
+#   with-deploy-lock deploy/bin/rollback.sh
 set -eu
 # shellcheck source=deploy/bin/common.sh
 . "$(dirname "$0")/common.sh"
 
-lock=${DBW_DEPLOY_LOCK:?DBW_DEPLOY_LOCK names the host\'s shared deploy lock (P7.1)}
-if command -v flock >/dev/null 2>&1; then
-  exec 9>"$lock"
-  flock -w 900 9 || fail "could not take the deploy lock $lock"
-else
-  until mkdir "$lock.d" 2>/dev/null; do sleep 1; done
-  trap 'rmdir "$lock.d"' EXIT
-fi
+lock=${DBW_DEPLOY_LOCK:-/run/astro-deploy/lock}
+take_lock "$lock"
 
 previous=$(cat "$DBW_ROOT/previous-release" 2>/dev/null || true)
 current=$(cat "$DBW_ROOT/current-release" 2>/dev/null || true)
