@@ -119,6 +119,39 @@ Recorded before anything is replaced; later items compare against it.
   "Page not found" page; `/api/v1/…` answers a JSON 404 until an endpoint
   claims it.
 
+## The native app, verified (PM.17, 2026-11-20)
+
+- **Toolchain:** Swift 6.4.2 and Xcode 27.2 as pinned; `make check` builds
+  the app, the widget extension and the packages with zero warnings and
+  passes the app's unit tests and String Catalog check.
+- **Identity:** `com.daybyword.app` 0.1.0, its widget extension
+  `com.daybyword.app.widgets` (`com.apple.widgetkit-extension`) embedded
+  and registered with the system (pluginkit), `daybyword://`, and the
+  bundled read-only `Catalog.sqlite`. No App Group or entitlements exist
+  yet; P12.1 adds `group.com.daybyword.app`.
+- **Upgrade keeps the reader's settings:** on the iPhone 18 Pro simulator,
+  appearance Dark and reference size Largest were written to the installed
+  build's UserDefaults, the current build was installed over it (no
+  uninstall), and the app opened in Dark with Largest selected while the
+  simulator was in light mode. The test values were then removed.
+- **Widget:** the placeholder Next reading widget renders in the system
+  widget gallery. There are no App Intents yet (P8.9, P12.4), and no
+  native offline store beyond the bundled catalog and UserDefaults
+  (journal: P5.4).
+- **No API adapters added:** the app makes no network calls at this stage,
+  so there is nothing to adapt; native code never reaches PostgreSQL.
+- **Scripts audited, all kept:** `tokens.swift`, `strings.swift`,
+  `versification.swift` and `wordcounts.swift` generate or check
+  committed data; `xcodebuild.sh`, `run-app.sh`, `sim-destination.sh`,
+  `archive.sh` and `testflight.sh` drive the app; `test-linux.sh` and
+  `linux/` test the Swift packages on Linux; `check-*.sh`,
+  `with-postgres.sh`, `db-drift.sh` and `web-smoke.sh` are gates;
+  `webtour.swift` tours the Swift site until PM.19/PM.20 port its
+  assertions. Each works and serves a current need, so none is converted,
+  and no Python is introduced.
+- Not done: no physical device, no iPad run, no TestFlight upload (build
+  25's upload is still unverified).
+
 ## Target layout
 
 ~~~text
