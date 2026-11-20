@@ -152,6 +152,33 @@ Recorded before anything is replaced; later items compare against it.
 - Not done: no physical device, no iPad run, no TestFlight upload (build
   25's upload is still unverified).
 
+## Parity, qualified (PM.19, 2026-11-20)
+
+What was run, and what it showed. Nothing here claims scheduling, a
+journal, sync or reminders, which do not exist yet.
+
+| Area | Evidence |
+|---|---|
+| Golden fixtures | All 190 engine cases pass in Swift, Node and headless Firefox 159 (PM.15); strings, settings and every routes.json case pass against the SvelteKit production server, with E38's four recorded differences (PM.16) |
+| Real PostgreSQL | `make test-db` on PostgreSQL 18.6: fresh and repeated migrations, atomic and racing imports, refusals, rollback, grants, readiness (PM.14, PM.18) |
+| Production image | `make rehearse-deploy`: the Docker image under Compose with a private database, candidate and live `check-live`, backup, isolated restore, redeploy, rollback (PM.18) |
+| API isolation | `/api/v1/…` is a JSON 404 with `no-store`; PostgreSQL has no host port and sits on an internal network; the web role is refused writes; no database code or credentials reach a browser bundle (`src/lib/server/`) or the app |
+| Import retries | Re-importing the same catalog is a no-op (`already-current`), in `make test-db` and in the rehearsal's second deploy |
+| Web tour | `make tour-web` now tours the SvelteKit production server: 275 checks in Firefox at 1280 and 500 px in light and dark (headings, current section, no sideways scroll, notice hidden, footer, skip link first, Settings applied and kept). The same semantic tour passes on the Swift server (`DBW_TOUR_SERVER=swift`) |
+| Phone and 200% text | Checked in the desktop app's built-in browser: 375 px with no sideways scroll, 200% text at 640 px with no sideways scroll, dark, skip link, Settings, copy fallback, console clean (PM.16) |
+| Native | `make tour-app` in light, dark and now light at AX5 (labels wrap, nothing cut off); `make test-ui` passes, including references and statuses read naturally by VoiceOver; settings kept across an in-place install (PM.17) |
+| Linux | `make test-linux` passed for the Swift packages and server |
+
+**Differences found and settled:** E38's four (trailing-slash redirect,
+the stylesheets folded into one fingerprinted file, the favicon's type,
+`/api/v1` JSON 404); and Tailwind's reset removing paragraph spacing,
+restored in `web/src/app.css` after the tour's screenshots showed it.
+
+**Not run:** the web tour in Safari (needs "Allow remote automation", a
+setting agents do not change) or Chrome; a screen reader on the web;
+offline behavior, since neither the web's offline mode (P8.11) nor any
+network use in the app exists yet; a physical device or iPad.
+
 ## Target layout
 
 ~~~text

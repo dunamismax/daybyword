@@ -151,8 +151,7 @@ tour-app: generate ## Tour the app in the simulator; screenshots go to screensho
 	@TEST_RUNNER_DBW_SCREENSHOTS="$(CURDIR)/screenshots/app" scripts/xcodebuild.sh tour-app \
 		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests test
 
-tour-web: catalog ## Tour the site in a real browser through WebDriver; screenshots go to screenshots/web/
-	@swift build --package-path Server --quiet
+tour-web: build-web ## Tour the SvelteKit site in a real browser through WebDriver; screenshots go to screenshots/web/
 	@swift scripts/webtour.swift
 
 check: lint check-web catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit

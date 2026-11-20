@@ -25,6 +25,13 @@
     color: var(--color-accent);
   }
 
+  /* Tailwind's reset removes paragraph spacing; the Swift site had the
+     browser's 1em, and running text needs it. Utilities (m-0, mb-xs) still
+     override it. */
+  p {
+    margin-block: 1em;
+  }
+
   :focus-visible {
     outline: 3px solid var(--color-accent);
     outline-offset: 2px;

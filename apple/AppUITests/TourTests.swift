@@ -1,16 +1,22 @@
 import XCTest
 
-/// The app tour (BUILD.md P2.12): every section and Settings, in light and
-/// dark. Each screen is attached to the test result, and when the test runner
+/// The app tour (BUILD.md P2.12, PM.19): every section and Settings, in light
+/// and dark, and in light at the largest accessibility text size (AX5). Each screen is attached to the test result, and when the test runner
 /// is given DBW_SCREENSHOTS (make tour-app passes TEST_RUNNER_DBW_SCREENSHOTS),
 /// it is also saved there as a PNG; screenshots/ is gitignored.
 final class TourTests: XCTestCase {
     @MainActor
     func testTourInLightAndDark() throws {
-        for appearance in ["light", "dark"] {
+        for (appearance, textSize) in [("light", ""), ("dark", ""), ("light", "ax5")] {
             let app = XCUIApplication()
             // The reader's own appearance choice (Settings) sets the theme.
             app.launchArguments = ["-appearance", appearance]
+            if textSize == "ax5" {
+                app.launchArguments += [
+                    "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+                ]
+            }
+            let appearance = textSize.isEmpty ? appearance : "\(appearance)-\(textSize)"
             app.launch()
 
             XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))

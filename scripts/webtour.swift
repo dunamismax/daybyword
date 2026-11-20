@@ -1,14 +1,19 @@
-// The web tour (BUILD.md P2.12, docs/decisions.md E26): starts the server on a
-// spare port, drives a real browser through WebDriver, visits every section at
-// a desktop and a narrow width in light and dark, checks each page, and saves a
-// screenshot of each to screenshots/web/ (gitignored).
+// The web tour (BUILD.md P2.12, PM.19, docs/decisions.md E26): starts the
+// server on a spare port, drives a real browser through WebDriver, visits every
+// section at a desktop and a narrow width in light and dark, checks each page,
+// and saves a screenshot of each to screenshots/web/ (gitignored).
 //
-//   swift scripts/webtour.swift            Firefox through geckodriver (the default)
+//   swift scripts/webtour.swift            the SvelteKit production server, in
+//                                          Firefox through geckodriver (the default)
 //   DBW_WEBDRIVER=safari swift scripts/webtour.swift
 //                                          Safari through safaridriver, once "Allow
 //                                          remote automation" is on in Safari's settings
+//   DBW_TOUR_SERVER=swift swift scripts/webtour.swift
+//                                          the Swift server, until PM.20 retires it
 //
-// The server must be built first (make tour-web does both). The WebDriver
+// The checks are semantic (headings, the nav's current link, the footer, the
+// first focusable element), so the same tour holds both servers to one
+// standard. The server must be built first (make tour-web does it). The WebDriver
 // client is this file's own: a few W3C WebDriver commands over URLSession.
 import Foundation
 
@@ -146,15 +151,28 @@ func expect(_ condition: Bool, _ message: @autoclosure () -> String) {
 }
 
 let browser = ProcessInfo.processInfo.environment["DBW_WEBDRIVER"] ?? "firefox"
-let serverBinary = root.appendingPathComponent("Server/.build/debug/DayByWordServer").path
-guard FileManager.default.isExecutableFile(atPath: serverBinary) else { fail("build the server first (make tour-web)") }
-
-_ = start(
-    serverBinary, [],
-    environment: [
-        "DBW_PORT": String(serverPort), "DBW_PUBLIC_DIR": root.appendingPathComponent("Server/Public").path,
-        "DBW_CATALOG": root.appendingPathComponent("build/catalog/Catalog.sqlite").path, "LOG_LEVEL": "warning",
-    ])
+let server = ProcessInfo.processInfo.environment["DBW_TOUR_SERVER"] ?? "sveltekit"
+switch server {
+case "swift":
+    let serverBinary = root.appendingPathComponent("Server/.build/debug/DayByWordServer").path
+    guard FileManager.default.isExecutableFile(atPath: serverBinary) else { fail("build the Swift server first") }
+    _ = start(
+        serverBinary, [],
+        environment: [
+            "DBW_PORT": String(serverPort), "DBW_PUBLIC_DIR": root.appendingPathComponent("Server/Public").path,
+            "DBW_CATALOG": root.appendingPathComponent("build/catalog/Catalog.sqlite").path, "LOG_LEVEL": "warning",
+        ])
+case "sveltekit":
+    let web = root.appendingPathComponent("web")
+    guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/handler.js").path) else {
+        fail("build the web app first (make build-web)")
+    }
+    // The pinned Node from the PATH, as make uses it (scripts/check-toolchain.sh).
+    FileManager.default.changeCurrentDirectoryPath(web.path)
+    _ = start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
+default:
+    fail("DBW_TOUR_SERVER must be sveltekit or swift, not \(server)")
+}
 switch browser {
 case "firefox":
     guard let gecko = ["/opt/homebrew/bin/geckodriver", "/usr/local/bin/geckodriver"].first(where: {
@@ -184,7 +202,7 @@ for size in widths {
             let facts =
                 await driver.run(
                     """
-                    const current = document.querySelector('.sections [aria-current="page"]');
+                    const current = document.querySelector('header nav [aria-current="page"]');
                     return {
                       heading: document.querySelector('h1')?.textContent ?? '',
                       current: current ? current.textContent : null,
@@ -192,8 +210,8 @@ for size in widths {
                       theme: document.documentElement.dataset.theme ?? null,
                       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
                       noticeHidden: document.getElementById('browser-notice').hidden,
-                      footer: document.querySelector('.site-footer')?.textContent ?? '',
-                      firstFocusable: document.querySelector('a, button, input')?.className ?? '',
+                      footer: document.querySelector('body footer')?.textContent ?? '',
+                      firstFocusable: document.querySelector('a, button, input')?.textContent ?? '',
                       width: window.innerWidth,
                     };
                     """) as? [String: Any] ?? [:]
@@ -205,7 +223,7 @@ for size in widths {
             expect((facts["overflow"] as? Int ?? 1) <= 0, "\(label): scrolls sideways by \(facts["overflow"] ?? "?") px")
             expect(facts["noticeHidden"] as? Bool == true, "\(label): the unsupported-browser notice is showing")
             expect((facts["footer"] as? String ?? "").contains("not affiliated with any church"), "\(label): footer")
-            expect(facts["firstFocusable"] as? String == "skip-link", "\(label): the skip link is not first")
+            expect(facts["firstFocusable"] as? String == "Skip to content", "\(label): the skip link is not first")
             if size.name == "narrow" {
                 expect((facts["width"] as? Int ?? 9999) <= 500, "\(label): the window is \(facts["width"] ?? "?") px wide")
             }
@@ -232,4 +250,4 @@ await driver.run("localStorage.clear()")
 
 await driver.end()
 stopAll()
-print("tour-web: \(checked) checks passed in \(browser); screenshots in screenshots/web/")
+print("tour-web: \(checked) checks passed on the \(server) server in \(browser); screenshots in screenshots/web/")
