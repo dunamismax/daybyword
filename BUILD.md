@@ -122,7 +122,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 4 | The catalog | M1 Foundation | 8 | 8 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
-| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 0 |
+| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 4 |
 | 8 | First light | M2 First light | 14 | 0 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 0 |
@@ -136,13 +136,13 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-20):** Phases 0–4 completed the original Swift
-foundation; PM.12 recorded its baseline and fixtures, PM.14 the PostgreSQL
-catalog schema and import, and PM.21 replaced PM.13's Astro workspace with
-SvelteKit 3, Svelte 5 and Tailwind CSS 4 on PostgreSQL 18 (D42), all in
-`make check`. The Swift server still serves every page; no plans,
-scheduling or journal yet, and nothing deployed. **Next: PM.15**,
-following [docs/stack-migration.md](docs/stack-migration.md).
+**Current state (2026-11-20):** Phase M is done but PM.20: the engine
+specification and its TypeScript runtime pass every shared case (PM.15),
+SvelteKit serves every page under a strict CSP (PM.16), the native app is
+verified (PM.17), deployment is built and rehearsed (PM.18) and parity is
+qualified (PM.19). **daybyword.com is live** in development (P7.1, P7.2,
+P7.4, P7.7). No plans, scheduling or journal yet. **Next: PM.20**, then
+P7.3's off-server backup copy and P7.6's host rollback rehearsal.
 
 ---
 
@@ -496,12 +496,18 @@ prepares the SvelteKit/PostgreSQL image and scripts; this phase verifies the
 actual host and provisions under D34. No reader records are stored at 1.0,
 but nightly PostgreSQL backups begin with the first database deployment.
 
-- [ ] **P7.1** Finalize docs/deploy.md against the real host: release/shared env paths, shared lock, free loopback port (4316 planned), Compose volume/DB/roles, Caddy site convention and certificates (Caddy's own; DNS-only Cloudflare records are owner-managed). No Swift HTTP service or server SQLite.
-- [ ] **P7.2** Qualify make deploy from clean origin/main: SvelteKit adapter-node production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
+- [x] **P7.1** Finalize docs/deploy.md against the real host: release/shared env paths, shared lock, free loopback port (4316 planned), Compose volume/DB/roles, Caddy site convention and certificates (Caddy's own; DNS-only Cloudflare records are owner-managed). No Swift HTTP service or server SQLite.
+  - *Result (agent, 2026-11-20):* docs/deploy.md, "The live host": paths, `with-deploy-lock` on /run/astro-deploy/lock, ports 4318/4319 (4316/4317 were taken), Compose volume/roles, `/etc/caddy/sites/*.caddy`, Caddy's own certificates.
+- [x] **P7.2** Qualify make deploy from clean origin/main: SvelteKit adapter-node production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
+  - *Result (agent, 2026-11-20):* `make deploy` (deploy/bin/release.sh) from a clean checkout equal to origin/main: export, `git archive` to `releases/<commit>`, `deploy.sh` inside `with-deploy-lock` (image, migrate/import, candidate on 4319, activate, rollback on failure), then public check-live.
 - [ ] **P7.3** Provision only this project's Compose/Postgres/env/Caddy/backup resources; record other-site responses before/after, archive /etc/caddy, validate/reload only this site's configuration. Use systemd timers for nightly pg_dump, encrypted off-server copy and an isolated restore drill. Coordinate missing shared Caddy modules/account settings without changing other sites.
-- [ ] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
+  - *Note (agent, 2026-11-20):* Done: the project's Compose/Postgres/env/Caddy resources, /etc/caddy archived, other sites compared, nightly pg_dump and monthly restore-check timers installed, first backup and restore check passed on the host. Open: the encrypted off-server copy; no `ubuntu-vm-backup` checkout or tool exists on the host or the Mac, so the owner's arrangement is needed.
+- [x] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
+  - *Result (agent, 2026-11-20):* live 2026-11-20 at commit 7be7f76 (image `daybyword-web:<commit>`, schema 2 migrations, catalog ac986b77…, 0 plans): apex HTTPS, www 301 keeping path and query, HSTS, strict CSP and headers, healthy `/up` with a current catalog; all 20 other site names unchanged. `make check-full`'s parts all passed today (check, test-domain-browser, both tours, test-linux), not as one run.
 - [ ] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
-- [ ] **P7.7** Keep the in-development line, noindex and robots crawl block until launch (P18.5).
+  - *Note (agent, 2026-11-20):* check-live.sh exists and deploy runs it on the candidate and live port, and release.sh on https://daybyword.com (TLS, www redirect, HSTS, headers, robots, noindex, no cookies or third-party loads). Open: a rollback rehearsed on the host itself (done only locally, `make rehearse-deploy`).
+- [x] **P7.7** Keep the in-development line, noindex and robots crawl block until launch (P18.5).
+  - *Result (agent, 2026-11-20):* the footer's in-development line, `noindex` on every page and `robots.txt` `Disallow: /` are live and checked by check-live; they stay until P18.5.
 
 ## Phase 8: First light
 
@@ -640,24 +646,26 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-20:** the owner changed the stack (D42): SvelteKit 3 · Svelte 5
-  · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle · adapter-node ·
-  Caddy. PM.21 (new, ticked) replaced the Astro workspace; PM.13 is marked
-  superseded. E36 has packages and reasons; AGENTS.md §5 and docs/ follow.
-- `web/`: config in `vite.config.ts` (no svelte.config.js in SvelteKit 3);
-  server code in `src/lib/server/`, imported as `#lib/server/…` (a
-  package.json subpath import; SvelteKit 3 has no `$lib`), also by the jobs
-  and tests; `/up` in `src/routes/up/+server.ts`; Tailwind in `src/app.css`.
-- `make check`: eslint/prettier (svelte, tailwind plugins), svelte-check,
-  vitest, `vite build` booted by `scripts/web-smoke.sh`, check-export,
-  db-drift, test-db on throwaway **PostgreSQL 18** (postgresql@18 on PATH).
-  Production build checked once in a browser: styles load, console clean.
-- Held back: TypeScript 6.0.3 (SvelteKit 3.4 needs ^6). Dev-only audit
-  advisories (minimatch, esbuild) unchanged from E35.
-- **PM.15 was in progress** when D42 arrived; its unverified TypeScript
-  port was set aside, not committed. Redo it in `web/src/lib/domain/`
-  against tests/fixtures/, with a browser proof (geckodriver/Firefox here).
-- For PM.16: Morning tokens → Tailwind `@theme`; SvelteKit `csp` option;
-  `/today/` answers 200 on the Swift server; assets lack Cache-Control.
-- Carried over: no shared deploy lock under /run/lock (P7.1); no
-  `apple/Config/Secrets.xcconfig` here; build 25's upload unverified.
+- **2026-11-20:** PM.15–PM.19 done; daybyword.com deployed live (P7.1,
+  P7.2, P7.4, P7.7) at 7be7f76 and later commits via `make deploy`.
+- Engine: docs/engine.md v0; `web/src/lib/domain/` (pure, lint-enforced);
+  190 shared cases pass in Swift, Node, headless Firefox (E37).
+- Web: no page loads SvelteKit's client runtime (E38): its route announcer
+  writes an inline style the strict CSP refuses. P8.10 needs interaction:
+  read E38's options first; never weaken the policy. `web/server.ts` wraps
+  adapter-node for headers, cache policy and route-pattern logs.
+- SvelteKit 3: `$app/env/private` + `src/env.ts`, `src/params.ts`
+  (defineParams), no `ORIGIN` (use `paths.origin` or Caddy's Host).
+- `.gitignore` and `web/.prettierignore` skip every `build/` folder: never
+  name a source folder `build` (tests are `web/test/production/`).
+- Host: Compose project `daybyword` on 127.0.0.1:4318 (4316/4317 are other
+  sites'), lock `with-deploy-lock`, site file `daybyword.com.caddy`,
+  backup and restore-check timers running. Deploy with `make deploy`.
+- **Open:** P7.3's encrypted off-server copy (no backup tool or
+  `ubuntu-vm-backup` checkout found; ask the owner); P7.6's rollback
+  rehearsal on the host; PM.20 (retire the Swift server and tooling, run
+  `make check-full` as one run, move Phase M to history).
+- The owner's shell puts PostgreSQL 17 first on the PATH;
+  `scripts/with-postgres.sh` now finds Homebrew's postgresql@18 itself.
+- Carried over: no `apple/Config/Secrets.xcconfig` here; build 25's
+  TestFlight upload unverified.

@@ -169,8 +169,8 @@ testflight: ## Upload build/DayByWord.xcarchive to App Store Connect (docs/relea
 rehearse-deploy: catalog-export ## Rehearse deploy, backup, restore check, redeploy and rollback in Docker, on a throwaway project
 	@deploy/bin/rehearse.sh
 
-deploy: ## Deploy origin/main to daybyword.com
-	@echo "deploy: not built yet (BUILD.md P7.2)" >&2; exit 1
+deploy: ## Deploy origin/main to daybyword.com on the host (DBW_HOST=root@ubuntu-vm), then check it live
+	@deploy/bin/release.sh
 
 clean: ## Remove build products and the generated Xcode project
 	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj web/build web/.svelte-kit web/node_modules

@@ -1,10 +1,34 @@
 # SvelteKit/PostgreSQL deployment plan
 
 **D41, as D42 revised it (2026-11-20).** PM.18 built the files below and
-rehearsed them on the owner's Mac in Docker (`make rehearse-deploy`); P7
-verifies the host and performs the first production deployment. Nothing is
-provisioned or deployed yet: do not treat planned host paths as live
-evidence. No server SQLite, Litestream or mandatory Python service.
+rehearsed them on the owner's Mac in Docker (`make rehearse-deploy`).
+**daybyword.com went live on 2026-11-20** (P7): see "The live host". No
+server SQLite, Litestream or mandatory Python service.
+
+## The live host (2026-11-20)
+
+- ubuntu-vm: Ubuntu 26.04.1, x86_64, Docker 29.10 with Compose v5.8, the
+  system Caddy 2.11.9 (a custom build with caddy-ratelimit) importing
+  `/etc/caddy/sites/*.caddy`. DNS for daybyword.com and www points at the
+  host directly.
+- `/srv/www/daybyword.com/`: `releases/<commit>`, `current` (symlink),
+  `current-release`, `previous-release`, `shared/env` (root 0600, hex
+  passwords generated on the host), `shared/backups` (0700).
+- Compose project `daybyword`: web on 127.0.0.1:4318 (4316 and 4317 belong
+  to other sites), candidate checks on 4319, PostgreSQL 18.6 on the
+  internal network only, volume `daybyword_postgres_data`. The host's own
+  PostgreSQL on 127.0.0.1:5432 is untouched.
+- Lock: `with-deploy-lock` (flock on `/run/astro-deploy/lock`).
+- Caddy: `/etc/caddy/sites/daybyword.com.caddy` only; `/etc/caddy` was
+  archived first to `/root/caddy-archives/`; validated, then reloaded.
+- Timers: `daybyword-backup.timer` (nightly) and
+  `daybyword-restore-check.timer` (monthly); the first backup and restore
+  check ran on the host and passed.
+- **Not yet:** an encrypted off-server copy of `shared/backups`. No
+  `ubuntu-vm-backup` checkout or backup tool was found on the host or the
+  Mac; the owner's existing off-server arrangement must be found (or one
+  agreed) before P7.3 is done.
+- Every other site's name answered the same before and after (20 names).
 
 ## The files (PM.18)
 
@@ -20,6 +44,7 @@ evidence. No server SQLite, Litestream or mandatory Python service.
 | `deploy/bin/restore-check.sh` | Restores the newest dump into a throwaway PostgreSQL with no network, recreates the roles, checks migrations, catalog and the web role's reads against the manifest |
 | `deploy/systemd/` | `daybyword-backup.timer` (nightly 03:20) and `daybyword-restore-check.timer` (monthly), checked with `systemd-analyze verify` |
 | `deploy/caddy/daybyword.com.caddy` | The site file: apex to 127.0.0.1:4318 with HSTS, www redirected permanently with path and query, no access log |
+| `deploy/bin/release.sh` | `make deploy`: from a clean checkout equal to origin/main, builds the export, unpacks the commit and export into `releases/<commit>` on the host, runs `deploy.sh` inside `with-deploy-lock`, then `check-live.sh https://daybyword.com` |
 | `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, redeploy, rollback, logs, teardown |
 
 The env file (`shared/env`, root 0600) holds `POSTGRES_PASSWORD`,
