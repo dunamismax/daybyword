@@ -30,6 +30,12 @@ fi
 server_files=$(find Server/Sources -name '*.swift' | sort)
 report "$(grep -nE 'style="|#[0-9A-Fa-f]{6}([^0-9A-Za-z_-]|$)|rgba?\(|hsla?\(' $server_files || true)" "inline style or raw color in HTML"
 
+# The SvelteKit site: no inline styles (the CSP forbids them), no color values
+# in its stylesheet, components or scripts, and only token colors in classes
+# (web/src/tokens.css removes Tailwind's own palette).
+web_files=$(find web/src web/static -type f \( -name '*.svelte' -o -name '*.css' -o -name '*.ts' -o -name '*.js' -o -name '*.html' \) -not -name 'tokens.css' | sort)
+report "$(grep -nE 'style="|#[0-9A-Fa-f]{6}([^0-9A-Za-z_-]|$)|(rgb|rgba|hsl|hsla|oklch)\(' $web_files || true)" "inline style or raw color on the web"
+
 # Stylesheets other than the generated tokens.css.
 css_raw='#[0-9A-Fa-f]{3,8}([^0-9A-Za-z_-]|$)|(rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\('
 css_named=":[[:space:]]*($primitives)([^A-Za-z-]|\$)"

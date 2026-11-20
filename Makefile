@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.package-lock.json
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format \
-	web-install lint-web types-web test-web build-web smoke-web check-web test-domain-browser \
+	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
 	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
@@ -105,8 +105,12 @@ build-web: web-install ## Build the web app for production (web/build, adapter-n
 	@echo "== web build"
 	@cd web && npx vite build --logLevel warn
 
-smoke-web: build-web ## Boot the production web build and check what it serves
+smoke-web: build-web ## Boot the production web server and check every route it serves
 	@scripts/web-smoke.sh
+	@cd web && DBW_TEST_BUILD=1 npx vitest run
+
+serve-web: build-web ## Serve the SvelteKit site's production build on http://localhost:8080 (PORT=…), with the component gallery
+	@cd web && HOST=127.0.0.1 PORT=$(PORT) DBW_ENV=development node server.ts
 
 check-web: lint-web types-web test-web smoke-web check-export db-drift test-db ## The web part of make check
 

@@ -32,7 +32,7 @@ Addresses for the server's own use, never linked from a page a reader sees:
 `/dev/components` (the component gallery, in development only).
 
 Reserved for later phases, so nothing else takes them: `/api/v1/…` (sync,
-P14), `/about`, `/privacy`, `/sources`, `/criteria`, and `/support` (public
+P14; a JSON 404 until an endpoint claims an address), `/about`, `/privacy`, `/sources`, `/criteria`, and `/support` (public
 pages, P16), and `/.well-known/…` (universal links and passkeys, P12.8 and
 P14).
 
@@ -43,8 +43,9 @@ P14).
   `ReadingEngine`'s `PlanID` is the single check, used by the catalog
   compiler, the server, and the app. An address with any other id is not
   found.
-- **Lowercase, no trailing slash, no file extensions.** The app also accepts
-  a trailing slash in a link it is given.
+- **Lowercase, no trailing slash, no file extensions.** The web redirects
+  an address with a trailing slash to the one without (308); the app also
+  accepts a trailing slash in a link it is given.
 - **Queries are for display only**, never for identity or personal data
   (AGENTS.md §5). `start` must look like `YYYY-MM-DD`; anything else is
   ignored and the page shows its default week. (Checking that the date
@@ -60,8 +61,10 @@ P14).
 
 ## Where the code is
 
-- Web: the routes in `Server/Sources/DayByWordWeb/Application+build.swift`,
-  tested in `Server/Tests/DayByWordWebTests/ServerTests.swift`.
+- Web: SvelteKit's `web/src/routes/` (plan ids matched in `web/src/params.ts`),
+  tested against tests/fixtures/routes.json in `web/test/build/server.test.ts`.
+  The Swift server's routes (`Server/Sources/DayByWordWeb/Application+build.swift`)
+  stay until PM.20 retires them.
 - App: `AppRoute` in `apple/App/Navigation/AppRoute.swift`, tested in
   `apple/AppTests/NavigationTests.swift`. Both test files cover every row of
   the table above.

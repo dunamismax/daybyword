@@ -17,10 +17,15 @@ files when APIs are needed.
   `src/routes/api/v1/**/+server.ts` for Swift and browser APIs.
   Server-only Drizzle/PostgreSQL code lives in `src/lib/server/`, which
   SvelteKit never bundles for the browser; nothing there enters native
-  bundles either. Validate inputs, origin (adapter-node `ORIGIN`) and
-  request size (`BODY_SIZE_LIMIT`).
-- Svelte 5 components with runes carry interaction. Set `csr = false` on
-  pages that need none, so they ship no JavaScript. No component kit is
+  bundles either. Validate inputs, origin and
+  request size (`BODY_SIZE_LIMIT`); the public origin is `paths.origin` or
+  Caddy's Host header (SvelteKit 3 removed adapter-node's `ORIGIN`).
+- Svelte 5 components render every page on the server. No page loads
+  SvelteKit's client runtime yet (`csr = false` in the root layout, E38):
+  its route announcer writes an inline style the strict CSP refuses. The
+  little interaction there is (Settings, copy buttons, the old-browser
+  notice) is small same-origin modules in `static/assets/`; E38 lists the
+  ways to bring Svelte interaction back without weakening the policy. No component kit is
   required; no new imagery or generic palette; preserve Morning.
 - TypeScript domain logic lives in `src/lib/domain/`, follows
   docs/engine.md and the same JSON cases as native Swift. Do not
@@ -51,7 +56,8 @@ files when APIs are needed.
   200% text and 400% zoom remain required. Public server-rendered content
   and plain unsupported/noscript notices remain usable without hydration.
 - Port every existing web tour assertion before retiring Swift web tools.
-  Test the adapter-node build (`node build/index.js`), route/error/health
+  Test the production server (`node server.ts` around the adapter-node
+  build; `make serve-web`, `make smoke-web`), route/error/health
   behavior, form actions and hydration in a real browser, not only the
   development server.
 

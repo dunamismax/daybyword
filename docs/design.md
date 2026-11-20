@@ -4,7 +4,8 @@ The owner chose the **Morning** direction in the design session on
 2026-11-01 (BUILD.md D18, P2.3), over Bookmark and Desk. Its mockups are in
 `design/mockups/` (Today, a plan page, and Progress; phone and desktop;
 light and dark), and its values are in `design/tokens.json`, from which the
-app's color assets and the web's `tokens.css` are generated (P2.4). Change a
+app's color assets, the Swift server's `tokens.css` and the SvelteKit
+site's Tailwind theme (`web/src/tokens.css`, PM.16) are generated (P2.4). Change a
 token there first, regenerate, and commit both (AGENTS.md §5).
 
 ## Stack alignment

@@ -1,8 +1,13 @@
+<script lang="ts">
+  import { pageTitle } from "#lib/sections.ts";
+  import { text } from "#lib/strings.ts";
+</script>
+
 <svelte:head>
-  <title>Day by Word</title>
+  <title>{pageTitle()}</title>
 </svelte:head>
 
-<main class="mx-auto max-w-prose p-4">
-  <h1 class="text-3xl font-semibold">Day by Word</h1>
-  <p>In development.</p>
-</main>
+<h1>{text("site.name")}</h1>
+<p class="mt-0 mb-l text-reference-list font-reference-list">{text("site.tagline")}</p>
+<p>{text("site.line")}</p>
+<p><a class="button button-primary" href="/today">{text("site.go-to-today")}</a></p>

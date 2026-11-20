@@ -113,10 +113,11 @@ Recorded before anything is replaced; later items compare against it.
   plan ids, 45 invented plan files (39 refused), 34 web addresses, the
   security headers, 64 web strings and the device settings. Swift tests
   check every one.
-- **Behaviour to decide in PM.16, not silently change:** `/today/` (a
-  trailing slash) answers 200 although docs/urls.md says addresses have
-  none; assets carry no Cache-Control; a missing asset gets the HTML "Page
-  not found" page; `/api/v1/…` is 404 until PM.16 claims it.
+- **Behaviour decided in PM.16 (E38):** `/today/` now redirects (308) to
+  `/today`; assets are cached (fingerprinted files a year, the site's own
+  files an hour, pages `no-cache`); a missing asset still gets the HTML
+  "Page not found" page; `/api/v1/…` answers a JSON 404 until an endpoint
+  claims it.
 
 ## Target layout
 

@@ -2,7 +2,8 @@
 // the Node adapter, with Tailwind CSS 4 through its Vite plugin. SvelteKit 3
 // takes its configuration here, in the sveltekit() plugin, not in
 // svelte.config.js. Pages render on demand unless a route exports
-// `prerender = true`; adapter-node writes a standalone server to build/.
+// `prerender = true`; adapter-node writes a standalone server to build/,
+// which server.ts wraps with the headers every response carries.
 import adapter from "@sveltejs/adapter-node";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwindcss from "@tailwindcss/vite";
@@ -15,6 +16,26 @@ export default defineConfig({
       // precompress writes .br and .gz beside each static asset; the Node
       // server serves them, and Caddy proxies to it (docs/deploy.md).
       adapter: adapter({ out: "build", precompress: true }),
+      // The strict policy (docs/decisions.md E11, E36): nothing from another
+      // host, no inline script or style. SvelteKit adds a nonce (or, on a
+      // prerendered page, a hash) for the scripts it writes itself; server.ts
+      // sends the same policy, without one, on everything else.
+      csp: {
+        mode: "auto",
+        directives: {
+          "default-src": ["none"],
+          "script-src": ["self"],
+          "style-src": ["self"],
+          "img-src": ["self"],
+          "font-src": ["self"],
+          "connect-src": ["self"],
+          "manifest-src": ["self"],
+          "worker-src": ["self"],
+          "form-action": ["self"],
+          "base-uri": ["none"],
+          "frame-ancestors": ["none"],
+        },
+      },
     }),
   ],
   server: { host: "127.0.0.1", port: 5173, strictPort: true },

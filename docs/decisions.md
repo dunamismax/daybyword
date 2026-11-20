@@ -929,3 +929,56 @@ by the web tours later (P15.6). Recording the refusals as a fixture rather
 than porting Swift's unit tests keeps one list of invalid inputs, which
 found one subtlety at once: Swift's versification reader skips extra spaces
 between chapters while its word-count reader refuses them.
+
+
+### E38. The SvelteKit pages: server-rendered, no client runtime yet, and one server wrapper for headers
+
+*2026-11-20, agent (PM.16).* Every page the Swift server rendered is now a
+SvelteKit route rendered on the server per request: the layout, Today,
+Plans, a plan and its week (plan ids matched in `src/params.ts`), Progress,
+Settings, the 404 page, and the component gallery at `/dev/components`
+(only under `vite dev` or `DBW_ENV=development`). The eleven shared
+components are Svelte 5 components; the strings are `src/lib/strings.ts`,
+equal to tests/fixtures/strings.json; Morning's tokens are generated into
+Tailwind CSS 4 theme variables (`web/src/tokens.css`, `make tokens`), with
+Tailwind's own palette removed so a class can name only a token color.
+
+**No client runtime yet.** SvelteKit 3.4's root component writes its route
+announcer with a fixed inline `style` attribute (`root.svelte`), which
+`style-src 'self'` refuses and which no option turns off. Rather than
+weaken the policy (`'unsafe-hashes'` or `'unsafe-inline'` on
+`style-src-attr`), every page sets `csr = false` and ships no SvelteKit
+JavaScript. Settings, the copy buttons and the old-browser notice keep the
+Swift site's small same-origin modules (`static/assets/settings.js`,
+`copy.js`, `support.js`, `unsupported.js`, `theme.js`), with a test that
+they use the fixture's storage keys. When a page needs real interaction
+(P8.10's Today and marking), choose then among: mounting Svelte
+components with `mount()` from a Vite entry outside SvelteKit's router (no
+announcer), a SvelteKit release that sets the announcer's style through
+the CSSOM or a class, or an upstream fix; never a weaker policy.
+
+**One server wrapper.** `web/server.ts` runs adapter-node's handler inside
+`node:http` and adds the Swift server's security headers to every
+response, static files and errors included (SvelteKit's own CSP, with its
+nonce, wins on pages it renders), a cache policy (fingerprinted files keep
+adapter-node's year, the site's other files an hour, pages and errors
+`no-cache`, `/up` and `/api/v1` `no-store`), and one log line per request
+of method, route pattern, status and milliseconds: `hooks.server.ts` marks
+the pattern in a header the wrapper removes before sending, and static
+files log as `static`. Hooks alone could not reach static files or
+adapter-node's redirects.
+
+**Differences from the Swift server**, each tested in
+`web/test/build/server.test.ts`: `/today/` redirects (308) to `/today`
+instead of answering 200 (docs/urls.md has no trailing slashes);
+`/assets/site.css` and `/assets/tokens.css` are gone, their rules now in
+one fingerprinted stylesheet (they were the site's own files, never
+linked from outside, docs/urls.md); `/favicon.ico` is `image/x-icon`;
+`/api/v1/…` answers a JSON 404. Everything else in routes.json, the
+headers included, answers as before.
+
+**Why:** server rendering keeps every page readable with no JavaScript
+(D30) and the CSP strict (E11) with no exceptions; the interaction 1.0 has
+so far is two small scripts that already worked. A wrapper of a few dozen
+lines is smaller than a Caddy rule set kept in step with the app, and the
+headers stay with the code that is tested.

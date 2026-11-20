@@ -3,10 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="robots" content="noindex" />
+    <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+    <!-- Applies the reader's appearance and reference size before the page
+         paints, from this browser's own storage; a file, not inline, under the
+         strict CSP. support.js and unsupported.js show the old-browser notice;
+         settings.js and copy.js run Settings and the copy buttons (E38). -->
+    <script src="/assets/theme.js"></script>
+    <script type="module" src="/assets/support.js"></script>
+    <script nomodule defer src="/assets/unsupported.js"></script>
+    <script type="module" src="/assets/settings.js"></script>
+    <script type="module" src="/assets/copy.js"></script>
     %sveltekit.head%
   </head>
   <body>
-    <div style="display: contents">%sveltekit.body%</div>
+    <div class="contents">%sveltekit.body%</div>
   </body>
 </html>

@@ -4,6 +4,7 @@
 //   apple/Shared/Colors.xcassets   one color set per token, light and dark
 //   apple/Shared/DesignTokens.swift  Palette, Radius, Spacing, and TypeScale
 //   Server/Public/assets/tokens.css  the same values as CSS custom properties
+//   web/src/tokens.css             the same values as Tailwind CSS 4 theme variables
 //
 //   swift scripts/tokens.swift generate   rewrite the outputs
 //   swift scripts/tokens.swift check      fail if an output is stale, or if a text
@@ -177,6 +178,37 @@ func css(_ tokens: Tokens) -> String {
     return out
 }
 
+/// The SvelteKit site's Tailwind CSS 4 theme (BUILD.md PM.16, docs/decisions.md
+/// E36): Tailwind's own colors are removed, so `bg-accent`, `text-text-muted`
+/// and the rest are the only colors a class can name; spacing (`p-m`), radii
+/// (`rounded-card`), sizes (`text-reference`) and weights (`font-reference`)
+/// take the tokens' names. Dark values override the variables, as in tokens.css.
+func tailwind(_ tokens: Tokens) -> String {
+    func colors(_ pick: (Tokens.ColorToken) -> String, indent: String) -> String {
+        tokens.colors.map { "\(indent)--color-\(kebab($0.name)): \(pick($0));" }.joined(separator: "\n")
+    }
+    func rem(_ px: Int) -> String {
+        let value = Double(px) / 16
+        return value == value.rounded() ? "\(Int(value))rem" : "\(value)rem"
+    }
+    var out = "/* \(header) */\n\n@theme {\n  --color-*: initial;\n"
+    out += colors({ $0.light }, indent: "  ") + "\n"
+    for (name, value) in tokens.radius { out += "  --radius-\(kebab(name)): \(value)px;\n" }
+    for (name, value) in tokens.space { out += "  --spacing-\(kebab(name)): \(value)px;\n" }
+    let weights = ["regular": 400, "medium": 500, "semibold": 600, "bold": 700, "heavy": 800]
+    for style in tokens.type {
+        out += "  --text-\(kebab(style.name)): \(rem(style.size));\n"
+        if let desktop = style.desktopSize { out += "  --text-\(kebab(style.name))-desktop: \(rem(desktop));\n" }
+        out += "  --font-weight-\(kebab(style.name)): \(weights[style.weight] ?? 400);\n"
+    }
+    out += "}\n\n@layer base {\n  :root {\n    color-scheme: light dark;\n  }\n\n"
+    out += "  @media (prefers-color-scheme: dark) {\n    :root:not([data-theme=\"light\"]) {\n"
+    out += colors({ $0.dark }, indent: "      ") + "\n    }\n  }\n\n"
+    out += "  :root[data-theme=\"light\"] {\n    color-scheme: light;\n  }\n\n"
+    out += "  :root[data-theme=\"dark\"] {\n    color-scheme: dark;\n" + colors({ $0.dark }, indent: "    ") + "\n  }\n}\n"
+    return out
+}
+
 /// Every output file, by its path under the repository.
 func outputs(_ tokens: Tokens) -> [String: String] {
     var files: [String: String] = [:]
@@ -190,6 +222,7 @@ func outputs(_ tokens: Tokens) -> [String: String] {
     }
     files["apple/Shared/DesignTokens.swift"] = swiftSource(tokens)
     files["Server/Public/assets/tokens.css"] = css(tokens)
+    files["web/src/tokens.css"] = tailwind(tokens)
     return files
 }
 

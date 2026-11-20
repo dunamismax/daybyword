@@ -32,18 +32,23 @@ for this documentation revision.
 ## Application and secrets
 
 Use @sveltejs/adapter-node: `vite build` writes `web/build/`, run as
-`node build/index.js`. This app needs runtime API/form-action/database
+`node server.ts` (in `web/`), which wraps adapter-node's handler so every
+response carries the security headers, a cache policy and a metadata-only
+log line (E38). This app needs runtime API/form-action/database
 work; static public routes may prerender. A pure static content deployment
 can be served directly by Caddy, but it cannot replace runtime APIs.
 Build a pinned non-root Node image from a clean origin/main archive: build
-in one stage, then copy `web/build/`, `package.json`, the lockfile's
+in one stage, then copy `web/build/`, `web/server.ts`, `package.json`, the lockfile's
 production dependencies (`npm ci --omit=dev`: drizzle-orm and pg, which
 adapter-node leaves external), the jobs' `scripts/` and `src/lib/server/`,
 and `drizzle/`, and test the actual image. PostgreSQL's image is the
 pinned 18 major. No checkout as web root or runtime bind mount.
 
-Document runtime HOST/PORT, `ORIGIN=https://daybyword.com` (adapter-node
-needs it behind Caddy for form actions' origin check), `BODY_SIZE_LIMIT`, DBW_DATABASE_URL (the web as
+Document runtime HOST/PORT, DBW_ENV (production; `development` serves
+/dev/components), the public origin (SvelteKit 3 removed adapter-node's
+`ORIGIN`: Caddy passes the Host header and adapter-node assumes https, or
+set `paths.origin` in `web/vite.config.ts` at build when form actions
+arrive), `BODY_SIZE_LIMIT`, DBW_DATABASE_URL (the web as
 daybyword_app; the jobs as daybyword_migrate, PM.14), DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
 DBW_PORT, DBW_PUBLIC_DIR and DBW_CATALOG need explicit mapping/removal.
 Only public config may use client-exposed environment variables. No secrets

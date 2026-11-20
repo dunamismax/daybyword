@@ -15,7 +15,9 @@ export default [
     },
   },
   // TypeScript checks names itself; ESLint's no-undef does not know its globals.
-  { rules: { "no-undef": "off" } },
+  // Links are plain: the site has no base path (paths.base) and no client
+  // router (csr = false, E38), so resolve() would change nothing.
+  { rules: { "no-undef": "off", "svelte/no-navigation-without-resolve": "off" } },
   // The domain module is pure, for the server and the browser alike
   // (docs/engine.md, "The boundary"): it imports only its own files and
   // touches no DOM, Node, storage or network.

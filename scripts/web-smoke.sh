@@ -1,7 +1,8 @@
 #!/bin/sh
-# Boots the production SvelteKit build (web/build, adapter-node) on a free
-# loopback port and checks that it serves the health check and a prerendered
-# page, so `make check` proves the real production output (BUILD.md PM.21).
+# Boots the production SvelteKit server (web/server.ts around web/build,
+# adapter-node) on a free loopback port and checks that it serves the health
+# check, the home page and a 404, so `make check` proves the real production
+# output (BUILD.md PM.21, PM.16); web/test/build/ then checks every route.
 set -eu
 cd "$(dirname "$0")/../web"
 
@@ -9,7 +10,7 @@ cd "$(dirname "$0")/../web"
 port=${DBW_SMOKE_PORT:-$(node -e 'const s=require("node:net").createServer();s.listen(0,"127.0.0.1",()=>{console.log(s.address().port);s.close()})')}
 base="http://127.0.0.1:$port"
 log=$(mktemp)
-HOST=127.0.0.1 PORT=$port node ./build/index.js >"$log" 2>&1 &
+HOST=127.0.0.1 PORT=$port node ./server.ts >"$log" 2>&1 &
 pid=$!
 trap 'kill $pid 2>/dev/null || true; rm -f "$log"' EXIT INT TERM
 

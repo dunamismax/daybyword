@@ -149,7 +149,8 @@ From a clean checkout:
 make check       # lint, the web gate, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
 make check-full  # check, the web and app tours in light and dark, and Linux: at milestones and before releases
 make run       # build, boot the newest iPhone simulator, install, and launch the app
-make serve     # serve the site at http://localhost:8080 (/ and /up)
+make serve     # serve the Swift site at http://localhost:8080 (until PM.20)
+make serve-web # serve the SvelteKit production build at http://localhost:8080
 ```
 
 `make help` lists every target. Others worth knowing: `make test-linux`
