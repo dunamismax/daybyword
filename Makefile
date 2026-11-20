@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.package-lock.json
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format \
-	web-install lint-web types-web test-web build-web smoke-web check-web \
+	web-install lint-web types-web test-web build-web smoke-web check-web test-domain-browser \
 	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
@@ -110,6 +110,10 @@ smoke-web: build-web ## Boot the production web build and check what it serves
 
 check-web: lint-web types-web test-web smoke-web check-export db-drift test-db ## The web part of make check
 
+test-domain-browser: web-install ## Run the shared engine cases in headless Firefox (docs/engine.md, "Parity")
+	@echo "== domain cases in a browser"
+	@cd web && node scripts/domain-browser.ts
+
 CATALOG_EXPORT := build/catalog/catalog-export.json
 
 catalog-export: check-catalog ## Export the release catalog as JSON for the PostgreSQL import
@@ -150,7 +154,7 @@ tour-web: catalog ## Tour the site in a real browser through WebDriver; screensh
 check: lint check-web catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
-check-full: check tour-web tour-app test-linux ## The milestone gate: check, both tours in light and dark, and Linux
+check-full: check test-domain-browser tour-web tour-app test-linux ## The milestone gate: check, the engine cases in a browser, both tours in light and dark, and Linux
 	@echo "check-full: all passed"
 
 archive: ## Build a signed Release archive for TestFlight (docs/release.md)

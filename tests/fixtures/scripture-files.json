@@ -1,0 +1,600 @@
+{
+  "about" : "Small invented scripture data files (a book registry, an English versification, word counts read against the repository's English scheme) and what reading one gives: a summary, or the first problem's kind and message (no message for an unreadable registry, whose detail is each runtime's own).",
+  "cases" : [
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "books" : [
+          "GEN",
+          "DAN",
+          "SUS",
+          "MAT"
+        ],
+        "canons" : [
+          "c"
+        ]
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 2, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unsupportedFormat",
+        "message" : "format 2 is not format 1"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\"}, {\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Gen\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateBook",
+        "message" : "GEN is registered twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "missingConvention",
+        "message" : "the convention kjv is not described"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateConvention",
+        "message" : "the convention common is described twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\", \"GEN\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "repeatedBook",
+        "message" : "the order first lists GEN twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\", \"REV\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unknownBook",
+        "message" : "first names REV, which is not registered or not listed"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"S\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "ordersDisagree",
+        "message" : "the order second lists other books than the canon c"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"first\", \"label\": \"S\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateOrder",
+        "message" : "the order first is described twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"MAT\", \"DAN\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "testamentsMixed",
+        "message" : "the order first puts an Old Testament book after a New Testament one"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"F\", \"sources\": [\"nowhere\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unknownSource",
+        "message" : "first cites nowhere, which is not described"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unsourcedIncludes",
+        "message" : "the canon c's included material has no source"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "bookInNoCanon",
+        "message" : "SUS belongs to no canon"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"GEN\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "includedTwice",
+        "message" : "the canon c has GEN twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"REV\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unknownBook",
+        "message" : "c names REV, which is not registered or not listed"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"names\": {\"kjv\": {\"name\": \"Daniel\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateName",
+        "message" : "two books are called \"Daniel\" in kjv"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"gen\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateAbbreviation",
+        "message" : "two books are abbreviated \"gen\" in common"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\", \"names\": {\"kjv\": {\"name\": \"Genesis\", \"abbreviation\": \"Gen\"}}}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "redundantName",
+        "message" : "GEN's kjv name repeats its common name or is not another convention's"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "emptyName",
+        "message" : "GEN has an empty name or abbreviation"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "emptyName",
+        "message" : "GEN has an empty name or abbreviation"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}, {\"id\": \"t\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unusedSource",
+        "message" : "the source t is cited by nothing"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"Genesis\", \"abbreviation\": \"Gen\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\", \"abbreviation\": \"Dan\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\", \"abbreviation\": \"Sus\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\", \"abbreviation\": \"Matt\", \"names\": {\"douay\": {\"name\": \"Saint Matthew\"}}}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}, {\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "duplicateSource",
+        "message" : "the source s is described twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"old\", \"name\": \"G\", \"names\": {\"geneva\": {\"name\": \"X\"}}}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unreadable"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"gen\", \"testament\": \"old\", \"name\": \"Genesis\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unreadable"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "{\"format\": 1, \"conventions\": [{\"id\": \"common\", \"label\": \"C\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"kjv\", \"label\": \"K\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}, {\"id\": \"douay\", \"label\": \"D\", \"example\": \"e\", \"rule\": \"r\", \"sources\": [\"s\"]}], \"books\": [{\"id\": \"GEN\", \"testament\": \"apocrypha\", \"name\": \"Genesis\"}, {\"id\": \"DAN\", \"testament\": \"old\", \"name\": \"Daniel\"}, {\"id\": \"SUS\", \"testament\": \"old\", \"name\": \"Susanna\"}, {\"id\": \"MAT\", \"testament\": \"new\", \"name\": \"Matthew\"}], \"canons\": [{\"id\": \"c\", \"label\": \"L\", \"description\": \"D\", \"includes\": {\"DAN\": [\"SUS\"]}, \"includesSources\": [\"s\"], \"orders\": [{\"id\": \"first\", \"label\": \"First\", \"sources\": [\"s\"], \"books\": [\"GEN\", \"DAN\", \"MAT\"]}, {\"id\": \"second\", \"label\": \"Second\", \"sources\": [\"s\"], \"books\": [\"DAN\", \"GEN\", \"MAT\"]}]}], \"sources\": [{\"id\": \"s\", \"title\": \"T\", \"publisher\": \"P\", \"url\": \"https://example.org\", \"checked\": \"2026-11-01\", \"usedFor\": \"u\"}]}"
+      },
+      "output" : {
+        "error" : "unreadable"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "not json"
+      },
+      "output" : {
+        "error" : "unreadable"
+      }
+    },
+    {
+      "input" : {
+        "file" : "registry",
+        "text" : "[]"
+      },
+      "output" : {
+        "error" : "unreadable"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t31 25"
+      },
+      "output" : {
+        "books" : [
+          "GEN"
+        ],
+        "verses" : 56
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "ESG\t10\t4-13 12"
+      },
+      "output" : {
+        "books" : [
+          "ESG"
+        ],
+        "verses" : 22
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "# a comment\n\nGEN\t1\t31\nEXO\t1\t22 25"
+      },
+      "output" : {
+        "books" : [
+          "GEN",
+          "EXO"
+        ],
+        "verses" : 78
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t0\t31"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "gen\t1\t31"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t31 x"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t0"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t1-3"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t5-3"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t31  25"
+      },
+      "output" : {
+        "books" : [
+          "GEN"
+        ],
+        "verses" : 56
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t31\t25"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t+1\t31"
+      },
+      "output" : {
+        "books" : [
+          "GEN"
+        ],
+        "verses" : 31
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "GEN\t1\t-31"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a first chapter, and its chapters' verses"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : "# comment\nGEN\t1\t31\nGEN\t1\t31"
+      },
+      "output" : {
+        "error" : "duplicateBook",
+        "message" : "GEN is numbered twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "versification",
+        "text" : ""
+      },
+      "output" : {
+        "books" : [
+
+        ],
+        "verses" : 0
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+      },
+      "output" : {
+        "books" : [
+          "OBA"
+        ],
+        "words" : 21
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "# a comment\nOBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+      },
+      "output" : {
+        "books" : [
+          "OBA"
+        ],
+        "words" : 21
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +1"
+      },
+      "output" : {
+        "books" : [
+          "OBA"
+        ],
+        "words" : 21
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "GEN\t1"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a chapter, and its verses' word counts"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "GEN\tx\t1"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a chapter, and its verses' word counts"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 -1"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a chapter, and its verses' word counts"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  1"
+      },
+      "output" : {
+        "error" : "malformedLine",
+        "message" : "line 1 is not a book id, a chapter, and its verses' word counts"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t2\t1"
+      },
+      "output" : {
+        "error" : "noSuchChapter",
+        "message" : "OBA 2 is not a chapter of the scheme"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "LJE\t1\t1"
+      },
+      "output" : {
+        "error" : "noSuchChapter",
+        "message" : "LJE 1 is not a chapter of the scheme"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 2 3"
+      },
+      "output" : {
+        "error" : "wrongVerseCount",
+        "message" : "OBA 1 has 21 verses in the scheme but 3 counts"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "JON\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+      },
+      "output" : {
+        "error" : "missingChapter",
+        "message" : "JON 2 is not counted"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : "OBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\nOBA\t1\t1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+      },
+      "output" : {
+        "error" : "duplicateChapter",
+        "message" : "OBA 1 is counted twice"
+      }
+    },
+    {
+      "input" : {
+        "file" : "word-counts",
+        "text" : ""
+      },
+      "output" : {
+        "books" : [
+
+        ],
+        "words" : 0
+      }
+    }
+  ],
+  "fixture" : "scripture-files",
+  "version" : 1
+}

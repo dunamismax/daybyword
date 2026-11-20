@@ -233,3 +233,103 @@ struct ScriptureOutput: Codable, Equatable, Sendable {
         return ScriptureOutput(books: books, canons: canons)
     }
 }
+
+// MARK: Scripture files
+
+struct ScriptureFileInput: Codable, Sendable {
+    /// `registry`, `versification` (English), or `word-counts` (read against
+    /// the repository's English scheme).
+    var file: String
+    var text: String
+}
+
+struct ScriptureFileOutput: Codable, Equatable, Sendable {
+    /// The books the file registers, numbers, or counts, in its order.
+    var books: [String]?
+    var canons: [String]?
+    var verses: Int?
+    var words: Int?
+    var error: String?
+    /// Absent for an unreadable registry, whose detail is each runtime's own.
+    var message: String?
+}
+
+func errorKind(_ error: BookRegistryError) -> String {
+    switch error {
+    case .unreadable: "unreadable"
+    case .unsupportedFormat: "unsupportedFormat"
+    case .duplicateConvention: "duplicateConvention"
+    case .missingConvention: "missingConvention"
+    case .duplicateBook: "duplicateBook"
+    case .emptyName: "emptyName"
+    case .redundantName: "redundantName"
+    case .duplicateName: "duplicateName"
+    case .duplicateAbbreviation: "duplicateAbbreviation"
+    case .duplicateCanon: "duplicateCanon"
+    case .duplicateOrder: "duplicateOrder"
+    case .canonWithoutOrder: "canonWithoutOrder"
+    case .unknownBook: "unknownBook"
+    case .repeatedBook: "repeatedBook"
+    case .ordersDisagree: "ordersDisagree"
+    case .testamentsMixed: "testamentsMixed"
+    case .includedTwice: "includedTwice"
+    case .unsourcedIncludes: "unsourcedIncludes"
+    case .bookInNoCanon: "bookInNoCanon"
+    case .duplicateSource: "duplicateSource"
+    case .unknownSource: "unknownSource"
+    case .unusedSource: "unusedSource"
+    }
+}
+
+func errorKind(_ error: VersificationError) -> String {
+    switch error {
+    case .malformedLine: "malformedLine"
+    case .duplicateBook: "duplicateBook"
+    case .unregisteredBook: "unregisteredBook"
+    case .missingBook: "missingBook"
+    }
+}
+
+func errorKind(_ error: WordCountsError) -> String {
+    switch error {
+    case .malformedLine: "malformedLine"
+    case .noSuchChapter: "noSuchChapter"
+    case .wrongVerseCount: "wrongVerseCount"
+    case .duplicateChapter: "duplicateChapter"
+    case .missingChapter: "missingChapter"
+    }
+}
+
+@Test func scriptureFilesMatchTheirFixture() throws {
+    let english = try loadEnglish()
+    try checkFixture("scripture-files") { (input: ScriptureFileInput) -> ScriptureFileOutput in
+        switch input.file {
+        case "registry":
+            do {
+                let registry = try BookRegistry(json: Data(input.text.utf8))
+                return ScriptureFileOutput(
+                    books: registry.books.map(\.id.rawValue), canons: registry.canons.map(\.id))
+            } catch let error as BookRegistryError {
+                if case .unreadable = error { return ScriptureFileOutput(error: errorKind(error)) }
+                return ScriptureFileOutput(error: errorKind(error), message: error.description)
+            }
+        case "versification":
+            do {
+                let scheme = try Versification(scheme: .english, tsv: input.text)
+                let verses = scheme.books.reduce(0) { $0 + scheme.verseCount(of: $1) }
+                return ScriptureFileOutput(books: scheme.books.map(\.rawValue), verses: verses)
+            } catch let error as VersificationError {
+                return ScriptureFileOutput(error: errorKind(error), message: error.description)
+            }
+        default:
+            try #require(input.file == "word-counts")
+            do throws(WordCountsError) {
+                let counts = try WordCounts(tsv: input.text, versification: english)
+                let words = counts.books.reduce(0) { $0 + counts.words(of: $1)! }
+                return ScriptureFileOutput(books: counts.books.map(\.rawValue), words: words)
+            } catch {
+                return ScriptureFileOutput(error: errorKind(error), message: error.description)
+            }
+        }
+    }
+}

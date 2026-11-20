@@ -112,9 +112,9 @@ web workspace (PM.14 and PM.21, decisions E34–E36) needs:
 - **curl**, used by `scripts/web-smoke.sh` (macOS includes it).
 - **PostgreSQL 18**'s server binaries (`initdb`, `pg_ctl`) on the PATH for
   `make test-db`, which starts a throwaway cluster on a Unix socket and
-  deletes it after: `brew install postgresql@18` and add
-  `$(brew --prefix postgresql@18)/bin` to the PATH. Nothing needs to be
-  running, and no other database is touched.
+  deletes it after: `brew install postgresql@18`. `scripts/with-postgres.sh`
+  uses Homebrew's postgresql@18 when another major comes first on the
+  PATH. Nothing needs to be running, and no other database is touched.
 
 Retain these existing Apple tools, confirmed on the owner's Mac on
 2026-10-30:
@@ -129,8 +129,9 @@ Retain these existing Apple tools, confirmed on the owner's Mac on
 - **python3**, used by `scripts/sim-destination.sh` (any Python 3 on the
   PATH; the Command Line Tools include one).
 - **Firefox** (159 here) and **geckodriver** 0.37.1 (`brew install
-  geckodriver`, added 2026-11-01) for the web tour in `make check-full`
-  (`make tour-web`, decision E26). Safari works too once "Allow remote
+  geckodriver`, added 2026-11-01) for the web tour and the engine cases in
+  a browser in `make check-full` (`make tour-web`, decision E26;
+  `make test-domain-browser`, docs/engine.md). Safari works too once "Allow remote
   automation" is on in Safari's Developer settings:
   `DBW_WEBDRIVER=safari make tour-web`.
 - For `make test-linux`, a running container runtime: Docker Desktop, or

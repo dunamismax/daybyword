@@ -12,6 +12,14 @@ set -eu
 
 major=${DBW_PG_MAJOR:-18}
 found=$(initdb --version 2>/dev/null | sed -nE 's/.* ([0-9]+)\.[0-9]+.*/\1/p')
+# Another major first on the PATH: use Homebrew's keg of the right one, if any.
+if [ "$found" != "$major" ] && command -v brew >/dev/null 2>&1; then
+  keg=$(brew --prefix "postgresql@$major" 2>/dev/null || true)
+  if [ -n "$keg" ] && [ -x "$keg/bin/initdb" ]; then
+    PATH="$keg/bin:$PATH"
+    found=$(initdb --version 2>/dev/null | sed -nE 's/.* ([0-9]+)\.[0-9]+.*/\1/p')
+  fi
+fi
 if [ "$found" != "$major" ]; then
   echo "with-postgres: needs PostgreSQL $major's initdb and pg_ctl on the PATH, found ${found:-none}" >&2
   echo "with-postgres: on macOS, brew install postgresql@$major and add its bin to the PATH" >&2

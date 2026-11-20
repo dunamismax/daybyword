@@ -11,7 +11,7 @@ that supersedes it, and add a single line under the old entry pointing to
 the new one (*Superseded by E12*). Every third-party package needs an entry
 here before it is added (AGENTS.md §5).
 
-**Current direction:** D41 and E33 govern alignment; D40/E32 are withdrawn. Old implementation
+**Current direction:** D42 (E36) and E33's engine boundary (E37) govern alignment; D40/E32 are withdrawn. Old implementation
 entries below document the still-present Swift baseline; do not use them
 to select the stack for new work. Pure product/data rules remain in force.
 
@@ -61,8 +61,9 @@ twice is a no-op, and the fold gives the same answer in any arrival order.
 
 ### E4. One engine, everywhere
 
-*Implementation superseded by E32 (D40); retain the applicable behavior and
-data invariants.*
+*Implementation superseded by E32 (D40), then E33: one specification,
+docs/engine.md, with a Swift and a TypeScript runtime (E37); retain the
+applicable behavior and data invariants.*
 
 *2026-10-30, owner (Engineering foundation 4, D5).* `ReadingEngine`, a Swift
 package that uses Foundation only, is the single implementation of
@@ -903,3 +904,28 @@ Telemetry: SvelteKit, Vite and Tailwind send none, so the Makefile's
 `ASTRO_TELEMETRY_DISABLED` was removed. `npm audit` still reports only the
 development-only advisories E35 recorded; production dependencies have
 none.
+
+
+### E37. The engine's two runtimes are checked in Node and in a real browser, with no new packages
+
+*2026-11-20, agent (PM.15).* `docs/engine.md` (version 0) specifies what
+Swift's `ReadingEngine` already does, and `web/src/lib/domain/` is its
+TypeScript runtime: pure modules (the lint refuses imports from outside the
+folder and DOM, Node, storage and network globals) that take the scripture
+files' text, as Swift's callers pass `Data`. The shared cases are checked
+three ways: Swift `FixtureTests` and vitest in Node on every `make check`,
+and `make test-domain-browser` in `make check-full`, which builds
+`web/test/browser/` with Vite, serves it on loopback and reads its result
+from headless Firefox through geckodriver. A new fixture,
+`scripture-files.json`, pins how both runtimes refuse malformed registry,
+versification and word-count files, recorded from Swift.
+
+**Why:** Vitest's browser mode or Playwright would each add packages and a
+browser download for one page of checks; Vite and geckodriver are already
+here (E26, E36), and the page uses the same comparison as the Node test, so
+the two cannot drift. Firefox alone is automated: Safari needs "Allow remote
+automation", a setting agents do not change; Chrome and Safari are covered
+by the web tours later (P15.6). Recording the refusals as a fixture rather
+than porting Swift's unit tests keeps one list of invalid inputs, which
+found one subtlety at once: Swift's versification reader skips extra spaces
+between chapters while its word-count reader refuses them.

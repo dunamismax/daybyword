@@ -8,8 +8,9 @@ source's rights record in `catalog/SOURCES.md`. Decisions E27, E28, E30,
 and E31 in `docs/decisions.md` give the reasons.
 
 **D41/D42 alignment:** native Swift source/provenance below stays. The web's
-TypeScript domain module must pass the same reference/count/workload
-fixtures (E33). Preserve numeric data and rights evidence; no new text
+TypeScript domain module (`web/src/lib/domain/`) reads the same files and
+passes the same reference/count/workload fixtures (E33); docs/engine.md
+specifies both. Preserve numeric data and rights evidence; no new text
 downloads or retranscription are needed.
 
 ## Books, canons, and names

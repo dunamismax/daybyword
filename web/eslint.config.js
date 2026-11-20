@@ -16,4 +16,35 @@ export default [
   },
   // TypeScript checks names itself; ESLint's no-undef does not know its globals.
   { rules: { "no-undef": "off" } },
+  // The domain module is pure, for the server and the browser alike
+  // (docs/engine.md, "The boundary"): it imports only its own files and
+  // touches no DOM, Node, storage or network.
+  {
+    files: ["src/lib/domain/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            { regex: "^(?!\\./)", message: "src/lib/domain/ imports only its own files." },
+          ],
+        },
+      ],
+      "no-restricted-globals": [
+        "error",
+        ...[
+          "window",
+          "document",
+          "navigator",
+          "localStorage",
+          "sessionStorage",
+          "indexedDB",
+          "fetch",
+          "process",
+          "Buffer",
+          "console",
+        ].map((name) => ({ name, message: "src/lib/domain/ is pure (docs/engine.md)." })),
+      ],
+    },
+  },
 ];

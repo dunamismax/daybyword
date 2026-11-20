@@ -3,8 +3,11 @@
 Inputs, and the outputs Day by Word's Swift code gives for them, captured at
 PM.12 (BUILD.md) before the SvelteKit/PostgreSQL migration replaces anything. The
 TypeScript web module and the SvelteKit site must give the same outputs
-(docs/decisions.md E33); the Swift tests named below check them on every
-`make check`, so a fixture never drifts from the code that made it.
+(docs/decisions.md E33, docs/engine.md); the Swift tests named below check them on every
+`make check`, so a fixture never drifts from the code that made it. The
+engine fixtures (`references` through `scripture-files`) are also checked by
+the TypeScript domain module in Node (`web/test/domain/`, every `make check`)
+and in headless Firefox (`make test-domain-browser`, in `make check-full`).
 
 | File | What it pins | Checked by |
 |---|---|---|
@@ -13,6 +16,7 @@ TypeScript web module and the SvelteKit site must give the same outputs
 | `workload.json`, `plan-workload.json` | Minutes from words; a plan's lightest, middle, and heaviest readings | same |
 | `scripture.json` | Every registered book's chapters, verses, words, and names; each canon's books, orders, and totals | same |
 | `plan-ids.json` | Which text is a plan id | same |
+| `scripture-files.json` | Small invented registry, versification and word-count files, and what reading each gives or its first problem (PM.15) | same |
 | `plan-files.json` | Invented plan files and what the compiler reads and computes, or its first problem | `CatalogCompilerTests/FixtureTests.swift` |
 | `catalog-export.json` | An invented release catalog as `catalog export` writes it (PM.14), whose checksum the PostgreSQL import recomputes; not in the cases format | `CatalogCompilerTests/CatalogExportTests.swift`, `web/test/` |
 | `routes.json` | Each web address's status, content type, cache policy, title, heading, and current section; the security headers | `DayByWordWebTests/FixtureTests.swift` |
