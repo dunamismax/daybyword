@@ -1,18 +1,21 @@
 # Working on Day by Word
 
-Day by Word is a Bible reading companion: a native iPhone and iPad app built
-in SwiftUI, and a SvelteKit web version at daybyword.com backed by
-PostgreSQL 18/Drizzle on the owner's own machine behind Caddy (stack
-decision D42, which replaced D41's Astro plan). `web/` is already a
-SvelteKit 3 workspace; the pages a reader sees are still served by the
-original Swift/Hummingbird foundation until BUILD.md Phase M ports them.
-Read docs/stack-migration.md.
-Swift is justified by the existing native app; Python is optional tooling,
-not a required language or rewrite. It helps Christians choose a
+Day by Word is a Bible reading companion. It helps Christians choose a
 reading plan, know what to read today, and keep a trustworthy record of
 their reading, while they read in their own Bible: paper, app, or audio. Its
-line is *Find your plan. Read your Bible. Keep your place.* Every AI agent
-session follows this file.
+line is *Find your plan. Read your Bible. Keep your place.*
+
+It is a native iPhone and iPad app in SwiftUI and a SvelteKit web version
+at daybyword.com, backed by PostgreSQL 18 and Drizzle on the owner's own
+machine behind Caddy (stack decision D42). SvelteKit in `web/` serves every
+page; the original Swift/Hummingbird server in `Server/` remains only until
+BUILD.md's PM.20 retires it. Swift stays because the native app is Swift;
+Python is optional tooling, never a required language or a rewrite.
+
+Every AI agent session follows this file. [BUILD.md](BUILD.md) says *what*
+to build and where work stands; this file says *how* to work. When they
+disagree about what to build, BUILD.md wins; about how to work, this file
+wins.
 
 **No denominational affiliation.** Day by Word is an independent Christian
 project and serves readers of every tradition. This repository has no
@@ -20,6 +23,20 @@ SOUL.md, statement of faith, or denominational framework, and must not gain
 one. Do not read, copy, or adapt the SOUL.md files or faith statements of
 the owner's other projects (Grace & Footnotes, Prayerbook Atlas, Beautiful
 Corner) for this work. §3 is the whole of this project's voice and conduct.
+
+Contents: [Git rules](#git-rules-owners-standing-instructions) ·
+[1. Before you touch anything](#1-before-you-touch-anything) ·
+[2. The session loop](#2-the-session-loop) ·
+[3. Voice, fairness, and the reader](#3-voice-fairness-and-the-reader) ·
+[4. Markers, gates, and who decides](#4-markers-gates-and-who-decides) ·
+[5. Stack and engineering rules](#5-stack-and-engineering-rules) ·
+[6. Plans, references, and rights](#6-plans-references-and-rights) ·
+[7. Definition of done](#7-definition-of-done-for-a-checkbox) ·
+[8. Commits](#8-commits) ·
+[9. Beyond the repository](#9-beyond-the-repository) ·
+[10. Commands](#10-commands) ·
+[11. Known pitfalls](#11-known-pitfalls) ·
+[12. Keeping this file useful](#12-keeping-this-file-useful)
 
 ## Git rules (owner's standing instructions)
 
@@ -35,27 +52,32 @@ tools.
   any AI tool in commit messages, tags, release notes, code, comments, docs,
   or file headers. Use the owner's configured git identity and never change
   git config. Content the project deliberately publishes about AI, such as a
-  reader-facing disclosure, is not attribution.
+  reader-facing disclosure or the README's "How it is built", is not
+  attribution.
 - After committing, push `main` right away, and at the latest before the
   session ends. Before committing, run the project's checks, review
   `git status` for stray files, and never commit what `.gitignore` excludes.
 
 ## 1. Before you touch anything
 
-1. Read [BUILD.md](BUILD.md) in full once per session: "How agents use this
-   file", the finished-product definition, the product principles, the
-   Owner decisions table (D1–D41), the Engineering foundations, the phases
-   to version 1.0, and the Handoff notes at the bottom. Do not read
-   `BUILD-HISTORY.md`, `docs/roadmap.md` (the work after 1.0), or
-   `docs/research/` unless an item or a check points there (§8, "Keeping
-   BUILD.md short").
-2. Read the entries of `docs/decisions.md` that bear on your item, and any
-   document linked from the items you are about to work on: `docs/engine.md` for engine work;
-   `docs/catalog-format.md`, `docs/editorial.md`, and `catalog/SOURCES.md`
-   for plans; `docs/product.md` and `docs/design.md` for anything a reader
-   sees; `docs/deploy.md` before touching the server.
-3. Run `git status`, `git log --oneline -20`, and `make check`, so you know
-   the real state before trusting any checkbox.
+1. Run `git pull --ff-only`, `git status`, and `git log --oneline -20`.
+   Preserve any work in the tree that is not yours (§8).
+2. Read BUILD.md's **Now** table, then the whole of [BUILD.md](BUILD.md)
+   once per session: "How agents use this file", the finished-product
+   definition, the product principles, the Owner decisions table (D1–D42),
+   the Engineering foundations, the phases to version 1.0, and the Handoff
+   notes at the bottom. Do not read `BUILD-HISTORY.md`, `docs/roadmap.md`
+   (the work after 1.0), or `docs/research/` unless an item or a check
+   points there (§8, "Keeping BUILD.md short").
+3. Read the entries of `docs/decisions.md` that bear on your item, and any
+   document linked from the items you are about to work on:
+   `docs/engine.md` for engine work; `docs/catalog-format.md`,
+   `docs/editorial.md`, and `catalog/SOURCES.md` for plans;
+   `docs/product.md` and `docs/design.md` for anything a reader sees;
+   `docs/urls.md` and `docs/web.md` for the web; `docs/deploy.md` before
+   touching the server; `docs/release.md` before an archive or TestFlight.
+4. Run `make check` (§10), so you know the real state before trusting any
+   checkbox. If it fails on a clean tree, fixing it is your first task.
 
 The owner (GitHub `dunamismax`) decides the product. In anything this
 project publishes, refer to the owner only as the owner, and never attribute
@@ -63,14 +85,14 @@ a church, tradition, or faith story to them.
 
 ## 2. The session loop
 
-1. Finish **Phase M first**, starting at PM.12; PM.1–PM.11 are withdrawn.
-   Find the **first unchecked `- [ ]` item in the earliest phase that is not
-   complete**, skipping items whose gate is still closed and [OWNER] steps
-   still waiting on the owner (§4). The design session (P2.3) was a hard
-   stop until the owner chose the design; it finished on 2026-11-01 (D18).
-   Phases are ordered, and items inside a
-   phase are ordered unless marked *(parallel-safe)* or the phase says
-   otherwise. Phase 10 (the launch catalog) may run alongside Phases 9–17.
+1. The owner's request in chat comes first. Otherwise finish **Phase M**
+   first (PM.1–PM.11 are withdrawn; BUILD.md's **Now** names the next
+   item). In general, take the **first unchecked `- [ ]` item in the
+   earliest phase that is not complete**, skipping items whose gate is
+   still closed and [OWNER] steps still waiting on the owner (§4). Phases
+   are ordered, and items inside a phase are ordered unless marked
+   *(parallel-safe)* or the phase says otherwise. Phase 10 (the launch
+   catalog) may run alongside Phases 9–17.
 2. Inspect the relevant code before writing any. Checkboxes can drift from
    reality: if an item is already done, verify it and tick it; if a ticked
    item is broken, untick it and say why in the Handoff notes. If the broken
@@ -87,10 +109,12 @@ a church, tradition, or faith story to them.
    in one session, and stop only at the end of your budget. When you meet a
    blocker, clear it or work around it, record why, and keep going.
 6. Before ending: make sure `make check` passes (and `make check-full` at a
-   milestone, or before a TestFlight build or a deploy), push, update the Build
-   status table in BUILD.md, and **replace** the Handoff notes with the
-   current state (what you finished, what is half-done, what is blocked, and
-   anything surprising). Keep them under 25 lines; history lives in Git.
+   milestone, or before a TestFlight build or a deploy), push, update
+   BUILD.md's **Now** and Build status tables, and **replace** the Handoff
+   notes with the current state (what you finished, what is half-done, what
+   is blocked, and anything surprising). Keep them under 25 lines; history
+   lives in Git. Then tell the owner in chat what you finished, what comes
+   next, and exactly what waits on them.
 
 Never leave `main` broken. If you must stop mid-item, either finish it to a
 passing state or revert the partial work, and record it in the Handoff
@@ -140,9 +164,9 @@ consistency hard. Every rule here protects that reader.
   Bible app) that has not been verified.
 - **Privacy is care.** Reading history and tradition preferences are
   sensitive, and in some laws they are special-category data (Research
-  finding 11, in `docs/research/findings.md`). They are private by default, kept on the device
-  unless the reader consents to more (D10), exportable, and deletable. No
-  analytics, ever (D12).
+  finding 11, in `docs/research/findings.md`). They are private by default,
+  kept on the device unless the reader consents to more (D10), exportable,
+  and deletable. No analytics, ever (D12).
 - **No AI in the product** (D23). There are no generative models, chat, or
   AI recommendations anywhere. The single exception is Apple's on-device
   text recognition for private photo import, with every reference confirmed
@@ -174,7 +198,7 @@ Apple Developer account through Xcode and App Store Connect (D33). Decide
 on the evidence, and write the reasoning down where the next agent will find
 it: a new decision goes in BUILD.md's Owner decisions table as
 `(agent, date)` with its reasons, or in `docs/decisions.md` for
-engineering. The owner's answers in D1–D41 are the product's direction. An
+engineering. The owner's answers in D1–D42 are the product's direction. An
 agent may refine how one is carried out, but never reverses one without
 asking the owner.
 
@@ -182,14 +206,13 @@ The only limits are honesty and the host's own safety rules. Where those
 rules stop an agent from a step (entering the owner's passwords or keys,
 making a payment, accepting terms, sending a message in the owner's name,
 or publishing where the host requires a confirmation), do everything else,
-ask the owner in chat for exactly that step, and continue with other work
-meanwhile.
+ask the owner in chat for exactly that step, list it under "Waiting on the
+owner" in BUILD.md's **Now**, and continue with other work meanwhile.
 
 - `- [ ]` open, `- [x]` done and verified.
 - **[OWNER]**: a step only the owner can take: signing in to the owner's
   accounts (Cloudflare, Codeberg, payment services), the owner's own review
-  or choice (the expert review of D15, the design choice of D18, which is a
-  hard stop under §2), supplying
+  or choice (the expert review of D15, the design choice of D18), supplying
   images (D19), or confirming a letter (D38). Agents prepare everything
   around it and tick it once it is verifiably done.
 - **[GATE Dn]**: depends on a decision that opens later (D6 for Android
@@ -220,115 +243,151 @@ Handoff notes.
 ## 5. Stack and engineering rules
 
 **The stack (D42, E36): SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4
-· PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy.** It replaces
-D41/E33's Astro plan, which replaced D40/E32's Next/Expo plan; E33's engine
-and data boundaries still hold. `web/` is the SvelteKit workspace; the
-Hummingbird pages are ported in Phase M. See docs/stack-migration.md and
-docs/deploy.md.
+· PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy**, with the
+existing SwiftUI app. It replaced D41/E33's Astro plan, which replaced
+D40/E32's Next/Expo plan; E33's engine and data boundaries still hold. No
+Next.js, Astro, React, Expo, or Tauri migration. SvelteKit 3, Svelte 5,
+Tailwind 4, and Drizzle differ a lot from older tutorials: look up their
+current documentation (Context7 or the official docs) before writing
+framework code, rather than relying on memory.
 
-- **Web**: SvelteKit 3 with Svelte 5 (runes) and TypeScript, built by
-  @sveltejs/adapter-node into a standalone Node server. Configuration
-  lives in the `sveltekit()` plugin in `web/vite.config.ts` (SvelteKit 3
-  reads no svelte.config.js). Pages are `src/routes/**/+page.svelte` with
-  `+page.server.ts` loads; forms use SvelteKit form actions with
-  progressive enhancement; app and client APIs are
-  `src/routes/api/v1/**/+server.ts`. Prerender public content where useful
-  and set `csr = false` on pages that need no interaction. This project
-  needs a Node runtime for app APIs, not a static-only deployment.
-- **Styling**: Tailwind CSS 4 through `@tailwindcss/vite`, one entry at
+**Web** (`web/`)
+- SvelteKit 3 with Svelte 5 runes and TypeScript, built by
+  `@sveltejs/adapter-node` into a standalone Node server that
+  `web/server.ts` wraps for headers, cache policy, and logs. Configuration
+  lives in the `sveltekit()` plugin in `web/vite.config.ts`; SvelteKit 3
+  reads no `svelte.config.js`.
+- Pages are `src/routes/**/+page.svelte` with `+page.server.ts` loads;
+  forms use form actions with progressive enhancement; app and client APIs
+  are `src/routes/api/v1/**/+server.ts`. Prerender public content where
+  useful and set `csr = false` on pages that need no interaction (today,
+  every page: E38). The app APIs need a Node runtime, so the site is never a
+  static-only deployment.
+- Styling: Tailwind CSS 4 through `@tailwindcss/vite`, one entry at
   `web/src/app.css`, with Morning's theme variables generated from
-  design/tokens.json. No component kit is required; Svelte components are
-  written here, preserving Morning rather than imposing a new UI.
-- **Server data**: PostgreSQL 18 through a server-only Drizzle schema in
+  `design/tokens.json` into `web/src/tokens.css`. No component kit; Svelte
+  components are written here and preserve Morning rather than impose a
+  new UI.
+
+**Server data**
+- PostgreSQL 18 through a server-only Drizzle schema in
   `web/src/lib/server/`, imported as `#lib/server/…` (SvelteKit 3 refuses
-  to bundle any `server` directory into the browser) and
-  reviewed generated SQL migrations. No server SQLite, better-sqlite3,
-  libSQL, Litestream or SQLite-file access from Python. Each project has
-  an isolated DB/user, private network and persistent volume. No direct
-  DB connection or credentials in browser/native clients.
-- **Native**: retain the existing SwiftUI iPhone/iPad app, @Observable,
-  WidgetKit, App Intents and UserNotifications. Swift 6.4.2 in
-  .swift-version, Swift 6 mode/complete concurrency; Xcode 27/iOS 27 SDK,
-  iOS/iPadOS 26 minimum (D7). Keep XcodeGen/project.yml and existing
-  make run/test-app/archive commands working. Do not hand-edit generated
-  xcodeproj files. A future Mac target uses SwiftUI only when needed;
-  no new native platform is implied by this stack change.
-- **Local native data**: existing ReadingData/system SQLite remains
-  justified for offline reading and catalog access. SwiftData or GRDB are
-  choices for a demonstrated storage need, not mandatory substitutions.
-  They never replace the PostgreSQL server or connect to it directly.
-  Native network operations call SvelteKit API endpoints over HTTPS.
-- **Reading logic**: one docs/engine.md specification, versioned wire
-  contracts and shared JSON cases. Swift ReadingEngine owns native rules;
-  a TypeScript domain module (`web/src/lib/domain/`) owns the web's
-  server and browser rules. This explicit E33
-  exception replaces the former single-language engine assumption.
-  Test both runtimes against identical oracle fixtures; no rules in Svelte
-  components, form actions, routes, SQL or utility scripts. New engine rules require cases
-  and specification updates before code, with parity before completion.
-- **Packages/compiler**: retain needed Swift native/domain/compiler
-  packages and their Linux/macOS tests. The compiler's catalog rights,
-  coverage and source checks survive. PM.14 specifies deterministic
-  export/import from the schema-3 catalog into Postgres; keep bundled,
-  read-only native catalog artifacts apart from mutable server data.
-  Calendar rules stay compiler-only, never rebuilt in app views/routes.
-- **Python only when needed**: use uv environments/dependencies/runs and
-  ruff if Python utility work is justified. Typer/httpx/Pydantic are
-  optional per task; no mandatory dependency bundle or mass script port.
-  Reports/maintenance query Postgres with a suitable least-privilege
-  connection, not Python sqlite3 against server files. Recurring jobs
-  use systemd timers. No standalone Python backend is required.
-- **Scope**: keep D39's offline/no-account core, local native records and
-  browser IndexedDB. At 1.0 the server stores public catalog data only;
-  transient compute requests must not persist personal records.
-  Better Auth inside SvelteKit with Drizzle/Postgres waits for Phase 14;
-  preserve optional passkey/recovery requirements. Billing stays gated.
-  D23 excludes all AI features/model SDKs despite general stack options.
-  No Next.js, Astro, React, Expo or Tauri migration.
-- **Versioning/dependencies**: pin supported Node/npm, SvelteKit/Svelte/
-  Vite, Tailwind, Drizzle/pg and PostgreSQL 18 versions and a lockfile; retain pinned Swift. Document real extra
-  packages in decisions.md before adding. No analytics, tracking,
-  advertising, session replay, remote fonts/CDNs or phone-home services.
-  Disable build/framework telemetry. Never copy other-project code (D22).
-- **Dates/journal**: civil dates, resolved at the device edge; never Date
-  instants as reading days. Reminders use wall-clock/IANA time zones.
-  Events use UUIDv7, append-only deterministic folds, idempotent retries
-  and undo events; deletion only at the reader's request.
-- **Tests/gates**: preserve make check for active Swift targets and add
-  SvelteKit lint/svelte-check/unit/build, real PostgreSQL 18
-  migrations/import and parity tests. make check-full adds native/browser tours and Linux. Keep
-  manual-dispatch CI (D31); port existing assertions before retiring tools.
-- **Design/accessibility**: design/tokens.json and docs/design.md remain
-  authoritative. Generate Apple assets plus web CSS/Tailwind theme variables
-  as needed; no raw colors/new art. AX5/VoiceOver/Reduce Motion and WCAG
-  2.2 AA, light/dark/zoom/keyboard checks remain. State always has words
-  or symbols, not color alone. Interface strings stay localizable.
-- **Security**: same-origin assets only, strict production CSP without
-  unsafe-inline/unsafe-eval, through SvelteKit's `csp` option (hashes for
-  prerendered pages, nonces for rendered ones); test hydration and
-  Tailwind output under it in the production build.
-  Logs contain method/route pattern/status/duration only, never request
-  bodies, concrete plan paths, tokens or personal data. Private API
-  responses are no-store, excluded from shared caches. No personal data
-  in URLs except the protected future revocable calendar-feed credential.
-- **Host layout (planned)**: deploy/compose.yaml, deploy/Dockerfile,
-  deploy/caddy/daybyword.com; /srv/www/daybyword.com/releases and shared/env
-  (root-owned 0600); host /etc/caddy/sites/daybyword.com. Project daybyword,
-  loopback 127.0.0.1:4318 (4316/4317 are taken) to the adapter-node container
-  port 3000 (`node server.ts`; the origin from Caddy's Host header or
-  `paths.origin`, since SvelteKit 3 dropped ORIGIN); private PostgreSQL 18 on 5432, database daybyword, role daybyword_app, stable
-  project volume and separate migration credential. Inspect actual paths
-  and shared lock before changes; only origin/main releases are served.
-- **TLS/backups**: DNS is owner-managed, DNS-only (not proxied) Cloudflare
-  records pointing at the server's public IP; host Caddy is the reverse
-  proxy and obtains its own Let's Encrypt certificates. No Cloudflare DNS
-  challenge, Caddy DNS plugin, token or proxy/SSL-mode work; never change
-  Cloudflare settings. Coordinate shared-binary changes, never edit other sites.
-  Nightly pg_dump, encrypted off-server copies, retention and isolated
-  restore checks start with the first Postgres deploy.
-- **Secrets**: never commit .env, signing keys/certificates/profiles,
-  Secrets.xcconfig, DB credentials or DNS tokens. No secrets in public
-  variables, bundles, images or logs. Read docs/deploy.md before host work.
+  to bundle any `server` directory into the browser), with reviewed
+  generated SQL migrations in `web/drizzle/`.
+- No server SQLite, better-sqlite3, libSQL, Litestream, or SQLite-file
+  access from Python. The project has its own database, roles, private
+  network, and persistent volume. No browser or native client ever holds a
+  database connection or credentials.
+- At 1.0 the server stores public catalog data only; transient compute
+  requests never persist personal records.
+
+**Native** (`apple/`)
+- Keep the SwiftUI iPhone and iPad app with Observation (`@Observable`),
+  WidgetKit, App Intents, and UserNotifications. Swift 6.4.2 in
+  `.swift-version`, Swift 6 language mode with complete concurrency
+  checking; Xcode 27 and the iOS 27 SDK, iOS and iPadOS 26 minimum (D7).
+- Keep XcodeGen's `apple/project.yml` and the `make run`, `test-app`, and
+  `archive` commands working. Never hand-edit the generated Xcode project.
+  A Mac target uses SwiftUI only when needed; this stack implies no new
+  native platform.
+- Local data: the existing `ReadingData` SQLite stays for offline reading
+  and the bundled catalog. SwiftData or GRDB are for a demonstrated storage
+  need, never a mandatory substitution, and never replace or connect to the
+  PostgreSQL server. Native network operations call the SvelteKit API over
+  HTTPS.
+
+**Reading logic**
+- One specification, `docs/engine.md`, with versioned wire contracts and
+  shared JSON cases in `tests/fixtures/`. Swift `ReadingEngine` owns the
+  native rules; the TypeScript domain module `web/src/lib/domain/` owns the
+  web's server and browser rules (E33's explicit two-runtime exception).
+- Both runtimes pass identical cases. No rules in Svelte components, form
+  actions, routes, SQL, or utility scripts. A new engine rule gets its cases
+  and its specification first, then code, then parity in both runtimes.
+- Keep the needed Swift packages and the catalog compiler with their macOS
+  and Linux tests. The compiler's rights, coverage, and source checks are
+  the release gate. Its deterministic export is the only way catalog data
+  reaches PostgreSQL (PM.14); bundled, read-only native catalog artifacts
+  stay apart from mutable server data. Calendar rules stay compiler-only,
+  never rebuilt in app views or routes.
+
+**Python, only when needed.** Use uv for environments, dependencies, and
+runs, and ruff, if a utility justifies Python. Typer, httpx, and Pydantic
+are optional per task; no mandatory bundle or mass port of scripts.
+Reports and maintenance query PostgreSQL with a least-privilege
+connection. Recurring jobs are systemd timers. No standalone Python
+backend.
+
+**Scope.** Keep D39's offline, no-account core: local native records and
+the browser's IndexedDB. Better Auth inside SvelteKit with Drizzle waits
+for Phase 14 and keeps the optional passkey and recovery-code design (D8).
+Billing stays gated (D11). D23 excludes every AI feature and model SDK.
+
+**Versions and dependencies.** Pin Node, npm, SvelteKit, Svelte, Vite,
+Tailwind, Drizzle, pg, and PostgreSQL 18, with an exact lockfile, and keep
+Swift pinned. Record any real new package in `docs/decisions.md` before
+adding it. No analytics, tracking, advertising, session replay, remote
+fonts or CDNs, or phone-home services; disable build and framework
+telemetry. Never copy code from the owner's other projects (D22).
+
+**Dates and the journal.** Civil dates, resolved once at the device edge;
+never a `Date` instant as a reading day. Reminders use wall-clock time in
+IANA time zones. Events use UUIDv7 ids, append-only deterministic folds,
+idempotent retries, and undo events; deletion only at the reader's request.
+
+**Tests and gates.** `make check` covers the active Swift targets and the
+SvelteKit lint, svelte-check, unit tests, production build, real
+PostgreSQL 18 migrations and import, and the engine cases. `make
+check-full` adds the browser engine run, both tours, and Linux. CI is
+manual dispatch only (D31). Port existing assertions before retiring a
+tool.
+
+**Design and accessibility.** `design/tokens.json` and `docs/design.md` are
+authoritative. Generate Apple assets and web theme variables from them
+(`make tokens`); no raw colors and no new art. AX5 Dynamic Type,
+VoiceOver, Reduce Motion, and WCAG 2.2 AA, with light, dark, zoom, and
+keyboard checks. State always has words or symbols, never color alone.
+Interface strings stay localizable.
+
+**Security.** Same-origin assets only, and a strict production CSP with no
+`unsafe-inline` or `unsafe-eval`, through SvelteKit's `csp` option (hashes
+for prerendered pages, nonces for rendered ones); test hydration and
+Tailwind output under it in the production build. Logs carry method, route
+pattern, status, and duration only, never request bodies, concrete plan
+paths, tokens, or personal data. Private API responses are `no-store` and
+kept out of shared caches. No personal data in URLs, except the future
+protected, revocable calendar-feed credential.
+
+**The live host** (docs/deploy.md, "The live host"; inspect before
+changing anything)
+- `ubuntu-vm`. Releases in `/srv/www/daybyword.com/releases/<commit>`,
+  with `current`, `current-release`, `previous-release`, `shared/env`
+  (root 0600), and `shared/backups` (0700).
+- Compose project `daybyword` (`deploy/compose.yaml`, `deploy/Dockerfile`):
+  the web on 127.0.0.1:4318 to the adapter-node container's port 3000
+  (4316 and 4317 belong to other sites), candidates checked on a
+  Docker-assigned loopback port, PostgreSQL 18 on the internal network only
+  with volume `daybyword_postgres_data`, database `daybyword`, role
+  `daybyword_app` for the web and a separate `daybyword_migrate`
+  credential. The origin comes from Caddy's Host header or `paths.origin`,
+  since SvelteKit 3 dropped `ORIGIN`.
+- Deploys run inside the shared lock (`with-deploy-lock`). Caddy's site file
+  is `/etc/caddy/sites/daybyword.com.caddy`, from
+  `deploy/caddy/daybyword.com.caddy`. Only `origin/main` releases are
+  served (`make deploy`).
+- DNS is owner-managed, DNS-only (not proxied) Cloudflare records pointing
+  at the host; the host's Caddy obtains its own Let's Encrypt certificates.
+  No Cloudflare DNS challenge, Caddy DNS plugin, token, or proxy or SSL-mode
+  work; never change Cloudflare settings. Coordinate changes to shared
+  binaries, and never edit another site.
+- Backups: nightly `pg_dump` and a monthly isolated restore check
+  (systemd timers), with an encrypted off-server copy still to arrange
+  (P7.3).
+
+**Secrets.** Never commit `.env` files, signing keys, certificates,
+profiles, `Secrets.xcconfig`, database credentials, or DNS tokens. No
+secrets in public variables, bundles, images, or logs. Read
+`docs/deploy.md` before any host work.
 
 ## 6. Plans, references, and rights
 
@@ -358,8 +417,8 @@ docs/deploy.md.
   AI use.
 - **External directory entries** describe a plan and link to its publisher.
   They never suggest that the schedule is available inside Day by Word.
-- **Editions and calendars are labeled exactly** (Research finding
-  7). Daily Office readings are never confused with Sunday or Communion
+- **Editions and calendars are labeled exactly** (Research finding 7).
+  Daily Office readings are never confused with Sunday or Communion
   lectionaries. Chronological plans name their approach and are never
   presented as the one correct order.
 - **Calendar and lectionary facts** follow D20: facts only, cited, and
@@ -387,34 +446,40 @@ docs/deploy.md.
 
 An item is done only when all of these hold:
 
-1. `make check` passes: retain the current Swift gate during migration
-   and add SvelteKit/TypeScript, real PostgreSQL and cross-runtime parity checks.
-   This includes the toolchain, formatting, imports, design tokens
-   and raw colors, the catalog compile and integrity suite, the package and
-   server tests, the app's unit tests, and the String Catalog. The build has
-   zero warnings in the touched targets (xcodebuild prints warnings only for
-   files it recompiles, so touch the sources or clean before trusting that).
+1. `make check` passes: the toolchain, formatting, imports, design tokens
+   and raw colors; the web gate (lint, svelte-check, unit tests, the
+   production build booted and checked, the catalog export, schema drift,
+   and real PostgreSQL 18 tests); the catalog compile and integrity suite;
+   the package and server tests; the app's unit tests; and the String
+   Catalog. The engine cases pass in both runtimes. The build has zero
+   warnings in the touched targets (xcodebuild prints warnings only for
+   files it recompiles, so touch the sources or clean before trusting
+   that).
 2. User-visible work is seen working once, where it runs: Apple work in the
    iOS Simulator (pick the device with `scripts/sim-destination.sh`), with
-   VoiceOver labels on new controls; web work in a real browser with
-   `make serve`, with the console free of errors and CSP violations.
+   VoiceOver labels on new controls; web work in a real browser against
+   `make serve-web`, with the console free of errors and CSP violations.
    Widgets, notification actions, and App Intents are exercised where they
    run, not only in unit tests. Do not commit routine screenshots.
 3. Engine changes have their cases, written before the code.
 4. Plan content meets its review level, its claims are verified by the
    compiler, and its rights entry is `cleared`, or the plan stays out of
    release builds.
-5. Server changes that are deployed pass `make check-live`, and the owner's
-   other sites still answer as before.
+5. Server changes that are deployed pass `deploy/bin/check-live.sh`
+   (`make deploy` runs it on the candidate, the live port, and
+   https://daybyword.com), and the owner's other sites still answer as
+   before.
 6. The documents the item changes are updated, briefly.
-7. The BUILD.md box is ticked in the same commit as the work.
+7. The BUILD.md box is ticked in the same commit as the work, with **Now**
+   and the Build status table updated.
 
 **At each milestone, and before every TestFlight build or deploy**, run
-`make check-full` (`make check`, the web tour in light and dark at desktop
-and narrow widths, the app tour in light and dark, and the packages and
-the SvelteKit/PostgreSQL workspace and the retained Swift packages on Linux), and check by hand what the tours cannot: a phone width
-and 200% text on the web, one large Dynamic Type size, and dark mode in the
-new screens. Fix what it finds before shipping.
+`make check-full` (`make check`, the engine cases in a browser, the web
+tour in light and dark at desktop and narrow widths, the app tour in light
+and dark, and the packages and server on Linux), and check by hand what the
+tours cannot: a phone width and 200% text on the web, one large Dynamic
+Type size, and dark mode in the new screens. Fix what it finds before
+shipping.
 
 Never claim verification you did not perform. If a step could not be run (no
 network, a missing tool, no device), say so in the commit body and the
@@ -423,11 +488,16 @@ Handoff notes instead of ticking the box.
 ## 8. Commits
 
 - One commit per completed BUILD.md item, or one for a group of related
-  items finished together. Use an imperative subject of 72 characters or fewer that starts
-  with the step id, for example
+  items finished together. Use an imperative subject of 72 characters or
+  fewer that starts with the step id, for example
   `P5.5: Keep the next unread reading next at the reader's pace`. The body
-  says what changed and why.
+  says what changed and why. Work that is no item gets a plain imperative
+  subject.
 - Pull with `--ff-only` before starting, and never force-push `main`.
+- Other sessions may work in this checkout at the same time and leave
+  staged or half-finished changes. Commit only your own files (`git commit
+  -- <paths>`), and if their edits break the build, verify your change in a
+  scratch copy of `main` plus your changes.
 - The repository is public (D4), so every push publishes. Never commit
   secrets, correspondence, readers' personal data, or anything a licence
   forbids publishing.
@@ -462,12 +532,12 @@ default.
 - **Open phases stay lean too.** A Note or Result under an item says in a
   few lines what was done, where it lives, and what was not verified. Longer
   evidence belongs in the commit body, `docs/decisions.md`, the owning
-  document, or `catalog/SOURCES.md`. The Handoff notes and the "Current
-  state" line are replaced each session, never appended to.
-- **What stays in BUILD.md while it guides future work:** "How agents use
-  this file", the finished-product definition, the product principles, the
-  Owner decisions table, the Engineering foundations, the Build status
-  table, and the Handoff notes. The research findings are in
+  document, or `catalog/SOURCES.md`. The **Now** table and the Handoff
+  notes are replaced each session, never appended to.
+- **What stays in BUILD.md while it guides future work:** **Now**, "How
+  agents use this file", the finished-product definition, the product
+  principles, the Owner decisions table, the Engineering foundations, the
+  Build status table, and the Handoff notes. The research findings are in
   `docs/research/findings.md` and keep their numbers.
 - **When 1.0 ships**, move the next phases from `docs/roadmap.md` into
   BUILD.md whole, with their ids, as the next work.
@@ -501,11 +571,11 @@ Letters go out only after the owner confirms each one (D38).
 **Developer tools** (D3): on the owner's Mac, agents may install the
 developer tools the work needs without asking: Homebrew formulae and casks,
 needed Node/npm and Swift tools, uv/ruff only for justified Python work,
-and user-local tools. Prefer well-known,
-maintained tools from their official sources, and record in README.md's
-prerequisites any tool a script or `make check` depends on. This does not
-cover `sudo`, macOS system or security settings, paid software, or adding a
-package dependency (§5 and `docs/decisions.md` govern that).
+and user-local tools. Prefer well-known, maintained tools from their
+official sources, and record in README.md's prerequisites table any tool a
+script or `make check` depends on. This does not cover `sudo`, macOS
+system or security settings, paid software, or adding a package dependency
+(§5 and `docs/decisions.md` govern that).
 
 Agents never:
 
@@ -522,3 +592,59 @@ Agents never:
 - serve anything on the owner's server but what this repository defines;
 - claim a review, permission, partnership, endorsement, or result that did
   not happen.
+
+## 10. Commands
+
+`make help` lists every target. The ones a session uses most:
+
+| Command | What it does | When |
+|---|---|---|
+| `make check` | Lint, the web gate, the catalog in both modes, package, server, and app tests, and the String Catalog | Before every commit |
+| `make check-full` | `check`, the engine cases in headless Firefox, both tours in light and dark, and Linux | At milestones, before TestFlight or a deploy |
+| `make check-web` | The web part of `check` alone: lint, svelte-check, unit tests, production build booted, export check, schema drift, `test-db` | While working on `web/` |
+| `make test-db` | Migrations, the catalog import, and the roles on a throwaway PostgreSQL 18 cluster | After schema or import changes |
+| `make serve-web` | The SvelteKit production build on http://localhost:8080 (`PORT=…`), with the component gallery | Seeing web work in a browser |
+| `make run` | Build, boot a simulator, install, and launch the app (`SIM_DEVICE=…`) | Seeing app work |
+| `make test-domain-browser` | The shared engine cases in a real browser | After engine changes |
+| `make tour-web`, `make tour-app` | Every section in light and dark, with semantic checks and screenshots | UI changes; part of `check-full` |
+| `make test-linux` | The packages and the server on Linux in a container | Part of `check-full` |
+| `make tokens` | Regenerate color assets, `DesignTokens.swift`, and `tokens.css` from `design/tokens.json` | After a token change |
+| `make db-generate NAME=…` | Generate a SQL migration from the Drizzle schema; review it before committing | Schema changes |
+| `make rehearse-deploy` | Deploy, backup, restore check, redeploy, and rollback in Docker on a throwaway project | Before changing `deploy/` |
+| `make deploy` | Deploy `origin/main` to daybyword.com inside the host's lock, then check it live | Shipping; run `make check-full` first |
+| `make archive`, `make testflight` | A signed Release archive and its upload (docs/release.md) | TestFlight builds |
+| `make format` | Format the Swift and web sources in place | Before committing |
+
+## 11. Known pitfalls
+
+Durable lessons from earlier sessions. Add to this list when you find one;
+remove an entry once it no longer applies.
+
+- **Never name a source folder `build`.** `.gitignore` and
+  `web/.prettierignore` skip every `build/` folder, so its files would
+  silently go uncommitted and unformatted (the production tests live in
+  `web/test/production/` for this reason).
+- **No SvelteKit client runtime yet (E38).** SvelteKit 3.4's route
+  announcer writes an inline `style` that the strict CSP refuses, so every
+  page sets `csr = false` and Settings and Copy use small same-origin
+  modules in `web/static/assets/`. When a page needs real interaction
+  (P8.10), choose among E38's options; never weaken the policy.
+- **SvelteKit 3 differs from SvelteKit 2.** Private environment variables
+  come from `$app/env/private` through `src/env.ts`; route parameter
+  matchers are `src/params.ts` (`defineParams`); there is no `ORIGIN`
+  variable (use `paths.origin` or Caddy's Host header).
+- **PostgreSQL 17 comes first on the owner's PATH.** `scripts/with-postgres.sh`
+  finds Homebrew's postgresql@18 itself; do not "fix" the PATH.
+- **xcodebuild hides warnings** in files it does not recompile, so a clean
+  build log is not proof of zero warnings (§7).
+- **Pinned versions are enforced.** `make check` refuses any Swift, Node,
+  or npm version other than the pinned one; install the pinned version
+  rather than loosening the check.
+
+## 12. Keeping this file useful
+
+Edit this file when you find a durable convention, a verified command, or a
+recurring pitfall that will help the next session, and keep it current when
+the stack or the host changes. Session results, temporary workarounds, and
+plan changes go in BUILD.md (its **Now**, notes, and Handoff notes), not
+here.

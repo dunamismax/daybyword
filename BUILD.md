@@ -4,12 +4,26 @@ This is the master plan for **Day by Word**, a Bible reading companion: a
 native iPhone and iPad app built in SwiftUI, and a SvelteKit web version at
 [daybyword.com](https://daybyword.com) with PostgreSQL 18/Drizzle on the
 owner's own machine behind Caddy. **D42 is the stack; Phase M is first.**
-`web/` is a SvelteKit 3 workspace; readers' pages are still served by the
-original SwiftUI/Hummingbird/SQLite foundation until Phase M ports them. AI agent sessions build it step by step, working under
+SvelteKit in `web/` serves every page at daybyword.com; the original
+Swift/Hummingbird server stays in `Server/` until PM.20 retires it. AI agent
+sessions build Day by Word step by step, working under
 [AGENTS.md](AGENTS.md).
 
 > **Day by Word.** Your Bible reading companion.
 > *Find your plan. Read your Bible. Keep your place.*
+
+## Now
+
+*Replaced whenever an item is ticked or the state changes; read it first.*
+
+| | |
+|---|---|
+| **Phase** | Phase M, M0 Stack alignment: 9 of 10 items done |
+| **Next item** | **PM.20**: retire the Swift server and obsolete web tooling, run `make check-full` as one run, and move Phase M to BUILD-HISTORY.md. Then **P5.1**, the engine specification for scheduling. |
+| **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
+| **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 52126aa (`/srv/www/daybyword.com/current-release`, read 2026-11-20). |
+| **Last updated** | 2026-11-20 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
 **daybyword.com**, registered by the owner at Cloudflare on 2026-10-30. The
@@ -54,8 +68,8 @@ dispute (AGENTS.md §3).
 
 ## How agents use this file
 
-1. Read AGENTS.md first. Then read this whole file once per session. It
-   holds only the plan to version 1.0 (D39); the research findings are in
+1. Read AGENTS.md first. Then read **Now**, and this whole file once per
+   session. It holds only the plan to version 1.0 (D39); the research findings are in
    [docs/research/findings.md](docs/research/findings.md), the feature map
    in [docs/research/competitors.md](docs/research/competitors.md), and the
    work after 1.0 in [docs/roadmap.md](docs/roadmap.md). Read those only
@@ -76,9 +90,9 @@ dispute (AGENTS.md §3).
    tick with the work, with the step id in the subject (for example
    `P5.5: ...`); related items may share a commit.
 7. Complete as many items as you can in a session. Before stopping, run
-   `make check`, update the **Build status** table, push, and replace the
-   **Handoff notes** at the bottom. Run `make check-full` at each milestone
-   and before every TestFlight build or deploy.
+   `make check`, update **Now** and the **Build status** table, push, and
+   replace the **Handoff notes** at the bottom. Run `make check-full` at
+   each milestone and before every TestFlight build or deploy.
 8. If an item is wrong, too large, or out of order, do not silently skip or
    delete it. Split it, rewrite it, or move it to the roadmap with a note,
    and say what you changed in the Handoff notes.
@@ -136,13 +150,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-20):** Phase M is done but PM.20: the engine
-specification and its TypeScript runtime pass every shared case (PM.15),
-SvelteKit serves every page under a strict CSP (PM.16), the native app is
-verified (PM.17), deployment is built and rehearsed (PM.18) and parity is
-qualified (PM.19). **daybyword.com is live** in development (P7.1, P7.2,
-P7.4, P7.6, P7.7). No plans, scheduling or journal yet. **Next: PM.20**,
-then P7.3's off-server backup copy.
+**Now**, at the top of this file, holds the current state and the next item.
 
 ---
 
@@ -307,9 +315,9 @@ quietly omitting readings.
 
 ## Owner decisions
 
-The owner answered every decision on 2026-10-30 in an interactive session.
-Under D3, agents may later record new decisions, or revise an answered one
-only with strong evidence, as `(agent, date)` with their reasons. They never
+The owner answered D1–D38 on 2026-10-30 in an interactive session; later
+rows carry their own dates. Under D3, agents may later record new
+decisions, or revise an answered one only with strong evidence, as `(agent, date)` with their reasons. They never
 reverse an owner's answer on product direction without asking.
 Engineering consequences go in `docs/decisions.md`.
 
@@ -647,24 +655,19 @@ only when Phase 18 is finished or an item points there.
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
 - **2026-11-20:** PM.15–PM.19 done; daybyword.com deployed live (P7.1,
-  P7.2, P7.4, P7.6, P7.7); 38972f5 serves, deployed with `make deploy`.
+  P7.2, P7.4, P7.6, P7.7) with `make deploy`; the host's
+  `current-release` is 52126aa (candidate on a Docker-assigned loopback
+  port, activated release verified).
 - Engine: docs/engine.md v0; `web/src/lib/domain/` (pure, lint-enforced);
   190 shared cases pass in Swift, Node, headless Firefox (E37).
-- Web: no page loads SvelteKit's client runtime (E38): its route announcer
-  writes an inline style the strict CSP refuses. P8.10 needs interaction:
-  read E38's options first; never weaken the policy. `web/server.ts` wraps
-  adapter-node for headers, cache policy and route-pattern logs.
-- SvelteKit 3: `$app/env/private` + `src/env.ts`, `src/params.ts`
-  (defineParams), no `ORIGIN` (use `paths.origin` or Caddy's Host).
-- `.gitignore` and `web/.prettierignore` skip every `build/` folder: never
-  name a source folder `build` (tests are `web/test/production/`).
-- Host: Compose project `daybyword` on 127.0.0.1:4318 (4316/4317 are other
-  sites'), lock `with-deploy-lock`, site file `daybyword.com.caddy`,
-  backup and restore-check timers running. Deploy with `make deploy`.
-- **Open:** P7.3's encrypted off-server copy (no backup tool or
-  `ubuntu-vm-backup` checkout found; ask the owner); PM.20 (retire the Swift server and tooling, run
-  `make check-full` as one run, move Phase M to history).
-- The owner's shell puts PostgreSQL 17 first on the PATH;
-  `scripts/with-postgres.sh` now finds Homebrew's postgresql@18 itself.
+- Web: `web/server.ts` wraps adapter-node for headers, cache policy and
+  route-pattern logs. No page loads SvelteKit's client runtime (E38);
+  P8.10 must choose among E38's options (AGENTS.md §11).
+- Docs: README.md, AGENTS.md and this file's top were reorganized: a
+  **Now** table here replaces the "Current state" line, and the durable
+  pitfalls from these notes moved to AGENTS.md §11 (commands in §10).
+- **Open:** PM.20 (retire the Swift server and tooling, run
+  `make check-full` as one run, move Phase M to history); P7.3's
+  encrypted off-server copy (ask the owner where backups go).
 - Carried over: no `apple/Config/Secrets.xcconfig` here; build 25's
   TestFlight upload unverified.

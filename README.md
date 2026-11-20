@@ -5,33 +5,42 @@ your place.*
 
 Day by Word helps Christians choose a Bible reading plan, know what to read
 today, and keep a trustworthy record of their reading. You keep reading in
-your own physical Bible, Bible app, or audio service; Day by Word supplies
-the structure: a small, carefully reviewed catalog of plans, personal
+your own paper Bible, Bible app, or audio service. Day by Word supplies the
+structure: a small, carefully reviewed catalog of plans, personal
 scheduling, reminders, progress, and a welcoming way to pick up again after
 missed days. It never shows Bible text itself.
 
-It will be a native iPhone and iPad app and a web version at
+It is a native iPhone and iPad app and a web version at
 [daybyword.com](https://daybyword.com), self-hosted by the owner. It is an
 independent Christian project with no denominational affiliation, and it
 does not speak for any church, ministry, or publisher.
 
-**Status (2026-11-20):** the stack is SvelteKit 3 · Svelte 5 · TypeScript ·
-Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy
-(D42), with Swift retained for this project's existing iPhone/iPad app.
-Python is optional tooling only when needed. The earlier Next/Expo and
-Astro plans are withdrawn. `web/` is the SvelteKit workspace with the
-PostgreSQL catalog import; readers' pages are still served by the original
-Swift/Hummingbird/SQLite foundation until Phase M ports them.
-[BUILD.md Phase M](BUILD.md#phase-m-align-with-the-final-stack-do-first)
-starts at PM.12 before feature work; [the migration brief](docs/stack-migration.md)
-maps the code/data/tests and [deployment plan](docs/deploy.md) specifies
-the planned host boundaries. No live deploy or app upload was performed.
+| | |
+|---|---|
+| **Website** | [daybyword.com](https://daybyword.com), live and marked "in development" |
+| **Plan** | [BUILD.md](BUILD.md): every step to version 1.0, with its current state |
+| **Source** | [GitHub](https://github.com/dunamismax/daybyword) · [Codeberg](https://codeberg.org/dunamismax/daybyword) |
+| **Support** | support@daybyword.com |
+
+## Status
+
+**In development; nothing is ready to read with yet (2026-11-20).**
+
+- **daybyword.com is live** in development: the Today, Plans, Progress, and
+  Settings pages are served by SvelteKit under a strict security policy,
+  hidden from search engines, with no plans in the catalog yet.
+- **The iPhone and iPad app** builds and runs in the simulator with the same
+  sections. It is not yet on the App Store or in a beta.
+- **Next:** retire the original Swift web server (PM.20), then the reading
+  engine (Phase 5), then **first light** (Phase 8): three plans, Today,
+  marking, reminders, and the return after missed days, on TestFlight and
+  at daybyword.com.
 
 ## What it will do
 
-- **Help you choose.** A few practical questions, then three suitable plans
-  with honest workloads, sample weeks, and the reasons each fits, instead of
-  a wall of hundreds.
+- **Help you choose.** A few practical questions, then two or three
+  suitable plans with honest workloads, sample weeks, and the reasons each
+  fits, instead of a wall of hundreds.
 - **Show today at a glance.** The next reading, set large enough to read
   from across a desk, with *Open in YouVersion*, *Copy reference*, and
   *Mark read*, also on the Lock Screen, in widgets, and in the reminder
@@ -42,126 +51,133 @@ the planned host boundaries. No live deploy or app upload was performed.
 - **Make returning normal.** After missed days you get a welcome and real
   choices, each previewed before anything changes. History is never
   rewritten.
-- **Be trustworthy.** Every plan has its source, coverage, workload, and
-  limitations stated, with every reference verified. Historic plans and
-  prayer-book lectionaries, computed from their own rules, follow after 1.0.
-- **Stay private.** No ads, analytics, tracking, or AI. The app works
-  offline without an account, the web keeps progress in your own browser,
-  and export and deletion are there at any time. Optional sync, with
-  passkeys, follows after 1.0.
+- **Be trustworthy.** Every plan states its source, coverage, workload, and
+  limitations, and every reference is checked by the compiler.
+- **Stay private.** The app works offline without an account, the web keeps
+  your progress in your own browser, and export and deletion are there at
+  any time.
 
-## Final target (D42)
+## What it is not
 
-| Area | Stack and scope |
+- **Not a Bible.** It never shows Scripture text, only references, and it
+  opens your own Bible app or leaves you with your paper one.
+- **Not a scorecard.** No badges, points, leaderboards, countdowns, or
+  "you're falling behind" messages. A streak is optional, off by default,
+  and never in charge. A missed day is simply a day.
+- **Not watching you.** No ads, analytics, tracking, or data sales, ever.
+- **No AI features.** No generative models, chat, or AI recommendations.
+- **Not a church or a publisher.** It speaks for no tradition, describes
+  each one in its own terms, and takes no side on questions Christians
+  dispute.
+
+## The road to 1.0
+
+| Milestone | What it delivers |
 |---|---|
-| Web | SvelteKit 3, Svelte 5, TypeScript on @sveltejs/adapter-node; prerender public content where useful |
-| Interaction and style | Svelte 5 components, form actions and `/api/v1` endpoints; Tailwind CSS 4 with Morning's tokens |
-| Server DB | PostgreSQL 18 + server-only Drizzle schema and reviewed SQL migrations |
-| Native | Existing SwiftUI/Observation iPhone/iPad app; pinned Swift 6.4.2, iOS/iPadOS 26+ |
-| Local native data | Existing ReadingData/SQLite for offline use; no direct Postgres connection |
-| Rules | Swift native and TypeScript web modules, one specification/shared parity fixtures (E33) |
-| Hosting | Project Compose behind host Caddy (owner-managed DNS-only Cloudflare records), private Postgres, pg_dump/off-server restore checks |
-| Optional later | Better Auth in Phase 14; Swift desktop only if needed; Python utilities only for a real task |
-| Excluded | Bible text, analytics/model features, mandatory Python, Next/Astro/React/Expo/Tauri rewrites |
+| M0 Stack alignment | The web and server on SvelteKit and PostgreSQL, the native app kept as it is (nearly done) |
+| M1 Foundation | References, the catalog compiler, the reading engine, and daybyword.com deployed in development |
+| M2 First light | Three plans, Today, marking, reminders, and the return flow, on TestFlight and the web |
+| M3 Version 1.0 | Choosing a plan, the eight-plan launch catalog, progress, widgets, print, the installable web app, legal pages, a beta, and launch |
+| After 1.0 | Church calendars and historic plans, optional accounts and sync, more Bible apps, groups, and more ([docs/roadmap.md](docs/roadmap.md)) |
 
-Native clients call SvelteKit APIs over HTTPS. At 1.0 personal records stay
-in the app/browser; PostgreSQL holds public catalog data only. The catalog
-source format, rights evidence, Morning design and eight-plan release
-scope remain. The engine boundary and deterministic compiler export into
-Postgres are explicit migration tasks, not completed work.
+## Technology
 
-## Current architecture (legacy until Phase M)
+| Layer | Choice | In the checkout today |
+|---|---|---|
+| Web | SvelteKit 3, Svelte 5, TypeScript, Tailwind CSS 4 on `@sveltejs/adapter-node` | Every page server-rendered, no client runtime yet (E38) |
+| Server data | PostgreSQL 18 with Drizzle ORM and reviewed SQL migrations | Public catalog data only; no reader records on the server at 1.0 |
+| Native | SwiftUI and Observation on Swift 6.4.2, iOS and iPadOS 26 or later, WidgetKit | The app shell and a placeholder widget |
+| Local native data | SQLite through `ReadingData`, bundled read-only catalog | Catalog reader; the reading journal is still to come |
+| Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, and workload in both; scheduling is Phase 5 |
+| Catalog | Plain-text plan sources, compiled and checked by a Swift tool that refuses unverified references and uncleared sources | No plans yet |
+| Hosting | Docker Compose behind the host's Caddy, nightly `pg_dump` and restore checks | Live; the off-server backup copy is still open (P7.3) |
+| Legacy | The original Hummingbird web server in `Server/` | Retired by PM.20 |
 
-The layout and commands below describe code that is still runnable.
-Hummingbird/server SQLite will be replaced; the Swift native app remains.
-See docs/stack-migration.md for the target layout.
+The apps call the server only over HTTPS; nothing outside the server
+connects to PostgreSQL. The full stack decision is D42 in BUILD.md, and
+the engineering reasons are in [docs/decisions.md](docs/decisions.md).
 
-## Current repository layout
+## Repository layout
 
 ```
-AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile  .swift-version  .node-version  .swift-format
-catalog/                  SOURCES.md, scripture/ (book registry, versification); plans to come
-Packages/ReadingEngine/   references, schedules, progress, and reminder rules (Foundation only)
-Packages/ReadingData/     SQLite wrapper and catalog reader; journal/sync still open
-Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
-Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
-web/                      the SvelteKit web app (adapter-node) and PostgreSQL catalog, replacing Server/ through Phase M
-apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
-design/                   Morning tokens, mockups, image brief, and finished artwork
-docs/                     decisions, product rules, release, web style, and more as they land
-scripts/                  helpers behind the Makefile (simulator choice, Linux tests, archive)
+AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile
+apple/                    the iPhone and iPad app: project.yml (XcodeGen), App/, Widgets/, tests, Config/
+web/                      daybyword.com: SvelteKit routes, components, the TypeScript engine, Drizzle schema and migrations
+Packages/ReadingEngine/   the Swift engine: references, verse sets, workload, and the scheduling rules to come
+Packages/ReadingData/     SQLite wrapper and catalog reader for the app
+Packages/CatalogCompiler/ the `catalog` tool that builds and exports the catalog
+catalog/                  plan sources, scripture data (book registry, versification), and SOURCES.md (rights)
+tests/fixtures/           the shared cases both engines and both sites must pass
+deploy/                   Dockerfile, Compose project, Caddy site file, systemd timers, deploy and backup scripts
+design/                   Morning's design tokens, mockups, image prompts, and the owner's artwork
+docs/                     product rules, design, engine, catalog, editorial, deployment, release, decisions
+scripts/                  helpers behind the Makefile
+Server/                   the original Hummingbird site, until PM.20 removes it
 .github/workflows/        CI, run by hand (D31)
 ```
 
-Still to come, as BUILD.md's phases reach them: the rest of `catalog/` (plan
-sources and the Hebrew, Greek, and Latin schemes) and `deploy/` (the
-server's unit, Caddy site, and scripts). [The artwork inventory](design/images/README.md)
-records the app icon, web exports, sharing image, and twelve plan covers.
+## Working on it
 
-## Current prerequisites and target additions
+| To work on | Start here |
+|---|---|
+| What every screen must and must not do | [docs/product.md](docs/product.md), [docs/design.md](docs/design.md) |
+| Reading rules | [docs/engine.md](docs/engine.md), then [tests/fixtures/](tests/fixtures/) |
+| The engine in Swift and in TypeScript | [Packages/ReadingEngine/](Packages/ReadingEngine/), [web/src/lib/domain/](web/src/lib/domain/) |
+| Plans, sources, and rights | [docs/catalog-format.md](docs/catalog-format.md), [docs/editorial.md](docs/editorial.md), [catalog/SOURCES.md](catalog/SOURCES.md) |
+| Web pages and the app API | [web/src/routes/](web/src/routes/), [docs/urls.md](docs/urls.md), [docs/web.md](docs/web.md) |
+| The server database | [web/src/lib/server/db/](web/src/lib/server/db/), [web/drizzle/](web/drizzle/) |
+| The native app | [apple/](apple/), [docs/release.md](docs/release.md) |
+| The live host | [docs/deploy.md](docs/deploy.md), [deploy/](deploy/) |
 
-Python, uv, and ruff are not required unless a utility needs Python. The
-web workspace (PM.14 and PM.21, decisions E34–E36) needs:
-
-- **Node 26.13.0** (`.node-version`) and **npm 11.20.0**
-  (`web/package.json`'s `packageManager`); `make check` refuses any other.
-  Install Node from nodejs.org or a version manager that reads
-  `.node-version`, then `npm install --global npm@11.20.0` if needed.
-  `make web-install` runs `npm ci` from `web/package-lock.json`.
-  SvelteKit, Vite and Tailwind send no telemetry.
-- **curl**, used by `scripts/web-smoke.sh` (macOS includes it).
-- **PostgreSQL 18**'s server binaries (`initdb`, `pg_ctl`) on the PATH for
-  `make test-db`, which starts a throwaway cluster on a Unix socket and
-  deletes it after: `brew install postgresql@18`. `scripts/with-postgres.sh`
-  uses Homebrew's postgresql@18 when another major comes first on the
-  PATH. Nothing needs to be running, and no other database is touched.
-
-Retain these existing Apple tools, confirmed on the owner's Mac on
-2026-10-30:
-
-- macOS 27.2 on Apple silicon.
-- **Xcode 27.2** (27B52), which ships **Swift 6.4.2**, the version pinned
-  in `.swift-version`; `make check` refuses any other. Its `swift format`
-  formats and lints the Swift sources. Xcode 27 calls the simulator app
-  DeviceHub.
-- An iOS 27 simulator runtime with at least one iPhone.
-- **XcodeGen** 2.46.0: `brew install xcodegen`.
-- **python3**, used by `scripts/sim-destination.sh` (any Python 3 on the
-  PATH; the Command Line Tools include one).
-- **Firefox** (159 here) and **geckodriver** 0.37.1 (`brew install
-  geckodriver`, added 2026-11-01) for the web tour and the engine cases in
-  a browser in `make check-full` (`make tour-web`, decision E26;
-  `make test-domain-browser`, docs/engine.md). Safari works too once "Allow remote
-  automation" is on in Safari's Developer settings:
-  `DBW_WEBDRIVER=safari make tour-web`.
-- For `make test-linux` and `make rehearse-deploy`, a running container
-  runtime with Compose v2: Docker Desktop, or Colima (`brew install colima
-  docker docker-compose`, then `colima start`). The first run
-  downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB).
-- For device builds and TestFlight only: Xcode signed in to the owner's
-  Apple Developer account, and `apple/Config/Secrets.xcconfig` with the
-  team ID (copy `Secrets.example.xcconfig`; see `docs/release.md`).
-
-## Quick start
-
-From a clean checkout:
+### Quick start
 
 ```sh
-make check       # lint, the web gate, catalog, package, server, and app tests, and the String Catalog: the gate before every commit
-make check-full  # check, the web and app tours in light and dark, and Linux: at milestones and before releases
-make run       # build, boot the newest iPhone simulator, install, and launch the app
-make serve     # serve the Swift site at http://localhost:8080 (until PM.20)
-make serve-web # serve the SvelteKit production build at http://localhost:8080
+make check       # the gate before every commit: lint, web, catalog, packages, server, app tests, String Catalog
+make serve-web   # the SvelteKit production build at http://localhost:8080
+make run         # build, boot the newest iPhone simulator, install, and launch the app
+make check-full  # check, the engine cases in Firefox, both tours in light and dark, and Linux
 ```
 
-`make help` lists every target. Others worth knowing: `make test-linux`
-(the packages and server on Linux), `make test-ui` (the app's UI tests),
-`make check-web` (the web app's lint, types, tests, and production build,
-booted and checked; the catalog export; schema drift; and `make test-db`), `make format`, `make screenshot`, `make archive` and `make testflight`
-(`docs/release.md`), and `make clean`. Set `SIM_DEVICE` to a simulator's
-name or UDID to choose a device, and `PORT` to serve elsewhere.
+`make help` lists every target. Others worth knowing: `make check-web` (the
+web gate alone), `make test-db` (migrations, catalog import, and roles on a
+throwaway PostgreSQL 18), `make tour-web` and `make tour-app`, `make
+test-linux`, `make rehearse-deploy`, `make format`, and `make archive` and
+`make testflight` ([docs/release.md](docs/release.md)). Set `SIM_DEVICE` to
+choose a simulator and `PORT` to serve elsewhere. `make serve` still serves
+the Swift site until PM.20.
+
+### Prerequisites
+
+`make check` refuses any Swift, Node, or npm version other than the pinned
+one. Confirmed on the owner's Mac (macOS 27.2, Apple silicon):
+
+| Tool | Version | Needed for |
+|---|---|---|
+| Xcode | 27.2 (27B52), with Swift 6.4.2 (`.swift-version`) and an iOS 27 simulator with an iPhone | everything Swift; its `swift format` formats and lints. Xcode 27 calls the simulator app DeviceHub |
+| XcodeGen | 2.46.0 (`brew install xcodegen`) | generating the Xcode project |
+| Node | 26.13.0 (`.node-version`) | the web workspace; install from nodejs.org or a version manager that reads `.node-version` |
+| npm | 11.20.0 (`packageManager` in `web/package.json`) | `make web-install` runs `npm ci`; `npm install --global npm@11.20.0` if needed |
+| PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
+| python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh` |
+| curl | any | `scripts/web-smoke.sh` |
+| Firefox and geckodriver | Firefox 159, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari make tour-web`) |
+| Docker with Compose v2 | Docker Desktop, or Colima (`brew install colima docker docker-compose`, then `colima start`) | `make test-linux` and `make rehearse-deploy`; the first run downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB) |
+
+For device builds and TestFlight only: Xcode signed in to the owner's Apple
+Developer account, and `apple/Config/Secrets.xcconfig` with the team ID
+(copy `Secrets.example.xcconfig`; see [docs/release.md](docs/release.md)).
+Python, uv, and ruff are not needed unless a utility comes to need Python.
+SvelteKit, Vite, and Tailwind send no telemetry.
+
+## How it is built
+
+The owner decides the product. AI coding agents do the engineering, the
+catalog research, and the deployment, working under [AGENTS.md](AGENTS.md)
+and ticking off [BUILD.md](BUILD.md) as they go. That is how the code is
+written, not a feature: Day by Word itself has no AI features (D23).
 
 ## License
 
-All rights reserved by the owner (BUILD.md D4; see `LICENSE`). Plans, data,
-and fonts keep their own rights, recorded in `catalog/SOURCES.md`.
+All rights reserved by the owner (BUILD.md D4; see [LICENSE](LICENSE)).
+The source is published to be read, not reused. Plans, data, and fonts keep
+their own rights, recorded in [catalog/SOURCES.md](catalog/SOURCES.md).
