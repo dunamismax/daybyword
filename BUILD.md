@@ -122,7 +122,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 4 | The catalog | M1 Foundation | 8 | 8 |
 | 5 | The reading engine | M1 Foundation | 11 | 0 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
-| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 4 |
+| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 0 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 0 |
@@ -141,8 +141,8 @@ specification and its TypeScript runtime pass every shared case (PM.15),
 SvelteKit serves every page under a strict CSP (PM.16), the native app is
 verified (PM.17), deployment is built and rehearsed (PM.18) and parity is
 qualified (PM.19). **daybyword.com is live** in development (P7.1, P7.2,
-P7.4, P7.7). No plans, scheduling or journal yet. **Next: PM.20**, then
-P7.3's off-server backup copy and P7.6's host rollback rehearsal.
+P7.4, P7.6, P7.7). No plans, scheduling or journal yet. **Next: PM.20**,
+then P7.3's off-server backup copy.
 
 ---
 
@@ -504,8 +504,8 @@ but nightly PostgreSQL backups begin with the first database deployment.
   - *Note (agent, 2026-11-20):* Done: the project's Compose/Postgres/env/Caddy resources, /etc/caddy archived, other sites compared, nightly pg_dump and monthly restore-check timers installed, first backup and restore check passed on the host. Open: the encrypted off-server copy; no `ubuntu-vm-backup` checkout or tool exists on the host or the Mac, so the owner's arrangement is needed.
 - [x] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
   - *Result (agent, 2026-11-20):* live 2026-11-20 at commit 7be7f76 (image `daybyword-web:<commit>`, schema 2 migrations, catalog ac986b77…, 0 plans): apex HTTPS, www 301 keeping path and query, HSTS, strict CSP and headers, healthy `/up` with a current catalog; all 20 other site names unchanged. `make check-full`'s parts all passed today (check, test-domain-browser, both tours, test-linux), not as one run.
-- [ ] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
-  - *Note (agent, 2026-11-20):* check-live.sh exists and deploy runs it on the candidate and live port, and release.sh on https://daybyword.com (TLS, www redirect, HSTS, headers, robots, noindex, no cookies or third-party loads). Open: a rollback rehearsed on the host itself (done only locally, `make rehearse-deploy`).
+- [x] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
+  - *Result (agent, 2026-11-20):* check-live.sh exists and deploy runs it on the candidate and live port, and release.sh on https://daybyword.com (TLS, www redirect, HSTS, headers, robots, noindex, no cookies or third-party loads). Rollback rehearsed on the host the same day: 38972f5 → 7be7f76 with the database unchanged (1 catalog import before and after), checked, then 38972f5 redeployed with `make deploy`.
 - [x] **P7.7** Keep the in-development line, noindex and robots crawl block until launch (P18.5).
   - *Result (agent, 2026-11-20):* the footer's in-development line, `noindex` on every page and `robots.txt` `Disallow: /` are live and checked by check-live; they stay until P18.5.
 
@@ -647,7 +647,7 @@ only when Phase 18 is finished or an item points there.
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
 - **2026-11-20:** PM.15–PM.19 done; daybyword.com deployed live (P7.1,
-  P7.2, P7.4, P7.7) at 7be7f76 and later commits via `make deploy`.
+  P7.2, P7.4, P7.6, P7.7); 38972f5 serves, deployed with `make deploy`.
 - Engine: docs/engine.md v0; `web/src/lib/domain/` (pure, lint-enforced);
   190 shared cases pass in Swift, Node, headless Firefox (E37).
 - Web: no page loads SvelteKit's client runtime (E38): its route announcer
@@ -662,8 +662,7 @@ only when Phase 18 is finished or an item points there.
   sites'), lock `with-deploy-lock`, site file `daybyword.com.caddy`,
   backup and restore-check timers running. Deploy with `make deploy`.
 - **Open:** P7.3's encrypted off-server copy (no backup tool or
-  `ubuntu-vm-backup` checkout found; ask the owner); P7.6's rollback
-  rehearsal on the host; PM.20 (retire the Swift server and tooling, run
+  `ubuntu-vm-backup` checkout found; ask the owner); PM.20 (retire the Swift server and tooling, run
   `make check-full` as one run, move Phase M to history).
 - The owner's shell puts PostgreSQL 17 first on the PATH;
   `scripts/with-postgres.sh` now finds Homebrew's postgresql@18 itself.
