@@ -28,8 +28,8 @@ apple/Config/Secrets.xcconfig
 
 # The web workspace's packages and build products
 web/node_modules/
-web/dist/
-web/.astro/
+web/build/
+web/.svelte-kit/
 
 # Compiled catalogs (built by make catalog)
 Catalog.sqlite

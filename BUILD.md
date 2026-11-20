@@ -1,10 +1,11 @@
 # BUILD.md: The Build Plan
 
 This is the master plan for **Day by Word**, a Bible reading companion: a
-native iPhone and iPad app built in SwiftUI, and an Astro web version at
-[daybyword.com](https://daybyword.com) with PostgreSQL/Drizzle on the
-owner's own machine. **D41 is the final stack direction; Phase M is first.**
-The code remains the original SwiftUI/Hummingbird/SQLite foundation. AI agent sessions build it step by step, working under
+native iPhone and iPad app built in SwiftUI, and a SvelteKit web version at
+[daybyword.com](https://daybyword.com) with PostgreSQL 18/Drizzle on the
+owner's own machine behind Caddy. **D42 is the stack; Phase M is first.**
+`web/` is a SvelteKit 3 workspace; readers' pages are still served by the
+original SwiftUI/Hummingbird/SQLite foundation until Phase M ports them. AI agent sessions build it step by step, working under
 [AGENTS.md](AGENTS.md).
 
 > **Day by Word.** Your Bible reading companion.
@@ -113,7 +114,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 
 | Phase | Name | Milestone | Items | Done |
 |---|---|---|---|---|
-| M | Astro/PostgreSQL alignment (first) | M0 Stack alignment | 9 | 3 |
+| M | SvelteKit/PostgreSQL alignment (first) | M0 Stack alignment | 10 | 4 |
 | 0 | Owner foundations | — | 6 | 6 |
 | 1 | Repository and toolchain | M1 Foundation | 13 | 13 |
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
@@ -135,13 +136,13 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
 
-**Current state (2026-11-08):** Phases 0–4 completed the original Swift
-foundation; PM.12 recorded its baseline and fixtures, PM.13 added the
-pinned Astro workspace in `web/`, and PM.14 the PostgreSQL catalog schema
-and import, all in `make check`. The Swift server still serves every page;
-no plans, scheduling or journal yet, and nothing deployed. **Next: PM.15**,
-following
-[docs/stack-migration.md](docs/stack-migration.md).
+**Current state (2026-11-20):** Phases 0–4 completed the original Swift
+foundation; PM.12 recorded its baseline and fixtures, PM.14 the PostgreSQL
+catalog schema and import, and PM.21 replaced PM.13's Astro workspace with
+SvelteKit 3, Svelte 5 and Tailwind CSS 4 on PostgreSQL 18 (D42), all in
+`make check`. The Swift server still serves every page; no plans,
+scheduling or journal yet, and nothing deployed. **Next: PM.15**,
+following [docs/stack-migration.md](docs/stack-migration.md).
 
 ---
 
@@ -314,11 +315,11 @@ Engineering consequences go in `docs/decisions.md`.
 
 | ID | Question | Decision |
 |---|---|---|
-| D1 | Name and identifiers | **Day by Word** at daybyword.com, tagline "Your Bible reading companion", line "Find your plan. Read your Bible. Keep your place." Bundle ID **`com.daybyword.app`**, with extensions under it (for example `com.daybyword.app.widgets`) and the App Group `group.com.daybyword.app`. Xcode project and scheme `DayByWord`; URL scheme `daybyword://`; legacy server product `DayByWordServer` (owner, 2026-10-30; replaced by Astro under D41). |
+| D1 | Name and identifiers | **Day by Word** at daybyword.com, tagline "Your Bible reading companion", line "Find your plan. Read your Bible. Keep your place." Bundle ID **`com.daybyword.app`**, with extensions under it (for example `com.daybyword.app.widgets`) and the App Group `group.com.daybyword.app`. Xcode project and scheme `DayByWord`; URL scheme `daybyword://`; legacy server product `DayByWordServer` (owner, 2026-10-30; replaced by SvelteKit under D42). |
 | D2 | The name, given daybyword.org (Research finding 2) | **Keep Day by Word, with no trademark search or legal review**; the owner accepts the risk (owner, 2026-10-30). Agents never contact daybyword.org's operators, and any claim that arrives goes to the owner. |
 | D3 | Who builds and decides | **Agents, autonomously** (owner, 2026-10-30), as Beautiful Corner's D21: agents build everything, decide every open question (recorded as `(agent, date)` with reasons), and do every item, including server work (D34), deploys, TestFlight, and App Store Connect. The only limits are the host's safety rules (the owner's credentials, payments, and messages sent in the owner's name still need the owner) and honesty. Agents may install the developer tools the work needs on the owner's Mac (Homebrew formulae and casks, Swift toolchains through swiftly, user-local tools), but never use `sudo` or change system settings. |
 | D4 | Repository visibility and license | **Public, all rights reserved** (owner, 2026-10-30): a `LICENSE` file says so (P1.2), and plans, data, and fonts keep their own rights. Every push publishes, so beta feedback stays anonymized and letter drafts stay generic. |
-| D5 | Platforms and stack | Original SwiftUI/Hummingbird/SQLite choice (owner, 2026-10-30), now superseded in its web/server details by **D41**. Keep the existing Swift Apple app; migrate web to Astro and server data to PostgreSQL/Drizzle. |
+| D5 | Platforms and stack | Original SwiftUI/Hummingbird/SQLite choice (owner, 2026-10-30), now superseded in its web/server details by **D42** (which replaced D41). Keep the existing Swift Apple app; migrate web to SvelteKit and server data to PostgreSQL 18/Drizzle. |
 | D6 | Android | Installable web app for now (owner, 2026-10-30). Native Android remains after 1.0 and requires a new platform decision; D41 does not authorize Expo, Kotlin or a new native target. |
 | D7 | Minimum iOS version | **iOS and iPadOS 26**, built with Xcode 27 and the iOS 27 SDK (owner, 2026-10-30). |
 | D8 | Accounts | **Optional, with passkeys and one-time recovery codes**: no passwords, no email, and no third-party sign-in. The free core never needs an account (owner, 2026-10-30). On the web, adding a passkey turns a browser profile (D10) into an account. |
@@ -340,7 +341,7 @@ Engineering consequences go in `docs/decisions.md`.
 | D24 | Groups | **After version 1.0, private by default** (owner, 2026-10-30): churches publish a permitted plan with a join link or QR code; readers join the group's current day or start at the beginning where the plan allows; individual completion and notes are never visible to leaders by default. |
 | D25 | Validation | **No interviews or pilot; build straight to version 1.0 and learn after launch** (owner, 2026-10-30). The brief had recommended 15–20 interviews and a four-week pilot. A short beta for bugs comes before release (D36), and the after-launch learning loop is P18.9. |
 | D26 | Ways to read at launch | **Paper Bible mode, YouVersion and Bible.com, and Copy reference everywhere** (owner, 2026-10-30). Bible Gateway, ESV.org, Olive Tree, Logos, Blue Letter Bible, and audio services come after launch (Phase 19), each tested on a device first. Automatic sync with another app is promised only where a supported integration has been verified. |
-| D27 | Hosting | **D41:** self-host Astro Node standalone with PostgreSQL behind the existing Ubuntu Caddy (owner-managed DNS-only Cloudflare records; Caddy's own certificates), using Docker Compose; private project DB and nightly encrypted off-server pg_dump/restore checks. Supersedes the Swift server/no-Docker/server-SQLite choice. D34 isolation rules remain. |
+| D27 | Hosting | **D41, as D42 revised it:** self-host the SvelteKit adapter-node server with PostgreSQL 18 behind the existing Ubuntu Caddy (owner-managed DNS-only Cloudflare records; Caddy's own certificates), using Docker Compose; private project DB and nightly encrypted off-server pg_dump/restore checks. Supersedes the Swift server/no-Docker/server-SQLite choice. D34 isolation rules remain. |
 | D28 | Support email | **support@daybyword.com**, a Cloudflare Email Routing catch-all to the owner's inbox, receive-only (owner, 2026-10-30). |
 | D29 | Book names, canon, and tradition labels | **Reader's choice** (owner, 2026-10-30). Book ids are USFM codes. Display names default to common English (Song of Songs, Sirach), and a setting offers other traditions' names (for example Song of Solomon, Canticle of Canticles, Ecclesiasticus). Every plan states the canon it assumes and the books it includes. Tradition labels are neutral and precise. Psalms show the plan's own numbering, with the other numbering beside it where they differ. |
 | D30 | Web browsers | **Modern browsers only** (owner, 2026-10-30): the web app requires JavaScript and targets the current and previous major versions of Safari, Chrome, Firefox, and Edge, on desktop and mobile, and older browsers get a plain notice. Pages stay semantic and accessible (WCAG 2.2 AA), and public plan pages are rendered on the server so they can be found and shared. |
@@ -354,7 +355,8 @@ Engineering consequences go in `docs/decisions.md`.
 | D38 | Outside permissions | **Pursue all four once a usable build exists** ([GATE DEMO]; owner, 2026-10-30): Cambridge University Press (the 1662 tables in the UK), Anglican House (the 2019 Daily Office as a references-only schedule), the Consultation on Common Texts (the RCL and its daily readings), and partnership inquiries to ministries whose plans readers ask for (for example BibleProject and the Navigators), with no suggestion of existing agreement. Agents draft each letter, and the owner confirms it before it is sent in the owner's name. *Revised by D39 (owner, 2026-11-01): the letters concern plans that now come after 1.0, so they wait until those plans are being built (P8.15 and P8.16 moved to the roadmap).* |
 | D39 | A leaner path to version 1.0 | **Approved by the owner in full, 2026-11-01**, after an agent's review found the plan sized for a larger product than 1.0 needs. (1) **First light** ships three original plans: Gospels at your pace, the Bible in a year, and Proverbs through the month (which exercises *Follow the calendar* by day of the month without church-year rules). (2) **The 1.0 catalog is Day by Word's own eight original plans** (P10.1–P10.7, P10.11). M'Cheyne, the 1979 and 1662 prayer-book plans, the deuterocanonical books, the church-year engine (Phase 6), and the D38 letters and D15 reviews they need follow after 1.0. (3) **Scripture work covers what those plans need**: English (KJV) versification, one strict reference format for plan files, verse sets, and word counts. Other canons' orders, other versifications, Psalm renumbering, and a parser for every citation style come later. (4) **The web at 1.0** renders public plan pages on the server and keeps each reader's progress in their own browser; the server computes with the engine from what the browser sends and stores nothing. Accounts, passkeys, backup, and sync (Phase 14) come after 1.0. (5) **The app and the web** stay one product, but a web counterpart may land later in the same milestone (D37). (6) **Two independent sources** (D20) are required for calendar and lectionary facts, as D20 says, and not for other facts such as book names. (7) **Process**: this file holds only the work to 1.0 (findings, the feature map, and later phases moved to `docs/`); `make check` is the per-commit gate and `make check-full` (the web and app tours, light and dark, and Linux) runs at milestones and before releases; related items may share a commit; and decision entries record real choices only (AGENTS.md §7, §8). |
 | D40 | Previous unified stack | Next.js/PostgreSQL/Expo migration plan (owner, 2026-11-02); **withdrawn and superseded by D41 before implementation**. Its PM.1–PM.11 items are retired, never reused; Git retains their text. |
-| D41 | Final stack, with only needed languages | **Owner, 2026-11-02, latest correction:** Astro web, PostgreSQL with Drizzle (not server SQLite); React islands/Tailwind/shadcn only where useful. Swift and Python exist only where the project needs or requests them. The existing iPhone/iPad app justifies retaining SwiftUI; no Expo/Tauri or new native targets. Python is optional tooling, using uv/ruff if introduced, not a required rewrite. Astro APIs are the network boundary; clients never connect to Postgres. Better Auth remains deferred to Phase 14; no AI SDK/features under D23. Preserve Morning, offline/no-account privacy, app identity, catalog rights and 1.0 scope. Phase M aligns the foundation first; this session only updates docs. E33 records engine and data boundaries. |
+| D41 | Final stack, with only needed languages | *Web details superseded by D42 (owner, 2026-11-20); the rest stands.* **Owner, 2026-11-02:** Astro web, PostgreSQL with Drizzle (not server SQLite); React islands/Tailwind/shadcn only where useful. Swift and Python exist only where the project needs or requests them. The existing iPhone/iPad app justifies retaining SwiftUI; no Expo/Tauri or new native targets. Python is optional tooling, using uv/ruff if introduced, not a required rewrite. Astro APIs are the network boundary; clients never connect to Postgres. Better Auth remains deferred to Phase 14; no AI SDK/features under D23. Preserve Morning, offline/no-account privacy, app identity, catalog rights and 1.0 scope. Phase M aligns the foundation first; this session only updates docs. E33 records engine and data boundaries. |
+| D42 | The stack | **SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy** (owner, 2026-11-20). Replaces D41's Astro web choice and its optional React islands and shadcn: pages, form actions and `/api/v1` endpoints are SvelteKit routes, interaction is Svelte 5 components, styling is Tailwind CSS 4 with Morning's tokens, and the server is adapter-node's standalone Node build behind the existing host Caddy. PostgreSQL moves from 17 to 18. Everything else in D41 stands: the native SwiftUI app and its packages, the Swift catalog compiler as the rights gate, one engine specification with Swift and TypeScript runtimes held to the same fixtures (E33), no server SQLite, no AI, offline/no-account privacy, Morning, the app's identity, and the 1.0 scope. Better Auth (Phase 14) runs inside SvelteKit. E36 records the engineering. |
 
 ---
 
@@ -371,8 +373,8 @@ README.md has the architecture and layout.
 3. **An append-only event journal** with UUIDv7 ids, folded
    deterministically into state; undo is an event (E3).
 4. **One engine specification and shared cases**: keep Swift ReadingEngine
-   for Apple clients; Astro uses a TypeScript domain module checked against
-   the same fixtures. E33 records the deliberate cross-language boundary;
+   for Apple clients; SvelteKit uses a TypeScript domain module checked
+   against the same fixtures. E33 records the deliberate cross-language boundary;
    never copy rules into views, endpoints or SQL.
 5. **Calendars computed once, at compile time**, when church calendars
    arrive after 1.0 (E5).
@@ -382,10 +384,10 @@ README.md has the architecture and layout.
    (E7).
 8. **Local-first**: the app works offline without an account, and at 1.0
    the web keeps progress in the browser (E8, D39).
-9. **PostgreSQL/Drizzle on the server**; local Apple SQLite remains
+9. **PostgreSQL 18/Drizzle on the server**; local Apple SQLite remains
    justified for offline reading. Clients reach the server only by HTTPS.
-10. **Dependencies only when needed**: Astro/Node/Drizzle web; optional
-    React islands; native Swift retained; Python tooling optional (E33).
+10. **Dependencies only when needed**: SvelteKit/Svelte/Tailwind/Drizzle
+    on Node; native Swift retained; Python tooling optional (E33, E36).
 11. **Modern browsers, server-rendered pages, a strict CSP** (E11, E19).
 12. **Shared design tokens** for the app and the web (E12, E23).
 13. **Our own simple formats**: `key: value` front matter, tab-separated
@@ -395,7 +397,7 @@ README.md has the architecture and layout.
 
 ### Milestones
 
-- **M0 Stack alignment** (Phase M): qualify the Astro/PostgreSQL replacement
+- **M0 Stack alignment** (Phase M): qualify the SvelteKit/PostgreSQL replacement
   and retain the working native app before resuming feature work.
 - **M1 Foundation** (Phases 1–7): the app and the server run in the chosen
   design; references, the catalog, and the engine are correct and tested;
@@ -415,24 +417,27 @@ README.md has the architecture and layout.
 
 ## Phase M: Align with the final stack (do first)
 
-D41 replaces the unimplemented Next/Expo plan. PM.1–PM.11 are withdrawn;
-new items keep distinct ids. No application code or dependencies changed
-in this planning session. Read docs/stack-migration.md and E33 first.
+D41 replaced the unimplemented Next/Expo plan, and D42 (2026-11-20)
+replaced D41's Astro web with SvelteKit 3, Svelte 5 and Tailwind CSS 4 on
+PostgreSQL 18. PM.1–PM.11 are withdrawn; new items keep distinct ids. Read
+docs/stack-migration.md, E33 and E36 first.
 Preserve the existing native app, source content and test oracle. Do not
 implement unfinished P5/P8 features as migration work.
 
 - [x] **PM.12** Reconfirm baseline main, ff-only pull and checks; inspect the existing app container, signing identity and any live deployment. Capture reference/compiler/route/settings fixtures from the current Swift tests, including invalid inputs. Record actual data and the baseline commit before replacing anything.
   - *Result (agent, 2026-11-02):* baseline 50ee64c and its evidence are in docs/stack-migration.md's "Baseline"; tests/fixtures/ holds the captured cases, checked by Swift tests on every `make check`. Not deployed anywhere; TestFlight upload of build 25 not checked; `make test-linux` not run.
-- [x] **PM.13** Create the pinned Astro/TypeScript web workspace, Node standalone adapter and supported Node/npm toolchain. Use server output for the API/database app and selectively prerender public pages. Keep Swift checks active; add web lint/types/unit/production-build gates and manual-dispatch CI. No mandatory Python, React island or new native project.
+- [x] **PM.13** *(Superseded by D42: its workspace was replaced by PM.21; its gates carry over.)* Create the pinned Astro/TypeScript web workspace, Node standalone adapter and supported Node/npm toolchain. Use server output for the API/database app and selectively prerender public pages. Keep Swift checks active; add web lint/types/unit/production-build gates and manual-dispatch CI. No mandatory Python, React island or new native project.
   - *Result (agent, 2026-11-08):* `web/` on Astro 7.4.7 + @astrojs/node 11.1.11 (server output, `session: false`), Node 26.13.0/npm 11.20.0 pinned and checked, exact lockfile; packages in E34. `make check` runs `check-web` (eslint, prettier, `astro check`, vitest, production build booted by `scripts/web-smoke.sh`); CI adds pinned Node and a Linux web job (not dispatched). Only `/up` and a prerendered placeholder `/` exist; no security headers yet (PM.16).
 - [x] **PM.14** Define server-only Drizzle/PostgreSQL schema and reviewed generated SQL migrations; private DB/roles and immutable plan versions. Preserve schema-3 catalog semantics via a validated, deterministic compiler export/import boundary. Test fresh/repeated migrations, atomic imports, invalid claims/rights, checksums and rollback compatibility. Keep local/bundled Apple catalog SQLite distinct from server data; inspect rather than assume no existing data.
   - *Result (agent, 2026-11-08):* `catalog export` (Swift) writes the schema-3 catalog as deterministic JSON; `web/src/catalog/` checks it (same checksum as Swift) and imports it in one locked transaction into `web/src/db/schema.ts`'s tables (immutable by id and version, triggers; `catalog_current` for rollback). Roles in `web/db/roles.sql`. `make test-db` covers fresh/repeated migrations, unknown migrations, atomic and racing imports, refusals, rollback and grants on a throwaway PostgreSQL 17. Inspected: no server database exists yet (PM.12). Not run in the deploy image (PM.18) or on Linux.
-- [ ] **PM.15** Specify and test the Swift-native/TypeScript-web domain boundary (E33): one docs/engine.md specification and versioned JSON parity fixtures, references/counts/workload first; scheduling still P5. Preserve current Swift package semantics and prove the TypeScript module in Node/browser. No Swift HTTP sidecar, duplicate rules in UI/SQL, or forced Python engine. Document wire ids, civil dates, numeric rounding and error semantics.
-- [ ] **PM.16** Replace Hummingbird routes/pages with Astro layouts/pages, Actions for forms and src/pages/api/v1 endpoints for app clients. Preserve stable URLs, /up, component gallery (dev only), strings, copy/settings, Morning tokens, assets and accessibility. Add React islands/Tailwind/shadcn only for a demonstrated UI need. Prove standalone production rendering, islands if present, strict CSP, no external loads/telemetry, privacy-safe logs and no private shared caching.
+- [x] **PM.21** Replace PM.13's Astro workspace with SvelteKit 3, Svelte 5, TypeScript and Tailwind CSS 4 on @sveltejs/adapter-node (D42), and move PM.14's PostgreSQL from 17 to 18. Keep the pinned Node/npm, the exact lockfile, the Drizzle schema, migrations, catalog import and roles unchanged in meaning, and every `make check` gate (lint, types, unit tests, production build booted, export check, drift, real-database tests).
+  - *Result (agent, 2026-11-20):* `web/` on @sveltejs/kit 3.4.0, svelte 5.58.0, adapter-node 6.0.5, vite 8.3.8, tailwindcss 4.3.5 (packages in E36); config in `web/vite.config.ts`. Server code moved to `web/src/lib/server/` (db, catalog), imported as `#lib/server/…`; `/up` is `src/routes/up/+server.ts`, `/` a prerendered placeholder. `make types-web` is svelte-check (fails on warnings); `scripts/web-smoke.sh` boots `web/build/index.js`. `make test-db` passes on PostgreSQL 18.6 (`scripts/with-postgres.sh` now requires 18); CI installs postgresql@18 (not dispatched). Not done: Morning tokens as Tailwind theme variables, CSP (PM.16); no Linux run.
+- [ ] **PM.15** Specify and test the Swift-native/TypeScript-web domain boundary (E33): one docs/engine.md specification and versioned JSON parity fixtures, references/counts/workload first; scheduling still P5. Preserve current Swift package semantics and prove the TypeScript module (`web/src/lib/domain/`) in Node/browser. No Swift HTTP sidecar, duplicate rules in UI/SQL, or forced Python engine. Document wire ids, civil dates, numeric rounding and error semantics.
+- [ ] **PM.16** Replace Hummingbird routes/pages with SvelteKit routes: `+layout.svelte`/`+page.svelte` pages, form actions for forms and `src/routes/api/v1` endpoints for app clients. Preserve stable URLs, /up, component gallery (dev only), strings, copy/settings, Morning tokens (generated into Tailwind CSS 4 theme variables in `src/app.css`), assets and accessibility. Use Svelte 5 components for interaction and `csr = false` where none is needed. Prove adapter-node production rendering, hydration, strict CSP through SvelteKit's `csp` option, no external loads/telemetry, privacy-safe logs and no private shared caching.
 - [ ] **PM.17** Retain and verify SwiftUI/Observation, widgets, intents and the native offline store on the pinned Swift/Xcode toolchain. Keep bundle/App Group ids, TestFlight identity, settings and local history. Add API DTO/adapters only as needed; no direct server DB access. Audit utility scripts: keep working domain/build tools unless conversion serves a real need; if Python is introduced, use uv/ruff and only required Typer/httpx/Pydantic packages. No new desktop/Android release.
-- [ ] **PM.18** Prepare Docker Compose Astro/Postgres, migration/import jobs, non-root runtime, private DB network, loopback app port and stable volumes. Build fresh deploy/check-live/pg_dump/restore scripts and Caddy template under docs/deploy.md. Rehearse production boot, backup and isolated restore, compatible rollback and systemd timers for recurring jobs. No server SQLite/Litestream/R2 database replication. Live provisioning stays P7.
-- [ ] **PM.19** Qualify web/native parity: golden fixtures, real Postgres integration, production Astro image, browser light/dark/phone/200% text and native simulator/VoiceOver/AX5/offline tours. Test API isolation, import retries and legacy app preservation. Record actual evidence and differences; do not claim unbuilt scheduling, journal, sync or reminders.
-- [ ] **PM.20** Retire Hummingbird/server-SQLite and obsolete web tooling only after parity. Retain needed Swift app/domain/compiler code; make check covers Swift plus Astro/Postgres, check-full adds both tours and Linux. Update owning docs/commands/CI, run check-full, record limits, move this completed phase to history and resume P5.1. No Next.js, Expo, unconditional Python, or forced Apple-app rewrite.
+- [ ] **PM.18** Prepare Docker Compose SvelteKit (adapter-node)/PostgreSQL 18, migration/import jobs, non-root runtime, private DB network, loopback app port and stable volumes. Build fresh deploy/check-live/pg_dump/restore scripts and Caddy template under docs/deploy.md. Rehearse production boot, backup and isolated restore, compatible rollback and systemd timers for recurring jobs. No server SQLite/Litestream/R2 database replication. Live provisioning stays P7.
+- [ ] **PM.19** Qualify web/native parity: golden fixtures, real Postgres integration, production SvelteKit image, browser light/dark/phone/200% text and native simulator/VoiceOver/AX5/offline tours. Test API isolation, import retries and legacy app preservation. Record actual evidence and differences; do not claim unbuilt scheduling, journal, sync or reminders.
+- [ ] **PM.20** Retire Hummingbird/server-SQLite and obsolete web tooling only after parity. Retain needed Swift app/domain/compiler code; make check covers Swift plus SvelteKit/PostgreSQL, check-full adds both tours and Linux. Update owning docs/commands/CI, run check-full, record limits, move this completed phase to history and resume P5.1. No Next.js, Astro, React, Expo, unconditional Python, or forced Apple-app rewrite.
 
 ## Phase 0: Owner foundations
 
@@ -456,7 +461,7 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 5: The reading engine
 
-After Phase M, Swift ReadingEngine and the Astro TypeScript domain module
+After Phase M, Swift ReadingEngine and the web's TypeScript domain module
 follow one specification and the same versioned parity cases (E33). The
 specification comes first, then the cases, then the code. It covers what
 1.0's plans need; sessions and church-year schedules wait (roadmap).
@@ -482,15 +487,15 @@ Moved to after 1.0 by D39 (2026-11-01); its items are in
 ## Phase 7: Hosting at daybyword.com
 
 The site goes live early, marked as in development (D35). Phase M
-prepares the Astro/Postgres image and scripts; this phase verifies the
+prepares the SvelteKit/PostgreSQL image and scripts; this phase verifies the
 actual host and provisions under D34. No reader records are stored at 1.0,
 but nightly PostgreSQL backups begin with the first database deployment.
 
 - [ ] **P7.1** Finalize docs/deploy.md against the real host: release/shared env paths, shared lock, free loopback port (4316 planned), Compose volume/DB/roles, Caddy site convention and certificates (Caddy's own; DNS-only Cloudflare records are owner-managed). No Swift HTTP service or server SQLite.
-- [ ] **P7.2** Qualify make deploy from clean origin/main: Astro standalone production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
+- [ ] **P7.2** Qualify make deploy from clean origin/main: SvelteKit adapter-node production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
 - [ ] **P7.3** Provision only this project's Compose/Postgres/env/Caddy/backup resources; record other-site responses before/after, archive /etc/caddy, validate/reload only this site's configuration. Use systemd timers for nightly pg_dump, encrypted off-server copy and an isolated restore drill. Coordinate missing shared Caddy modules/account settings without changing other sites.
 - [ ] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
-- [ ] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/island hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
+- [ ] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
 - [ ] **P7.7** Keep the in-development line, noindex and robots crawl block until launch (P18.5).
 
 ## Phase 8: First light
@@ -510,7 +515,7 @@ list.
 - [ ] **P8.7** The return flow over P5.8: a short welcome, the choices that apply with their previews, and a confirmation. History is never altered.
 - [ ] **P8.8** iOS reminders over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
 - [ ] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
-- [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). Astro APIs compute through the TypeScript domain module from request bodies, retain nothing and log no personal records; cached upcoming readings and IndexedDB marks support offline use. Swift uses the same contract fixtures (E33). A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
+- [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). SvelteKit endpoints compute through the TypeScript domain module from request bodies, retain nothing and log no personal records; cached upcoming readings and IndexedDB marks support offline use. Swift uses the same contract fixtures (E33). A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
 - [ ] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans, queues marks made offline with their event ids, and says clearly when it is offline.
 - [ ] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
@@ -571,13 +576,13 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
 Moved to after 1.0 by D39 (2026-11-01); its items are in
 [docs/roadmap.md](docs/roadmap.md). At 1.0 the app keeps everything on the
 device (included in the device's own backups), the web keeps progress in
-the browser, and both offer export and deletion (P8.10, P8.13). Better Auth with
-Astro and Drizzle/Postgres supplies optional accounts later (D41).
+the browser, and both offer export and deletion (P8.10, P8.13). Better Auth inside
+SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
 
 ## Phase 15: The web app: install and offline
 
 - [ ] **P15.1** An installable web app: the manifest (name, icons from the owner's files, colors from the tokens), checked through Add to Home Screen on iPhone and installation on Android.
-- [ ] **P15.2** Astro web offline, finished: a service worker keeps the assets and the active plans' coming weeks, queues marks, and never caches another reader's data.
+- [ ] **P15.2** The web offline, finished: SvelteKit's service worker (`src/service-worker.ts`) keeps the assets and the active plans' coming weeks, queues marks, and never caches another reader's data.
 - [ ] **P15.4** Keyboard use throughout, and sharing through the Web Share API with a copy-link fallback. *(Rewritten by D39.)*
 - [ ] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
 - [ ] **P15.6** Browser tests for every web flow at phone and desktop widths in Safari and Chrome, with Firefox and Edge checked by hand at each release.
@@ -601,7 +606,7 @@ Astro and Drizzle/Postgres supplies optional accounts later (D41).
 - [ ] **P17.3** The web at 200% text and 400% zoom (320 CSS pixels) without loss; forced colors; keyboard alone with visible focus and a skip link.
 - [ ] **P17.4** Time: daylight saving changes, travel across zones and the date line, midnight, leap days, and a device clock set wrong, all tested end to end for Today and reminders.
 - [ ] **P17.5** An airplane-mode test of every offline feature, in the app and on the web.
-- [ ] **P17.7** Security: server-only Drizzle/Postgres imports and private DB networking; Astro Actions/API validation and origin checks; a strict CSP with no `unsafe-*`, rate limits on every form and API call, request-size limits, secure cookies, dependency updates reviewed for advisories, no secrets in the app binary, Keychain for tokens, and suitable file-protection classes.
+- [ ] **P17.7** Security: server-only Drizzle/Postgres imports and private DB networking; SvelteKit form-action/API validation, origin checks and adapter-node `BODY_SIZE_LIMIT`; a strict CSP with no `unsafe-*`, rate limits on every form and API call, request-size limits, secure cookies, dependency updates reviewed for advisories, no secrets in the app binary, Keychain for tokens, and suitable file-protection classes.
 - [ ] **P17.9** Reminders, field-tested: a week of real reminders on a device across settings, with misses investigated.
 - [ ] **P17.10** UI and browser tests for every critical flow in M2 and M3.
 - [ ] **P17.11** A full review of every reader-facing string against AGENTS.md §3 (tone, neutrality, no guilt, no spiritual claims about records).
@@ -630,26 +635,24 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-08:** PM.13 and PM.14 done. `web/` is the Astro workspace
-  (E34; Node 26.13.0/npm 11.20.0 enforced), and PostgreSQL holds the
-  catalog through a JSON export boundary (E35, docs/catalog-format.md
-  "The export" and "The server catalog").
-- `make check` now runs `check-web`: eslint/prettier, `astro check`,
-  vitest, the production build booted by `scripts/web-smoke.sh`,
-  `check-export`, `db-drift`, and `test-db` (throwaway PostgreSQL 17 on a
-  Unix socket via `scripts/with-postgres.sh`; needs Homebrew
-  postgresql@17's bin on the PATH, README).
-- The TypeScript importer recomputes the Swift compiler's content checksum
-  byte for byte; tests/fixtures/catalog-export.json pins it. The repository's
-  release export (0 plans) is `ac986b77…`, the PM.12 baseline digest.
-- Held back: TypeScript 6.0.3 (checker/linter refuse 7.0), drizzle 0.45
-  (1.0 is RC). Two dev-only audit advisories are recorded in E35.
-- CI: setup-node pinned, postgresql@17 on macOS, a Linux web job without
-  the Swift-dependent targets; not dispatched. Swift export not run on
-  Linux (`make test-linux` not run).
-- Next **PM.15**: the TypeScript domain module for references, counts and
-  workload against tests/fixtures/ (references.json etc.), Node and browser.
-- Carried over: no shared deploy lock found under /run/lock (P7.1);
-  `apple/Config/Secrets.xcconfig` missing here; build 25's upload
-  unverified. For PM.16: `/today/` answers 200 on the Swift server, assets
-  lack Cache-Control, and the Astro app sends no security headers yet.
+- **2026-11-20:** the owner changed the stack (D42): SvelteKit 3 · Svelte 5
+  · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle · adapter-node ·
+  Caddy. PM.21 (new, ticked) replaced the Astro workspace; PM.13 is marked
+  superseded. E36 has packages and reasons; AGENTS.md §5 and docs/ follow.
+- `web/`: config in `vite.config.ts` (no svelte.config.js in SvelteKit 3);
+  server code in `src/lib/server/`, imported as `#lib/server/…` (a
+  package.json subpath import; SvelteKit 3 has no `$lib`), also by the jobs
+  and tests; `/up` in `src/routes/up/+server.ts`; Tailwind in `src/app.css`.
+- `make check`: eslint/prettier (svelte, tailwind plugins), svelte-check,
+  vitest, `vite build` booted by `scripts/web-smoke.sh`, check-export,
+  db-drift, test-db on throwaway **PostgreSQL 18** (postgresql@18 on PATH).
+  Production build checked once in a browser: styles load, console clean.
+- Held back: TypeScript 6.0.3 (SvelteKit 3.4 needs ^6). Dev-only audit
+  advisories (minimatch, esbuild) unchanged from E35.
+- **PM.15 was in progress** when D42 arrived; its unverified TypeScript
+  port was set aside, not committed. Redo it in `web/src/lib/domain/`
+  against tests/fixtures/, with a browser proof (geckodriver/Firefox here).
+- For PM.16: Morning tokens → Tailwind `@theme`; SvelteKit `csp` option;
+  `/today/` answers 200 on the Swift server; assets lack Cache-Control.
+- Carried over: no shared deploy lock under /run/lock (P7.1); no
+  `apple/Config/Secrets.xcconfig` here; build 25's upload unverified.

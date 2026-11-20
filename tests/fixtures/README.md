@@ -1,8 +1,8 @@
 # Shared fixtures
 
 Inputs, and the outputs Day by Word's Swift code gives for them, captured at
-PM.12 (BUILD.md) before the Astro/PostgreSQL migration replaces anything. The
-TypeScript web module and the Astro site must give the same outputs
+PM.12 (BUILD.md) before the SvelteKit/PostgreSQL migration replaces anything. The
+TypeScript web module and the SvelteKit site must give the same outputs
 (docs/decisions.md E33); the Swift tests named below check them on every
 `make check`, so a fixture never drifts from the code that made it.
 

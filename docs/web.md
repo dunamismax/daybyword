@@ -1,44 +1,61 @@
-# Astro web rules
+# SvelteKit web rules
 
-**D41/E33 target; implementation still Hummingbird until Phase M.**
-Build web/ with Astro/TypeScript and @astrojs/node standalone for runtime
-Actions, API endpoints and PostgreSQL. Prerender static public content as
-appropriate; do not deploy only static files when APIs are needed.
+**D42/E36.** `web/` is a SvelteKit 3 workspace (Svelte 5, TypeScript,
+Tailwind CSS 4) built by @sveltejs/adapter-node into a standalone Node
+server behind the host's Caddy, with PostgreSQL 18 through Drizzle. Until
+PM.16 ports them, readers' pages are still served by the Swift server.
+Prerender static public content as appropriate; do not deploy only static
+files when APIs are needed.
 
-- Keep semantic Astro layouts/pages, stable routes, skip link, one main,
-  headings, aria-current and independence footer from docs/urls.md.
-- Use Actions for validated forms/server logic and src/pages/api/v1 for
-  Swift/client APIs. Server-only Drizzle/Postgres imports never enter
-  browser or native bundles. Validate inputs, origin/CSRF and request size.
-- Hydrate React islands only for real interaction. Tailwind/shadcn are
-  available where useful, not mandatory frameworks for every page.
-  No new imagery or generic palette; preserve Morning and design tokens.
-- TypeScript domain logic follows docs/engine.md and the same JSON cases
-  as native Swift. Do not reimplement reading rules in pages, islands,
-  Actions or SQL. E33 records the cross-language parity requirement.
+- Configuration is the `sveltekit()` plugin in `web/vite.config.ts`;
+  SvelteKit 3 reads no svelte.config.js.
+- Keep semantic layouts and pages (`+layout.svelte`, `+page.svelte`),
+  stable routes, skip link, one main, headings, aria-current and the
+  independence footer from docs/urls.md.
+- Use form actions (`+page.server.ts`) for validated forms, with
+  progressive enhancement so a form works before hydration, and
+  `src/routes/api/v1/**/+server.ts` for Swift and browser APIs.
+  Server-only Drizzle/PostgreSQL code lives in `src/lib/server/`, which
+  SvelteKit never bundles for the browser; nothing there enters native
+  bundles either. Validate inputs, origin (adapter-node `ORIGIN`) and
+  request size (`BODY_SIZE_LIMIT`).
+- Svelte 5 components with runes carry interaction. Set `csr = false` on
+  pages that need none, so they ship no JavaScript. No component kit is
+  required; no new imagery or generic palette; preserve Morning.
+- TypeScript domain logic lives in `src/lib/domain/`, follows
+  docs/engine.md and the same JSON cases as native Swift. Do not
+  reimplement reading rules in components, load functions, form actions
+  or SQL. E33 records the cross-language parity requirement.
 - At 1.0 progress remains in IndexedDB; server computation is transient
   from request bodies and retains nothing. No records in URLs, cookies,
-  logs or shared caches. Native/browsers never connect to Postgres.
+  logs or shared caches. Native apps and browsers never connect to Postgres.
 - Preserve cached upcoming plans/readings and offline marks with stable
-  ids, cache-version upgrades and honest offline status. Local browser
+  ids, cache-version upgrades and honest offline status, through
+  SvelteKit's service worker (`src/service-worker.ts`). Local browser
   computation, when necessary, imports the domain module.
-- Generate CSS/Tailwind/shadcn variables from design/tokens.json; no raw
-  colors, remote fonts/scripts/styles/images or CDN code. Localizable
-  strings, English first, two-space indentation and pinned lint/type rules.
-- Strict production CSP with no unsafe-inline/eval. Verify the actual
-  production Astro output and island/component style behavior; do not
-  blindly copy Next-specific nonce/cache configuration. Choose/adapt UI
-  components rather than weaken policy silently.
-- Keep metadata-only app/proxy logs, disable framework/tool telemetry and
-  use no-store for private responses. No AI/model/analytics SDKs.
+- Tailwind CSS 4 is the styling layer, with one entry at `src/app.css`.
+  Generate its `@theme` variables from design/tokens.json; no raw colors,
+  remote fonts/scripts/styles/images or CDN code. Localizable strings,
+  English first, two-space indentation and pinned lint/type rules
+  (eslint with eslint-plugin-svelte, prettier with the svelte and
+  tailwind plugins, svelte-check failing on warnings).
+- Strict production CSP with no unsafe-inline/eval, set through
+  SvelteKit's `csp` option (hashes in prerendered pages, nonces in
+  rendered ones). Verify it against the actual adapter-node build,
+  including hydration and any Svelte transition that writes inline
+  styles; change the component rather than weaken the policy.
+- Keep metadata-only app/proxy logs and use no-store for private
+  responses. SvelteKit, Vite and Tailwind send no telemetry; add no tool
+  that does. No AI/model/analytics SDKs.
 - D30 browsers, keyboard/focus/Reduce Motion, light/dark, 320px reflow,
-  200% text and 400% zoom remain required. Public SSR content and plain
-  unsupported/noscript notices remain usable without client hydration.
+  200% text and 400% zoom remain required. Public server-rendered content
+  and plain unsupported/noscript notices remain usable without hydration.
 - Port every existing web tour assertion before retiring Swift web tools.
-  Test Node standalone image, route/error/health behavior, Actions and
-  hydration in a real browser, not only the development server.
+  Test the adapter-node build (`node build/index.js`), route/error/health
+  behavior, form actions and hydration in a real browser, not only the
+  development server.
 
 Existing Server/Public and Server/Sources/DayByWordWeb are the porting
-oracle. After parity update the code pointers and make serve command;
-preserve /assets URLs or explicit redirects. React is web-only; native
-SwiftUI stays independent of DOM components.
+oracle. After parity update the code pointers and the `make serve`
+command; preserve /assets URLs or explicit redirects. Svelte components are
+web-only; native SwiftUI stays independent of them.

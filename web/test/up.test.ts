@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { APIContext } from "astro";
-import { GET } from "../src/pages/up";
+import type { RequestEvent } from "@sveltejs/kit";
+import { GET } from "../src/routes/up/+server.ts";
 
 interface RouteCase {
   input: { path: string };
@@ -17,7 +17,7 @@ describe("/up", () => {
 
   it("matches the captured Swift server fixture", async () => {
     expect(expected).toBeDefined();
-    const response = await GET({} as APIContext);
+    const response = await GET({} as RequestEvent);
     expect(response.status).toBe(expected?.status);
     expect(response.headers.get("content-type")).toBe(expected?.contentType);
     expect(response.headers.get("cache-control")).toBe(expected?.cacheControl);

@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "The Day by Word web app at daybyword.com (Astro, Node standalone).",
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  },
+  "description": "The Day by Word web app at daybyword.com (SvelteKit, Node adapter).",
   "license": "UNLICENSED",
   "packageManager": "npm@11.20.0",
   "engines": {
@@ -11,32 +14,39 @@
     "npm": "11.20.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "node ./dist/server/entry.mjs",
-    "types": "astro check",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "node ./build/index.js",
+    "prepare": "svelte-kit sync",
+    "types": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "vitest run"
   },
   "dependencies": {
-    "@astrojs/node": "11.1.11",
-    "astro": "7.4.7",
     "drizzle-orm": "0.45.4",
     "pg": "8.23.1"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.12",
     "@eslint/js": "10.0.1",
+    "@sveltejs/adapter-node": "6.0.5",
+    "@sveltejs/kit": "3.4.0",
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
+    "@tailwindcss/vite": "4.3.5",
     "@types/node": "26.6.6",
     "@types/pg": "8.23.1",
     "drizzle-kit": "0.31.11",
     "eslint": "10.14.0",
-    "eslint-plugin-astro": "3.2.1",
+    "eslint-plugin-svelte": "3.24.1",
     "prettier": "3.9.10",
-    "prettier-plugin-astro": "1.1.2",
+    "prettier-plugin-svelte": "4.2.0",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "svelte": "5.58.0",
+    "svelte-check": "4.7.8",
+    "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
+    "vite": "8.3.8",
     "vitest": "5.1.0"
   }
 }

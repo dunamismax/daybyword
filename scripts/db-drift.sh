@@ -1,5 +1,5 @@
 #!/bin/sh
-# Fails if web/src/db/schema.ts holds a change that no committed migration in
+# Fails if web/src/lib/server/db/schema.ts holds a change that no committed migration in
 # web/drizzle/ does, or if drizzle-kit finds the migrations inconsistent
 # (BUILD.md PM.14). It generates into a copy, so web/drizzle/ is untouched.
 set -eu
@@ -15,7 +15,7 @@ DBW_DRIZZLE_OUT="$copy" npx drizzle-kit check >/dev/null
 DBW_DRIZZLE_OUT="$copy" npx drizzle-kit generate --name drift >/dev/null
 after=$(cd "$copy" && find . -type f | sort | xargs cat | shasum -a 256)
 if [ "$before" != "$after" ]; then
-  echo "db-drift: web/src/db/schema.ts has changes with no migration; run make db-generate NAME=… and review the SQL" >&2
+  echo "db-drift: web/src/lib/server/db/schema.ts has changes with no migration; run make db-generate NAME=… and review the SQL" >&2
   exit 1
 fi
 echo "db-drift: the schema and web/drizzle/ agree"

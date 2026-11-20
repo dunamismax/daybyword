@@ -15,11 +15,13 @@ It will be a native iPhone and iPad app and a web version at
 independent Christian project with no denominational affiliation, and it
 does not speak for any church, ministry, or publisher.
 
-**Status (2026-11-02):** final target is Astro + PostgreSQL/Drizzle, with
-Swift retained for this project's existing iPhone/iPad app. Python is
-optional tooling only when needed. The earlier Next/Expo plan was never
-implemented and is withdrawn. The code still contains the original
-Swift/Hummingbird/SQLite foundation; this revision changes docs only.
+**Status (2026-11-20):** the stack is SvelteKit 3 · Svelte 5 · TypeScript ·
+Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy
+(D42), with Swift retained for this project's existing iPhone/iPad app.
+Python is optional tooling only when needed. The earlier Next/Expo and
+Astro plans are withdrawn. `web/` is the SvelteKit workspace with the
+PostgreSQL catalog import; readers' pages are still served by the original
+Swift/Hummingbird/SQLite foundation until Phase M ports them.
 [BUILD.md Phase M](BUILD.md#phase-m-align-with-the-final-stack-do-first)
 starts at PM.12 before feature work; [the migration brief](docs/stack-migration.md)
 maps the code/data/tests and [deployment plan](docs/deploy.md) specifies
@@ -48,21 +50,21 @@ the planned host boundaries. No live deploy or app upload was performed.
   and export and deletion are there at any time. Optional sync, with
   passkeys, follows after 1.0.
 
-## Final target (D41)
+## Final target (D42)
 
 | Area | Stack and scope |
 |---|---|
-| Web | Astro/TypeScript, Node adapter standalone; prerender public content where useful |
-| Interaction | Astro Actions and API endpoints; React islands/Tailwind/shadcn only where needed |
-| Server DB | PostgreSQL + server-only Drizzle schema and reviewed SQL migrations |
+| Web | SvelteKit 3, Svelte 5, TypeScript on @sveltejs/adapter-node; prerender public content where useful |
+| Interaction and style | Svelte 5 components, form actions and `/api/v1` endpoints; Tailwind CSS 4 with Morning's tokens |
+| Server DB | PostgreSQL 18 + server-only Drizzle schema and reviewed SQL migrations |
 | Native | Existing SwiftUI/Observation iPhone/iPad app; pinned Swift 6.4.2, iOS/iPadOS 26+ |
 | Local native data | Existing ReadingData/SQLite for offline use; no direct Postgres connection |
 | Rules | Swift native and TypeScript web modules, one specification/shared parity fixtures (E33) |
 | Hosting | Project Compose behind host Caddy (owner-managed DNS-only Cloudflare records), private Postgres, pg_dump/off-server restore checks |
 | Optional later | Better Auth in Phase 14; Swift desktop only if needed; Python utilities only for a real task |
-| Excluded | Bible text, analytics/model features, mandatory Python, Next/Expo/Tauri rewrites |
+| Excluded | Bible text, analytics/model features, mandatory Python, Next/Astro/React/Expo/Tauri rewrites |
 
-Native clients call Astro APIs over HTTPS. At 1.0 personal records stay
+Native clients call SvelteKit APIs over HTTPS. At 1.0 personal records stay
 in the app/browser; PostgreSQL holds public catalog data only. The catalog
 source format, rights evidence, Morning design and eight-plan release
 scope remain. The engine boundary and deterministic compiler export into
@@ -83,7 +85,7 @@ Packages/ReadingEngine/   references, schedules, progress, and reminder rules (F
 Packages/ReadingData/     SQLite wrapper and catalog reader; journal/sync still open
 Packages/CatalogCompiler/ the `catalog` tool that builds Catalog.sqlite
 Server/                   DayByWordServer (Hummingbird 2): pages, assets in Public/, tests
-web/                      the Astro web app (Node standalone), replacing Server/ through Phase M
+web/                      the SvelteKit web app (adapter-node) and PostgreSQL catalog, replacing Server/ through Phase M
 apple/                    project.yml (XcodeGen), App/, Widgets/, AppTests/, AppUITests/, Config/
 design/                   Morning tokens, mockups, image brief, and finished artwork
 docs/                     decisions, product rules, release, web style, and more as they land
@@ -99,19 +101,19 @@ records the app icon, web exports, sharing image, and twelve plan covers.
 ## Current prerequisites and target additions
 
 Python, uv, and ruff are not required unless a utility needs Python. The
-web workspace (PM.13 and PM.14, decisions E34 and E35) needs:
+web workspace (PM.14 and PM.21, decisions E34–E36) needs:
 
 - **Node 26.13.0** (`.node-version`) and **npm 11.20.0**
   (`web/package.json`'s `packageManager`); `make check` refuses any other.
   Install Node from nodejs.org or a version manager that reads
   `.node-version`, then `npm install --global npm@11.20.0` if needed.
-  `make web-install` runs `npm ci` from `web/package-lock.json`; Astro's
-  telemetry is off through `ASTRO_TELEMETRY_DISABLED`, set by the Makefile.
+  `make web-install` runs `npm ci` from `web/package-lock.json`.
+  SvelteKit, Vite and Tailwind send no telemetry.
 - **curl**, used by `scripts/web-smoke.sh` (macOS includes it).
-- **PostgreSQL 17**'s server binaries (`initdb`, `pg_ctl`) on the PATH for
+- **PostgreSQL 18**'s server binaries (`initdb`, `pg_ctl`) on the PATH for
   `make test-db`, which starts a throwaway cluster on a Unix socket and
-  deletes it after: `brew install postgresql@17` and add
-  `$(brew --prefix postgresql@17)/bin` to the PATH. Nothing needs to be
+  deletes it after: `brew install postgresql@18` and add
+  `$(brew --prefix postgresql@18)/bin` to the PATH. Nothing needs to be
   running, and no other database is touched.
 
 Retain these existing Apple tools, confirmed on the owner's Mac on

@@ -1,9 +1,18 @@
 {
-  "extends": "astro/tsconfigs/strictest",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules"],
+  "extends": "$app/tsconfig",
+  "include": ["src", "test", "scripts", "*.ts", "*.js"],
+  "exclude": ["build", "node_modules"],
   "compilerOptions": {
-    "types": ["node"],
-    "erasableSyntaxOnly": true
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "types": ["$app/types", "node"]
   }
 }

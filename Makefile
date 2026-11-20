@@ -13,8 +13,8 @@ SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
 PORT ?= 8080
 WEB_STAMP := web/node_modules/.package-lock.json
 
-# Astro's build telemetry stays off everywhere (AGENTS.md §5, decision E34).
-export ASTRO_TELEMETRY_DISABLED := 1
+# SvelteKit, Vite, and Tailwind send no telemetry; nothing to switch off
+# (AGENTS.md §5, decision E36).
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
 	test-linux run serve screenshot lint format \
@@ -93,17 +93,17 @@ lint-web: web-install ## Lint and check the formatting of the web sources
 	@echo "== web lint"
 	@cd web && npx eslint . && npx prettier --check --log-level warn .
 
-types-web: web-install ## Type-check the web sources and Astro files
+types-web: web-install ## Type-check the web sources and Svelte components
 	@echo "== web types"
-	@cd web && npx astro check --minimumSeverity warning --minimumFailingSeverity warning
+	@cd web && npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --fail-on-warnings --output human
 
 test-web: web-install ## Run the web unit tests
 	@echo "== web tests"
 	@cd web && npx vitest run
 
-build-web: web-install ## Build the web app for production (web/dist)
+build-web: web-install ## Build the web app for production (web/build, adapter-node)
 	@echo "== web build"
-	@cd web && npx astro build --silent
+	@cd web && npx vite build --logLevel warn
 
 smoke-web: build-web ## Boot the production web build and check what it serves
 	@scripts/web-smoke.sh
@@ -119,10 +119,10 @@ catalog-export: check-catalog ## Export the release catalog as JSON for the Post
 check-export: catalog-export web-install ## Check the release catalog's export as the import will
 	@cd web && node scripts/catalog-import.ts --check ../$(CATALOG_EXPORT)
 
-db-generate: web-install ## Generate a SQL migration in web/drizzle/ from web/src/db/schema.ts (NAME=…)
+db-generate: web-install ## Generate a SQL migration in web/drizzle/ from web/src/lib/server/db/schema.ts (NAME=…)
 	@cd web && npx drizzle-kit generate $(if $(NAME),--name $(NAME))
 
-db-drift: web-install ## Fail if web/src/db/schema.ts has changes no migration in web/drizzle/ holds
+db-drift: web-install ## Fail if web/src/lib/server/db/schema.ts has changes no migration in web/drizzle/ holds
 	@scripts/db-drift.sh
 
 test-db: catalog-export web-install ## Test migrations, the catalog import, and the roles on a throwaway PostgreSQL
@@ -163,4 +163,4 @@ deploy: ## Deploy origin/main to daybyword.com
 	@echo "deploy: not built yet (BUILD.md P7.2)" >&2; exit 1
 
 clean: ## Remove build products and the generated Xcode project
-	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj web/dist web/.astro web/node_modules
+	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj web/build web/.svelte-kit web/node_modules

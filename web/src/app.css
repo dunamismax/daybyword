@@ -1,0 +1,4 @@
+/* The site's one stylesheet entry: Tailwind CSS 4 (D42). PM.16 maps the
+   Morning tokens from design/tokens.json into Tailwind theme variables here;
+   no raw colors are added by hand (AGENTS.md §5). */
+@import "tailwindcss";

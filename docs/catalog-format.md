@@ -169,7 +169,7 @@ compiled, so the same catalog always exports the same bytes:
   export, its `facts`, and its `assignments` by position;
 - `scripture`, the `scripture` table's resources by name.
 
-The importer (`web/src/catalog/export.ts`) recomputes `contentSha256` the
+The importer (`web/src/lib/server/catalog/export.ts`) recomputes `contentSha256` the
 way the compiler does and refuses any difference, so it writes only the
 catalog the compiler checked. It also refuses another format or schema; a
 development build (unless asked, for local work); in a release, a plan
@@ -180,7 +180,7 @@ the Swift and TypeScript tests both read.
 
 ## The server catalog
 
-PostgreSQL's schema is `web/src/db/schema.ts`; drizzle-kit generates its SQL
+PostgreSQL's schema is `web/src/lib/server/db/schema.ts`; drizzle-kit generates its SQL
 into `web/drizzle/` (`make db-generate NAME=…`), and each migration is read
 and committed. `make db-drift` fails when the schema has a change no
 migration holds. The migration job (`web/scripts/db-migrate.ts`) and the
@@ -203,7 +203,7 @@ only read (`web/db/roles.sql`).
 - A job refuses a database missing one of its migrations, or holding one it
   does not know (a newer build migrated it).
 
-`make test-db` runs all of this against a throwaway PostgreSQL 17
+`make test-db` runs all of this against a throwaway PostgreSQL 18
 (`scripts/with-postgres.sh`, a Unix socket only), with the fixture and the
 repository's own release export.
 

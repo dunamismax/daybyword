@@ -7,10 +7,10 @@
 #   scripts/with-postgres.sh COMMAND [ARGUMENTS...]
 #
 # Needs PostgreSQL's server binaries on the PATH (README.md prerequisites),
-# the same major version the deploy image uses (DBW_PG_MAJOR, 17).
+# the same major version the deploy image uses (DBW_PG_MAJOR, 18).
 set -eu
 
-major=${DBW_PG_MAJOR:-17}
+major=${DBW_PG_MAJOR:-18}
 found=$(initdb --version 2>/dev/null | sed -nE 's/.* ([0-9]+)\.[0-9]+.*/\1/p')
 if [ "$found" != "$major" ]; then
   echo "with-postgres: needs PostgreSQL $major's initdb and pg_ctl on the PATH, found ${found:-none}" >&2

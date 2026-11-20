@@ -1,6 +1,10 @@
 # Final stack alignment
 
-**D41, 2026-11-02. Planned only.** Astro + PostgreSQL/Drizzle is final.
+**D42, 2026-11-20.** The stack is SvelteKit 3 · Svelte 5 · TypeScript ·
+Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) ·
+Caddy. It replaces D41's Astro web (2026-11-02); D41's other choices stand
+(E33, E36). `web/` is already the SvelteKit workspace (PM.21); the pages
+are still the Swift server's until PM.16.
 Swift/Python are used only when this project needs them. The existing
 iPhone/iPad app needs Swift; no Python application is required.
 D40's Next/Expo proposal and PM.1–PM.11 are withdrawn before implementation.
@@ -10,27 +14,27 @@ Phase M now starts at PM.12 and precedes all feature work.
 
 | Area | Existing baseline | Final target |
 |---|---|---|
-| Web | Hummingbird HTML/CSS/vanilla modules | Astro/TypeScript, Node standalone, public prerendering where useful |
-| Interactivity | Small web modules | Astro scripts/Actions/API endpoints; React islands only where needed |
-| Styling | Morning tokens and CSS | Preserve tokens; Tailwind/shadcn optional per UI need |
-| Server data | Read-only Catalog.sqlite, schema 3 | PostgreSQL, server-only Drizzle schema/migrations, validated catalog import |
+| Web | Hummingbird HTML/CSS/vanilla modules | SvelteKit 3/Svelte 5/TypeScript on adapter-node, public prerendering where useful |
+| Interactivity | Small web modules | Svelte 5 components, form actions and `/api/v1` endpoints; `csr = false` where none is needed |
+| Styling | Morning tokens and CSS | Tailwind CSS 4 with Morning's tokens as theme variables; no component kit |
+| Server data | Read-only Catalog.sqlite, schema 3 | PostgreSQL 18, server-only Drizzle schema/migrations, validated catalog import |
 | Apple app | SwiftUI/Observation, widgets/intents shell | Retain; no Expo or framework rewrite |
 | Local native data | ReadingData/system SQLite | Retain for offline/native catalog; no client Postgres connection |
 | Reading logic | Swift ReadingEngine | Swift native + pure TypeScript web, one spec and mandatory shared parity cases (E33) |
 | Compiler | Swift CatalogCompiler, rights/claims checks | Retain needed domain/compiler code; define deterministic server export/import |
 | General tools | Make/shell/Swift helpers | Keep justified working tools; Python only if a task needs it, using uv/ruff |
-| Deployment | make deploy is unimplemented | Project Compose Astro/Postgres behind host Caddy (DNS-only Cloudflare records) |
+| Deployment | make deploy is unimplemented | Project Compose adapter-node/PostgreSQL 18 behind host Caddy (DNS-only Cloudflare records) |
 | Backups | Not provisioned here | Nightly pg_dump, encrypted off-server copy, tested restore; no Litestream |
-| Accounts | Deferred after 1.0 | Better Auth inside Astro with Drizzle/Postgres when Phase 14 opens |
+| Accounts | Deferred after 1.0 | Better Auth inside SvelteKit with Drizzle/Postgres when Phase 14 opens |
 | Other targets | iPhone/iPad exist; Mac later | SwiftUI multiplatform only when native desktop is actually needed |
-| Excluded | No Bible text/AI/analytics | Same; no model SDK, mandatory Python, Next, Expo or Tauri |
+| Excluded | No Bible text/AI/analytics | Same; no model SDK, mandatory Python, Next, Astro, React, Expo or Tauri |
 
-Astro static output suits pure content sites, but Day by Word needs API
-compute/catalog services. Select @astrojs/node standalone with server
-output, prerender public pages that do not require runtime work, and
-keep endpoints/Actions on demand. Do not replace the whole product with a
-single React island without a demonstrated need. No hosted services are
-required to run Astro/Postgres.
+A static build suits pure content sites, but Day by Word needs API
+compute/catalog services. Use @sveltejs/adapter-node, prerender public
+pages that need no runtime work (`export const prerender = true`), and
+keep endpoints and form actions on demand. Ship client JavaScript only to
+pages that need it (`csr = false` elsewhere). No hosted services are
+required to run SvelteKit/PostgreSQL.
 
 ## Inspected inventory and preservation
 
@@ -51,8 +55,9 @@ only. The recorded baseline is the next section.
   grammar. Do not create production plans as migration fixtures.
 - Server/Sources/DayByWordWeb holds routing, shell/components, Strings,
   settings, security and metadata-only logging. Server/Public holds
-  styles/modules and artwork. Port to web/src/pages, layouts/components,
-  actions and pages/api/v1; preserve asset URLs or redirects.
+  styles/modules and artwork. Port to web/src/routes (+layout.svelte,
+  +page.svelte, +page.server.ts with form actions) and
+  src/routes/api/v1; preserve asset URLs or redirects.
 - apple/App, Shared, Widgets and their tests remain native. Preserve
   Localizable.xcstrings, tokens, VoiceOver labels, reference sizes and
   scene navigation. Existing preferences are appearance/referenceSize in
@@ -116,11 +121,13 @@ Recorded before anything is replaced; later items compare against it.
 ## Target layout
 
 ~~~text
-web/                         Astro project; pinned package.json/lockfile
-web/src/pages/               public pages and api/v1 endpoints
-web/src/actions/             validated forms/server actions
-web/src/domain/              TypeScript reading logic, no UI/DB imports
-web/src/db/                  server-only Drizzle pg schema/client
+web/                         SvelteKit project; pinned package.json/lockfile
+web/vite.config.ts           SvelteKit (adapter-node) and Tailwind plugins
+web/src/routes/              pages, form actions, api/v1 endpoints, /up
+web/src/app.css              Tailwind CSS 4 entry, Morning theme variables
+web/src/lib/domain/          TypeScript reading logic, no UI/DB imports
+web/src/lib/server/          server-only Drizzle schema/client, catalog import
+web/scripts/                 one-shot migration and catalog-import jobs
 web/drizzle/                 reviewed SQL migrations and metadata
 tests/fixtures/              shared Swift/TypeScript semantic cases
 Packages/ apple/ catalog/    retained needed native/domain/compiler/source code
@@ -128,8 +135,10 @@ deploy/                      Compose, Dockerfile, Caddy site and scripts
 tools/                       only if additional utilities are actually needed
 ~~~
 
-PM.13 (2026-11-08) created `web/` with pinned Node/npm/Astro and its
-lint, type, test, and production-build gates (E34); PM.14 pins Drizzle/pg. No floating production images or framework
+PM.13 (2026-11-08) created `web/` with pinned Node/npm and its lint,
+type, test, and production-build gates (E34), on Astro; PM.14 pinned
+Drizzle/pg; PM.21 (2026-11-20) replaced Astro with SvelteKit 3, Svelte 5
+and Tailwind CSS 4 and moved PostgreSQL to 18 under the same gates (E36). No floating production images or framework
 telemetry. Keep Swift checks until their owning targets are retired,
 which does not include the retained Apple app.
 
@@ -138,7 +147,7 @@ which does not include the retained Apple app.
 The stack now spans Swift and TypeScript. E33 explicitly replaces the
 literal single-language engine rule: one specification, two domain
 modules, shared golden JSON inputs/outputs, no rules copied into views,
-Actions, SQL or reports. Extract existing Swift oracles before porting.
+form actions, SQL or reports. Extract existing Swift oracles before porting.
 P5.1 writes the unbuilt scheduling specification; PM.15 ports only
 already implemented references/counts/workload and defines the boundary.
 Every later P5 rule lands in both runtimes with parity before completion.
@@ -163,23 +172,23 @@ idempotent transaction by digest. Test empty/repeated/failed imports,
 fresh/upgrade SQL and incompatible schema handling. Do not expose DB
 credentials or the DB package to native/browser bundles.
 
-No persistent reader data at 1.0. Astro can evaluate transient request-body
+No persistent reader data at 1.0. SvelteKit endpoints can evaluate transient request-body
 records and discard them with no body logging; Swift computes locally.
 The web caches upcoming readings and keeps offline marks/ids in IndexedDB.
 If local browser evaluation is needed, use the same TypeScript module,
-not ad hoc island logic. Define cache/version upgrades and honest offline
-status. Future sync needs explicit consent and authenticated Astro APIs.
+not ad hoc component logic. Define cache/version upgrades and honest offline
+status. Future sync needs explicit consent and authenticated SvelteKit APIs.
 
 ## Qualification and later work
 
 Port every route/settings/component/string assertion before retiring the
 Swift web tests. Verify built standalone output behind the intended
-proxy, CSP, asset loads and any island hydration, not only the dev server.
+proxy, CSP, asset loads and hydration, not only the dev server.
 Preserve WCAG/keyboard/320px/zoom/light/dark and native AX5/VoiceOver/
 Reduce Motion/offline behavior. No Next-specific nonce/cache assumptions
-should be copied without checking Astro's actual production output.
+should be copied without checking SvelteKit's actual adapter-node output.
 
-make check must cover retained Swift, Astro lint/types/build/tests,
+make check must cover retained Swift, SvelteKit lint/svelte-check/build/tests,
 catalog integrity and real Postgres/parity tests. check-full adds browser
 and native tours plus Linux. Manual CI stays D31. Keep signing credentials
 private and app release commands working; no native rewrite is required.
@@ -199,11 +208,12 @@ exist.
 
 ## Documentation references
 
-Checked for planning on 2026-11-02; recheck when pinning implementation.
-[Astro Node standalone](https://docs.astro.build/en/guides/integrations-guide/node/),
-[on-demand/prerendering](https://docs.astro.build/en/guides/on-demand-rendering/),
-[Actions](https://docs.astro.build/en/guides/actions/),
-[React islands](https://docs.astro.build/en/guides/framework-components/),
+Checked on 2026-11-20 for the pinned versions in E36; recheck when upgrading.
+[Migrating to SvelteKit 3](https://svelte.dev/docs/kit/migrating-to-sveltekit-3),
+[adapter-node](https://svelte.dev/docs/kit/adapter-node),
+[page options and prerendering](https://svelte.dev/docs/kit/page-options),
+[form actions](https://svelte.dev/docs/kit/form-actions),
+[Tailwind CSS with SvelteKit](https://tailwindcss.com/docs/installation/framework-guides/sveltekit),
 [Drizzle PostgreSQL](https://orm.drizzle.team/docs/get-started-postgresql),
 [Drizzle migrations](https://orm.drizzle.team/docs/migrations) and
 [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html).

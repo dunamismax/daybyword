@@ -5,10 +5,10 @@ to the App Store. The web is deployed separately (`docs/deploy.md`).
 
 ## Final stack scope
 
-D41 keeps the native Swift app and release tooling. No Expo migration,
+D41 and D42 keep the native Swift app and release tooling. No Expo migration,
 replacement App Store record or forced new platform is required. Preserve
 bundle/extension/App Group ids, signing, settings and any local records;
-SwiftData/GRDB are optional decisions only for a real need. Astro API
+SwiftData/GRDB are optional decisions only for a real need. SvelteKit API
 changes require contract/parity tests with the native app. Swift remains
 pinned in .swift-version and the commands below remain the native path.
 

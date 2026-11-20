@@ -1,6 +1,6 @@
-# Astro/PostgreSQL deployment plan
+# SvelteKit/PostgreSQL deployment plan
 
-**D41, planned only (2026-11-02).** Nothing was provisioned or deployed
+**D41, as D42 revised it (2026-11-20); planned only.** Nothing was provisioned or deployed
 during this review. PM.18 builds/rehearses scripts; P7 verifies the host and
 performs first production deployment. Do not treat planned paths as live
 evidence. No server SQLite, Litestream or mandatory Python service.
@@ -13,8 +13,8 @@ evidence. No server SQLite, Litestream or mandatory Python service.
 | Release root | /srv/www/daybyword.com/releases/<commit>, current pointer |
 | Persistent resources | shared/env (root-owned 0600), shared/storage, shared/backups |
 | Source files | deploy/compose.yaml, deploy/Dockerfile, deploy/caddy/daybyword.com |
-| Compose project | daybyword; web, postgres, one-shot migration/catalog import |
-| Web listener | container 0.0.0.0:4321, published only at 127.0.0.1:4316 if free |
+| Compose project | daybyword; web (adapter-node), postgres (PostgreSQL 18), one-shot migration/catalog import |
+| Web listener | adapter-node in the container on 0.0.0.0:3000 (`HOST`, `PORT`), published only at 127.0.0.1:4316 if free |
 | Postgres | private Docker network port 5432; no production host port |
 | DB/role | daybyword; `daybyword_app` (web, read-only) and `daybyword_migrate` (migration/import jobs), from `web/db/roles.sql` (PM.14) |
 | Volume | explicit daybyword_postgres_data; stable across release directories |
@@ -31,14 +31,19 @@ for this documentation revision.
 
 ## Application and secrets
 
-Use @astrojs/node standalone. This app needs runtime API/Actions/database
+Use @sveltejs/adapter-node: `vite build` writes `web/build/`, run as
+`node build/index.js`. This app needs runtime API/form-action/database
 work; static public routes may prerender. A pure static content deployment
 can be served directly by Caddy, but it cannot replace runtime APIs.
-Build a pinned non-root Node image from a clean origin/main archive, copy
-the built client/server assets and required migrations/catalog resources,
-and test the actual image. No checkout as web root or runtime bind mount.
+Build a pinned non-root Node image from a clean origin/main archive: build
+in one stage, then copy `web/build/`, `package.json`, the lockfile's
+production dependencies (`npm ci --omit=dev`: drizzle-orm and pg, which
+adapter-node leaves external), the jobs' `scripts/` and `src/lib/server/`,
+and `drizzle/`, and test the actual image. PostgreSQL's image is the
+pinned 18 major. No checkout as web root or runtime bind mount.
 
-Document runtime HOST/PORT, public origin, DBW_DATABASE_URL (the web as
+Document runtime HOST/PORT, `ORIGIN=https://daybyword.com` (adapter-node
+needs it behind Caddy for form actions' origin check), `BODY_SIZE_LIMIT`, DBW_DATABASE_URL (the web as
 daybyword_app; the jobs as daybyword_migrate, PM.14), DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
 DBW_PORT, DBW_PUBLIC_DIR and DBW_CATALOG need explicit mapping/removal.
 Only public config may use client-exposed environment variables. No secrets
@@ -58,7 +63,7 @@ caddy-dns plugin, Caddy Cloudflare token or SSL/TLS-mode setting in this
 stack: do not plan or add any. Record changes and Cloudflare account settings
 are the owner's; shared binary changes need coordination.
 Verify apex HTTPS, permanent www redirect retaining path/query, renewal,
-headers and actual Astro CSP/island behavior. No remote resources.
+headers and the SvelteKit build's actual CSP and hydration behavior. No remote resources.
 Do not cache private APIs or personal HTML. Proxy/app logs omit bodies,
 cookies/tokens, query strings and concrete plan paths; retain route pattern,
 method, status and duration only.
@@ -71,7 +76,7 @@ method, status and duration only.
    with migration credentials; import release-cleared catalog atomically
    and idempotently. No production schema push.
 3. Boot the candidate on a verified spare loopback port. Verify /up,
-   routes/assets/SSR, any Actions/islands, CSP and matching catalog digest.
+   routes/assets/SSR, form actions and hydration, CSP and matching catalog digest.
 4. Activate only this project's web container/release. Run check-live over
    public apex/www and compare other sites. Retain previous image/config.
 5. On failure roll back compatible code/config. Use expand/contract SQL;

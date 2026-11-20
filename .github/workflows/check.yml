@@ -27,10 +27,10 @@ jobs:
           node-version-file: .node-version
       - name: npm, as web/package.json pins it
         run: npm install --global npm@11.20.0
-      - name: Install XcodeGen, PostgreSQL 17 for make test-db, and Firefox and geckodriver for the web tour
+      - name: Install XcodeGen, PostgreSQL 18 for make test-db, and Firefox and geckodriver for the web tour
         run: |
-          brew install xcodegen postgresql@17
-          echo "$(brew --prefix postgresql@17)/bin" >> "$GITHUB_PATH"
+          brew install xcodegen postgresql@18
+          echo "$(brew --prefix postgresql@18)/bin" >> "$GITHUB_PATH"
           command -v geckodriver || brew install geckodriver
           test -d /Applications/Firefox.app || brew install --cask firefox
       - name: make check

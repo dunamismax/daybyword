@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { contentSha256, type CatalogExport } from "../src/catalog/export.ts";
+import { contentSha256, type CatalogExport } from "#lib/server/catalog/export.ts";
 
 /** A fresh copy of tests/fixtures/catalog-export.json, written by the Swift compiler. */
 export function fixtureExport(): CatalogExport {

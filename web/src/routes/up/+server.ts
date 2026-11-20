@@ -1,10 +1,10 @@
 // The health check that Caddy, deploys, and monitoring use. Always rendered
 // on demand and never cached (tests/fixtures/routes.json, "/up").
-import type { APIRoute } from "astro";
+import type { RequestHandler } from "@sveltejs/kit";
 
 export const prerender = false;
 
-export const GET: APIRoute = () =>
+export const GET: RequestHandler = () =>
   new Response("OK\n", {
     status: 200,
     headers: {

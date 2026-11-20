@@ -7,7 +7,7 @@ never stores or shows Bible text (D13). The code is in
 source's rights record in `catalog/SOURCES.md`. Decisions E27, E28, E30,
 and E31 in `docs/decisions.md` give the reasons.
 
-**D41 alignment:** native Swift source/provenance below stays. The Astro
+**D41/D42 alignment:** native Swift source/provenance below stays. The web's
 TypeScript domain module must pass the same reference/count/workload
 fixtures (E33). Preserve numeric data and rights evidence; no new text
 downloads or retranscription are needed.

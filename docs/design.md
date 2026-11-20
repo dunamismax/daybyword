@@ -9,9 +9,10 @@ token there first, regenerate, and commit both (AGENTS.md §5).
 
 ## Stack alignment
 
-D41 preserves Morning and the native Swift token generator. Phase M
-ports web outputs to Astro; Tailwind/shadcn may consume generated tokens
-where components are needed, without replacing the palette. Native
+D42 preserves Morning and the native Swift token generator. Phase M
+(PM.16) generates the web tokens as Tailwind CSS 4 `@theme` variables in
+`web/src/app.css`, so Svelte components style with Morning's names
+without replacing the palette. Native
 SwiftUI/AX5/VoiceOver and existing artwork remain. Update generated web
 paths only with the implementation; no redesign or image generation.
 

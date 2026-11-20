@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkExport, contentSha256, ExportError } from "../src/catalog/export.ts";
+import { checkExport, contentSha256, ExportError } from "#lib/server/catalog/export.ts";
 import { assignment, changedExport, fixtureExport, plan } from "./helpers.ts";
 
 describe("the catalog export", () => {

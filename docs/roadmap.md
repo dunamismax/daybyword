@@ -10,10 +10,11 @@ when an open item, a document, or a failing check points here. Agents do
 not work items from this file before 1.0 unless the owner asks. When a
 phase here becomes the next work, move it back into BUILD.md whole.
 
-**Final stack D41:** future web work is Astro/PostgreSQL/Drizzle, native
-Swift only for actual Apple clients, Python utilities only when needed.
-Better Auth integrates inside Astro when accounts open. React islands
-are optional, no Expo/Tauri/Next migration. E33 requires rule parity.
+**Stack D42:** future web work is SvelteKit 3/Svelte 5/Tailwind CSS 4
+with PostgreSQL 18/Drizzle on adapter-node behind Caddy, native Swift only
+for actual Apple clients, Python utilities only when needed. Better Auth
+integrates inside SvelteKit when accounts open. No Expo/Tauri/Next/Astro
+migration. E33 requires rule parity.
 Native/local SQLite does not imply a SQLite server. Baseline Postgres
 backups move before first deployment; later reader-data safeguards remain.
 
@@ -38,9 +39,9 @@ foundation 5). Cite the governing source, book and page, for every rule in
 
 ## Phase 14: Accounts, backup, and sync (after 1.0, D39)
 
-- [ ] **P14.1** Accounts with passkeys (D8): Better Auth inside Astro with Drizzle/Postgres; verify no-email/no-password passkeys and recovery support in the pinned version and `AuthenticationServices` on iOS through associated domains, one-time recovery codes, opaque sessions stored hashed, minimal data, and rate-limited sign-in.
+- [ ] **P14.1** Accounts with passkeys (D8): Better Auth inside SvelteKit with Drizzle/Postgres; verify no-email/no-password passkeys and recovery support in the pinned version and `AuthenticationServices` on iOS through associated domains, one-time recovery codes, opaque sessions stored hashed, minimal data, and rate-limited sign-in.
 - [ ] **P14.2** The sync API (`/api/v1`): events since a cursor, idempotent uploads by event id, a JSON error envelope, rate limits, request-size limits, and authentication on every call.
-- [ ] **P14.3** The Swift iOS sync client in `ReadingData` calling Astro APIs over HTTPS, never Postgres: background refresh, retries with backoff, and a visible status ("Backed up 2 minutes ago", or "Backup unavailable offline").
+- [ ] **P14.3** The Swift iOS sync client in `ReadingData` calling SvelteKit APIs over HTTPS, never Postgres: background refresh, retries with backoff, and a visible status ("Backed up 2 minutes ago", or "Backup unavailable offline").
 - [ ] **P14.4** Joining histories: turning a web browser profile into an account, and adding the app's local history to an account, each previewed first, with no double counting.
 - [ ] **P14.5** Export (JSON and CSV) and deletion everywhere: in-app account deletion that removes everything on the server, with backups expiring on their published schedule (D10).
 - [ ] **P14.6** Sync tests: offline changes on two devices, retries, clock skew, interrupted uploads, accidental completions recovered, and the engine cases run over synced journals.
@@ -81,7 +82,7 @@ were left for later.
 - [ ] **P8.16 [OWNER] [GATE DEMO]** The owner confirms each letter. Agents send it from the owner's address, or the owner sends it, and agents record each response's status in `catalog/SOURCES.md`. The letters themselves stay off the repository. *(Formerly P0.8; moved here at the owner's request, 2026-11-01.)*
 - [ ] **P9.5** The canon check before enrollment: when a plan appoints books the reader's Bible may not contain (D29), explain it before enrollment and offer an appropriate alternative or, where permissions allow, a clearly labeled adaptation. Original schedules are preserved.
 - [ ] **P9.6** Plan comparison: two or three plans side by side (workload, coverage, length, behaviors, sessions).
-- [ ] **P9.7** Search over public plan metadata using PostgreSQL full-text search through Astro/Drizzle; local native search may use a local index.
+- [ ] **P9.7** Search over public plan metadata using PostgreSQL full-text search through SvelteKit/Drizzle; local native search may use a local index.
 - [ ] **P9.8** External directory entries (P4.7), clearly labeled, with a link out to the publisher.
 - [ ] **P9.10** A hands-on competitive teardown on a device: onboarding, missed-day behavior in practice (YouVersion's "Catch Me Up", Sola's rescheduling, ReadingPlan's pace), links out, widgets, and reminders, recorded in `docs/research/competitors.md`, confirming the remaining † rows of the feature map. Needs a session with an iPhone that may have these apps installed; do it before settling P9.1–P9.6. *(Formerly P2.2b; moved here at the owner's request, 2026-11-01.)*
 - [ ] **P10.8 [RIGHTS] [REVIEW]** **M'Cheyne's Calendar for Daily Readings** (1842): transcribed from an identified public-domain printing and proofread twice against its page images; four readings a day with M'Cheyne's own labels ("Family" and "Secret"); permits follow-the-calendar and at-my-pace behaviors; the source note gives the printing and pages.
@@ -166,7 +167,7 @@ conventions differ between traditions.
 
 - [ ] **P24.1** An Apple Watch app: the next reading, **Mark read**, a complication, and a Smart Stack widget, sharing `ReadingEngine`.
 - [ ] **P24.2** The Mac: prefer the existing iPad app on Apple silicon; add a native SwiftUI multiplatform target only if actual use justifies it. No Tauri/Expo conversion (D41).
-- [ ] **P24.3 [GATE D6]** Android, after version 1.0: revisit platform/language requirements under D41 (Apple Swift does not establish Android support), record the decision, and build it with home-screen widgets and notification actions.
+- [ ] **P24.3 [GATE D6]** Android, after version 1.0: revisit platform/language requirements under D41/D42 (Apple Swift does not establish Android support), record the decision, and build it with home-screen widgets and notification actions.
 - [ ] **P24.4 [OWNER] [GATE D6]** A Google Play developer account (a payment in the owner's name), if P24.3 goes ahead.
 - [ ] **P24.5 [GATE D6]** The engine's cases in Android's continuous integration, if P24.3 goes ahead.
 
@@ -182,7 +183,7 @@ conventions differ between traditions.
 
 - [ ] **P26.1** Write `docs/operations.md`: the incident runbook, a quarterly backup-restore drill, log rotation, and the support inbox routine.
 - [ ] **P26.2** Annual verification: each autumn, compare the coming year's computed lectionaries with published tables, fix discrepancies with tests, and extend the catalog window.
-- [ ] **P26.3** A yearly platform upgrade after each September Xcode release (new SDK, deprecations, the deployment target), and needed Swift, Astro/Node/Drizzle/Postgres updates as they come, with `make check` green.
+- [ ] **P26.3** A yearly platform upgrade after each September Xcode release (new SDK, deprecations, the deployment target), and needed Swift, SvelteKit/Svelte/Vite/Tailwind/Node/Drizzle/PostgreSQL updates as they come, with `make check` green.
 - [ ] **P26.4** A yearly rights review: every permission's term, territories, and credit line still current, and every review date renewed.
 - [ ] **P26.5** The errata routine: readers' reports checked against the source, fixed as a new plan version with a changelog (P4.6), and the reader thanked.
 - [ ] **P26.6** Retention: idle web browser profiles expire on schedule with notice (D10), and backups expire as published.

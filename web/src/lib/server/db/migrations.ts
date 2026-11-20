@@ -7,7 +7,7 @@ import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import type { Database } from "./client.ts";
 
-export const migrationsFolder = new URL("../../drizzle/", import.meta.url).pathname;
+export const migrationsFolder = new URL("../../../../drizzle/", import.meta.url).pathname;
 
 interface Journal {
   entries: { idx: number; when: number; tag: string }[];

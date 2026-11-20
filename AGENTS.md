@@ -1,10 +1,12 @@
 # Working on Day by Word
 
 Day by Word is a Bible reading companion: a native iPhone and iPad app built
-in SwiftUI, and an Astro web version at daybyword.com backed by
-PostgreSQL/Drizzle on the owner's own machine (final direction D41).
-The code is still the original Swift/Hummingbird/SQLite foundation;
-BUILD.md Phase M aligns it first. Read docs/stack-migration.md.
+in SwiftUI, and a SvelteKit web version at daybyword.com backed by
+PostgreSQL 18/Drizzle on the owner's own machine behind Caddy (stack
+decision D42, which replaced D41's Astro plan). `web/` is already a
+SvelteKit 3 workspace; the pages a reader sees are still served by the
+original Swift/Hummingbird foundation until BUILD.md Phase M ports them.
+Read docs/stack-migration.md.
 Swift is justified by the existing native app; Python is optional tooling,
 not a required language or rewrite. It helps Christians choose a
 reading plan, know what to read today, and keep a trustworthy record of
@@ -217,16 +219,29 @@ Handoff notes.
 
 ## 5. Stack and engineering rules
 
-**D41/E33 supersede the previous D40/E32 Next/Expo plan.** The implementation
-has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
+**The stack (D42, E36): SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4
+· PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy.** It replaces
+D41/E33's Astro plan, which replaced D40/E32's Next/Expo plan; E33's engine
+and data boundaries still hold. `web/` is the SvelteKit workspace; the
+Hummingbird pages are ported in Phase M. See docs/stack-migration.md and
+docs/deploy.md.
 
-- **Web**: Astro/TypeScript with @astrojs/node standalone for APIs,
-  Actions and database work. Prerender public content where useful;
-  entirely static sites/tools may be served directly by Caddy. This
-  project needs a Node runtime for app APIs, not a static-only deployment.
-  Add React islands only for real interaction; Tailwind/shadcn may be used
-  where useful, preserving Morning rather than imposing a new UI.
-- **Server data**: PostgreSQL through server-only Drizzle schema and
+- **Web**: SvelteKit 3 with Svelte 5 (runes) and TypeScript, built by
+  @sveltejs/adapter-node into a standalone Node server. Configuration
+  lives in the `sveltekit()` plugin in `web/vite.config.ts` (SvelteKit 3
+  reads no svelte.config.js). Pages are `src/routes/**/+page.svelte` with
+  `+page.server.ts` loads; forms use SvelteKit form actions with
+  progressive enhancement; app and client APIs are
+  `src/routes/api/v1/**/+server.ts`. Prerender public content where useful
+  and set `csr = false` on pages that need no interaction. This project
+  needs a Node runtime for app APIs, not a static-only deployment.
+- **Styling**: Tailwind CSS 4 through `@tailwindcss/vite`, one entry at
+  `web/src/app.css`, with Morning's theme variables generated from
+  design/tokens.json. No component kit is required; Svelte components are
+  written here, preserving Morning rather than imposing a new UI.
+- **Server data**: PostgreSQL 18 through a server-only Drizzle schema in
+  `web/src/lib/server/`, imported as `#lib/server/…` (SvelteKit 3 refuses
+  to bundle any `server` directory into the browser) and
   reviewed generated SQL migrations. No server SQLite, better-sqlite3,
   libSQL, Litestream or SQLite-file access from Python. Each project has
   an isolated DB/user, private network and persistent volume. No direct
@@ -242,13 +257,14 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
   justified for offline reading and catalog access. SwiftData or GRDB are
   choices for a demonstrated storage need, not mandatory substitutions.
   They never replace the PostgreSQL server or connect to it directly.
-  Native network operations call Astro API endpoints over HTTPS.
+  Native network operations call SvelteKit API endpoints over HTTPS.
 - **Reading logic**: one docs/engine.md specification, versioned wire
   contracts and shared JSON cases. Swift ReadingEngine owns native rules;
-  a TypeScript domain module owns Astro/browser rules. This explicit E33
+  a TypeScript domain module (`web/src/lib/domain/`) owns the web's
+  server and browser rules. This explicit E33
   exception replaces the former single-language engine assumption.
-  Test both runtimes against identical oracle fixtures; no rules in views,
-  Actions, routes, SQL or utility scripts. New engine rules require cases
+  Test both runtimes against identical oracle fixtures; no rules in Svelte
+  components, form actions, routes, SQL or utility scripts. New engine rules require cases
   and specification updates before code, with parity before completion.
 - **Packages/compiler**: retain needed Swift native/domain/compiler
   packages and their Linux/macOS tests. The compiler's catalog rights,
@@ -265,12 +281,12 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
 - **Scope**: keep D39's offline/no-account core, local native records and
   browser IndexedDB. At 1.0 the server stores public catalog data only;
   transient compute requests must not persist personal records.
-  Better Auth inside Astro with Drizzle/Postgres waits for Phase 14;
+  Better Auth inside SvelteKit with Drizzle/Postgres waits for Phase 14;
   preserve optional passkey/recovery requirements. Billing stays gated.
   D23 excludes all AI features/model SDKs despite general stack options.
-  No Next.js, Expo or Tauri migration.
-- **Versioning/dependencies**: pin supported Node/npm/Astro/Drizzle/pg
-  versions and a lockfile; retain pinned Swift. Document real extra
+  No Next.js, Astro, React, Expo or Tauri migration.
+- **Versioning/dependencies**: pin supported Node/npm, SvelteKit/Svelte/
+  Vite, Tailwind, Drizzle/pg and PostgreSQL 18 versions and a lockfile; retain pinned Swift. Document real extra
   packages in decisions.md before adding. No analytics, tracking,
   advertising, session replay, remote fonts/CDNs or phone-home services.
   Disable build/framework telemetry. Never copy other-project code (D22).
@@ -279,16 +295,18 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
   Events use UUIDv7, append-only deterministic folds, idempotent retries
   and undo events; deletion only at the reader's request.
 - **Tests/gates**: preserve make check for active Swift targets and add
-  Astro lint/type/unit/build, real Postgres migrations/import and parity
-  tests. make check-full adds native/browser tours and Linux. Keep
+  SvelteKit lint/svelte-check/unit/build, real PostgreSQL 18
+  migrations/import and parity tests. make check-full adds native/browser tours and Linux. Keep
   manual-dispatch CI (D31); port existing assertions before retiring tools.
 - **Design/accessibility**: design/tokens.json and docs/design.md remain
-  authoritative. Generate Apple assets plus web CSS/Tailwind variables
+  authoritative. Generate Apple assets plus web CSS/Tailwind theme variables
   as needed; no raw colors/new art. AX5/VoiceOver/Reduce Motion and WCAG
   2.2 AA, light/dark/zoom/keyboard checks remain. State always has words
   or symbols, not color alone. Interface strings stay localizable.
 - **Security**: same-origin assets only, strict production CSP without
-  unsafe-inline/unsafe-eval; test any islands/shadcn style behavior.
+  unsafe-inline/unsafe-eval, through SvelteKit's `csp` option (hashes for
+  prerendered pages, nonces for rendered ones); test hydration and
+  Tailwind output under it in the production build.
   Logs contain method/route pattern/status/duration only, never request
   bodies, concrete plan paths, tokens or personal data. Private API
   responses are no-store, excluded from shared caches. No personal data
@@ -296,8 +314,8 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
 - **Host layout (planned)**: deploy/compose.yaml, deploy/Dockerfile,
   deploy/caddy/daybyword.com; /srv/www/daybyword.com/releases and shared/env
   (root-owned 0600); host /etc/caddy/sites/daybyword.com. Project daybyword,
-  loopback 127.0.0.1:4316 (verify free) to Node container port 4321;
-  private Postgres 5432, database daybyword, role daybyword_app, stable
+  loopback 127.0.0.1:4316 (verify free) to the adapter-node container
+  port 3000, with ORIGIN=https://daybyword.com; private PostgreSQL 18 on 5432, database daybyword, role daybyword_app, stable
   project volume and separate migration credential. Inspect actual paths
   and shared lock before changes; only origin/main releases are served.
 - **TLS/backups**: DNS is owner-managed, DNS-only (not proxied) Cloudflare
@@ -369,7 +387,7 @@ has not migrated yet. See docs/stack-migration.md and docs/deploy.md.
 An item is done only when all of these hold:
 
 1. `make check` passes: retain the current Swift gate during migration
-   and add Astro/TypeScript, real Postgres and cross-runtime parity checks.
+   and add SvelteKit/TypeScript, real PostgreSQL and cross-runtime parity checks.
    This includes the toolchain, formatting, imports, design tokens
    and raw colors, the catalog compile and integrity suite, the package and
    server tests, the app's unit tests, and the String Catalog. The build has
@@ -393,7 +411,7 @@ An item is done only when all of these hold:
 **At each milestone, and before every TestFlight build or deploy**, run
 `make check-full` (`make check`, the web tour in light and dark at desktop
 and narrow widths, the app tour in light and dark, and the packages and
-Astro/Postgres and the retained Swift packages on Linux), and check by hand what the tours cannot: a phone width
+the SvelteKit/PostgreSQL workspace and the retained Swift packages on Linux), and check by hand what the tours cannot: a phone width
 and 200% text on the web, one large Dynamic Type size, and dark mode in the
 new screens. Fix what it finds before shipping.
 

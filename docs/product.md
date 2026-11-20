@@ -10,10 +10,11 @@ today, and keep a trustworthy record of their reading, while they read in
 their own Bible: paper, app, or audio. *Find your plan. Read your Bible.
 Keep your place.*
 
-**Stack correction D41:** Astro/TypeScript web with PostgreSQL/Drizzle;
+**Stack D42:** SvelteKit/Svelte/TypeScript web with Tailwind CSS 4 and
+PostgreSQL 18/Drizzle;
 the existing native Swift app stays. Python is optional tooling. Product
 rules are unchanged. E33 requires Swift/web engine parity; server-side
-compute refers to Astro, not a retained Swift HTTP service.
+compute refers to SvelteKit endpoints, not a retained Swift HTTP service.
 
 ## The reader we design for
 

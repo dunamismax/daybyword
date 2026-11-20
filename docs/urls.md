@@ -7,9 +7,9 @@ path spell the same thing (`daybyword://plans/psalm-a-day` is
 `https://daybyword.com/plans/psalm-a-day`). Universal links (P12.8) will let
 daybyword.com addresses open the app directly, using these same paths.
 
-**D41 migration contract:** preserve all addresses/deep links. Astro
-pages/endpoints replace the web route code below; native Swift routes
-stay. Reserve /api/v1 for Astro catalog/compute and later consented sync,
+**D42 migration contract:** preserve all addresses/deep links. SvelteKit
+routes (`web/src/routes/`) replace the web route code below; native Swift
+routes stay. Reserve /api/v1 for SvelteKit catalog/compute and later consented sync,
 never a direct database connection. Update code pointers after parity.
 
 ## The addresses

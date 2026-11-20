@@ -3,15 +3,15 @@
 import { readFileSync } from "node:fs";
 import pg from "pg";
 import { afterAll, describe, expect, it } from "vitest";
-import { ExportError } from "../../src/catalog/export.ts";
-import { importCatalog } from "../../src/catalog/import.ts";
-import { database } from "../../src/db/client.ts";
+import { ExportError } from "#lib/server/catalog/export.ts";
+import { importCatalog } from "#lib/server/catalog/import.ts";
+import { database } from "#lib/server/db/client.ts";
 import {
   applyMigrations,
   checkSchema,
   knownMigrations,
   SchemaError,
-} from "../../src/db/migrations.ts";
+} from "#lib/server/db/migrations.ts";
 import { assignment, changedExport, fixtureExport, plan } from "../helpers.ts";
 
 if (!process.env["PGHOST"])

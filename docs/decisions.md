@@ -708,6 +708,9 @@ No old decision is evidence that a new-stack check has passed.
 
 ### E33. Final Astro/PostgreSQL stack; languages only for demonstrated needs
 
+*Web framework superseded by E36 (D42, 2026-11-20): read "Astro" as
+SvelteKit. The engine boundary, data and language rules below stand.*
+
 *2026-11-02, agent implementing the owner's final D41 correction.* This is
 a documentation plan; no runtime migration has happened. E32's Next/Expo
 and all-TypeScript proposal is withdrawn. Earlier implementation
@@ -757,6 +760,9 @@ checks, deploy or upload is claimed by this decision.
 
 ### E34. The web workspace's toolchain and packages
 
+*Packages superseded by E36 (2026-11-20); the Node/npm pins, exact
+versions, lockfile and gates below stand.*
+
 *2026-11-08, agent (PM.13).* `web/` is an npm workspace pinned to
 **Node 26.13.0** (`.node-version`, Active LTS since October 2026) and
 **npm 11.20.0** (`packageManager`, `engines` with `engine-strict`), with
@@ -791,6 +797,8 @@ the pinned Node and npm on macOS and adds a Linux `make check-web` job.
 
 ### E35. The PostgreSQL catalog: packages, versions, and the import boundary
 
+*PostgreSQL 17 became 18 under E36 (2026-11-20); the boundary stands.*
+
 *2026-11-08, agent (PM.14).* Packages: **drizzle-orm 0.45.4** and
 **pg 8.23.1** (runtime, server-only), **drizzle-kit 0.31.11** and
 **@types/pg 8.23.1** (development). They are the stable releases; Drizzle's
@@ -824,3 +832,74 @@ esbuild's server) and minimatch's glob amplification (inside
 typescript-eslint). Production dependencies have none. Revisit when
 drizzle-kit and typescript-eslint update. esbuild's install scripts stay
 unapproved; drizzle-kit runs without them.
+
+
+### E36. SvelteKit 3, Svelte 5, Tailwind CSS 4 and PostgreSQL 18
+
+*2026-11-20, agent carrying out the owner's D42.* The stack is SvelteKit 3
+· Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM ·
+Node (adapter-node) · Caddy. It replaces E33's Astro web, its optional React
+islands and shadcn, and E34's Astro packages. E33's engine boundary (one
+specification, Swift and TypeScript runtimes, shared fixtures), E35's
+catalog import boundary, and every privacy, rights and language rule stand.
+
+**Packages** (exact, `web/package.json`): **@sveltejs/kit 3.4.0**,
+**svelte 5.58.0**, **@sveltejs/vite-plugin-svelte 7.3.1**, **vite 8.3.8**,
+**@sveltejs/adapter-node 6.0.5**, **tailwindcss 4.3.5** with
+**@tailwindcss/vite 4.3.5**; checks **svelte-check 4.7.8**,
+**eslint-plugin-svelte 3.24.1**, **prettier-plugin-svelte 4.2.0** and
+**prettier-plugin-tailwindcss 0.8.1** (sorts classes; reads
+`src/app.css`). All are development dependencies: adapter-node bundles
+them into the server. drizzle-orm and pg stay the runtime dependencies,
+installed in the image, because adapter-node leaves `dependencies`
+external. Kept from E34/E35: Node 26.13.0, npm 11.20.0, TypeScript 6.0.3
+(SvelteKit 3.4 requires ^6, so 7.0 still waits), vitest, eslint,
+typescript-eslint, prettier, drizzle-kit. Removed: astro, @astrojs/node,
+@astrojs/check, eslint-plugin-astro, prettier-plugin-astro. svelte 5.58.1
+was published hours before this choice, so 5.58.0 was pinned.
+
+**Shape.** SvelteKit 3 reads its options from the `sveltekit()` Vite
+plugin in `web/vite.config.ts` and no longer from svelte.config.js;
+tsconfig extends `$app/tsconfig` and must list `$app/types` in `types`.
+Server-only code is `src/lib/server/` (SvelteKit 3 refuses to import any
+`server` directory into browser code, which enforces AGENTS.md §5's
+no-database-in-clients rule at build time); the domain module will be
+`src/lib/domain/`. SvelteKit 3 no longer generates `$lib`: `#lib/*` is a
+Node subpath import in `web/package.json` (`imports`), which Vite,
+TypeScript and plain Node all resolve, so the jobs and tests use it too,
+with file extensions. Its other changes that later items meet:
+`$app/env/private` replaces `$env/…`, `$app/state` replaces
+`$app/stores`, and `csrf.trustedOrigins` replaces `csrf.checkOrigin`. Routes:
+`+page.svelte`/`+page.server.ts`, form actions for forms, and
+`src/routes/api/v1/**/+server.ts` for the app and browser. The one-shot
+jobs stay plain `node scripts/*.ts` with relative imports, so they need no
+bundler. adapter-node writes `web/build/` (`node build/index.js`, `HOST`
+and `PORT`; behind Caddy it needs `ORIGIN=https://daybyword.com` for form
+actions' origin check; `BODY_SIZE_LIMIT` bounds request bodies).
+`precompress` writes Brotli and gzip copies of static assets.
+
+**Styling.** Tailwind CSS 4 through its Vite plugin, one entry at
+`src/app.css`. Morning stays the design (D18): PM.16 generates its tokens
+from design/tokens.json into Tailwind `@theme` variables, so utility
+classes use Morning's names and no raw colors are added. No component kit:
+shadcn is React-only, and its Svelte ports are not needed for this UI.
+
+**CSP.** SvelteKit's `csp` option hashes its inline bootstrap script in
+prerendered pages and uses nonces in rendered ones, which keeps the
+production policy free of `unsafe-inline`; Svelte transitions that write
+inline styles must be avoided or checked under the policy. PM.16 sets and
+tests it in the built server, not the dev server.
+
+**PostgreSQL 18.** The deploy image and `scripts/with-postgres.sh` use
+major 18 (Homebrew postgresql@18 18.6 here). No database existed on 17,
+so nothing is upgraded; the migrations, triggers and roles passed
+`make test-db` on 18 unchanged.
+
+**Why:** the owner chose this stack for the project. SvelteKit covers what
+E33 needed from Astro (server rendering, selective prerendering, form
+handling, API endpoints, a standalone Node server) and gives interactive
+pages one component model instead of islands in a second framework.
+Telemetry: SvelteKit, Vite and Tailwind send none, so the Makefile's
+`ASTRO_TELEMETRY_DISABLED` was removed. `npm audit` still reports only the
+development-only advisories E35 recorded; production dependencies have
+none.

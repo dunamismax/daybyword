@@ -1,11 +1,19 @@
-// Lints the TypeScript and Astro sources (decision E34).
+// Lints the TypeScript and Svelte sources (decisions E34, E36).
 import js from "@eslint/js";
-import astro from "eslint-plugin-astro";
+import svelte from "eslint-plugin-svelte";
 import tseslint from "typescript-eslint";
 
 export default [
-  { ignores: ["dist/", ".astro/", "node_modules/"] },
+  { ignores: ["build/", ".svelte-kit/", "node_modules/"] },
   js.configs.recommended,
   ...tseslint.configs.strict,
-  ...astro.configs.recommended,
+  ...svelte.configs.recommended,
+  {
+    files: ["**/*.svelte", "**/*.svelte.ts"],
+    languageOptions: {
+      parserOptions: { parser: tseslint.parser, extraFileExtensions: [".svelte"] },
+    },
+  },
+  // TypeScript checks names itself; ESLint's no-undef does not know its globals.
+  { rules: { "no-undef": "off" } },
 ];
