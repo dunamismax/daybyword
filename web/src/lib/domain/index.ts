@@ -23,3 +23,4 @@ export * from "./word-counts.ts";
 export * from "./workload.ts";
 export * from "./plan.ts";
 export * from "./journal.ts";
+export * from "./today.ts";

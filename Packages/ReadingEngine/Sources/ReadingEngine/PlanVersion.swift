@@ -14,10 +14,12 @@ public struct PlanVersion: Hashable, Sendable {
     public let assignments: [Plan.Assignment]
     /// Each assignment's position in reading order, from 1, by its id.
     public let positions: [Int: Int]
+    /// Each assignment's words, by its id, where the catalog has them.
+    public let words: [Int: Int]
 
     public init(
         id: PlanID, version: Int, schedule: Plan.Schedule, behaviors: [Plan.Behavior], readingDays: Int,
-        assignments: [Plan.Assignment]
+        assignments: [Plan.Assignment], words: [Int: Int] = [:]
     ) {
         self.id = id
         self.version = version
@@ -25,6 +27,7 @@ public struct PlanVersion: Hashable, Sendable {
         self.behaviors = behaviors
         self.readingDays = readingDays
         self.assignments = assignments
+        self.words = words
         var positions: [Int: Int] = [:]
         for (index, assignment) in assignments.enumerated() where positions[assignment.id] == nil {
             positions[assignment.id] = index + 1
@@ -32,9 +35,13 @@ public struct PlanVersion: Hashable, Sendable {
         self.positions = positions
     }
 
-    public init(_ plan: Plan) {
+    /// A plan as the compiler read it, with its readings' words from the
+    /// counts given.
+    public init(_ plan: Plan, counts: WordCounts? = nil) {
+        var words: [Int: Int] = [:]
+        for assignment in plan.assignments { words[assignment.id] = counts?.words(in: assignment.reading) }
         self.init(
             id: plan.id, version: plan.version, schedule: plan.schedule, behaviors: plan.behaviors,
-            readingDays: plan.readingDays, assignments: plan.assignments)
+            readingDays: plan.readingDays, assignments: plan.assignments, words: words)
     }
 }

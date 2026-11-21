@@ -4,7 +4,7 @@ Inputs, and the outputs Day by Word's Swift engine gives for them, which
 the TypeScript web module must give too (docs/decisions.md E33,
 docs/engine.md); the Swift tests named below check them on every
 `make check`, so a fixture never drifts from the code that made it. The
-engine fixtures (`references` through `journal`) are also checked by
+engine fixtures (`references` through `today`) are also checked by
 the TypeScript domain module in Node (`web/test/domain/`, every `make check`)
 and in headless Firefox (`make test-domain-browser`, in `make check-full`).
 
@@ -19,6 +19,7 @@ and in headless Firefox (`make test-domain-browser`, in `make check-full`).
 | `civil-dates.json` | A date's weekday, month length, day of the year and day number; the date some days later; the days to another date; or the error's kind and message (P5.3) | same |
 | `event-ids.json` | Which text is a UUIDv7 event id and the milliseconds it was made at; the id made from a millisecond count and ten random bytes (P5.4) | same |
 | `journal.json` | The journal's fold: events in their wire form against invented plans, giving the inert events and why, what is undone, and each enrollment's slots, start, end, paused days and arrangement on a date; or why the journal is refused (P5.2, P5.4) | same, and `JournalTests.swift` (any arrival order) |
+| `today.json` | Today for each enrollment on a date: its status, the readings to read, those read today, the next reading; a pace enrollment's projected finish; a finish-date enrollment's schedule, share and outstanding readings; a calendar enrollment's appointment, the readings a short month does not appoint, and the missed count (P5.5 to P5.7) | same |
 | `plan-files.json` | Invented plan files and what the compiler reads and computes, or its first problem | `CatalogCompilerTests/FixtureTests.swift` |
 | `catalog-export.json` | An invented release catalog as `catalog export` writes it (PM.14), whose checksum the PostgreSQL import recomputes; not in the cases format | `CatalogCompilerTests/CatalogExportTests.swift`, `web/test/` |
 | `routes.json` | The web's address contract (docs/urls.md): each address's status, content type, cache policy, redirect, title, heading, and current section; the security headers (written by hand since PM.20) | `web/test/production/server.test.ts` |

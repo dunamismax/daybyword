@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 5, the reading engine (M1 Foundation): 4 of 11 items done |
-| **Next item** | **P5.5** to **P5.7**: Today for the three behaviors (pace, finish date, calendar) over the folded journal, cases first in a `today` scheduling fixture |
+| **Phase** | Phase 5, the reading engine (M1 Foundation): 7 of 11 items done |
+| **Next item** | **P5.8**: returning after a break (the gap, the choices that apply, and each one's preview as the fold with the candidate event added) |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 52126aa (`/srv/www/daybyword.com/current-release`, read 2026-11-20). |
@@ -133,7 +133,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
 | 4 | The catalog | M1 Foundation | 8 | 8 |
-| 5 | The reading engine | M1 Foundation | 11 | 4 |
+| 5 | The reading engine | M1 Foundation | 11 | 7 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 0 |
@@ -462,10 +462,13 @@ specification comes first, then the cases, then the code. It covers what
 - [x] **P5.4** The journal: event kinds, UUIDv7 ids, and a deterministic fold to state that gives the same result in any arrival order. Duplicate events are no-ops, and undo and redo are events. Cases cover a double tap, a retry, and recovery from an accidental completion.
   - *Note (agent, 2026-11-01):* from P4.6: an enrollment records the plan id and version it follows.
   - *Result (agent, 2026-11-20):* `EventID`, `JournalEvent` (the ten kinds, read from and written to the wire), `Journal` (the fold) and `Enrollment` (slots, the arrangement on a date, paused days, the end) in `ReadingEngine`, and `event-id.ts`, `journal.ts`, `plan.ts` in the web's domain module. `journal.json` (95 cases) and `event-ids.json` (31) pass in both; each runtime also folds every case reversed, shuffled and doubled to the same state. docs/engine.md's "The journal" now states the field shapes, each inert reason and when it is decided, and the two refusals; the choices are E42.
-- [ ] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
-- [ ] **P5.6** **Work toward a finish date**: the workload per reading day is computed before the reader accepts. Redistribution stays within a limit the reader sets and is previewed before it applies. An unrealistic target is met with a later date or a narrower plan, and readings are never silently omitted.
-- [ ] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
+- [x] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
+  - *Result (agent, 2026-11-20):* `Enrollment.today(_:)` in `Today.swift` and `today()` in `web/src/lib/domain/today.ts`: the status (in one stated order), reading and rest days, the next reading, what was read today, and three projected dates (the plan's pace, the last 28 days' pace, and had no day been missed), from which the interface says only "Your finish date is now…". `today.json` (86 cases across the three behaviors, each answer checked by hand) passes in Swift, Node and Firefox.
+- [x] **P5.6** **Work toward a finish date**: the workload per reading day is computed before the reader accepts. Redistribution stays within a limit the reader sets and is previewed before it applies. An unrealistic target is met with a later date or a narrower plan, and readings are never silently omitted.
+  - *Result (agent, 2026-11-20):* the basis and its counted targets: today's readings (never more than the day's share, one at a time after the finish), the readings outstanding, the scheduled days, the least and most on a day, the heaviest day's words, and, beyond the limit, the earliest finish that fits it. A pause shortens the schedule and the engine says so; nothing is moved or left out. A candidate `enrolled` or `changed` event folded into the journal is the preview. *Not built:* the choices that set a new basis (P5.8), and the day-by-day list of coming readings the specification mentions for the coming week and the checklist, which P8.10 and P13.1 need first.
+- [x] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
   - *Note (agent, 2026-11-20):* a date in the year is not built for 1.0: the catalog format has only `sequence` and `day-of-month`, and no launch plan needs it (E40; roadmap P28.4).
+  - *Result (agent, 2026-11-20):* a day-of-month enrollment's day: the appointment on every date from the start (rest and paused days too), `reading`, `done` or `open` (skipped) on a reading day, the readings a short month does not appoint on its last day, and the missed count (unread slots to yesterday, paused days left out). Nothing is carried to another day.
 - [ ] **P5.8** **Return after a break**: detect a gap against the enrollment's reading days, then offer the choices that apply (continue from the next unread passage, redistribute outstanding readings, rejoin today's calendar), each with an exact preview. Applying a choice is an event.
 - [ ] **P5.10** Changing an enrollment (reading days, start date, behavior) without deleting history, with the effect previewed first.
 - [ ] **P5.11** Progress measures: assignments completed, recent reading days, books explored, and the next reading. Unique coverage counts each verse once and partly read chapters as partial, and plan completion is reported apart from coverage. The optional streak (D17) is measured against the reader's own reading days.

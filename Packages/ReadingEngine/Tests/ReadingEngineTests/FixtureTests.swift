@@ -26,13 +26,18 @@ struct FixturePlan: Codable, Sendable {
     var readingDays: Int
     var assignments: [Assignment]
 
-    func planVersion(in versification: Versification) throws -> PlanVersion {
-        PlanVersion(
+    /// The plan as the engine takes it, with each reading's words from the
+    /// counts given.
+    func planVersion(in versification: Versification, counts: WordCounts? = nil) throws -> PlanVersion {
+        let assignments = try assignments.map {
+            Plan.Assignment(id: $0.id, reading: try ReferenceFormat.reading($0.reading, in: versification))
+        }
+        var words: [Int: Int] = [:]
+        for assignment in assignments { words[assignment.id] = counts?.words(in: assignment.reading) }
+        return PlanVersion(
             id: try #require(PlanID(id)), version: version, schedule: try #require(Plan.Schedule(rawValue: schedule)),
             behaviors: try behaviors.map { try #require(Plan.Behavior(rawValue: $0)) }, readingDays: readingDays,
-            assignments: try assignments.map {
-                Plan.Assignment(id: $0.id, reading: try ReferenceFormat.reading($0.reading, in: versification))
-            })
+            assignments: assignments, words: words)
     }
 }
 
@@ -69,8 +74,8 @@ func checkFixture<Input: Codable & Sendable, Output: Codable & Equatable & Senda
     let url = fixturesURL.appending(path: "\(name).json")
     var file = try JSONDecoder().decode(FixtureFile<Input, Output>.self, from: Data(contentsOf: url))
     #expect(file.fixture == name, sourceLocation: sourceLocation)
-    let english = try loadEnglish()
-    let plans = try (file.plans ?? []).map { try $0.planVersion(in: english) }
+    let (english, counts) = (try loadEnglish(), try loadWordCounts())
+    let plans = try (file.plans ?? []).map { try $0.planVersion(in: english, counts: counts) }
     if ProcessInfo.processInfo.environment["DBW_RECORD_FIXTURES"] != nil {
         for index in file.cases.indices { file.cases[index].output = try compute(file.cases[index].input, plans) }
         let encoder = JSONEncoder()
@@ -561,6 +566,103 @@ struct JournalOutput: Codable, Equatable, Sendable {
                                 readingDays: arrangement.readingDays, limit: arrangement.limit,
                                 reminder: arrangement.reminder?.description, paused: enrollment.isPaused(date))
                         })
+            })
+    }
+}
+
+// MARK: Today
+
+struct TodayInput: Codable, Sendable {
+    var events: [JSONValue]
+    var today: String
+}
+
+struct TodayOutput: Codable, Equatable, Sendable {
+    struct Place: Codable, Equatable, Sendable {
+        var assignment: Int
+        /// Its place in reading order, which the reader sees.
+        var position: Int
+        var appointed: String?
+
+        init(_ slot: Slot, in plan: PlanVersion) {
+            assignment = slot.assignment
+            position = plan.positions[slot.assignment] ?? 0
+            appointed = slot.appointed?.description
+        }
+    }
+
+    struct Projection: Codable, Equatable, Sendable {
+        var plan: String?
+        var recent: String?
+        var unbroken: String?
+    }
+
+    struct Schedule: Codable, Equatable, Sendable {
+        var first: String
+        var finish: String
+        var remaining: Int
+        var scheduledDays: Int
+        var least: Int
+        var most: Int
+        var heaviestWords: Int?
+        var outstanding: Int
+        var share: Int
+        var limit: Int?
+        var finishWithinLimit: String?
+    }
+
+    struct Calendar: Codable, Equatable, Sendable {
+        var appointment: Place
+        var state: String
+        var notAppointed: [Int]
+        var missed: Int
+    }
+
+    struct Enrollment: Codable, Equatable, Sendable {
+        var id: String
+        var status: String
+        var readingDay: Bool
+        var readings: [Place]
+        var readToday: [Place]
+        var next: Place?
+        var projection: Projection?
+        var schedule: Schedule?
+        var calendar: Calendar?
+    }
+
+    var enrollments: [Enrollment]
+}
+
+@Test func todayMatchesItsFixture() throws {
+    try checkFixture("today") { (input: TodayInput, plans: [PlanVersion]) -> TodayOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        return TodayOutput(
+            enrollments: journal.enrollments.map { enrollment in
+                let today = enrollment.today(date)
+                let plan = enrollment.plan
+                return TodayOutput.Enrollment(
+                    id: enrollment.id.rawValue, status: today.status.rawValue, readingDay: today.isReadingDay,
+                    readings: today.readings.map { .init($0, in: plan) },
+                    readToday: today.readToday.map { .init($0, in: plan) },
+                    next: today.next.map { .init($0, in: plan) },
+                    projection: today.projection.map {
+                        .init(
+                            plan: $0.plan?.description, recent: $0.recent?.description,
+                            unbroken: $0.unbroken?.description)
+                    },
+                    schedule: today.schedule.map {
+                        .init(
+                            first: $0.first.description, finish: $0.finish.description, remaining: $0.remaining,
+                            scheduledDays: $0.scheduledDays, least: $0.least, most: $0.most,
+                            heaviestWords: $0.heaviestWords, outstanding: $0.outstanding, share: $0.share,
+                            limit: $0.limit, finishWithinLimit: $0.finishWithinLimit?.description)
+                    },
+                    calendar: today.calendar.map {
+                        .init(
+                            appointment: .init($0.appointment, in: plan), state: $0.state.rawValue,
+                            notAppointed: $0.notAppointed, missed: $0.missed)
+                    })
             })
     }
 }

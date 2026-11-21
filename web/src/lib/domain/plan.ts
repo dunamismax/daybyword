@@ -34,6 +34,8 @@ export interface PlanVersion {
   readonly readingDays: number;
   /** In the order they are read. */
   readonly assignments: readonly PlanAssignment[];
+  /** Each assignment's words, by its id, where the catalog has them. */
+  readonly words?: ReadonlyMap<number, number>;
 }
 
 /** Each assignment's position in reading order, from 1, by its id. */

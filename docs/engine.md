@@ -531,6 +531,10 @@ most readings on one reading day they accept.
   days), and the words of the heaviest day ahead, from which the
   interface shows minutes ("About 20–25 minutes on the heaviest day.
   Estimates vary."). The words are absent when a reading has no count.
+- **A pause takes its days out of the schedule**, so the readings fall on
+  fewer days. Nothing is moved for the reader: the engine reports the new
+  most on a day and the finish that fits the limit, and resuming may
+  carry a new basis.
 - **A target beyond the limit** is never met by leaving readings out. The
   engine says how many readings a day it would need (the most, above),
   and the earliest finish date that fits the limit: the ⌈*R* ÷ limit⌉-th

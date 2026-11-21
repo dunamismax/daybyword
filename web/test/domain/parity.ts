@@ -5,6 +5,7 @@
 // it, each loading the files its own way.
 import {
   addDays,
+  assignmentPositions,
   BookRegistry,
   BookRegistryError,
   bookName,
@@ -27,6 +28,7 @@ import {
   parseCivilDate,
   parseReading,
   planWorkload,
+  today,
   readingText,
   readingVerseCount,
   ReferenceFormatError,
@@ -43,8 +45,10 @@ import {
   type Behavior,
   type BookName,
   type NamingConvention,
+  type CivilDate,
   type PlanVersion,
   type ScheduleKind,
+  type Slot,
 } from "#lib/domain/index.ts";
 
 export interface Resources {
@@ -91,6 +95,7 @@ export const domainFixtures = [
   "civil-dates",
   "event-ids",
   "journal",
+  "today",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -117,13 +122,19 @@ export function answer(
 
 /** A fixture file's invented plans, as the engine takes them. */
 export function fixturePlans(file: FixtureFile, resources: Resources): PlanVersion[] {
-  return (file.plans ?? []).map((plan) => ({
-    ...plan,
-    assignments: plan.assignments.map((assignment) => ({
+  return (file.plans ?? []).map((plan) => {
+    const assignments = plan.assignments.map((assignment) => ({
       id: assignment.id,
       reading: parseReading(assignment.reading, resources.english),
-    })),
-  }));
+    }));
+    // Each reading's words from the counts, as the catalog would carry them.
+    const words = new Map<number, number>();
+    for (const assignment of assignments) {
+      const count = resources.counts.wordsInReading(assignment.reading);
+      if (count !== undefined) words.set(assignment.id, count);
+    }
+    return { ...plan, assignments, words };
+  });
 }
 
 export function computers(resources: Resources): Record<DomainFixture, Compute> {
@@ -366,6 +377,49 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
                   }),
           }),
         ),
+      };
+    },
+
+    today: (input: { events: unknown[]; today: string }, plans: readonly PlanVersion[]) => {
+      const journal = foldJournal(input.events, plans);
+      const date = parseCivilDate(input.today);
+      const text = (day: CivilDate | undefined) => day && civilDateText(day);
+      return {
+        enrollments: journal.enrollments.map((enrollment) => {
+          const positions = assignmentPositions(enrollment.plan);
+          const place = (slot: Slot) =>
+            present({
+              assignment: slot.assignment,
+              position: positions.get(slot.assignment) ?? 0,
+              appointed: text(slot.appointed),
+            });
+          const answer = today(enrollment, date);
+          const { projection, schedule, calendar } = answer;
+          return present({
+            id: enrollment.id,
+            status: answer.status,
+            readingDay: answer.isReadingDay,
+            readings: answer.readings.map(place),
+            readToday: answer.readToday.map(place),
+            next: answer.next && place(answer.next),
+            projection:
+              projection &&
+              present({
+                plan: text(projection.plan),
+                recent: text(projection.recent),
+                unbroken: text(projection.unbroken),
+              }),
+            schedule:
+              schedule &&
+              present({
+                ...schedule,
+                first: civilDateText(schedule.first),
+                finish: civilDateText(schedule.finish),
+                finishWithinLimit: text(schedule.finishWithinLimit),
+              }),
+            calendar: calendar && { ...calendar, appointment: place(calendar.appointment) },
+          });
+        }),
       };
     },
   };
