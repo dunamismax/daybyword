@@ -18,6 +18,7 @@ private func plan(_ text: String) -> PlanID { PlanID(text)! }
     ("daybyword://plans/psalm-a-day/week?start=2027-01-04", .planWeek(plan("psalm-a-day"), start: "2027-01-04")),
     ("daybyword://plans/psalm-a-day/week?start=next-week", .planWeek(plan("psalm-a-day"), start: nil)),
     ("daybyword://plans/psalm-a-day/week?start=2027-1-4", .planWeek(plan("psalm-a-day"), start: nil)),
+    ("daybyword://plans/psalm-a-day/week?start=2027-02-30", .planWeek(plan("psalm-a-day"), start: nil)),
     ("daybyword://progress", .progress),
     ("daybyword://settings", .settings),
     ("DAYBYWORD://plans", .plans),

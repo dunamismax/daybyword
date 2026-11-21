@@ -70,7 +70,7 @@ were left for later.
 
 - [ ] **P5.9** Sessions and multi-reading days: morning and evening (and M'Cheyne's "Family" and "Secret" readings), each with its own state; a day is complete only when its sessions are.
 - [ ] **P5.13** Performance: today's view for ten enrollments over five years of events computes within a measured budget on a phone (start at 20 ms) and on the server, recorded in `docs/performance.md`.
-- [ ] **P28.4** Follow the calendar for church-year schedules: today's appointment from tables compiled by Phase 6, with the rule that produced it shown, and a labeled personal adaptation where a plan permits one. *(The part of P5.7 moved by D39.)*
+- [ ] **P28.4** Follow the calendar for church-year schedules: today's appointment from tables compiled by Phase 6, with the rule that produced it shown, and a labeled personal adaptation where a plan permits one. *(The part of P5.7 moved by D39.)* A schedule keyed to dates in the year, which P5.7 named and no 1.0 plan uses, comes here too (E40, 2026-11-20).
 
 ### Hosting
 

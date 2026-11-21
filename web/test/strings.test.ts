@@ -34,9 +34,16 @@ describe("the interface text", () => {
 });
 
 describe("a week's start", () => {
-  it("is kept only when it looks like a date", () => {
+  it("is kept only when it is a date", () => {
     expect(startDate("2027-01-04")).toBe("2027-01-04");
-    for (const other of [null, "next-week", "2027-1-4", "2027/01/04", "２０２７-01-04"]) {
+    for (const other of [
+      null,
+      "next-week",
+      "2027-1-4",
+      "2027/01/04",
+      "２０２７-01-04",
+      "2027-02-30",
+    ]) {
       expect(startDate(other), String(other)).toBeUndefined();
     }
   });

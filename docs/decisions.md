@@ -2,7 +2,7 @@
 
 A numbered, append-only log of engineering decisions for Day by Word. Product
 decisions are the owner's and live in BUILD.md's Owner decisions table
-(D1–D41); this file records how they are carried out and why.
+(D1–D42); this file records how they are carried out and why.
 
 **How to use this file.** Add a new entry at the end with the next number,
 the date, who decided (`agent` or `owner`), the decision, and the reasons.
@@ -11,9 +11,10 @@ that supersedes it, and add a single line under the old entry pointing to
 the new one (*Superseded by E12*). Every third-party package needs an entry
 here before it is added (AGENTS.md §5).
 
-**Current direction:** D42 (E36) and E33's engine boundary (E37) govern alignment; D40/E32 are withdrawn. Old implementation
-entries below document the still-present Swift baseline; do not use them
-to select the stack for new work. Pure product/data rules remain in force.
+**Current direction:** D42 (E36) and E33's engine boundary (E37) govern;
+D40/E32 are withdrawn. Old implementation entries below record the Swift
+server that PM.20 retired; do not use them to select the stack for new
+work. Pure product/data rules remain in force.
 
 Entries E1–E17 were recorded together on 2026-10-30, seeded from BUILD.md's
 Engineering foundations and the owner's decisions.
@@ -1017,3 +1018,61 @@ installed; every step can be rehearsed end to end on the Mac
 `DBW_COMMIT` and that Compose resolves every image tag even to exec), so
 P7 meets only the host's own questions: its lock, Caddy include, free
 port and backup entry.
+
+### E40. The scheduling model: a fold over events, counted targets, and wall-clock reminders
+
+*2026-11-20, agent (P5.1).* docs/engine.md's version 1 specifies schedules,
+the journal, progress and reminders. Its choices, each among alternatives:
+
+- **Journal order is id order, and impossible events are inert.** Events
+  sort by their UUIDv7 text, so the fold is the same in any arrival order
+  (E3). An event that can mean nothing (an unknown assignment, an undo
+  with no target) is kept and does nothing, with a reason reported, rather
+  than refusing the whole journal: a reader's history must stay readable
+  after a client bug. Only a malformed event or two different events under
+  one id refuse it.
+- **A settled reading moves the plan on.** Read, partly read and skipped
+  are all answers; "next" is the first unread reading. The alternative,
+  holding a partly read reading as next until it is finished, makes the
+  reader skip to go on, and a skip is not what they did.
+- **Finish dates use counted targets, not a date per reading.** A basis
+  (first day, finish, readings unread) gives each scheduled day a target
+  count, spread evenly in whole readings. Late logging and undo then
+  change only how many are settled, never which reading belongs to which
+  day, and redistribution is one new basis the reader previews and
+  accepts, never automatic. Today never shows more than a day's share, so
+  a backlog is not put on one day (AGENTS.md §3).
+- **Short months appoint fewer readings** in a day-of-month plan; the 29th
+  to 31st are not added to the last day, which would change a day's
+  workload unasked. The interface says so plainly (P10.7).
+- **The welcome after a gap needs two missed reading days**, not one: a
+  missed day is simply a day.
+- **Reminders are wall-clock in and out.** The engine takes the local date
+  and time and returns local fire times; the device schedules them by
+  wall-clock time. So the engine needs no time zone database, the two
+  runtimes cannot disagree over one, and daylight saving changes are the
+  system's to deliver (tested end to end in P17.4).
+- **No date-in-the-year schedule at 1.0.** The catalog format has
+  `sequence` and `day-of-month`, and none of the eight launch plans is
+  keyed to dates in the year, so that kind waits for a plan that needs it
+  (P28.4).
+
+**Why:** each keeps the record honest (nothing rewritten, nothing counted
+that was not read) and the rules small enough for two runtimes to hold to
+one set of cases (E33).
+
+### E41. Civil dates: our own calendar arithmetic, with the time zone at the edge
+
+*2026-11-20, agent (P5.3).* `CivilDate` (Swift) and `civil-date.ts` count
+days from 0001-01-01 in the proleptic Gregorian calendar with integer
+arithmetic of their own, written fresh (D22). Turning an instant into a
+date in a time zone is kept out of the engine: `CivilDate+Foundation.swift`
+uses Foundation's calendar, and `web/src/lib/today.ts` uses `Intl`, each
+tested on its own.
+
+**Why:** the alternative, Foundation's `Calendar` and JavaScript's `Date`
+for all date arithmetic, ties every rule to a time zone and to two
+libraries that differ (Foundation's Gregorian calendar is Julian before
+1582). Whole-day integer arithmetic is the same in both runtimes, is
+checked against every date from year 1 to 9999 and against both libraries
+for 1583 to 2400, and leaves the zone in one small place per client (E7).

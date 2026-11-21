@@ -333,3 +333,59 @@ func errorKind(_ error: WordCountsError) -> String {
         }
     }
 }
+
+// MARK: Civil dates
+
+struct CivilDateInput: Codable, Sendable {
+    var text: String
+    /// Days to add, when the case asks for a sum.
+    var add: Int?
+    /// Another date to count the days to.
+    var to: String?
+}
+
+struct CivilDateOutput: Codable, Equatable, Sendable {
+    var date: String?
+    var weekday: Int?
+    var daysInMonth: Int?
+    var dayOfYear: Int?
+    var leapYear: Bool?
+    var ordinal: Int?
+    /// The date `add` days later, or why there is none.
+    var sum: String?
+    var sumError: String?
+    /// The whole days to `to`, or why it is not a date.
+    var daysTo: Int?
+    var toError: String?
+    var error: String?
+    var message: String?
+}
+
+@Test func civilDatesMatchTheirFixture() throws {
+    try checkFixture("civil-dates") { (input: CivilDateInput) -> CivilDateOutput in
+        let date: CivilDate
+        do throws(CivilDateError) {
+            date = try CivilDate(input.text)
+        } catch {
+            return CivilDateOutput(error: error.kind, message: error.description)
+        }
+        var output = CivilDateOutput(
+            date: date.description, weekday: date.weekday, daysInMonth: date.daysInMonth, dayOfYear: date.dayOfYear,
+            leapYear: CivilDate.isLeapYear(date.year), ordinal: date.ordinal)
+        if let days = input.add {
+            do throws(CivilDateError) {
+                output.sum = try date.adding(days: days).description
+            } catch {
+                output.sumError = error.kind
+            }
+        }
+        if let other = input.to {
+            do throws(CivilDateError) {
+                output.daysTo = date.days(to: try CivilDate(other))
+            } catch {
+                output.toError = error.kind
+            }
+        }
+        return output
+    }
+}

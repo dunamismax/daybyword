@@ -4,12 +4,23 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
+  addDays,
   BookRegistry,
+  civilDate,
+  civilDateFromOrdinal,
+  CivilDateError,
+  civilDateText,
+  compareCivilDates,
+  daysInMonth,
+  dayOfYear,
+  ordinal,
+  parseCivilDate,
   parseReading,
   parseSwiftInt,
   roundHalfAwayFromZero,
   specificationVersion,
   Versification,
+  weekday,
   WordCounts,
   workload,
 } from "#lib/domain/index.ts";
@@ -119,5 +130,79 @@ describe("readings", () => {
       ["PSA", { chapter: 117, verse: 1 }, { chapter: 117, verse: 2 }],
       ["JUD", { chapter: 1, verse: 1 }, { chapter: 1, verse: 25 }],
     ]);
+  });
+});
+
+describe("civil dates", () => {
+  it("follow one another from 0001-01-01 to 9999-12-31, as Swift's do", () => {
+    // Walks every date the engine handles, counting the calendar the long way.
+    let [year, month, day, inYear] = [1, 1, 1, 1];
+    const last = ordinal(parseCivilDate("9999-12-31"));
+    expect(last).toBe(3_652_058);
+    for (let number = 0; number <= last; number += 1) {
+      const date = civilDateFromOrdinal(number);
+      if (
+        date.year !== year ||
+        date.month !== month ||
+        date.day !== day ||
+        ordinal(date) !== number ||
+        weekday(date) !== (number % 7) + 1 ||
+        dayOfYear(date) !== inYear
+      ) {
+        throw new Error(`day ${number} is ${civilDateText(date)}, not ${year}-${month}-${day}`);
+      }
+      day += 1;
+      inYear += 1;
+      if (day > daysInMonth(month, year)) {
+        day = 1;
+        month += 1;
+        if (month > 12) [year, month, inYear] = [year + 1, 1, 1];
+      }
+    }
+    expect([year, month, day]).toEqual([10000, 1, 1]);
+  });
+
+  it("agree with JavaScript's own UTC calendar", () => {
+    let date = parseCivilDate("1583-01-01");
+    const end = parseCivilDate("2400-12-31");
+    const instant = new Date(Date.UTC(1583, 0, 1));
+    while (compareCivilDates(date, end) <= 0) {
+      // getUTCDay counts Sunday as 0; ISO counts Monday as 1.
+      const iso = ((instant.getUTCDay() + 6) % 7) + 1;
+      if (
+        instant.getUTCFullYear() !== date.year ||
+        instant.getUTCMonth() + 1 !== date.month ||
+        instant.getUTCDate() !== date.day ||
+        iso !== weekday(date)
+      ) {
+        throw new Error(`${civilDateText(date)} disagrees with ${instant.toISOString()}`);
+      }
+      date = addDays(date, 1);
+      instant.setUTCDate(instant.getUTCDate() + 1);
+    }
+  });
+
+  it("stay inside their range, and refuse numbers that are not whole", () => {
+    const kind = (make: () => unknown) => {
+      try {
+        make();
+      } catch (error) {
+        if (error instanceof CivilDateError) return error.kind;
+        throw error;
+      }
+      return "none";
+    };
+    expect(kind(() => civilDate(10000, 1, 1))).toBe("outOfRange");
+    expect(kind(() => civilDate(0, 1, 1))).toBe("outOfRange");
+    expect(kind(() => civilDate(2027, 2, 29))).toBe("noSuchDate");
+    expect(kind(() => civilDate(2027.5, 1, 1))).toBe("outOfRange");
+    expect(kind(() => civilDateFromOrdinal(-1))).toBe("outOfRange");
+    expect(kind(() => civilDateFromOrdinal(1.5))).toBe("outOfRange");
+    expect(kind(() => addDays(parseCivilDate("2027-03-01"), 0.5))).toBe("outOfRange");
+    expect(kind(() => addDays(parseCivilDate("9999-12-31"), 1))).toBe("outOfRange");
+    expect(kind(() => addDays(parseCivilDate("2027-03-01"), Number.MAX_SAFE_INTEGER))).toBe(
+      "outOfRange",
+    );
+    expect(civilDateText(civilDate(33, 4, 5))).toBe("0033-04-05");
   });
 });

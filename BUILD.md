@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 5, the reading engine (M1 Foundation): 0 of 11 items done. Phase M is finished |
-| **Next item** | **P5.1**: write the engine specification for schedules, the journal, progress and reminders in `docs/engine.md` |
+| **Phase** | Phase 5, the reading engine (M1 Foundation): 2 of 11 items done |
+| **Next item** | **P5.2** with **P5.4**: the scheduling case format (invented plans, events, today, expected answer) and the journal fold, in Swift and TypeScript, from docs/engine.md's "The journal" |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 52126aa (`/srv/www/daybyword.com/current-release`, read 2026-11-20). |
@@ -133,7 +133,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
 | 4 | The catalog | M1 Foundation | 8 | 8 |
-| 5 | The reading engine | M1 Foundation | 11 | 0 |
+| 5 | The reading engine | M1 Foundation | 11 | 2 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 0 |
@@ -453,14 +453,17 @@ follow one specification and the same versioned parity cases (E33). The
 specification comes first, then the cases, then the code. It covers what
 1.0's plans need; sessions and church-year schedules wait (roadmap).
 
-- [ ] **P5.1** Write `docs/engine.md`, the specification, for what 1.0 needs: plan versions, assignments, enrollments, the journal and its event kinds, assignment states, the three behaviors, reading days and rest days, pausing, late logging, undo, partial completion, skips, the return choices and their previews, changing an enrollment, progress measures, and reminder rules. Each rule has a worked example and the plain wording the reader sees. *(Rewritten by D39.)*
+- [x] **P5.1** Write `docs/engine.md`, the specification, for what 1.0 needs: plan versions, assignments, enrollments, the journal and its event kinds, assignment states, the three behaviors, reading days and rest days, pausing, late logging, undo, partial completion, skips, the return choices and their previews, changing an enrollment, progress measures, and reminder rules. Each rule has a worked example and the plain wording the reader sees. *(Rewritten by D39.)*
+  - *Result (agent, 2026-11-20):* docs/engine.md's second part, "Version 1": civil dates, plans and slots, enrollments, the journal's ten event kinds and its fold (id order, inert events, undo and redo), reading and rest days, Today's statuses, the three behaviors, returning and its previews, changing and pausing, progress, the streak and reminders, each with a worked example and the reader's wording. The choices are E40. The version line stays 0 until both runtimes pass version 1's cases (P5.2–P5.12); the examples were worked by hand and are not yet cases.
 - [ ] **P5.2** The case format and runner: table-driven JSON cases (catalog fixture, enrollment, events, today, expected output) in `ReadingEngine`'s tests, using invented plans with invented references and never a real plan's schedule. The same cases run against Swift and TypeScript on macOS/Linux and the web runtime (E33).
-- [ ] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from Foundation dates in a given time zone, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
+- [x] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from Foundation dates in a given time zone, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
+  - *Result (agent, 2026-11-20):* `CivilDate` in `ReadingEngine` and `web/src/lib/domain/civil-date.ts` (E41): parsing, weekdays (1 Monday to 7 Sunday), day arithmetic, the day of the month and year, month lengths. Both walk every date from 0001-01-01 to 9999-12-31 and agree with Foundation and JavaScript for 1583–2400; `tests/fixtures/civil-dates.json` (52 cases, also checked against Python's calendar) passes in Swift, Node and Firefox. The edge is `CivilDate+Foundation.swift` and `web/src/lib/today.ts`, tested for the date line, midnight, daylight saving and a skipped midnight. A week's `start` in an address is now a real date or ignored, in the app and on the web. `make test-linux` passes with them (Linux's own time zone data included).
 - [ ] **P5.4** The journal: event kinds, UUIDv7 ids, and a deterministic fold to state that gives the same result in any arrival order. Duplicate events are no-ops, and undo and redo are events. Cases cover a double tap, a retry, and recovery from an accidental completion.
   - *Note (agent, 2026-11-01):* from P4.6: an enrollment records the plan id and version it follows.
 - [ ] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
 - [ ] **P5.6** **Work toward a finish date**: the workload per reading day is computed before the reader accepts. Redistribution stays within a limit the reader sets and is previewed before it applies. An unrealistic target is met with a later date or a narrower plan, and readings are never silently omitted.
 - [ ] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
+  - *Note (agent, 2026-11-20):* a date in the year is not built for 1.0: the catalog format has only `sequence` and `day-of-month`, and no launch plan needs it (E40; roadmap P28.4).
 - [ ] **P5.8** **Return after a break**: detect a gap against the enrollment's reading days, then offer the choices that apply (continue from the next unread passage, redistribute outstanding readings, rejoin today's calendar), each with an exact preview. Applying a choice is an event.
 - [ ] **P5.10** Changing an enrollment (reading days, start date, behavior) without deleting history, with the effect previewed first.
 - [ ] **P5.11** Progress measures: assignments completed, recent reading days, books explored, and the next reading. Unique coverage counts each verse once and partly read chapters as partial, and plan completion is reported apart from coverage. The optional streak (D17) is measured against the reader's own reading days.
@@ -628,20 +631,28 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-20:** Phase M is finished and moved to BUILD-HISTORY.md.
-  PM.20 retired the Swift server (`Server/`, `make serve`,
-  `make test-server`); SvelteKit in `web/` is the only server.
-- The retired server's checks live in `web/test/`; a page that shows a
-  word not in `web/src/lib/strings.ts` fails `make check`.
-  `tests/fixtures/routes.json` is the web's address contract, edited by
-  hand.
-- `make check-full` passed as one run on the PM.20 tree. The live site
-  still serves 52126aa; PM.20 changed no deployed code, so no deploy.
-- Engine: docs/engine.md v0; `web/src/lib/domain/` (pure, lint-enforced);
-  190 shared cases pass in Swift, Node, headless Firefox (E37).
-- No page loads SvelteKit's client runtime (E38); P8.10 must choose among
-  E38's options (AGENTS.md §11).
-- **Next:** P5.1, the engine specification. **Open:** P7.3's encrypted
-  off-server copy (ask the owner where backups go).
-- Carried over: no `apple/Config/Secrets.xcconfig` here; build 25's
+- **2026-11-20:** Phase M is finished and in BUILD-HISTORY.md. PM.20
+  retired the Swift server; SvelteKit in `web/` is the only server, and
+  its tests carry the retired server's checks (a page showing a word not
+  in `web/src/lib/strings.ts` fails `make check`).
+- **P5.1 done:** docs/engine.md now has a second part, "Version 1", the
+  specification for everything Phase 5 builds; its choices are E40. The
+  version line stays 0 until both runtimes pass version 1's cases.
+- **P5.3 done:** `CivilDate` in Swift and `civil-date.ts` (E41), with the
+  instant-to-date edge beside each engine, never in it.
+- **Next:** P5.2 and P5.4 together. Build the journal from the
+  specification's "The journal": cases first (a new fixture with a
+  `plans` section of invented plans), then Swift, then TypeScript. The
+  specification's worked examples are hand-checked, not yet cases: make
+  each one a case as its rule is built, and fix the specification if a
+  case shows it wrong.
+- `make check-full` passed as one run at PM.20 (659289f); `make check`
+  and `make test-linux` passed after P5.3. `make test-linux` now reuses
+  its image while `scripts/linux/` is unchanged (the container VM could
+  not reach Docker Hub tonight); the rebuild path with the new label has
+  not been run, so the first run after a change there needs watching.
+- The live site still serves 52126aa; nothing since changed what is
+  deployed except a week's `start` check, so no deploy was made.
+- **Open:** P7.3's encrypted off-server copy (ask the owner where
+  backups go). No `apple/Config/Secrets.xcconfig` here; build 25's
   TestFlight upload unverified.

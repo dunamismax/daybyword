@@ -46,9 +46,9 @@ P14).
   an address with a trailing slash to the one without (308); the app also
   accepts a trailing slash in a link it is given.
 - **Queries are for display only**, never for identity or personal data
-  (AGENTS.md §5). `start` must look like `YYYY-MM-DD`; anything else is
-  ignored and the page shows its default week. (Checking that the date
-  exists waits for `CivilDate`, P5.3.)
+  (AGENTS.md §5). `start` must be a date written `YYYY-MM-DD` (a civil
+  date, docs/engine.md); anything else, including a date the calendar
+  does not have, is ignored and the page shows its default week.
 - **Never put personal data in an address**: no reading history, no
   enrollment, no account. The one exception is the secret, revocable
   calendar-feed token (P13), which is a credential and handled as one.

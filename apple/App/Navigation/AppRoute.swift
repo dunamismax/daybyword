@@ -85,14 +85,10 @@ enum AppRoute: Hashable, Sendable {
         }
     }
 
-    /// A week's start as the address gives it, kept only when it looks like
-    /// `YYYY-MM-DD`; anything else is ignored and the default week shows
-    /// (docs/urls.md). `CivilDate` (P5.3) will check that the date exists.
+    /// A week's start as the address gives it, kept only when it is a date
+    /// written `YYYY-MM-DD`; anything else, including a date the calendar
+    /// does not have, is ignored and the default week shows (docs/urls.md).
     private static func startDate(_ text: String) -> String? {
-        let shape = text.utf8.enumerated().allSatisfy { index, byte in
-            index == 4 || index == 7
-                ? byte == UInt8(ascii: "-") : (UInt8(ascii: "0")...UInt8(ascii: "9")).contains(byte)
-        }
-        return text.utf8.count == 10 && shape ? text : nil
+        (try? CivilDate(text)) == nil ? nil : text
     }
 }

@@ -31,8 +31,8 @@ does not speak for any church, ministry, or publisher.
   hidden from search engines, with no plans in the catalog yet.
 - **The iPhone and iPad app** builds and runs in the simulator with the same
   sections. It is not yet on the App Store or in a beta.
-- **Next:** retire the original Swift web server (PM.20), then the reading
-  engine (Phase 5), then **first light** (Phase 8): three plans, Today,
+- **Next:** the reading engine (Phase 5), whose rules are specified in
+  [docs/engine.md](docs/engine.md), then **first light** (Phase 8): three plans, Today,
   marking, reminders, and the return after missed days, on TestFlight and
   at daybyword.com.
 
@@ -88,7 +88,7 @@ does not speak for any church, ministry, or publisher.
 | Server data | PostgreSQL 18 with Drizzle ORM and reviewed SQL migrations | Public catalog data only; no reader records on the server at 1.0 |
 | Native | SwiftUI and Observation on Swift 6.4.2, iOS and iPadOS 26 or later, WidgetKit | The app shell and a placeholder widget |
 | Local native data | SQLite through `ReadingData`, bundled read-only catalog | Catalog reader; the reading journal is still to come |
-| Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, and workload in both; scheduling is Phase 5 |
+| Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, workload, and civil dates in both; scheduling is specified and being built (Phase 5) |
 | Catalog | Plain-text plan sources, compiled and checked by a Swift tool that refuses unverified references and uncleared sources | No plans yet |
 | Hosting | Docker Compose behind the host's Caddy, nightly `pg_dump` and restore checks | Live; the off-server backup copy is still open (P7.3) |
 

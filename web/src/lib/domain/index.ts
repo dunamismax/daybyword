@@ -10,6 +10,7 @@ export const specificationVersion = 0;
 
 export * from "./ids.ts";
 export * from "./numbers.ts";
+export * from "./civil-date.ts";
 export * from "./registry.ts";
 export * from "./versification.ts";
 export * from "./passage.ts";

@@ -1,0 +1,653 @@
+{
+  "about" : "Civil dates (docs/engine.md, \"Civil dates\"): what a date written YYYY-MM-DD is (its weekday, 1 for Monday to 7 for Sunday; the days in its month; its day of the year; whether its year is a leap year; its whole days since 0001-01-01), the date a number of days later (`add`), and the whole days to another date (`to`); or the first error's kind and message.",
+  "cases" : [
+    {
+      "input" : {
+        "text" : "0001-01-01"
+      },
+      "output" : {
+        "date" : "0001-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 0,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "9999-12-31"
+      },
+      "output" : {
+        "date" : "9999-12-31",
+        "dayOfYear" : 365,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 3652058,
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "text" : "2026-11-20"
+      },
+      "output" : {
+        "date" : "2026-11-20",
+        "dayOfYear" : 324,
+        "daysInMonth" : 30,
+        "leapYear" : false,
+        "ordinal" : 739939,
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-07"
+      },
+      "output" : {
+        "date" : "2027-03-07",
+        "dayOfYear" : 66,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740046,
+        "weekday" : 7
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-12-31"
+      },
+      "output" : {
+        "date" : "2027-12-31",
+        "dayOfYear" : 365,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740345,
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "text" : "2028-12-31"
+      },
+      "output" : {
+        "date" : "2028-12-31",
+        "dayOfYear" : 366,
+        "daysInMonth" : 31,
+        "leapYear" : true,
+        "ordinal" : 740711,
+        "weekday" : 7
+      }
+    },
+    {
+      "input" : {
+        "text" : "2028-02-29"
+      },
+      "output" : {
+        "date" : "2028-02-29",
+        "dayOfYear" : 60,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 740405,
+        "weekday" : 2
+      }
+    },
+    {
+      "input" : {
+        "text" : "2000-02-29"
+      },
+      "output" : {
+        "date" : "2000-02-29",
+        "dayOfYear" : 60,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 730178,
+        "weekday" : 2
+      }
+    },
+    {
+      "input" : {
+        "text" : "1900-03-01"
+      },
+      "output" : {
+        "date" : "1900-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 693654,
+        "weekday" : 4
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "2027-02-28"
+      },
+      "output" : {
+        "date" : "2027-02-28",
+        "dayOfYear" : 59,
+        "daysInMonth" : 28,
+        "leapYear" : false,
+        "ordinal" : 740039,
+        "sum" : "2027-03-01",
+        "weekday" : 7
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "2028-02-28"
+      },
+      "output" : {
+        "date" : "2028-02-28",
+        "dayOfYear" : 59,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 740404,
+        "sum" : "2028-02-29",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "1900-02-28"
+      },
+      "output" : {
+        "date" : "1900-02-28",
+        "dayOfYear" : 59,
+        "daysInMonth" : 28,
+        "leapYear" : false,
+        "ordinal" : 693653,
+        "sum" : "1900-03-01",
+        "weekday" : 3
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "2000-02-28"
+      },
+      "output" : {
+        "date" : "2000-02-28",
+        "dayOfYear" : 59,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 730177,
+        "sum" : "2000-02-29",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 365,
+        "text" : "2028-02-29"
+      },
+      "output" : {
+        "date" : "2028-02-29",
+        "dayOfYear" : 60,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 740405,
+        "sum" : "2029-02-28",
+        "weekday" : 2
+      }
+    },
+    {
+      "input" : {
+        "add" : 366,
+        "text" : "2028-02-29"
+      },
+      "output" : {
+        "date" : "2028-02-29",
+        "dayOfYear" : 60,
+        "daysInMonth" : 29,
+        "leapYear" : true,
+        "ordinal" : 740405,
+        "sum" : "2029-03-01",
+        "weekday" : 2
+      }
+    },
+    {
+      "input" : {
+        "add" : 28,
+        "text" : "2027-01-31"
+      },
+      "output" : {
+        "date" : "2027-01-31",
+        "dayOfYear" : 31,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740011,
+        "sum" : "2027-02-28",
+        "weekday" : 7
+      }
+    },
+    {
+      "input" : {
+        "add" : -1,
+        "text" : "2027-03-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "sum" : "2027-02-28",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "2027-12-31"
+      },
+      "output" : {
+        "date" : "2027-12-31",
+        "dayOfYear" : 365,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740345,
+        "sum" : "2028-01-01",
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "add" : -1,
+        "text" : "2027-01-01"
+      },
+      "output" : {
+        "date" : "2027-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 739981,
+        "sum" : "2026-12-31",
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "add" : 0,
+        "text" : "2027-03-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "sum" : "2027-03-01",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 3652058,
+        "text" : "0001-01-01"
+      },
+      "output" : {
+        "date" : "0001-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 0,
+        "sum" : "9999-12-31",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 1,
+        "text" : "9999-12-31"
+      },
+      "output" : {
+        "date" : "9999-12-31",
+        "dayOfYear" : 365,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 3652058,
+        "sumError" : "outOfRange",
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "add" : -1,
+        "text" : "0001-01-01"
+      },
+      "output" : {
+        "date" : "0001-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 0,
+        "sumError" : "outOfRange",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "add" : 100000000,
+        "text" : "2027-01-01"
+      },
+      "output" : {
+        "date" : "2027-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 739981,
+        "sumError" : "outOfRange",
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "add" : -100000000,
+        "text" : "2027-01-01"
+      },
+      "output" : {
+        "date" : "2027-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 739981,
+        "sumError" : "outOfRange",
+        "weekday" : 5
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-12-25",
+        "to" : "2028-01-01"
+      },
+      "output" : {
+        "date" : "2027-12-25",
+        "dayOfYear" : 359,
+        "daysInMonth" : 31,
+        "daysTo" : 7,
+        "leapYear" : false,
+        "ordinal" : 740339,
+        "weekday" : 6
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01",
+        "to" : "2027-02-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "daysTo" : -28,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01",
+        "to" : "2027-03-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "daysTo" : 0,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "0001-01-01",
+        "to" : "9999-12-31"
+      },
+      "output" : {
+        "date" : "0001-01-01",
+        "dayOfYear" : 1,
+        "daysInMonth" : 31,
+        "daysTo" : 3652058,
+        "leapYear" : false,
+        "ordinal" : 0,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01",
+        "to" : "2028-03-01"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "daysTo" : 366,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01",
+        "to" : "2027-02-30"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "toError" : "noSuchDate",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-03-01",
+        "to" : "tomorrow"
+      },
+      "output" : {
+        "date" : "2027-03-01",
+        "dayOfYear" : 60,
+        "daysInMonth" : 31,
+        "leapYear" : false,
+        "ordinal" : 740040,
+        "toError" : "malformed",
+        "weekday" : 1
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-02-29"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-02-29"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-02-30"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-02-30"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2100-02-29"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2100-02-29"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-04-31"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-04-31"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-13-01"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-13-01"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-00-10"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-00-10"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-01-00"
+      },
+      "output" : {
+        "error" : "noSuchDate",
+        "message" : "there is no such date as 2027-01-00"
+      }
+    },
+    {
+      "input" : {
+        "text" : "0000-01-01"
+      },
+      "output" : {
+        "error" : "outOfRange",
+        "message" : "the date is outside 0001-01-01 to 9999-12-31"
+      }
+    },
+    {
+      "input" : {
+        "text" : "0000-02-30"
+      },
+      "output" : {
+        "error" : "outOfRange",
+        "message" : "the date is outside 0001-01-01 to 9999-12-31"
+      }
+    },
+    {
+      "input" : {
+        "text" : ""
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-1-4"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"2027-1-4\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027/01/04"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"2027/01/04\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "20270104"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"20270104\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-01-04 "
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"2027-01-04 \" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027-01-04T00:00:00Z"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"2027-01-04T00:00:00Z\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "+027-01-04"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"+027-01-04\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "２０２７-01-04"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"２０２７-01-04\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "2027–01–04"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"2027–01–04\" is not a date written YYYY-MM-DD"
+      }
+    },
+    {
+      "input" : {
+        "text" : "27-01-04"
+      },
+      "output" : {
+        "error" : "malformed",
+        "message" : "\"27-01-04\" is not a date written YYYY-MM-DD"
+      }
+    }
+  ],
+  "fixture" : "civil-dates",
+  "version" : 1
+}

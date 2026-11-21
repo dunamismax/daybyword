@@ -4,13 +4,22 @@
 // Node tests (domain.test.ts) and the browser page (test/browser/) both use
 // it, each loading the files its own way.
 import {
+  addDays,
   BookRegistry,
   BookRegistryError,
   bookName,
   canonBooks,
+  CivilDateError,
+  civilDateText,
+  dayOfYear,
+  daysBetween,
+  daysInMonth,
+  isLeapYear,
   isPlanID,
   isWholeChapter,
   namingConventions,
+  ordinal,
+  parseCivilDate,
   parseReading,
   planWorkload,
   readingText,
@@ -21,6 +30,7 @@ import {
   VerseSet,
   Versification,
   VersificationError,
+  weekday,
   WordCounts,
   WordCountsError,
   workload,
@@ -55,6 +65,7 @@ export const domainFixtures = [
   "scripture",
   "plan-ids",
   "scripture-files",
+  "civil-dates",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -197,6 +208,46 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
         }
         throw error;
       }
+    },
+    "civil-dates": (input: { text: string; add?: number; to?: string }) => {
+      const kindOf = (error: unknown) => {
+        if (error instanceof CivilDateError) return error;
+        throw error;
+      };
+      let date;
+      try {
+        date = parseCivilDate(input.text);
+      } catch (error) {
+        const problem = kindOf(error);
+        return { error: problem.kind, message: problem.message };
+      }
+      let sum, sumError, daysTo, toError;
+      if (input.add !== undefined) {
+        try {
+          sum = civilDateText(addDays(date, input.add));
+        } catch (error) {
+          sumError = kindOf(error).kind;
+        }
+      }
+      if (input.to !== undefined) {
+        try {
+          daysTo = daysBetween(date, parseCivilDate(input.to));
+        } catch (error) {
+          toError = kindOf(error).kind;
+        }
+      }
+      return present({
+        date: civilDateText(date),
+        weekday: weekday(date),
+        daysInMonth: daysInMonth(date.month, date.year),
+        dayOfYear: dayOfYear(date),
+        leapYear: isLeapYear(date.year),
+        ordinal: ordinal(date),
+        sum,
+        sumError,
+        daysTo,
+        toError,
+      });
     },
   };
 }
