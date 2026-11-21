@@ -27,6 +27,8 @@ public struct Journal: Sendable {
     public let inert: [Inert]
     /// In the order of their `enrolled` events.
     public let enrollments: [Enrollment]
+    /// The plan versions it was folded against.
+    public let plans: [PlanVersion]
     private let activeIDs: Set<EventID>
 
     /// Whether an event is active: in the journal, not inert, and not undone.
@@ -55,6 +57,7 @@ public struct Journal: Sendable {
         for index in events.indices { fold.take(index) }
 
         self.events = events
+        self.plans = plans
         inert = fold.inert
         activeIDs = Set(events.indices.filter { fold.active[$0] }.map { events[$0].id })
         enrollments = fold.order.map { id in

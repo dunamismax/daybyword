@@ -10,6 +10,7 @@ import {
   BookRegistryError,
   bookName,
   canonBooks,
+  changeOf,
   CivilDateError,
   civilDateText,
   eventIDMilliseconds,
@@ -23,12 +24,17 @@ import {
   isLeapYear,
   isPlanID,
   isWholeChapter,
+  journalEventWire,
   namingConventions,
   ordinal,
   parseCivilDate,
+  parseWallTime,
   parseReading,
   planWorkload,
+  previewing,
   today,
+  welcome,
+  welcomeAnswer,
   readingText,
   readingVerseCount,
   ReferenceFormatError,
@@ -46,6 +52,7 @@ import {
   type BookName,
   type NamingConvention,
   type CivilDate,
+  type Enrollment,
   type PlanVersion,
   type ScheduleKind,
   type Slot,
@@ -96,6 +103,8 @@ export const domainFixtures = [
   "event-ids",
   "journal",
   "today",
+  "returning",
+  "changing",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -103,8 +112,10 @@ export type DomainFixture = (typeof domainFixtures)[number];
 type Compute = (input: never, plans: readonly PlanVersion[]) => unknown;
 
 /** Leaves out undefined fields, as Swift's encoder leaves out nil ones. */
-function present<T extends object>(value: T): T {
-  return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T;
+function present<T extends object>(value: T): { [K in keyof T]: Exclude<T[K], undefined> } {
+  return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as {
+    [K in keyof T]: Exclude<T[K], undefined>;
+  };
 }
 
 /** One fixture's answer for an input, which is whatever shape its file gives. */
@@ -421,6 +432,115 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
           });
         }),
       };
+    },
+
+    returning: (input: { events: unknown[]; today: string }, plans: readonly PlanVersion[]) => {
+      const journal = foldJournal(input.events, plans);
+      const date = parseCivilDate(input.today);
+      const text = (day: CivilDate | undefined) => day && civilDateText(day);
+      return {
+        enrollments: journal.enrollments.map((enrollment) => {
+          const offered = welcome(enrollment, date);
+          if (!offered) return { id: enrollment.id, welcome: false };
+          const choices = offered.offers.map((offer) => {
+            const previewed = previewing(journal, welcomeAnswer(offer, date), enrollment.id);
+            const after = previewed?.enrollments.find((other) => other.id === enrollment.id);
+            if (!previewed || !after) throw new Error("no preview");
+            if (canonicalJSON(previewed.inert) !== canonicalJSON(journal.inert)) {
+              throw new Error("the candidate event is inert");
+            }
+            const positions = assignmentPositions(after.plan);
+            const answer = today(after, date);
+            return present({
+              choice: offer.choice,
+              finish: text(offer.finish),
+              remaining: offer.remaining,
+              most: offer.most,
+              preview: present({
+                status: answer.status,
+                readings: answer.readings.map((slot) => positions.get(slot.assignment) ?? 0),
+                finish: text(answer.schedule?.finish ?? answer.projection?.plan),
+                most: answer.schedule?.most,
+                welcome: welcome(after, date) !== undefined,
+              }),
+            });
+          });
+          return present({
+            id: enrollment.id,
+            welcome: true,
+            choices,
+            spreadNeeds: offered.spreadNeeds,
+          });
+        }),
+      };
+    },
+
+    changing: (
+      input: {
+        events: unknown[];
+        today: string;
+        change: {
+          from: string;
+          start?: string;
+          readingDays?: number[];
+          behavior?: Behavior;
+          finish?: string;
+          limit?: number;
+          reminder?: string;
+        };
+      },
+      plans: readonly PlanVersion[],
+    ) => {
+      const journal = foldJournal(input.events, plans);
+      const date = parseCivilDate(input.today);
+      const enrollment = journal.enrollments[0];
+      if (!enrollment) throw new Error("no enrollment");
+      const { change } = input;
+      const body = changeOf(
+        enrollment,
+        present({
+          from: parseCivilDate(change.from),
+          start: change.start === undefined ? undefined : parseCivilDate(change.start),
+          readingDays: change.readingDays,
+          behavior: change.behavior,
+          finish: change.finish === undefined ? undefined : parseCivilDate(change.finish),
+          limit: change.limit,
+          reminder:
+            change.reminder === undefined || change.reminder === "off"
+              ? change.reminder
+              : parseWallTime(change.reminder),
+        }),
+      );
+      const previewed = previewing(journal, body, enrollment.id);
+      const candidate = previewed?.events.at(-1);
+      const after = previewed?.enrollments[0];
+      if (!previewed || !candidate || !after) throw new Error("no preview");
+      const record = ["id", "enrollment", "at", "zone", "device"];
+      const event = Object.fromEntries(
+        Object.entries(journalEventWire(candidate)).filter(([name]) => !record.includes(name)),
+      );
+      const day = (of: Enrollment) => {
+        const positions = assignmentPositions(of.plan);
+        const answer = today(of, date);
+        const finish = answer.schedule?.finish ?? answer.projection?.plan;
+        const within = answer.schedule?.finishWithinLimit;
+        return present({
+          status: answer.status,
+          readings: answer.readings.map((slot) => positions.get(slot.assignment) ?? 0),
+          finish: finish && civilDateText(finish),
+          most: answer.schedule?.most,
+          finishWithinLimit: within && civilDateText(within),
+          start: civilDateText(of.start),
+          readingDay: answer.isReadingDay,
+          settled: of.settled.length,
+        });
+      };
+      return present({
+        event,
+        inert: previewed.inert.find((entry) => entry.event === candidate.id)?.reason,
+        before: day(enrollment),
+        after: day(after),
+      });
     },
   };
 }

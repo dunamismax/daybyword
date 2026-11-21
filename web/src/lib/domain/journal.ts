@@ -631,6 +631,8 @@ export class Journal {
   readonly inert: readonly { readonly event: EventID; readonly reason: InertReason }[];
   /** In the order of their `enrolled` events. */
   readonly enrollments: readonly Enrollment[];
+  /** The plan versions it was folded against. */
+  readonly plans: readonly PlanVersion[];
   private readonly activeIDs: ReadonlySet<EventID>;
 
   /** Folds events against the plan versions given. Throws `JournalError` for two different events under one id. */
@@ -793,6 +795,7 @@ export class Journal {
     });
 
     this.events = distinct;
+    this.plans = plans;
     this.inert = inert;
     this.activeIDs = new Set(distinct.filter((_, index) => active[index]).map((event) => event.id));
     this.enrollments = order.map(

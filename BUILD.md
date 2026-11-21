@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 5, the reading engine (M1 Foundation): 7 of 11 items done |
-| **Next item** | **P5.8**: returning after a break (the gap, the choices that apply, and each one's preview as the fold with the candidate event added) |
+| **Phase** | Phase 5, the reading engine (M1 Foundation): 9 of 11 items done |
+| **Next item** | **P5.11**: progress measures (assignments, recent reading days, coverage and books explored from the marks, the optional streak), then **P5.12**, reminder rules |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 52126aa (`/srv/www/daybyword.com/current-release`, read 2026-11-20). |
@@ -133,7 +133,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
 | 4 | The catalog | M1 Foundation | 8 | 8 |
-| 5 | The reading engine | M1 Foundation | 11 | 7 |
+| 5 | The reading engine | M1 Foundation | 11 | 9 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 0 |
@@ -469,8 +469,10 @@ specification comes first, then the cases, then the code. It covers what
 - [x] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
   - *Note (agent, 2026-11-20):* a date in the year is not built for 1.0: the catalog format has only `sequence` and `day-of-month`, and no launch plan needs it (E40; roadmap P28.4).
   - *Result (agent, 2026-11-20):* a day-of-month enrollment's day: the appointment on every date from the start (rest and paused days too), `reading`, `done` or `open` (skipped) on a reading day, the readings a short month does not appoint on its last day, and the missed count (unread slots to yesterday, paused days left out). Nothing is carried to another day.
-- [ ] **P5.8** **Return after a break**: detect a gap against the enrollment's reading days, then offer the choices that apply (continue from the next unread passage, redistribute outstanding readings, rejoin today's calendar), each with an exact preview. Applying a choice is an event.
-- [ ] **P5.10** Changing an enrollment (reading days, start date, behavior) without deleting history, with the effect previewed first.
+- [x] **P5.8** **Return after a break**: detect a gap against the enrollment's reading days, then offer the choices that apply (continue from the next unread passage, redistribute outstanding readings, rejoin today's calendar), each with an exact preview. Applying a choice is an event.
+  - *Result (agent, 2026-11-20):* `Enrollment.welcome(on:)` (`Welcome.swift`, `welcome.ts`): the gap (two reading days since the reader last read, answered, or resumed), then `continue`, `spread` within the limit (or the limit it would need), `moveFinish` at the present daily amount, or `rejoin`. `Journal.previewing(_:in:)` (`Preview.swift`, `preview.ts`) folds a candidate event after every other, so a preview is Today's own answer. `returning.json` (40 cases, checked by hand) passes in Swift and Node.
+- [x] **P5.10** Changing an enrollment (reading days, start date, behavior) without deleting history, with the effect previewed first.
+  - *Result (agent, 2026-11-20):* `Enrollment.change(from:…)` and `changeOf` make the `changed` event, adding a new basis when a finish-date arrangement's reading days, finish or behavior change; the preview is the same fold. `changing.json` (21 cases) gives the candidate event, why it would be inert, and today before and after, with the settled readings the same on both sides.
 - [ ] **P5.11** Progress measures: assignments completed, recent reading days, books explored, and the next reading. Unique coverage counts each verse once and partly read chapters as partial, and plan completion is reported apart from coverage. The optional streak (D17) is measured against the reader's own reading days.
 - [ ] **P5.12** Reminder rules: from enrollments, settings, the time zone, and the journal, compute the next fire times, honoring selected days, snooze, quiet hours, a maximum per day, stopping once the day's reading is marked, and the 64-request window (Research finding 9). Cases cover daylight saving changes and travel across zones.
 

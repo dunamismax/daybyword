@@ -596,21 +596,25 @@ appointment is reading 6 and four slots are unread in history.
 - **A gap** is two or more reading days strictly between the anchor and
   today (*app convention*: one missed day is simply a day). The welcome
   is offered while there is a gap, and answering it (a `returned` event
-  dated today) ends it.
+  dated today) ends it. It is not offered before the start, on a paused
+  day, or once the plan is finished or ended. A skip is not a reading and
+  does not move the anchor; a reading logged today for an earlier day
+  does.
 - **The choices** depend on the behavior, and each comes with its effect
   worked out before anything changes:
 
 | Choice | For | Effect | The preview says |
 |---|---|---|---|
 | `continue` | pace, finish-date | Nothing is rescheduled | "Your next reading will be Mark 5." and, for pace, the projected finish |
-| `spread` | finish-date | A new basis from today to the same finish, over the unread readings | "2 readings a day until 26 March." Offered only within the limit; otherwise the engine says what limit it would need |
-| `moveFinish` | finish-date | A new basis from today at the present daily amount (at least one), finishing on the reading day that needs | "Your finish date moves to 14 March." Offered when that is later than the present finish |
+| `spread` | finish-date | A new basis from today to the same finish, over the unread readings | "2 readings a day until 26 March." Offered only within the limit, and only while a reading day is left before the finish; beyond the limit the engine says what limit it would need |
+| `moveFinish` | finish-date | A new basis from today at the present daily amount (the basis's most on a day; never above the limit, and at least one), finishing on the reading day that needs | "Your finish date moves to 14 March." Offered when that is later than the present finish |
 | `rejoin` | calendar | Nothing is marked | "Today's reading is Proverbs 6. The readings you missed stay in your history." |
 
 - **A preview is the fold itself**: the engine's answer for the journal
-  with the candidate event added, beside its answer without. Nothing is
-  written until the reader confirms, and the confirmed event can be
-  undone like any other.
+  with the candidate event added after every other, beside its answer
+  without. Nothing is written until the reader confirms, and the
+  confirmed event can be undone like any other. If the candidate would be
+  inert, the preview says why and nothing changes.
 
 *Example:* the finish-date example above, opened on Monday 2027-03-08
 after the finish date. Eight readings are unread. `spread` is not offered
@@ -624,9 +628,11 @@ another the plan permits), the finish date, the limit or the reminder,
 from its `from` date. History is untouched: marks are kept whatever
 changes, and a slot keeps its state. The interface shows the engine's
 answer with and without the change before the reader confirms, as for a
-return choice. On a `finish-date` enrollment a change to the reading
-days or the finish date carries a new basis. Moving the start date later
-never removes a reading made before it.
+return choice. On a `finish-date` arrangement a change to the reading
+days or the finish date, or a change to that behavior, carries a new
+basis: the finish given, or else the present one, over the readings
+unread now. A change of the limit or the reminder alone carries none.
+Moving the start date later never removes a reading made before it.
 
 *Example:* the pace example on 9 March, changing reading days from 1–5
 to 1–6 from that date: the finish at the plan's pace moves from Wednesday

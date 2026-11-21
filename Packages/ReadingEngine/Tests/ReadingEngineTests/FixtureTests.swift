@@ -666,3 +666,142 @@ struct TodayOutput: Codable, Equatable, Sendable {
             })
     }
 }
+
+// MARK: Returning
+
+struct ReturningOutput: Codable, Equatable, Sendable {
+    /// Today's answer were a choice recorded.
+    struct Preview: Codable, Equatable, Sendable {
+        var status: String
+        /// The readings to read, by their place in reading order.
+        var readings: [Int]
+        /// The projected finish at the plan's pace, or the scheduled finish.
+        var finish: String?
+        /// The most readings on a day under the schedule.
+        var most: Int?
+        /// Whether the welcome would still be offered.
+        var welcome: Bool
+    }
+
+    struct Choice: Codable, Equatable, Sendable {
+        var choice: String
+        var finish: String?
+        var remaining: Int?
+        var most: Int?
+        var preview: Preview
+    }
+
+    struct Enrollment: Codable, Equatable, Sendable {
+        var id: String
+        var welcome: Bool
+        var choices: [Choice]?
+        var spreadNeeds: Int?
+    }
+
+    var enrollments: [Enrollment]
+}
+
+@Test func returningMatchesItsFixture() throws {
+    try checkFixture("returning") { (input: TodayInput, plans: [PlanVersion]) -> ReturningOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        return ReturningOutput(
+            enrollments: try journal.enrollments.map { enrollment in
+                guard let welcome = enrollment.welcome(on: date) else {
+                    return ReturningOutput.Enrollment(id: enrollment.id.rawValue, welcome: false)
+                }
+                let choices = try welcome.offers.map { offer in
+                    let previewed = try #require(journal.previewing(welcome.answer(offer, on: date), in: enrollment.id))
+                    #expect(previewed.inert == journal.inert)
+                    let after = try #require(previewed.enrollments.first { $0.id == enrollment.id })
+                    let today = after.today(date)
+                    return ReturningOutput.Choice(
+                        choice: offer.choice.rawValue, finish: offer.basis?.finish.description,
+                        remaining: offer.basis?.remaining, most: offer.most,
+                        preview: .init(
+                            status: today.status.rawValue,
+                            readings: today.readings.map { after.plan.positions[$0.assignment] ?? 0 },
+                            finish: (today.schedule?.finish ?? today.projection?.plan)?.description,
+                            most: today.schedule?.most, welcome: after.welcome(on: date) != nil))
+                }
+                return ReturningOutput.Enrollment(
+                    id: enrollment.id.rawValue, welcome: true, choices: choices, spreadNeeds: welcome.spreadNeeds)
+            })
+    }
+}
+
+// MARK: Changing
+
+struct ChangingInput: Codable, Sendable {
+    struct Change: Codable, Sendable {
+        var from: String
+        var start: String?
+        var readingDays: [Int]?
+        var behavior: String?
+        var finish: String?
+        var limit: Int?
+        var reminder: String?
+    }
+
+    var events: [JSONValue]
+    var today: String
+    var change: Change
+}
+
+struct ChangingOutput: Codable, Equatable, Sendable {
+    /// What an enrollment's day comes to, for comparing before and after.
+    struct Day: Codable, Equatable, Sendable {
+        var status: String
+        var readings: [Int]
+        var finish: String?
+        var most: Int?
+        var finishWithinLimit: String?
+        var start: String
+        var readingDay: Bool
+        var settled: Int
+
+        init(_ enrollment: Enrollment, on date: CivilDate) {
+            let today = enrollment.today(date)
+            status = today.status.rawValue
+            readings = today.readings.map { enrollment.plan.positions[$0.assignment] ?? 0 }
+            finish = (today.schedule?.finish ?? today.projection?.plan)?.description
+            most = today.schedule?.most
+            finishWithinLimit = today.schedule?.finishWithinLimit?.description
+            start = enrollment.start.description
+            readingDay = today.isReadingDay
+            settled = enrollment.settled.count
+        }
+    }
+
+    /// The candidate event's own fields.
+    var event: [String: JSONValue]
+    var inert: String?
+    var before: Day
+    var after: Day
+}
+
+@Test func changingMatchesItsFixture() throws {
+    try checkFixture("changing") { (input: ChangingInput, plans: [PlanVersion]) -> ChangingOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        let enrollment = try #require(journal.enrollments.first)
+        let change = input.change
+        var reminder: JournalEvent.Reminder?
+        if let text = change.reminder { reminder = text == "off" ? .off : .at(try #require(WallTime(text))) }
+        let changed = enrollment.change(
+            from: try CivilDate(change.from), start: try change.start.map { try CivilDate($0) },
+            readingDays: change.readingDays,
+            behavior: try change.behavior.map { try #require(Plan.Behavior(rawValue: $0)) },
+            finish: try change.finish.map { try CivilDate($0) }, limit: change.limit, reminder: reminder)
+        let previewed = try #require(journal.previewing(.changed(changed), in: enrollment.id))
+        let candidate = try #require(previewed.events.last)
+        guard case .object(var fields) = candidate.wire else { throw JournalError.malformedEvent("not an object") }
+        for name in ["id", "enrollment", "at", "zone", "device"] { fields[name] = nil }
+        // The candidate reads back from its wire form as the event it is.
+        #expect(try JournalEvent(wire: candidate.wire) == candidate)
+        return ChangingOutput(
+            event: fields, inert: previewed.inert.first { $0.event == candidate.id }?.reason.rawValue,
+            before: .init(enrollment, on: date),
+            after: .init(try #require(previewed.enrollments.first), on: date))
+    }
+}

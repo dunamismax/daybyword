@@ -147,7 +147,11 @@ export function readingDayFrom(
 }
 
 /** The reading days from one date to another, both included. */
-function readingDaysBetween(enrollment: Enrollment, first: CivilDate, last: CivilDate): number {
+export function readingDaysBetween(
+  enrollment: Enrollment,
+  first: CivilDate,
+  last: CivilDate,
+): number {
   let count = 0;
   walk(enrollment, first, (day) => {
     if (before(last, day)) return false;
@@ -157,7 +161,7 @@ function readingDaysBetween(enrollment: Enrollment, first: CivilDate, last: Civi
   return count;
 }
 
-interface Basis {
+export interface Basis {
   readonly first: CivilDate;
   readonly finish: CivilDate;
   readonly remaining: number;
@@ -167,7 +171,7 @@ interface Basis {
  * A finish-date schedule's basis: its first day, finish, and the readings
  * unread when it was set. The last active event that sets one is the basis.
  */
-function basisOf(enrollment: Enrollment): Basis | undefined {
+export function basisOf(enrollment: Enrollment): Basis | undefined {
   const total = enrollment.plan.assignments.length;
   let basis: Basis | undefined = enrollment.enrolled.finish && {
     first: enrollment.start,
