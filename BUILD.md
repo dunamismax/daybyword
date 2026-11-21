@@ -21,7 +21,7 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P8.2b**: the start flow (start date or "join today's reading", behavior, reading days, way of reading, reminder offer), and the app's plan list and plan page; the web's plan pages are P8.10a, done. Then **P8.3**, Today |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started yet. Serving 055eb57 (deployed and checked live 2026-11-21; the database container was left running, and 22 other site names answered as before). Nightly backups and monthly restore checks on the host. |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -648,4 +648,5 @@ only when Phase 18 is finished or an item points there.
 - Reminders on a device are P8.8, P17.4, P17.9. Stage by path (§8).
 - **Open:** P7.3's encrypted off-server copy (ask the owner where backups
   go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
-  upload unverified.
+  upload unverified. Live is 055eb57; the commit after it changes
+  BUILD.md only.
