@@ -19,9 +19,9 @@ sessions build Day by Word step by step, working under
 |---|---|
 | **Phase** | Phase 8, first light (M2): 1 of 14 items done, with P8.2a and P8.10a inside two more. Phase 10 (the launch catalog, in parallel): 3 of 9 |
 | **Next item** | **P8.2b**: the start flow (start date or "join today's reading", behavior, reading days, way of reading, reminder offer), and the app's plan list and plan page; the web's plan pages are P8.10a, done. Then **P8.3**, Today |
-| **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
-| **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started yet. Serving 055eb57 (deployed and checked live 2026-11-21; the database container was left running, and 22 other site names answered as before). Nightly backups and monthly restore checks on the host. |
+| **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC) |
+| **Waiting on the owner** | `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started yet. Since 2026-11-21 it runs as `daybyword-web.service` on the host's Node 26.13.1 and PostgreSQL cluster (E46), checked as a candidate before each switch; `https://daybyword.com/healthz` names the serving commit |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -467,6 +467,7 @@ but nightly PostgreSQL backups begin with the first database deployment.
 - [x] **P7.2** Qualify make deploy from clean origin/main: SvelteKit adapter-node production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
   - *Result (agent, 2026-11-20):* `make deploy` (deploy/bin/release.sh) from a clean checkout equal to origin/main: export, `git archive` to `releases/<commit>`, `deploy.sh` inside `with-deploy-lock` (image, migrate/import, candidate on 4319, activate, rollback on failure), then public check-live.
 - [ ] **P7.3** Provision only this project's database, roles, env files, units and Caddy site under the host's web platform contract (`bin/provision-app-database daybyword --web-access read-only`); record other-site responses before/after; validate and reload Caddy only through `caddy-apply`. Systemd timers for the nightly pg_dump and an isolated restore drill on the host cluster; the encrypted off-server copy is ubuntu-vm-backup's daily dump of the cluster. *(Rewritten 2026-11-21 for the contract, E46.)*
+  - *Note (agent, 2026-11-21):* Moved to the contract (E46): `bin/provision-app-database daybyword --web-access read-only`; the container's final dump restored with equal row counts in every table (456 assignments, 3 plans, 2 imports); migration 0002 moved the catalog to schema app; the candidate passed on 4400; the Compose project, its volume and images were removed after the live site was verified. Both timers now work on the host cluster and each ran once (backup 64116 bytes, restore check passed). ubuntu-vm-backup's entry is a plain site with database `daybyword`; its verification rehearsal passed.
   - *Note (agent, 2026-11-20):* Done: the project's Compose/Postgres/env/Caddy resources, /etc/caddy archived, other sites compared, nightly pg_dump and monthly restore-check timers installed, first backup and restore check passed on the host. Open: the encrypted off-server copy; no `ubuntu-vm-backup` checkout or tool exists on the host or the Mac, so the owner's arrangement is needed.
   - *Note (agent, 2026-11-21):* each deploy had been recreating the database container (a few seconds without it, no data lost), because its two mounted files came from the release directory. They now come from `shared/postgres` (E43), and `make rehearse-deploy` deploys its second release from another directory and fails if the database container changes. On the host, cd13494 recreated the database one last time (its mounts moved), and the next deploy, 1cc5f7e, left `daybyword-postgres-1` with the same id (618753ad60f5) and start time (2026-11-21T05:23:29Z); 22 other site names answered the same before and after both.
 - [x] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
@@ -626,27 +627,23 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21:** Phase 5 is finished and in BUILD-HISTORY.md: P5.11
-  (progress) and P5.12 (reminder rules) are in both runtimes and the
-  specification is version 1 (choices in E44). 625 shared cases pass in
-  Swift (macOS and Linux), Node and Firefox (tests/fixtures/README.md
-  says how to add one).
+- **2026-11-21, hosting (E46):** the site runs as `daybyword-web.service`
+  on the host's Node 26.13.1 and PostgreSQL cluster; Compose, the database
+  container and rollback are gone. `make deploy` builds the catalog export
+  here, builds and tests on the host, then backs up, migrates, checks a
+  candidate and switches (docs/deploy.md). `web/` uses pnpm 12.18.0.
+- **Locally:** this Mac needs Node 26.13.1 and pnpm 12.18.0 (a native
+  executable, not Corepack) before `make check`; check-toolchain says so.
+  Tests now use the host's role model (`web/db/roles.sql`) and
+  `DATABASE_URL`; tables are in schema `app`.
 - **P8.1** (with P10.1, P10.2, P10.7): three reviewed plans in
   `catalog/plans/`, schedules computed by `scripts/plans.swift`
   (docs/plans.md); never edit a schedule by hand.
-- **P8.2a:** the engine lists the days ahead (`comingDays`, `ahead.json`)
-  for the sample week, the coming week and the checklist.
 - **P8.10a:** the web's Plans list and plan pages read PostgreSQL
-  (`web/src/lib/server/catalog/`). `make serve-web`, the production
-  tests and the tour run inside `scripts/with-catalog.sh` (E45).
-- **Next, P8.2b:** the start flow, and the app's plan list and page (the
-  app still shows placeholders, and D37 wants it in this milestone).
+  (`web/src/lib/server/catalog/`) inside `scripts/with-catalog.sh` (E45).
+- **Next, P8.2b:** the start flow, and the app's plan list and page.
   P8.10c (Today and marking in the browser) needs E38's choice first.
-- `make check-full` passed as one run on this tree. The owner's Mac was
-  under very heavy load; `web/test/db/jobs.test.ts` timed out once at
-  30 s and now has 180 s.
 - Reminders on a device are P8.8, P17.4, P17.9. Stage by path (§8).
-- **Open:** P7.3's encrypted off-server copy (ask the owner where backups
-  go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
-  upload unverified. Live is 055eb57; the commit after it changes
-  BUILD.md only.
+- **Open:** P7.3 waits for the first verified daily snapshot. No
+  `apple/Config/Secrets.xcconfig` here; build 25's TestFlight upload
+  unverified. Swift and the app were not rerun for the hosting change.
