@@ -8,6 +8,12 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  BookRegistry,
+  parseReading,
+  ReferenceFormatter,
+  Versification,
+} from "#lib/domain/index.ts";
 import { settings } from "#lib/settings.ts";
 import { englishStrings } from "#lib/strings.ts";
 
@@ -104,6 +110,7 @@ function readerText(html: string): string[] {
     ),
   ];
   return found
+    .flatMap((piece) => piece.split(" · "))
     .map((piece) =>
       piece
         .replaceAll("&#39;", "'")
@@ -123,6 +130,58 @@ function isFromTheTable(piece: string): boolean {
       `^${value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\{[a-z]+\\\}/g, ".+")}$`,
     ).test(piece),
   );
+}
+
+interface ReleasePlan {
+  id: string;
+  title: string;
+  creator: string;
+  summary: string;
+  suits: string;
+  limitations: string;
+  instructions: string;
+  source: string;
+  assignments: { reading: string }[];
+}
+
+let release: { plans: ReleasePlan[]; scripture: { name: string; content: string }[] } | undefined;
+
+/** The release catalog the server was given (scripts/with-catalog.sh). */
+function releaseCatalog() {
+  release ??= JSON.parse(
+    readFileSync(
+      process.env["DBW_CATALOG_EXPORT"] ??
+        new URL("../../../build/catalog/catalog-export.json", import.meta.url),
+      "utf8",
+    ),
+  ) as NonNullable<typeof release>;
+  return release;
+}
+
+/** Every plan's own words, and each of its readings as a reader sees it. */
+function catalogText(): Set<string> {
+  const catalog = releaseCatalog();
+  const resource = (name: string) =>
+    catalog.scripture.find((found) => found.name === name)?.content ?? "";
+  const english = new Versification("english", resource("versification/english.tsv"));
+  const formatter = new ReferenceFormatter(new BookRegistry(resource("books.json")), english);
+  const found = new Set<string>();
+  for (const plan of catalog.plans) {
+    for (const field of [
+      plan.title,
+      plan.summary,
+      plan.suits,
+      plan.limitations,
+      plan.instructions,
+      plan.source,
+    ]) {
+      found.add(field);
+    }
+    for (const assignment of plan.assignments) {
+      found.add(formatter.reading(parseReading(assignment.reading, english)));
+    }
+  }
+  return found;
 }
 
 let development: Running;
@@ -193,7 +252,15 @@ describe("the production server", () => {
   });
 
   it("loads nothing from another host, and no script but the site's own files", async () => {
-    for (const path of ["/", "/today", "/plans", "/progress", "/settings", "/plans/a/week"]) {
+    for (const path of [
+      "/",
+      "/today",
+      "/plans",
+      "/progress",
+      "/settings",
+      "/plans/gospels-at-your-pace",
+      "/plans/gospels-at-your-pace/week",
+    ]) {
       const html = await (await fetch(`${production.base}${path}`)).text();
       expect(html, path).not.toMatch(/(src|href)="(https?:)?\/\//);
       expect(html, path).not.toMatch(/<script(?![^>]*\bsrc=)[^>]*>/);
@@ -240,7 +307,7 @@ describe("the production server", () => {
   });
 
   it("logs the method, route pattern, status and time, never the address", async () => {
-    await fetch(`${production.base}/plans/psalm-a-day/week?start=2027-01-04`);
+    await fetch(`${production.base}/plans/gospels-at-your-pace/week?start=2027-01-04`);
     await new Promise((resolve) => setTimeout(resolve, 50));
     const lines = production.log.filter((line) => line.startsWith("request "));
     expect(lines).toContainEqual(
@@ -248,12 +315,19 @@ describe("the production server", () => {
         /^request method=GET route=\/plans\/\[id=planid\]\/week status=200 ms=\d+$/,
       ),
     );
-    expect(production.log.join("\n")).not.toMatch(/psalm-a-day|2027-01-04|start=/);
+    expect(production.log.join("\n")).not.toMatch(/gospels-at-your-pace|2027-01-04|start=/);
   });
 });
 
 describe("the shell every page shares", () => {
-  for (const path of ["/", "/today", "/plans/psalm-a-day/week", "/settings", "/no-such-page"]) {
+  for (const path of [
+    "/",
+    "/today",
+    "/plans/gospels-at-your-pace",
+    "/plans/gospels-at-your-pace/week",
+    "/settings",
+    "/no-such-page",
+  ]) {
     it(`wraps ${path}`, async () => {
       const html = await page(production, path);
       expect(html.startsWith("<!doctype html>")).toBe(true);
@@ -275,7 +349,7 @@ describe("the shell every page shares", () => {
   }
 
   it("keeps a plan's pages in the Plans section", async () => {
-    for (const path of ["/plans/psalm-a-day", "/plans/psalm-a-day/week"]) {
+    for (const path of ["/plans/gospels-at-your-pace", "/plans/gospels-at-your-pace/week"]) {
       expect(current(await page(production, path)), path).toBe("Plans");
     }
   });
@@ -323,20 +397,43 @@ describe("the interface text", () => {
   // No page writes interface words of its own: every word a reader sees comes
   // from the string table, so adding a language is adding a table (E25). The
   // gallery is excluded; its content is invented for layout.
+  // A plan's own words (its title, summary and the rest of its page) and its
+  // references come from the catalog, so those are allowed as they stand.
   for (const path of [
     "/",
     "/today",
     "/plans",
-    "/plans/psalm-a-day",
-    "/plans/psalm-a-day/week",
+    "/plans/gospels-at-your-pace",
+    "/plans/bible-in-a-year",
+    "/plans/proverbs-through-the-month",
+    "/plans/gospels-at-your-pace/week",
     "/progress",
     "/settings",
     "/no-such-page",
   ]) {
-    it(`on ${path} comes only from the string table`, async () => {
+    it(`on ${path} comes only from the string table and the catalog`, async () => {
+      const fromTheCatalog = catalogText();
       const pieces = readerText(await page(deployed, path));
       expect(pieces.length).toBeGreaterThan(0);
-      for (const piece of pieces) expect(isFromTheTable(piece), piece).toBe(true);
+      for (const piece of pieces) {
+        expect(fromTheCatalog.has(piece) || isFromTheTable(piece), piece).toBe(true);
+      }
     });
   }
+
+  it("shows every plan in the catalog, each with its page", async () => {
+    const list = await page(deployed, "/plans");
+    expect(releaseCatalog().plans.length).toBeGreaterThan(0);
+    for (const plan of releaseCatalog().plans) {
+      expect(list, plan.id).toContain(`href="/plans/${plan.id}"`);
+      const html = await page(deployed, `/plans/${plan.id}`);
+      expect(heading(html)).toBe(plan.title);
+      for (const field of [plan.summary, plan.suits, plan.limitations, plan.instructions]) {
+        expect(readerText(html), `${plan.id}: ${field}`).toContain(field);
+      }
+      expect(html, plan.id).toMatch(/Estimates vary/);
+      // A plan's page shows references and never passages of Scripture (D13).
+      expect(html).not.toMatch(/<blockquote|<q[ >]/);
+    }
+  });
 });

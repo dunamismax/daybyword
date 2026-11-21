@@ -97,12 +97,12 @@ build-web: web-install ## Build the web app for production (web/build, adapter-n
 	@echo "== web build"
 	@cd web && npx vite build --logLevel warn
 
-smoke-web: build-web ## Boot the production web server and check every route it serves
+smoke-web: build-web catalog-export ## Boot the production web server and check every route it serves, with the release catalog in a throwaway PostgreSQL
 	@scripts/web-smoke.sh
-	@cd web && DBW_TEST_BUILD=1 npx vitest run
+	@scripts/with-catalog.sh sh -c 'cd web && DBW_TEST_BUILD=1 npx vitest run'
 
-serve-web: build-web ## Serve the SvelteKit site's production build on http://localhost:8080 (PORT=…), with the component gallery
-	@cd web && HOST=127.0.0.1 PORT=$(PORT) DBW_ENV=development node server.ts
+serve-web: build-web catalog-export ## Serve the SvelteKit site's production build on http://localhost:8080 (PORT=…), with the release catalog and the component gallery
+	@scripts/with-catalog.sh sh -c 'cd web && HOST=127.0.0.1 PORT=$(PORT) DBW_ENV=development node server.ts'
 
 check-web: lint-web types-web test-web smoke-web check-export db-drift test-db ## The web part of make check
 
@@ -143,8 +143,8 @@ tour-app: generate ## Tour the app in the simulator; screenshots go to screensho
 	@TEST_RUNNER_DBW_SCREENSHOTS="$(CURDIR)/screenshots/app" scripts/xcodebuild.sh tour-app \
 		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests test
 
-tour-web: build-web ## Tour the SvelteKit site in a real browser through WebDriver; screenshots go to screenshots/web/
-	@swift scripts/webtour.swift
+tour-web: build-web catalog-export ## Tour the SvelteKit site in a real browser through WebDriver, with the release catalog; screenshots go to screenshots/web/
+	@scripts/with-catalog.sh swift scripts/webtour.swift
 
 check: lint check-web catalog check-catalog test-packages test-app check-strings ## The gate before every commit
 	@echo "check: all passed"

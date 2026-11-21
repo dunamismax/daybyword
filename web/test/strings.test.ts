@@ -2,9 +2,22 @@
 // (tests/fixtures/settings.json, shared with the app).
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { startDate } from "#lib/reference.ts";
+import {
+  BookRegistry,
+  parseReading,
+  ReferenceFormatter,
+  Versification,
+} from "#lib/domain/index.ts";
+import { referenceOf, startDate } from "#lib/reference.ts";
 import { settings } from "#lib/settings.ts";
-import { englishStrings, text, workloadText } from "#lib/strings.ts";
+import {
+  englishStrings,
+  listText,
+  minutesRangeText,
+  text,
+  workloadRangeText,
+  workloadText,
+} from "#lib/strings.ts";
 
 const repository = new URL("../../", import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, repository), "utf8");
@@ -23,6 +36,29 @@ describe("the interface text", () => {
     expect(text("site.page-title", { page: "Today" })).toBe("Today · Day by Word");
     expect(workloadText(1)).toBe("About 1 minute. Estimates vary.");
     expect(workloadText(12)).toBe("About 12 minutes. Estimates vary.");
+  });
+
+  it("gives a workload as a range, or one number when both ends are the same", () => {
+    expect(workloadRangeText([9, 11])).toBe("About 9–11 minutes. Estimates vary.");
+    expect(workloadRangeText([3, 3])).toBe("About 3 minutes. Estimates vary.");
+    expect(workloadRangeText([1, 1])).toBe("About 1 minute. Estimates vary.");
+    expect(minutesRangeText([9, 11])).toBe("About 9–11 minutes");
+    expect(minutesRangeText([3, 3])).toBe("About 3 minutes");
+    expect(minutesRangeText([1, 1])).toBe("About 1 minute");
+    expect(text("component.estimates-vary")).toMatch(/^Estimates vary/);
+  });
+
+  it("writes a list in words", () => {
+    expect(listText([])).toBe("");
+    expect(listText(["Proverbs"])).toBe("Proverbs");
+    expect(listText(["Ruth", "Jonah"])).toBe("Ruth and Jonah");
+    expect(listText(["Matthew", "Mark", "Luke", "John"])).toBe("Matthew, Mark, Luke, and John");
+  });
+
+  it("has no key whose text is only a placeholder, which would allow any words on a page", () => {
+    for (const [key, english] of Object.entries(englishStrings)) {
+      expect(english.replace(/\{[a-z]+\}/g, "").trim(), key).not.toBe("");
+    }
   });
 
   it("follows the voice: no exclamation marks, and nothing a record cannot say", () => {
@@ -79,6 +115,33 @@ describe("the settings", () => {
       expect(theme).toContain(`"${setting.key}"`);
       expect(keeper).toContain(`"${setting.key}"`);
       expect(keeper).toContain(`"${setting.name}"`);
+    }
+  });
+});
+
+describe("a reference, said aloud", () => {
+  const english = new Versification("english", read("catalog/scripture/versification/english.tsv"));
+  const formatter = new ReferenceFormatter(
+    new BookRegistry(read("catalog/scripture/books.json")),
+    english,
+  );
+  const said = (reading: string) => referenceOf(parseReading(reading, english), formatter);
+
+  it("names chapters and verses in words, beside what is shown", () => {
+    for (const [reading, display, spoken] of [
+      ["MAT 1-3", "Matthew 1–3", "Matthew, chapters 1 to 3"],
+      ["PRO 7", "Proverbs 7", "Proverbs, chapter 7"],
+      ["MRK 4:1-20", "Mark 4:1–20", "Mark, chapter 4, verses 1 to 20"],
+      ["JHN 3:16", "John 3:16", "John, chapter 3, verse 16"],
+      ["JHN 3:16-4:3", "John 3:16–4:3", "John, chapter 3, verse 16, to chapter 4, verse 3"],
+      ["PSA 23", "Psalm 23", "Psalm 23"],
+      ["PSA 120-122", "Psalms 120–122", "Psalms 120 to 122"],
+      ["JUD 1", "Jude", "Jude"],
+      ["JUD 1:3-5", "Jude 3–5", "Jude, verses 3 to 5"],
+      ["JUD 1:3", "Jude 3", "Jude, verse 3"],
+      ["OBA 1; JON 1-2", "Obadiah; Jonah 1–2", "Obadiah; then Jonah, chapters 1 to 2"],
+    ] as const) {
+      expect(said(reading), reading).toEqual({ display, spoken });
     }
   });
 });

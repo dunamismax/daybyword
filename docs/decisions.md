@@ -1167,3 +1167,30 @@ implemented in both runtimes. The choices E40 left open:
 
 **Why:** each keeps the record what the reader did (product principle 5,
 honest records) and keeps a notification from saying something untrue.
+
+### E45. The web reads its catalog one way, everywhere
+
+*2026-11-21, agent (P8.10a).* The plan pages read the catalog from
+PostgreSQL as the web role, on the live host and on a developer's Mac
+alike. `scripts/with-catalog.sh` starts a throwaway PostgreSQL 18 with
+the roles, every migration and the release export, and `make serve-web`,
+the production tests and the web tour run inside it.
+
+The alternative was a second reader for local work, taking the export's
+JSON straight from a file. It would have been quicker to start, and it
+would have meant the pages seen and tested locally came through code the
+live site never runs: a mistake in the SQL, the roles or the import
+would first show on daybyword.com. One path costs a few seconds of
+`initdb` per run and needs PostgreSQL 18 on the Mac, which `make check`
+already did.
+
+Two smaller choices on the pages themselves: **a sample week is the
+engine's days ahead** for a reader who starts on a Monday that is also
+the first of a month (2001-01-01), on the first of the week's days the
+plan is paced for, so a sequence shows a week from Monday and a
+day-of-month plan a month's first seven days, and the page says the
+reader's own week depends on their start and their days; and **Plans
+lists the shortest plan first**, by readings and then by title, until
+P9.3 groups plans by goal. Neither ranks a plan by popularity (D23,
+BUILD.md P9.2).
+

@@ -31,6 +31,21 @@ files when APIs are needed.
   docs/engine.md and the same JSON cases as native Swift. Do not
   reimplement reading rules in components, load functions, form actions
   or SQL. E33 records the cross-language parity requirement.
+- The catalog is read on the server, from PostgreSQL, as the read-only web
+  role (`src/lib/server/catalog/read.ts`): once per import, kept in
+  memory, with one small query a request to see which import is current.
+  `present.ts` beside it turns a plan into what its pages show: the
+  compiler's facts, the domain module's workload and sample week (the
+  engine's days ahead for a candidate enrollment), and words from the
+  string table. A plan's own words (title, summary, limitations and the
+  rest) are the catalog's and are shown as written. With no
+  `DBW_DATABASE_URL` there is no catalog: Plans is empty and a plan's
+  address is not found.
+- `scripts/with-catalog.sh COMMAND` runs a command with a throwaway
+  PostgreSQL holding the roles, the migrations and the release catalog,
+  as a deploy leaves them. `make serve-web`, the production tests and the
+  web tour run inside it, so local pages come through the same code as
+  the live ones.
 - At 1.0 progress remains in IndexedDB; server computation is transient
   from request bodies and retains nothing. No records in URLs, cookies,
   logs or shared caches. Native apps and browsers never connect to Postgres.
@@ -63,6 +78,9 @@ files when APIs are needed.
 The checks the retired Swift server's tests made now live in
 `web/test/` (PM.20): the address contract (tests/fixtures/routes.json),
 the shell every page shares, Settings, the configuration, and that pages
-show only words from the string table (`src/lib/strings.ts`). Preserve
+show only words from the string table (`src/lib/strings.ts`) and the
+catalog. A table entry is never a bare placeholder, which would let any
+words pass, and a plan's page keeps table text and catalog text in
+separate elements so each can be checked. Preserve
 /assets URLs or explicit redirects. Svelte components are web-only;
 native SwiftUI stays independent of them.

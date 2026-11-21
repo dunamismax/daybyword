@@ -3,14 +3,14 @@
   import { pageTitle } from "#lib/sections.ts";
   import { text } from "#lib/strings.ts";
 
-  let { data }: { data: { id: string } } = $props();
+  let { data }: { data: { id: string; title: string } } = $props();
 </script>
 
 <svelte:head>
   <title>{pageTitle(text("week.title"))}</title>
 </svelte:head>
 
-<p><a href="/plans/{data.id}">{text("plan.title")}</a></p>
+<p><a href="/plans/{data.id}">{data.title}</a></p>
 <h1 class="mb-l">{text("week.title")}</h1>
 <div class="card">
   <State

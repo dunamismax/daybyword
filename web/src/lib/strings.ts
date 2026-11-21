@@ -29,8 +29,73 @@ const english = {
   "plans.empty-title": "Plans will appear here.",
   "plans.empty-message": "You'll be able to choose a reading plan here.",
   "plan.title": "Plan",
-  "plan.empty-title": "This plan's page will appear here.",
-  "plan.empty-message": "Plan pages arrive with the catalog.",
+  "plan.by": "By {creator}",
+  "plan.readings-one": "1 reading",
+  "plan.readings-other": "{count} readings",
+  "plan.kind-sequence": "Read in order",
+  "plan.kind-calendar": "By the date",
+  "plan.suits": "Who it suits",
+  "plan.workload": "How long it takes",
+  "plan.workload-typical": "A typical reading",
+  "plan.workload-lightest": "The lightest reading",
+  "plan.workload-heaviest": "The heaviest reading",
+  "plan.paced-one": "It is paced for 1 reading day a week. You choose your own days.",
+  "plan.paced-other": "It is paced for {days} reading days a week. You choose your own days.",
+  "plan.paced-every-day": "It is paced for every day of the week. You choose your own days.",
+  "plan.sample-sequence":
+    "Its first week, begun on a Monday. Your own week depends on the day you start and the days you choose.",
+  "plan.sample-calendar": "The first seven days of a month. Each date has its own reading.",
+  "plan.sample-day": "Day {day}",
+  "plan.rest-day": "Rest day",
+  "plan.covers": "What it covers",
+  "plan.covers-whole-bible": "Every verse of the {label} of the {canon} canon: {verses} verses.",
+  "plan.covers-books": "Every verse of {books}: {verses} verses.",
+  "plan.covers-selection":
+    "Passages from {books}: {verses} verses. It does not read these books whole.",
+  "plan.covers-repeats": "It reads these verses more than once: {passages}.",
+  "plan.covers-no-repeats": "No verse is read twice.",
+  "plan.completion-note":
+    "Finishing a plan is not the same as reading the whole Bible, unless its readings cover it.",
+  "plan.how": "How it works",
+  "plan.how-sequence": "Its readings are numbered and read in order.",
+  "plan.how-calendar": "Each day of the month has its own reading.",
+  "plan.behavior-pace": "Continue at my pace",
+  "plan.behavior-pace-about":
+    "Read the next reading whenever you read. If you miss a day, nothing is lost: your next reading waits for you, and your finish date moves.",
+  "plan.behavior-finish-date": "Work toward a finish date",
+  "plan.behavior-finish-date-about":
+    "Choose when you'd like to finish. If you miss days, Day by Word can spread the unread readings over the days ahead, up to a limit you set, or move your finish date. You'll see the change before it happens.",
+  "plan.behavior-calendar": "Follow the calendar",
+  "plan.behavior-calendar-about":
+    "Read the readings appointed for each date. Today's readings stay on today, as the calendar sets them. Readings from earlier dates stay in your history, and you can read them whenever you like.",
+  "plan.limitations": "What it does not do",
+  "plan.review-checked": "Checked automatically: every reference and claim.",
+  "plan.review-reviewed":
+    "Reviewed: checked against its own rules and Day by Word's criteria for plans.",
+  "plan.review-expert": "Reviewed by a reader who uses its source.",
+  "plan.review-label": "Review.",
+  "list.and": "{first} and {last}",
+  "list.comma": "{first}, {rest}",
+  "list.comma-and": "{first}, and {last}",
+  "canon.protestant": "Protestant",
+  "canon.catholic": "Catholic",
+  "weekday.monday": "Monday",
+  "weekday.tuesday": "Tuesday",
+  "weekday.wednesday": "Wednesday",
+  "weekday.thursday": "Thursday",
+  "weekday.friday": "Friday",
+  "weekday.saturday": "Saturday",
+  "weekday.sunday": "Sunday",
+  "reference.chapter": "{book}, chapter {chapter}",
+  "reference.chapters": "{book}, chapters {chapter} to {last}",
+  "reference.verse": "{book}, chapter {chapter}, verse {verse}",
+  "reference.verses": "{book}, chapter {chapter}, verses {verse} to {last}",
+  "reference.across": "{book}, chapter {chapter}, verse {verse}, to chapter {last}, verse {final}",
+  "reference.book-verse": "{book}, verse {verse}",
+  "reference.book-verses": "{book}, verses {verse} to {last}",
+  "reference.psalm": "Psalm {chapter}",
+  "reference.psalms": "Psalms {chapter} to {last}",
+  "reference.then": "{first}; then {next}",
   "week.title": "Week",
   "week.empty-title": "This plan's week will appear here.",
   "week.empty-message": "Weeks arrive with the catalog.",
@@ -63,6 +128,11 @@ const english = {
   "component.copy-failed": "Selected; copy it with your keyboard",
   "component.workload-one": "About 1 minute. Estimates vary.",
   "component.workload-other": "About {minutes} minutes. Estimates vary.",
+  "component.workload-range": "About {low}–{high} minutes. Estimates vary.",
+  "component.minutes-one": "About 1 minute",
+  "component.minutes-other": "About {minutes} minutes",
+  "component.minutes-range": "About {low}–{high} minutes",
+  "component.estimates-vary": "Estimates vary with the reader and the translation.",
   "component.status-read": "Read",
   "component.status-partly-read": "Part read",
   "component.status-skipped": "Skipped",
@@ -90,6 +160,36 @@ export function text(key: StringKey, values: Record<string, string> = {}): strin
   let result: string = english[key];
   for (const [name, value] of Object.entries(values)) {
     result = result.replaceAll(`{${name}}`, value);
+  }
+  return result;
+}
+
+/** "About 9–11 minutes. Estimates vary.", or one number when both ends round the same. */
+export function workloadRangeText(minutes: readonly [number, number]): string {
+  const [low, high] = minutes;
+  return low === high
+    ? workloadText(low)
+    : text("component.workload-range", { low: String(low), high: String(high) });
+}
+
+/** "About 9–11 minutes", for a list whose note says once that estimates vary. */
+export function minutesRangeText(minutes: readonly [number, number]): string {
+  const [low, high] = minutes;
+  if (low !== high)
+    return text("component.minutes-range", { low: String(low), high: String(high) });
+  return low === 1
+    ? text("component.minutes-one")
+    : text("component.minutes-other", { minutes: String(low) });
+}
+
+/** "Matthew, Mark, Luke, and John": a list in words. */
+export function listText(items: readonly string[]): string {
+  if (items.length <= 1) return items[0] ?? "";
+  const [first = "", last = ""] = items.slice(-2);
+  if (items.length === 2) return text("list.and", { first, last });
+  let result = text("list.comma-and", { first, last });
+  for (const item of items.slice(0, -2).reverse()) {
+    result = text("list.comma", { first: item, rest: result });
   }
   return result;
 }

@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 1 of 14 items done. Phase 10 (the launch catalog, in parallel): 3 of 9 |
-| **Next item** | **P8.2b**: the plan page with its sample week and workload, and the start flow, on the web and in the app (P8.2a, the engine's list of the days ahead, is done) |
+| **Phase** | Phase 8, first light (M2): 1 of 14 items done, with P8.2a and P8.10a inside two more. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Next item** | **P8.2b**: the start flow (start date or "join today's reading", behavior, reading days, way of reading, reminder offer), and the app's plan list and plan page; the web's plan pages are P8.10a, done. Then **P8.3**, Today |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
@@ -499,6 +499,11 @@ list.
 - [ ] **P8.8** iOS reminders over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
 - [ ] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
 - [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). SvelteKit endpoints compute through the TypeScript domain module from request bodies, retain nothing and log no personal records; cached upcoming readings and IndexedDB marks support offline use. Swift uses the same contract fixtures (E33). A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
+  - *Note (agent, 2026-11-21):* split in three, in the order they can be built.
+  - [x] **P8.10a** Browse and preview: Plans lists the catalog's plans, and each plan has its page (what it is, whom it suits, workload, a sample week, coverage, how it works, limitations, source and review), rendered on the server from PostgreSQL.
+    - *Result (agent, 2026-11-21):* `web/src/lib/server/catalog/read.ts` reads the served import as the web role and `present.ts` makes the pages' content (the compiler's facts, the engine's sample week, the string table's words); `/plans` and `/plans/<id>` show them, and an id that is no plan in the catalog is not found. `scripts/with-catalog.sh` gives `make serve-web`, the production tests and the tour a throwaway PostgreSQL with the release catalog, so they use the code the live site does. Seen in a browser (desktop width in dark, phone width in light) with no console errors or CSP violations and no sideways scroll; the web tour visits two plan pages in light and dark at both widths. Choices in E45. tests/fixtures/routes.json is version 3. *Not here:* starting a plan (P8.2b, P8.10c), and the app's plan pages (P8.2b).
+  - [ ] **P8.10b** A week's printable checklist at `/plans/<id>/week?start=`, from the engine's days ahead (P8.2a), through the print stylesheet (with P13.1).
+  - [ ] **P8.10c** Start a plan and use Today and marking in the browser: progress in IndexedDB, compute endpoints that keep nothing, cached coming readings, and the page that says what is kept where. Needs E38's choice for client interaction under the strict CSP.
 - [ ] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans, queues marks made offline with their event ids, and says clearly when it is offline.
 - [ ] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
@@ -621,28 +626,26 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21:** Phase 5 is finished and moved to BUILD-HISTORY.md.
-  P5.11 (progress: counts, recent days, coverage, the streak) and P5.12
-  (reminder rules) are in both runtimes; the specification is version 1.
-  354 scheduling cases (`journal`, `event-ids`, `today`, `returning`,
-  `changing`, `progress`, `reminders`) pass in Swift and Node. To add
-  one: an input and a `name`, record with `DBW_RECORD_FIXTURES=1`, check
-  the output by hand, then the web tests. Choices are E44.
-- The engine's cases pass in Firefox too (596, `make
-  test-domain-browser`). **Not run this session yet:** `make test-linux`
-  and the tours; `make check-full` is due before the next deploy.
-- **P8.1 is done** (with P10.1, P10.2, P10.7): three reviewed plans in
-  `catalog/plans/`, their schedules computed by `scripts/plans.swift`
-  (docs/plans.md). No page shows them yet; the live catalog still has
-  none until the next deploy.
-- **P8.2a is done:** the engine lists the days ahead (`comingDays`,
-  `ahead.json`), for the sample week, the coming week and the checklist.
-- **Reminders on a device** (delivery across a real clock change) are
-  P8.8, P17.4 and P17.9; the engine and its Swift edge are tested.
-- **A mistake to avoid:** stage by path, never `git add -A`: other
-  sessions may have work in this checkout (AGENTS.md §8).
-- `make test-linux` reuses its image while `scripts/linux/` is unchanged;
-  its rebuild path with the new label has still not run.
+- **2026-11-21:** Phase 5 is finished and in BUILD-HISTORY.md: P5.11
+  (progress) and P5.12 (reminder rules) are in both runtimes and the
+  specification is version 1 (choices in E44). 625 shared cases pass in
+  Swift (macOS and Linux), Node and Firefox (tests/fixtures/README.md
+  says how to add one).
+- **P8.1** (with P10.1, P10.2, P10.7): three reviewed plans in
+  `catalog/plans/`, schedules computed by `scripts/plans.swift`
+  (docs/plans.md); never edit a schedule by hand.
+- **P8.2a:** the engine lists the days ahead (`comingDays`, `ahead.json`)
+  for the sample week, the coming week and the checklist.
+- **P8.10a:** the web's Plans list and plan pages read PostgreSQL
+  (`web/src/lib/server/catalog/`). `make serve-web`, the production
+  tests and the tour run inside `scripts/with-catalog.sh` (E45).
+- **Next, P8.2b:** the start flow, and the app's plan list and page (the
+  app still shows placeholders, and D37 wants it in this milestone).
+  P8.10c (Today and marking in the browser) needs E38's choice first.
+- `make check-full` passed as one run on this tree. The owner's Mac was
+  under very heavy load; `web/test/db/jobs.test.ts` timed out once at
+  30 s and now has 180 s.
+- Reminders on a device are P8.8, P17.4, P17.9. Stage by path (§8).
 - **Open:** P7.3's encrypted off-server copy (ask the owner where backups
   go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
-  upload unverified. Live is 1cc5f7e.
+  upload unverified.

@@ -53,8 +53,8 @@
   title="Gospels at your pace"
   kind="A Day by Word plan"
   summary="Matthew, Mark, Luke, and John in readings of about the same length."
-  minutes={6}
-  schedule="Continue at my pace"
+  workload="About 6–8 minutes. Estimates vary."
+  schedule="60 readings"
   href="#plan"
 />
 <SampleWeek

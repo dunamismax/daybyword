@@ -26,14 +26,15 @@ does not speak for any church, ministry, or publisher.
 
 **In development; nothing is ready to read with yet (2026-11-21).**
 
-- **daybyword.com is live** in development: the Today, Plans, Progress, and
-  Settings pages are served by SvelteKit under a strict security policy,
-  hidden from search engines. The pages do not show plans yet.
+- **daybyword.com is live** in development: SvelteKit serves every page
+  under a strict security policy, hidden from search engines. Plans lists
+  the catalog's first three plans, each with its own page (what it is,
+  its workload, a sample week, what it covers). A plan cannot be started
+  there yet.
 - **The iPhone and iPad app** builds and runs in the simulator with the same
   sections. It is not yet on the App Store or in a beta.
 - **The reading rules are built** ([docs/engine.md](docs/engine.md), version 1),
-  and the catalog holds its first three plans, Day by Word's own
-  ([docs/plans.md](docs/plans.md)).
+  and the three plans are Day by Word's own ([docs/plans.md](docs/plans.md)).
 - **Next:** **first light** (Phase 8): starting a plan, Today, marking,
   reminders, and the return after missed days, on TestFlight and at
   daybyword.com.
@@ -156,7 +157,7 @@ one. Confirmed on the owner's Mac (macOS 27.2, Apple silicon):
 | XcodeGen | 2.46.0 (`brew install xcodegen`) | generating the Xcode project |
 | Node | 26.13.0 (`.node-version`) | the web workspace; install from nodejs.org or a version manager that reads `.node-version` |
 | npm | 11.20.0 (`packageManager` in `web/package.json`) | `make web-install` runs `npm ci`; `npm install --global npm@11.20.0` if needed |
-| PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
+| PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, `make serve-web`, the production tests and the web tour, each of which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
 | python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh` |
 | curl | any | `scripts/web-smoke.sh` |
 | Firefox and geckodriver | Firefox 159, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari make tour-web`) |

@@ -602,7 +602,7 @@ Agents never:
 | `make check-full` | `check`, the engine cases in headless Firefox, both tours in light and dark, and Linux | At milestones, before TestFlight or a deploy |
 | `make check-web` | The web part of `check` alone: lint, svelte-check, unit tests, production build booted, export check, schema drift, `test-db` | While working on `web/` |
 | `make test-db` | Migrations, the catalog import, and the roles on a throwaway PostgreSQL 18 cluster | After schema or import changes |
-| `make serve-web` | The SvelteKit production build on http://localhost:8080 (`PORT=…`), with the component gallery | Seeing web work in a browser |
+| `make serve-web` | The SvelteKit production build on http://localhost:8080 (`PORT=…`), with the release catalog in a throwaway PostgreSQL (`scripts/with-catalog.sh`) and the component gallery | Seeing web work in a browser |
 | `make run` | Build, boot a simulator, install, and launch the app (`SIM_DEVICE=…`) | Seeing app work |
 | `make test-domain-browser` | The shared engine cases in a real browser | After engine changes |
 | `make tour-web`, `make tour-app` | Every section in light and dark, with semantic checks and screenshots | UI changes; part of `check-full` |
@@ -632,6 +632,14 @@ remove an entry once it no longer applies.
   come from `$app/env/private` through `src/env.ts`; route parameter
   matchers are `src/params.ts` (`defineParams`); there is no `ORIGIN`
   variable (use `paths.origin` or Caddy's Host header).
+- **Page text is checked against the string table and the catalog.** The
+  production tests refuse a page that shows words from anywhere else, so
+  a new interface word is a `strings.ts` key, and table text and catalog
+  text go in separate elements. The table's voice test refuses "missed",
+  "behind", "streak", "failed" and "faithful" in any string.
+- **Our own plans' schedules are computed** (`scripts/plans.swift`,
+  docs/plans.md). Never edit a schedule by hand: `make check` compares
+  each with what its rule gives.
 - **PostgreSQL 17 comes first on the owner's PATH.** `scripts/with-postgres.sh`
   finds Homebrew's postgresql@18 itself; do not "fix" the PATH.
 - **xcodebuild hides warnings** in files it does not recompile, so a clean

@@ -43,5 +43,7 @@ describe("the migration and import jobs", () => {
       /valid release export of 2 plan/,
     );
     await expect(job("catalog-import.ts", ["--force", fixture], name)).rejects.toThrow(/usage/);
-  });
+    // Nine jobs, each a new node process, with a catalog of real plans to
+    // import: slow on a busy machine.
+  }, 180_000);
 });

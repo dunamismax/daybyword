@@ -23,8 +23,9 @@ endpoints and later consented sync, never a direct database connection.
 | `/progress` | yes | yes | Progress |
 | `/settings` | yes | yes | Settings (a sheet in the app) |
 
-Today, Plans, Progress, and Settings are placeholders until their phases
-build them, but their addresses are final.
+On the web, Plans and each plan's page show the catalog (BUILD.md
+P8.10a). Today, Progress, a plan's week, and the app's sections are
+placeholders until their items build them; every address is final.
 
 Addresses for the server's own use, never linked from a page a reader sees:
 `/up` (the health check), `/assets/…` (the site's own files), and
@@ -41,7 +42,8 @@ P14).
   joined by single hyphens (`gospels-at-your-pace`, `mcheyne-1842`).
   The engine's plan-id rule (docs/engine.md) is the single check: Swift's
   `PlanID` in the catalog compiler and the app, `isPlanID` on the web. An address with any other id is not
-  found.
+  found, and neither is one whose id is no plan in the catalog being
+  served.
 - **Lowercase, no trailing slash, no file extensions.** The web redirects
   an address with a trailing slash to the one without (308); the app also
   accepts a trailing slash in a link it is given.
