@@ -66,10 +66,27 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.automatic
     @AppStorage(ReferenceSize.storageKey) private var referenceSize = ReferenceSize.standard
+    @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
+    @AppStorage(WayToRead.keepAwakeKey) private var keepAwake = false
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Picker("How you read", selection: $wayToRead) {
+                        ForEach(WayToRead.allCases) { Text($0.label).tag($0) }
+                    }
+                    if wayToRead == .physicalBible {
+                        Toggle("Keep the screen awake on Today", isOn: $keepAwake)
+                    }
+                } footer: {
+                    Text(
+                        wayToRead == .physicalBible
+                            ? "With a physical Bible, Today says where each reading is in print."
+                            : "Day by Word never shows Bible text. Copy reference works with any app.")
+                }
+                .listRowBackground(Palette.surface)
+
                 Section {
                     Picker("Appearance", selection: $appearance) {
                         ForEach(Appearance.allCases) { Text($0.label).tag($0) }

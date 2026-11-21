@@ -315,21 +315,23 @@ struct ChangePreview: View {
                 .typeStyle(TypeScale.body)
                 .foregroundStyle(Palette.text)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(alignment: .leading, spacing: Spacing.s) {
-                ForEach(changes, id: \.self) { change in
-                    VStack(alignment: .leading, spacing: Spacing.xxs) {
-                        Text(verbatim: change.what)
-                            .typeStyle(TypeScale.label)
-                            .foregroundStyle(Palette.textMuted)
-                        Text("\(change.before) → \(change.after)")
-                            .typeStyle(TypeScale.body)
-                            .foregroundStyle(Palette.text)
+            if !changes.isEmpty {
+                VStack(alignment: .leading, spacing: Spacing.s) {
+                    ForEach(changes, id: \.self) { change in
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
+                            Text(verbatim: change.what)
+                                .typeStyle(TypeScale.label)
+                                .foregroundStyle(Palette.textMuted)
+                            Text("\(change.before) → \(change.after)")
+                                .typeStyle(TypeScale.body)
+                                .foregroundStyle(Palette.text)
+                        }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(Text("\(change.what): from \(change.before) to \(change.after)"))
                     }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text("\(change.what): from \(change.before) to \(change.after)"))
                 }
+                .card(padding: Spacing.m)
             }
-            .card(padding: Spacing.m)
             Button(confirmLabel, action: onConfirm).buttonStyle(PrimaryButtonStyle())
             Button("Cancel", action: onCancel)
                 .buttonStyle(SecondaryButtonStyle())

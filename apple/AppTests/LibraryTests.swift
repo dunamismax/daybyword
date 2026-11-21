@@ -127,3 +127,33 @@ private let gospels = PlanID("gospels-at-your-pace")!
     #expect(try spoken("MAT 3:1-4:11") == "Matthew, chapter 3, verse 1, to chapter 4, verse 11")
     #expect(try spoken("PSA 119:1-24; PSA 120") == "Psalms, chapter 119, verses 1 to 24; then Psalm 120")
 }
+
+@MainActor
+@Test func physicalBibleModeSaysWhereToFindAReadingInPrint() throws {
+    let catalog = try bundledCatalog()
+    let formatter = ReferenceFormatter(registry: catalog.registry, versification: catalog.versification)
+    func place(_ text: String) throws -> [String] {
+        PlaceInPrint.lines(try ReferenceFormat.reading(text, in: catalog.versification), formatter: formatter)
+    }
+    #expect(try place("MRK 4:1-20") == ["Mark · chapter 4 · verses 1–20"])
+    #expect(try place("MAT 1-3") == ["Matthew · chapters 1–3"])
+    #expect(try place("PRO 7") == ["Proverbs · chapter 7"])
+    #expect(try place("JUD 1:3-5") == ["Jude · verses 3–5"])
+}
+
+@MainActor
+@Test func aReturnAfterAGapIsWelcomedAndAnsweredWithoutRewritingHistory() throws {
+    let library = try library(today: "2027-03-01")
+    let id = try library.start(
+        .init(plan: gospels, version: 1, behavior: .pace, start: library.today, readingDays: [1, 2, 3, 4, 5]))
+    try library.record(.marked(.init(.completed, assignment: 1, date: library.today)), enrollment: id)
+    // A week later: a gap of reading days, so the welcome is offered.
+    let later = try CivilDate("2027-03-09")
+    let enrollment = try #require(library.activeEnrollments.first)
+    let welcome = try #require(enrollment.welcome(on: later))
+    #expect(welcome.offers.map(\.choice) == [.continue])
+    try library.record(welcome.answer(welcome.offers[0], on: later), enrollment: id)
+    #expect(library.activeEnrollments[0].welcome(on: later) == nil)
+    #expect(library.activeEnrollments[0].state(of: Slot(assignment: 1)) == .read)
+    #expect(library.activeEnrollments[0].today(later).readings == [Slot(assignment: 2)])
+}

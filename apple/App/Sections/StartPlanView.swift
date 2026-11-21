@@ -12,6 +12,8 @@ enum WayToRead: String, CaseIterable, Identifiable, Sendable {
     case otherApp
 
     static let storageKey = "wayToRead"
+    /// Whether physical Bible mode keeps the screen awake on Today.
+    static let keepAwakeKey = "keepScreenAwake"
 
     var id: Self { self }
 

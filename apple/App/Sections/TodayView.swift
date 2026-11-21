@@ -1,6 +1,7 @@
 import ReadingData
 import ReadingEngine
 import SwiftUI
+import UIKit
 
 /// Today answers one question: what do I read now? One card for each plan
 /// the reader follows, with its label, the references set large, and the
@@ -10,6 +11,8 @@ import SwiftUI
 struct TodayView: View {
     @Environment(Library.self) private var library
     @Environment(AppNavigation.self) private var navigation
+    @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
+    @AppStorage(WayToRead.keepAwakeKey) private var keepAwake = false
     /// The last thing the reader did, for the Undo (or Redo) banner.
     @State private var lastAction: LastAction?
     @State private var failure: String?
@@ -37,6 +40,12 @@ struct TodayView: View {
                 } else {
                     ForEach(enrollments, id: \.id) { enrollment in
                         if let plan = library.plan(of: enrollment), let formatter = library.formatter {
+                            // After a gap, the welcome comes first (P8.7).
+                            if let welcome = enrollment.welcome(on: library.today), let journal = library.journal {
+                                WelcomeBack(
+                                    welcome: welcome, enrollment: enrollment, journal: journal, plan: plan,
+                                    today: library.today, formatter: formatter, act: act)
+                            }
                             TodayCard(
                                 enrollment: enrollment, plan: plan, today: library.today, formatter: formatter,
                                 act: act)
@@ -62,6 +71,10 @@ struct TodayView: View {
             }
         }
         .animation(.default, value: lastAction)
+        // Physical Bible mode may keep the screen awake while Today is open.
+        .onAppear { UIApplication.shared.isIdleTimerDisabled = wayToRead == .physicalBible && keepAwake }
+        .onChange(of: keepAwake) { UIApplication.shared.isIdleTimerDisabled = wayToRead == .physicalBible && keepAwake }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
     }
 
     /// No plan yet: a short welcome and the way into choosing one.
@@ -134,6 +147,7 @@ struct TodayCard: View {
     let formatter: ReferenceFormatter
     let act: (JournalEvent.Body, EventID, String) -> Void
 
+    @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
     @State private var confirmingSkip: Slot?
     @State private var loggingEarlier: EarlierDay?
 
@@ -227,6 +241,10 @@ struct TodayCard: View {
         return String(localized: "\(plan.title) — Reading \(position)")
     }
 
+    private func reading(of slot: Slot) -> Reading? {
+        plan.assignments.first { $0.id == slot.assignment }?.reading
+    }
+
     private func reference(_ slot: Slot) -> ReferenceText {
         guard let reading = plan.assignments.first(where: { $0.id == slot.assignment })?.reading else {
             return ReferenceText(display: "", spoken: "")
@@ -241,6 +259,16 @@ struct TodayCard: View {
                 .typeStyle(TypeScale.label)
                 .foregroundStyle(Palette.textMuted)
             ReferenceBlock(reference: reference)
+            if wayToRead == .physicalBible, let reading = reading(of: slot) {
+                // Physical Bible mode: where to find it in print (P8.6).
+                ForEach(PlaceInPrint.lines(reading, formatter: formatter), id: \.self) { line in
+                    Text(verbatim: line)
+                        .typeStyle(TypeScale.body)
+                        .foregroundStyle(Palette.textMuted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .accessibilityHidden(true)
+            }
             ActionRow {
                 CopyReferenceButton(reference: reference)
                 Menu {

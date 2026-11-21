@@ -136,7 +136,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
-| 8 | First light | M2 First light | 14 | 3 |
+| 8 | First light | M2 First light | 14 | 6 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 3 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
@@ -498,8 +498,10 @@ list.
 - [x] **P8.4** Marking: complete with one deliberate tap; mark part read ("part of it"); skip (labeled as a scheduling decision); log late for an earlier date; undo and redo. All of these are journal events.
   - *Result (agent, 2026-11-21):* in the app: Mark read, and under More, Mark part read, Skip (confirmed with "It won't count as read") and Log an earlier day (a date from the start to today; a calendar plan logs that date's own reading); a banner offers Undo, then Redo, each an `undone` event. Tested in `LibraryTests` and seen in the Simulator with the date pinned (`-today`). Which verses of a partial reading is not asked yet (P11.4 reads them). The web's marking is P8.10c.
 - [ ] **P8.5** Opening a reading (D26): an adapter for YouVersion and Bible.com that builds the best link it can (the passage, or the chapter where that is the limit, said plainly) in the reader's chosen translation, opening the app where it is installed, and Copy reference everywhere. Test it on a device and record the date, app version, link format, and limits in `docs/destinations.md`.
-- [ ] **P8.6** Physical Bible mode: references at the desk-glance size, a keep-the-screen-awake option, book and chapter called out for finding the place in print, and no link.
-- [ ] **P8.7** The return flow over P5.8: a short welcome, the choices that apply with their previews, and a confirmation. History is never altered.
+- [x] **P8.6** Physical Bible mode: references at the desk-glance size, a keep-the-screen-awake option, book and chapter called out for finding the place in print, and no link.
+  - *Result (agent, 2026-11-21):* in the app: "How you read" (chosen when starting a plan, and in Settings) set to a physical Bible adds `PlaceInPrint`'s line under each reference ("Mark · chapter 4 · verses 1–20") and offers "Keep the screen awake on Today" in Settings; no link is shown (P8.5 adds links for the other ways). Seen in the Simulator in light and dark. The web's is with P8.10c.
+- [x] **P8.7** The return flow over P5.8: a short welcome, the choices that apply with their previews, and a confirmation. History is never altered.
+  - *Result (agent, 2026-11-21):* in the app, `WelcomeBack` heads a plan's card on Today after a gap: "Welcome back. Here's where you left off.", each choice the engine offers with its effect worked out by folding the journal with the answer added (`Journal.previewing`), a confirmation sheet, and the `returned` event with Undo. Tested in `LibraryTests` and seen in the Simulator. The web's is with P8.10c.
 - [ ] **P8.8** iOS reminders over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
 - [ ] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
 - [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). SvelteKit endpoints compute through the TypeScript domain module from request bodies, retain nothing and log no personal records; cached upcoming readings and IndexedDB marks support offline use. Swift uses the same contract fixtures (E33). A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
@@ -510,7 +512,8 @@ list.
     - *Result (agent, 2026-11-21):* `planWeek` in `present.ts` lists the seven days from `start` for a reader who begins that day (each date's every reading, a box to tick, rest days named), or the sample week with no start; a plain GET form picks the date, `/assets/print.js` shows a Print button, and `@media print` (with light tokens on paper, `scripts/tokens.swift`) leaves the checklist alone. The plan page links to it. Seen in a browser at desktop and phone widths with no console errors, and printed to PDF in headless Firefox from a dark-theme browser. *Not here:* large print and the iOS PDF (P13.1).
   - [ ] **P8.10c** Start a plan and use Today and marking in the browser: progress in IndexedDB, compute endpoints that keep nothing, cached coming readings, and the page that says what is kept where. Needs E38's choice for client interaction under the strict CSP.
 - [ ] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans, queues marks made offline with their event ids, and says clearly when it is offline.
-- [ ] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
+- [x] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
+  - *Result (agent, 2026-11-21):* in the app: a seven-day strip (read, a reading day, a rest day, each a symbol and words), and for each plan its readings by state, the next reading and the projected finish, from the engine's progress rules. The welcome after a gap is on Today (P8.7), where docs/product.md puts it. Seen in the Simulator. The web's is with P8.10c.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
 

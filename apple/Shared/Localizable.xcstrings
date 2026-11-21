@@ -13,6 +13,18 @@
     "%@ — Reading %lld" : {
 
     },
+    "%@ · chapter %lld" : {
+
+    },
+    "%@ · chapter %lld · %@" : {
+
+    },
+    "%@ · chapter %lld, verse %lld to chapter %lld, verse %lld" : {
+
+    },
+    "%@ · chapters %lld%@%lld" : {
+
+    },
     "%@ %@" : {
 
     },
@@ -43,6 +55,12 @@
     "%@, chapters %lld to %lld" : {
 
     },
+    "%@, not read" : {
+
+    },
+    "%@, read" : {
+
+    },
     "%@, rest day" : {
 
     },
@@ -58,16 +76,34 @@
     "%@: from %@ to %@" : {
 
     },
+    "%lld of %lld readings read" : {
+
+    },
+    "%lld of 1 reading read" : {
+
+    },
+    "%lld part read" : {
+
+    },
     "%lld readings" : {
 
     },
     "%lld readings a day, on %lld reading days." : {
 
     },
+    "%lld skipped" : {
+
+    },
     "%lld to %lld readings a day, on %lld reading days." : {
 
     },
+    "✓ read · ○ a reading day · – a rest day" : {
+
+    },
     "1 reading" : {
+
+    },
+    "1 reading a day until %@." : {
 
     },
     "1 reading a day, on %lld reading days." : {
@@ -124,6 +160,9 @@
     "At most 1 reading a day" : {
 
     },
+    "At one reading each reading day, you'd finish on %@." : {
+
+    },
     "Automatic" : {
 
     },
@@ -157,7 +196,16 @@
     "Components" : {
 
     },
+    "Confirm" : {
+
+    },
     "Continue at my pace" : {
+
+    },
+    "Continue from where I left off" : {
+
+    },
+    "Continuing from where you left off." : {
 
     },
     "Copied" : {
@@ -179,6 +227,9 @@
 
     },
     "Day by Word is independent and not affiliated with any church or denomination." : {
+
+    },
+    "Day by Word never shows Bible text. Copy reference works with any app." : {
 
     },
     "Day by Word never shows Bible text. Read in your own Bible, and mark what you read here." : {
@@ -209,6 +260,9 @@
 
     },
     "Find your plan. Read your Bible. Keep your place." : {
+
+    },
+    "Finish at the plan's pace" : {
 
     },
     "Finish by" : {
@@ -265,6 +319,9 @@
     "Its readings are numbered and read in order." : {
 
     },
+    "Keep the screen awake on Today" : {
+
+    },
     "Larger" : {
 
     },
@@ -316,16 +373,25 @@
     "More" : {
 
     },
+    "Move my finish date" : {
+
+    },
     "My plans" : {
 
     },
     "Next reading" : {
 
     },
+    "Next: %@" : {
+
+    },
     "No verse is read twice." : {
 
     },
     "Not yet read" : {
+
+    },
+    "Nothing is rescheduled." : {
 
     },
     "Nothing more is scheduled today." : {
@@ -394,6 +460,12 @@
     "Reading days" : {
 
     },
+    "Readings today" : {
+
+    },
+    "Recent days" : {
+
+    },
     "Redo" : {
 
     },
@@ -401,6 +473,9 @@
 
     },
     "References on Today and in plans use this size, on top of your device's text size." : {
+
+    },
+    "Rejoin today's readings" : {
 
     },
     "Remind me on reading days" : {
@@ -430,6 +505,9 @@
     "Shows the next reading in your plan." : {
 
     },
+    "Shows what changes before anything does." : {
+
+    },
     "Skip this reading" : {
 
     },
@@ -449,6 +527,12 @@
 
     },
     "Something went wrong" : {
+
+    },
+    "Spread the readings over the days ahead" : {
+
+    },
+    "Spreading the readings you have left before your finish date would need up to %lld readings a day, more than the limit you set." : {
 
     },
     "Standard" : {
@@ -499,6 +583,15 @@
     "The readings appointed for seven days from %@." : {
 
     },
+    "The readings are spread over the days ahead." : {
+
+    },
+    "The readings you missed stay in your history." : {
+
+    },
+    "This describes what you've marked, and nothing more." : {
+
+    },
     "This plan is paused." : {
 
     },
@@ -520,6 +613,9 @@
     "Today is a rest day in this plan." : {
 
     },
+    "Today's reading is %@. The readings you missed stay in your history." : {
+
+    },
     "Try again" : {
 
     },
@@ -532,6 +628,15 @@
     "Undone." : {
 
     },
+    "Up to %lld readings a day until %@." : {
+
+    },
+    "verse %lld" : {
+
+    },
+    "verses %lld%@%lld" : {
+
+    },
     "Version" : {
 
     },
@@ -539,6 +644,9 @@
 
     },
     "Week" : {
+
+    },
+    "Welcome back. Here's where you left off." : {
 
     },
     "What it covers" : {
@@ -553,7 +661,13 @@
     "Who it suits" : {
 
     },
+    "With a physical Bible, Today says where each reading is in print." : {
+
+    },
     "Work toward a finish date" : {
+
+    },
+    "You stopped following this plan." : {
 
     },
     "You'll join today's readings, %@." : {
@@ -568,7 +682,22 @@
     "You've reached the end of this plan." : {
 
     },
+    "You've rejoined today's readings." : {
+
+    },
+    "Your finish date has moved." : {
+
+    },
+    "Your finish date is %@." : {
+
+    },
+    "Your finish date moves to %@." : {
+
+    },
     "Your next reading will appear here." : {
+
+    },
+    "Your next reading will be %@." : {
 
     },
     "Your plans and reading record are on this device and work without a connection." : {
