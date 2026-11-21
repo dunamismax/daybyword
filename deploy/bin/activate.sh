@@ -68,7 +68,9 @@ install -d -o root -g root -m 0755 "$DBW_ROOT" "$DBW_ROOT/releases"
 say "backing up before migrating"
 "$release/deploy/bin/backup.sh"
 job() {
-  systemd-run --wait --collect --pipe --quiet --unit="$DBW_UNIT-$1" \
+  name=$1
+  shift
+  systemd-run --wait --collect --pipe --quiet --unit="$DBW_UNIT-$name" \
     -p User="$DBW_ACCOUNT" -p Group="$DBW_ACCOUNT" \
     -p EnvironmentFile="$DBW_ENV_DIR/migration.env" -p Environment=NODE_ENV=production \
     -p WorkingDirectory="$release" \
