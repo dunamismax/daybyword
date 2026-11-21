@@ -157,3 +157,22 @@ private let gospels = PlanID("gospels-at-your-pace")!
     #expect(library.activeEnrollments[0].state(of: Slot(assignment: 1)) == .read)
     #expect(library.activeEnrollments[0].today(later).readings == [Slot(assignment: 2)])
 }
+
+@MainActor
+@Test func theExportIsTheJournalItselfAndDeletingRemovesIt() throws {
+    let library = try library()
+    let id = try library.start(
+        .init(plan: gospels, version: 1, behavior: .pace, start: library.today, readingDays: [1, 2, 3, 4, 5]))
+    try library.record(.marked(.init(.completed, assignment: 1, date: library.today)), enrollment: id)
+    let file = try JSONDecoder().decode(JSONValue.self, from: try library.export().data)
+    guard case .object(let fields) = file, case .array(let events) = fields["events"] else {
+        Issue.record("the export is not an object with events")
+        return
+    }
+    #expect(fields["format"] == .string("day-by-word-journal"))
+    #expect(try JournalEvent.events(wire: events) == library.journal?.events)
+
+    try library.deleteEverything()
+    #expect(library.journal?.events.isEmpty == true)
+    #expect(library.activeEnrollments.isEmpty)
+}

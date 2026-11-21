@@ -68,6 +68,11 @@ struct SettingsView: View {
     @AppStorage(ReferenceSize.storageKey) private var referenceSize = ReferenceSize.standard
     @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
     @AppStorage(WayToRead.keepAwakeKey) private var keepAwake = false
+    @Environment(Library.self) private var library
+    @State private var confirmingDelete = false
+    @State private var failure: String?
+    /// The reading record, written out when Settings opens, for the share sheet.
+    @State private var exportFile: URL?
 
     var body: some View {
         NavigationStack {
@@ -108,6 +113,52 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Palette.surface)
 
+                if let catalog = library.catalog {
+                    Section {
+                        Picker("Book names", selection: Bindable(library).convention) {
+                            ForEach(catalog.registry.conventions, id: \.id) { convention in
+                                Text(verbatim: convention.label).tag(convention.id)
+                            }
+                        }
+                    } footer: {
+                        if let example = catalog.registry.conventions.first(where: { $0.id == library.convention })?
+                            .example
+                        {
+                            Text(verbatim: example)
+                        }
+                    }
+                    .listRowBackground(Palette.surface)
+                }
+
+                Section {
+                    if let exportFile {
+                        ShareLink(item: exportFile) { Text("Export my reading record") }
+                    }
+                    Button("Delete everything on this device", role: .destructive) { confirmingDelete = true }
+                    if let failure {
+                        Text(verbatim: failure).foregroundStyle(Palette.danger)
+                    }
+                } header: {
+                    Text("Your data")
+                } footer: {
+                    Text(
+                        "Your plans and reading record are kept only on this device. The export is a JSON file of everything you've done."
+                    )
+                }
+                .listRowBackground(Palette.surface)
+                .confirmationDialog(
+                    "Delete everything?", isPresented: $confirmingDelete, titleVisibility: .visible
+                ) {
+                    Button("Delete everything", role: .destructive) {
+                        do { try library.deleteEverything() } catch {
+                            failure = String(localized: "Nothing was deleted: \(String(describing: error))")
+                        }
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("This removes your plans and reading record from this device. It can't be undone.")
+                }
+
                 Section("About") {
                     Text("Day by Word is independent and not affiliated with any church or denomination.")
                     LabeledContent("Version", value: Self.version)
@@ -116,6 +167,7 @@ struct SettingsView: View {
             }
             .scrollContentBackground(.hidden)
             .background(Palette.background)
+            .task(id: library.journal?.events.count) { exportFile = try? library.export().file() }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -139,5 +191,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView().environment(Library.live())
 }

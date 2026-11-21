@@ -169,6 +169,9 @@
     "Automatic follows your device." : {
 
     },
+    "Book names" : {
+
+    },
     "By %@" : {
 
     },
@@ -235,6 +238,15 @@
     "Day by Word never shows Bible text. Read in your own Bible, and mark what you read here." : {
 
     },
+    "Delete everything" : {
+
+    },
+    "Delete everything on this device" : {
+
+    },
+    "Delete everything?" : {
+
+    },
     "Done" : {
 
     },
@@ -257,6 +269,9 @@
 
     },
     "Every verse of the %@ of the %@ canon: %@ verses." : {
+
+    },
+    "Export my reading record" : {
 
     },
     "Find your plan. Read your Bible. Keep your place." : {
@@ -395,6 +410,9 @@
 
     },
     "Nothing more is scheduled today." : {
+
+    },
+    "Nothing was deleted: %@" : {
 
     },
     "Notifications are turned off for Day by Word in the Settings app. The plan works without them." : {
@@ -601,6 +619,9 @@
     "This plan starts on %@." : {
 
     },
+    "This removes your plans and reading record from this device. It can't be undone." : {
+
+    },
     "Thursday" : {
 
     },
@@ -685,6 +706,9 @@
     "You've rejoined today's readings." : {
 
     },
+    "Your data" : {
+
+    },
     "Your finish date has moved." : {
 
     },
@@ -698,6 +722,9 @@
 
     },
     "Your next reading will be %@." : {
+
+    },
+    "Your plans and reading record are kept only on this device. The export is a JSON file of everything you've done." : {
 
     },
     "Your plans and reading record are on this device and work without a connection." : {

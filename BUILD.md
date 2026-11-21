@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 1 of 14 items done, with P8.2a and P8.10a inside two more. Phase 10 (the launch catalog, in parallel): 3 of 9 |
-| **Next item** | **P8.2b**: the start flow (start date or "join today's reading", behavior, reading days, way of reading, reminder offer), and the app's plan list and plan page; the web's plan pages are P8.10a, done. Then **P8.3**, Today |
+| **Phase** | Phase 8, first light (M2): 6 of 14 items done (P8.1, P8.2, P8.4, P8.6, P8.7, P8.12), with P8.3, P8.10 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Next item** | **P8.5**: the YouVersion and Bible.com adapter (Open in …), which also finishes P8.3; it needs a device test. Then **P8.8** (iOS reminders) and **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC) |
-| **Waiting on the owner** | `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started yet. Since 2026-11-21 it runs as `daybyword-web.service` on the host's Node 26.13.1 and PostgreSQL cluster (E46), checked as a candidate before each switch; `https://daybyword.com/healthz` names the serving commit |
+| **Waiting on the owner** | `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. P8.5 needs a real iPhone with YouVersion installed to test links on. |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started on the web yet. Not redeployed this session, so the printable week (P8.10b) is not live yet (`https://daybyword.com/healthz` names the serving commit) |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -515,6 +515,7 @@ list.
 - [x] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
   - *Result (agent, 2026-11-21):* in the app: a seven-day strip (read, a reading day, a rest day, each a symbol and words), and for each plan its readings by state, the next reading and the projected finish, from the engine's progress rules. The welcome after a gap is on Today (P8.7), where docs/product.md puts it. Seen in the Simulator. The web's is with P8.10c.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
+  - *Note (agent, 2026-11-21):* in the app now: how you read (and keeping the screen awake for paper), book names (D29, from the registry's conventions, applied to every reference), appearance and reference size, export of the journal as JSON (`Library.export`, the engine's wire form; tested), delete everything with a confirmation, about and version. The share sheet did not open under the Simulator's injected taps, so Export is unverified on screen. Left: reminder settings (P8.8) and the translation for links (P8.5), and the web's Settings with P8.10c.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
 
 ## Phase 9: Choosing a plan
@@ -634,23 +635,22 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21, hosting (E46):** the site runs as `daybyword-web.service`
-  on the host's Node 26.13.1 and PostgreSQL cluster; Compose, the database
-  container and rollback are gone. `make deploy` builds the catalog export
-  here, builds and tests on the host, then backs up, migrates, checks a
-  candidate and switches (docs/deploy.md). `web/` uses pnpm 12.18.0.
-- **Locally:** this Mac needs Node 26.13.1 and pnpm 12.18.0 (a native
-  executable, not Corepack) before `make check`; check-toolchain says so.
-  Tests now use the host's role model (`web/db/roles.sql`) and
-  `DATABASE_URL`; tables are in schema `app`.
-- **P8.1** (with P10.1, P10.2, P10.7): three reviewed plans in
-  `catalog/plans/`, schedules computed by `scripts/plans.swift`
-  (docs/plans.md); never edit a schedule by hand.
-- **P8.10a:** the web's Plans list and plan pages read PostgreSQL
-  (`web/src/lib/server/catalog/`) inside `scripts/with-catalog.sh` (E45).
-- **Next, P8.2b:** the start flow, and the app's plan list and page.
-  P8.10c (Today and marking in the browser) needs E38's choice first.
-- Reminders on a device are P8.8, P17.4, P17.9. Stage by path (§8).
+- **2026-11-21, this session:** P8.10b (the web's printable week, print
+  stylesheet with light tokens on paper), then the app's first light:
+  plan list and pages, the start flow, Today, marking with undo and redo,
+  physical Bible mode, the welcome back, Progress, and Settings' export,
+  delete and book names. Each item's note says what is the web's (P8.10c).
+- **The app's data:** `JournalStore` (ReadingData) keeps wire-form events
+  in Application Support; `Library` (apple/App/Model) folds them (E47).
+  It moves to the App Group with the widget (P8.9, P12.1).
+- **Testing the app:** `-today YYYY-MM-DD` pins the date and
+  `-freshJournal YES` starts empty (Debug only); UI tests pass the latter.
+  Another session's app may hold the first booted simulator; use
+  `scripts/sim-destination.sh`'s device.
+- **Not run this session:** `make check-full` (tours, Linux, browser
+  engine), `make test-ui`, and a deploy. Run check-full before P8.14.
+- **Next:** P8.5 needs a device test (see Now). P8.10c needs E38's choice
+  for client code under the strict CSP; the app's screens are the model.
 - **Open:** P7.3 waits for the first verified daily snapshot. No
   `apple/Config/Secrets.xcconfig` here; build 25's TestFlight upload
-  unverified. Swift and the app were not rerun for the hosting change.
+  unverified. Stage by path (§8).

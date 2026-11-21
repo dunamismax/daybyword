@@ -20,6 +20,12 @@ final class Library {
     /// The journal, folded.
     private(set) var journal: Journal?
 
+    /// The reader's book-name convention (D29), kept in user defaults.
+    var convention: NamingConvention {
+        didSet { UserDefaults.standard.set(convention.rawValue, forKey: Self.conventionKey) }
+    }
+    static let conventionKey = "bookNames"
+
     private let store: JournalStore?
     private let clock: () -> Date
 
@@ -28,6 +34,8 @@ final class Library {
         self.store = store
         self.problem = problem
         self.clock = clock
+        convention =
+            NamingConvention(rawValue: UserDefaults.standard.string(forKey: Self.conventionKey) ?? "") ?? .common
         today = Self.civilDate(clock())
         reload()
     }
@@ -93,9 +101,11 @@ final class Library {
         }
     }
 
-    /// The reference formatter for the catalog, under the common names.
+    /// The reference formatter for the catalog, under the reader's names.
     var formatter: ReferenceFormatter? {
-        catalog.map { ReferenceFormatter(registry: $0.registry, versification: $0.versification) }
+        catalog.map {
+            ReferenceFormatter(registry: $0.registry, versification: $0.versification, convention: convention)
+        }
     }
 
     /// The plans the reader follows and has not ended, in the order started.
@@ -117,6 +127,13 @@ final class Library {
         let enrollment = newID(after: nil)
         try record(.enrolled(enrolled), enrollment: enrollment)
         return enrollment
+    }
+
+    /// Removes every plan and mark from this device, at the reader's request.
+    func deleteEverything() throws {
+        guard let store else { throw LibraryError.unavailable }
+        try store.deleteEverything()
+        reload()
     }
 
     /// Records one event for an enrollment, and folds the journal again.
