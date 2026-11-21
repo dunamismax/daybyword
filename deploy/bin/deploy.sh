@@ -9,8 +9,7 @@
 #
 # 1. build the image daybyword-web:<commit> (the release directory holds
 #    build/catalog/catalog-export.json from `make catalog-export`);
-# 2. start PostgreSQL, without recreating a running database, and reapply
-#    web/db/roles.sql (safe to repeat);
+# 2. start PostgreSQL and reapply web/db/roles.sql (safe to repeat);
 # 3. back up the database, if it has been migrated before;
 # 4. run the one-shot migration and catalog import as daybyword_migrate;
 # 5. boot the release as a candidate on a spare loopback port and check it;
@@ -36,23 +35,8 @@ docker build -q -f "$DBW_RELEASE_DIR/deploy/Dockerfile" --build-arg "DBW_COMMIT=
   -t "daybyword-web:$release" "$DBW_RELEASE_DIR" >/dev/null
 
 export DBW_RELEASE="$release"
-# The database container mounts its first-start hook and the roles from a
-# fixed directory, never from this release: written in place, so the files
-# a running container already holds stay the same files.
-mkdir -p "$DBW_DATABASE_FILES"
-for file in deploy/postgres/init.sh web/db/roles.sql; do
-  kept="$DBW_DATABASE_FILES/$(basename "$file")"
-  cmp -s "$DBW_RELEASE_DIR/$file" "$kept" || cat "$DBW_RELEASE_DIR/$file" >"$kept"
-done
-chmod 0755 "$DBW_DATABASE_FILES/init.sh"
-chmod 0644 "$DBW_DATABASE_FILES/roles.sql"
-
-database=$(compose ps -q postgres 2>/dev/null || true)
 say "starting the database"
 compose up -d --wait postgres
-if [ -n "$database" ] && [ "$(compose ps -q postgres)" != "$database" ]; then
-  say "the database container was recreated: its definition in deploy/compose.yaml changed"
-fi
 psql_admin -q <"$DBW_RELEASE_DIR/web/db/roles.sql" >/dev/null
 
 if [ "$(psql_admin -c "select to_regclass('drizzle.__drizzle_migrations') is not null")" = t ]; then
