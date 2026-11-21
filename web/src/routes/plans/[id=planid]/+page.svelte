@@ -42,6 +42,7 @@
   </section>
 
   <SampleWeek readings={plan.sample} note={plan.sampleNote} />
+  <p class="-mt-xs mb-0"><a href="/plans/{plan.id}/week">{text("week.link")}</a></p>
 
   <section class="card" aria-labelledby="plan-covers">
     <h2 class="mt-0 mb-xs text-body" id="plan-covers">{text("plan.covers")}</h2>

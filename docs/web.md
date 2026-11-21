@@ -23,8 +23,8 @@ files when APIs are needed.
 - Svelte 5 components render every page on the server. No page loads
   SvelteKit's client runtime yet (`csr = false` in the root layout, E38):
   its route announcer writes an inline style the strict CSP refuses. The
-  little interaction there is (Settings, copy buttons, the old-browser
-  notice) is small same-origin modules in `static/assets/`; E38 lists the
+  little interaction there is (Settings, copy buttons, the print button,
+  the old-browser notice) is small same-origin modules in `static/assets/`; E38 lists the
   ways to bring Svelte interaction back without weakening the policy. No component kit is
   required; no new imagery or generic palette; preserve Morning.
 - TypeScript domain logic lives in `src/lib/domain/`, follows
@@ -41,6 +41,10 @@ files when APIs are needed.
   rest) are the catalog's and are shown as written. With no
   `DATABASE_URL` there is no catalog: Plans is empty and a plan's
   address is not found.
+- **Paper.** `@media print` in `app.css` drops the header, footer,
+  forms and buttons, and tokens.css switches to Morning's light colors
+  whatever the screen's appearance, so a week's checklist
+  (`/plans/<id>/week`) prints as the page alone.
 - `scripts/with-catalog.sh COMMAND` runs a command with a throwaway
   PostgreSQL holding the roles, the migrations and the release catalog,
   as a deploy leaves them. `make serve-web`, the production tests and the

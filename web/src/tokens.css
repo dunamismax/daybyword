@@ -82,4 +82,21 @@
     --color-text: #F1F3F6;
     --color-text-muted: #A0A8B6;
   }
+
+  @media print {
+    :root,
+    :root[data-theme] {
+      color-scheme: light;
+      --color-accent: #B9531A;
+      --color-accent-tint: #FFF0E5;
+      --color-background: #FBFBFA;
+      --color-danger: #B42318;
+      --color-line: #E7E8EC;
+      --color-on-accent: #FFFFFF;
+      --color-surface: #FFFFFF;
+      --color-surface-soft: #F1F2F5;
+      --color-text: #15171C;
+      --color-text-muted: #596070;
+    }
+  }
 }

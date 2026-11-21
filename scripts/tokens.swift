@@ -178,7 +178,10 @@ func tailwind(_ tokens: Tokens) -> String {
     out += "  @media (prefers-color-scheme: dark) {\n    :root:not([data-theme=\"light\"]) {\n"
     out += colors({ $0.dark }, indent: "      ") + "\n    }\n  }\n\n"
     out += "  :root[data-theme=\"light\"] {\n    color-scheme: light;\n  }\n\n"
-    out += "  :root[data-theme=\"dark\"] {\n    color-scheme: dark;\n" + colors({ $0.dark }, indent: "    ") + "\n  }\n}\n"
+    out += "  :root[data-theme=\"dark\"] {\n    color-scheme: dark;\n" + colors({ $0.dark }, indent: "    ") + "\n  }\n\n"
+    // Paper is light whatever the screen's appearance (BUILD.md P8.10b).
+    out += "  @media print {\n    :root,\n    :root[data-theme] {\n      color-scheme: light;\n"
+    out += colors({ $0.light }, indent: "      ") + "\n    }\n  }\n}\n"
     return out
 }
 

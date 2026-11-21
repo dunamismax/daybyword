@@ -233,6 +233,15 @@
     },
     {
       "input": {
+        "path": "/assets/print.js"
+      },
+      "output": {
+        "contentType": "text/javascript",
+        "status": 200
+      }
+    },
+    {
+      "input": {
         "path": "/assets/images/favicon-32.png"
       },
       "output": {

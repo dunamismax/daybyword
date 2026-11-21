@@ -157,3 +157,41 @@
     }
   }
 }
+
+/* Paper (BUILD.md P8.10b, P13.1): the page alone, on light paper (tokens.css
+   switches to the light colors), without the site's navigation, forms, or
+   buttons. A week's checklist shows a box to tick beside each day. */
+@layer components {
+  .tick {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--color-text-muted);
+    border-radius: 4px;
+  }
+
+  @media print {
+    body > .contents > a[href="#content"],
+    header,
+    footer,
+    #browser-notice,
+    .no-print {
+      display: none !important;
+    }
+
+    main.page {
+      max-width: none;
+      padding: 0;
+    }
+
+    .checklist {
+      border: 0;
+      padding: 0;
+      background: none;
+    }
+
+    .checklist li {
+      break-inside: avoid;
+    }
+  }
+}

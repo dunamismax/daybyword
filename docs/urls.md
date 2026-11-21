@@ -24,7 +24,9 @@ endpoints and later consented sync, never a direct database connection.
 | `/settings` | yes | yes | Settings (a sheet in the app) |
 
 On the web, Plans and each plan's page show the catalog (BUILD.md
-P8.10a). Today, Progress, a plan's week, and the app's sections are
+P8.10a), and a plan's week is a checklist to print (P8.10b): the seven
+days from `start` for a reader who begins the plan that day, or the
+sample week without one. Today, Progress, and the app's sections are
 placeholders until their items build them; every address is final.
 
 Addresses for the server's own use, never linked from a page a reader sees:

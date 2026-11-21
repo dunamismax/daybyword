@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { promisify } from "node:util";
 import pg from "pg";
 import { afterAll, describe, expect, it } from "vitest";
-import { planList, planPage } from "#lib/server/catalog/present.ts";
+import { dayText, planList, planPage, planWeek } from "#lib/server/catalog/present.ts";
 import { closeCatalog, servedCatalog } from "#lib/server/catalog/read.ts";
 
 const run = promisify(execFile);
@@ -122,6 +122,63 @@ describe("the served catalog", () => {
       "No verse is read twice.",
     ]);
     expect(year.sample.every((day) => day.reference !== undefined)).toBe(true);
+  });
+
+  it("gives a week's checklist from a start date, or the sample week without one", async () => {
+    const catalog = await servedCatalog(url);
+    if (!catalog) throw new Error("no catalog");
+    const entry = (id: string) => {
+      const found = catalog.plans.find((plan) => plan.id === id);
+      if (!found) throw new Error(`no ${id}`);
+      return found;
+    };
+    expect(dayText({ year: 2027, month: 1, day: 6 })).toBe("Wednesday 6 January");
+
+    const sample = planWeek(catalog, entry("gospels-at-your-pace"));
+    expect(sample.start).toBeUndefined();
+    expect(sample.days.map((day) => ({ label: day.label, reference: day.references[0] }))).toEqual(
+      planPage(catalog, entry("gospels-at-your-pace")).sample.map((day) => ({
+        label: day.label,
+        reference: day.reference,
+      })),
+    );
+
+    // Begun on a Wednesday, a five-day plan reads Wednesday to Friday and
+    // Monday and Tuesday, and rests at the weekend.
+    const gospels = planWeek(catalog, entry("gospels-at-your-pace"), "2027-01-06");
+    expect(gospels.start).toBe("2027-01-06");
+    expect(gospels.days.map((day) => day.label)).toEqual([
+      "Wednesday 6 January",
+      "Thursday 7 January",
+      "Friday 8 January",
+      "Saturday 9 January",
+      "Sunday 10 January",
+      "Monday 11 January",
+      "Tuesday 12 January",
+    ]);
+    expect(gospels.days.map((day) => day.references.map((found) => found.display))).toEqual([
+      ["Matthew 1–3"],
+      ["Matthew 4–5"],
+      ["Matthew 6–7"],
+      [],
+      [],
+      ["Matthew 8–9"],
+      ["Matthew 10–11"],
+    ]);
+    expect(gospels.note).toContain("begun on Wednesday 6 January");
+
+    // A calendar plan's week is the dates' own readings across a month's
+    // end; a short month does not appoint the days it lacks (docs/engine.md).
+    const proverbs = planWeek(catalog, entry("proverbs-through-the-month"), "2027-02-26");
+    expect(proverbs.days.map((day) => day.references.map((found) => found.display))).toEqual([
+      ["Proverbs 26"],
+      ["Proverbs 27"],
+      ["Proverbs 28"],
+      ["Proverbs 1"],
+      ["Proverbs 2"],
+      ["Proverbs 3"],
+      ["Proverbs 4"],
+    ]);
   });
 
   it("follows a new import", async () => {

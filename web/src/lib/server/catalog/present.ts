@@ -8,11 +8,13 @@ import {
   comingDays,
   foldJournal,
   makeEventID,
+  parseCivilDate,
   parseReading,
   ReferenceFormatter,
   weekday,
   workload,
   type Behavior,
+  type CivilDate,
 } from "#lib/domain/index.ts";
 import { referenceOf, type Reference } from "#lib/reference.ts";
 import {
@@ -103,12 +105,40 @@ export function planList(catalog: ServedCatalog): PlanSummary[] {
 // kinds of sample: a week from a Monday, and a month's first seven days.
 const sampleStart = civilDate(2001, 1, 1);
 
+const months = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+] as const;
+
+/** "Monday 4 January": a date as a week's checklist names it. */
+export function dayText(date: CivilDate): string {
+  return text(`date.${months[date.month - 1] ?? "january"}`, {
+    weekday: text(`weekday.${weekdays[weekday(date) - 1] ?? "monday"}`),
+    day: String(date.day),
+  });
+}
+
 /**
- * A plan's sample week: the engine's days ahead for a reader who starts on
- * `sampleStart` with the plan's own pace, on the first of its reading days
- * of the week.
+ * The engine's days ahead for a reader who starts the plan on `start`, with
+ * its first behavior and its own pace, on the first of its reading days of
+ * the week (Monday onward). Each day's label is `label`'s.
  */
-export function sampleWeek(catalog: ServedCatalog, entry: CatalogPlan): SampleDay[] {
+function weekFrom(
+  catalog: ServedCatalog,
+  entry: CatalogPlan,
+  start: CivilDate,
+  label: (date: CivilDate) => string,
+): WeekDay[] {
   const { plan } = entry;
   const zeros = new Array<number>(10).fill(0);
   const journal = foldJournal(
@@ -123,7 +153,7 @@ export function sampleWeek(catalog: ServedCatalog, entry: CatalogPlan): SampleDa
         plan: plan.id,
         version: plan.version,
         behavior: plan.behaviors[0],
-        start: civilDateText(sampleStart),
+        start: civilDateText(start),
         readingDays: weekdays.slice(0, plan.readingDays).map((_, index) => index + 1),
       },
     ],
@@ -135,14 +165,80 @@ export function sampleWeek(catalog: ServedCatalog, entry: CatalogPlan): SampleDa
   const readings = new Map(
     plan.assignments.map((assignment) => [assignment.id, assignment.reading]),
   );
-  return comingDays(enrollment, sampleStart, 7).map((day) => {
-    const label =
-      plan.schedule === "sequence"
-        ? text(`weekday.${weekdays[weekday(day.date) - 1] ?? "monday"}`)
-        : text("plan.sample-day", { day: String(day.date.day) });
-    const reading = day.readings[0] && readings.get(day.readings[0].assignment);
-    return reading ? { label, reference: referenceOf(reading, formatter) } : { label };
-  });
+  return comingDays(enrollment, start, 7).map((day) => ({
+    label: label(day.date),
+    references: day.readings.flatMap((slot) => {
+      const reading = readings.get(slot.assignment);
+      return reading ? [referenceOf(reading, formatter)] : [];
+    }),
+  }));
+}
+
+/**
+ * A plan's sample week: the days ahead from `sampleStart`, labeled by
+ * weekday for a sequence and by day of the month for a calendar plan.
+ */
+export function sampleWeek(catalog: ServedCatalog, entry: CatalogPlan): SampleDay[] {
+  return sampleDays(catalog, entry).map(({ label, references: [reference] }) =>
+    reference ? { label, reference } : { label },
+  );
+}
+
+function sampleDays(catalog: ServedCatalog, entry: CatalogPlan): WeekDay[] {
+  return weekFrom(catalog, entry, sampleStart, (date) =>
+    entry.plan.schedule === "sequence"
+      ? text(`weekday.${weekdays[weekday(date) - 1] ?? "monday"}`)
+      : text("plan.sample-day", { day: String(date.day) }),
+  );
+}
+
+/** One day of a week's checklist: its readings, none on a rest day. */
+export interface WeekDay {
+  readonly label: string;
+  readonly references: readonly Reference[];
+}
+
+/** A week's printable checklist (BUILD.md P8.10b). */
+export interface WeekPage {
+  readonly id: string;
+  readonly title: string;
+  readonly label: string;
+  readonly days: readonly WeekDay[];
+  readonly note: string;
+  /** The start the page was given, `YYYY-MM-DD`, for the date field. */
+  readonly start?: string;
+  readonly source: string;
+}
+
+/**
+ * A plan's week from a start date: the seven days from `start` for a reader
+ * who begins the plan that day, each named by its date; with no start, the
+ * sample week. A start is display only (docs/urls.md).
+ */
+export function planWeek(catalog: ServedCatalog, entry: CatalogPlan, start?: string): WeekPage {
+  const sequence = entry.plan.schedule === "sequence";
+  const base = {
+    id: entry.id,
+    title: entry.title,
+    label: `${text("plan.by", { creator: entry.creator })} · ${text(sequence ? "plan.kind-sequence" : "plan.kind-calendar")}`,
+    source: entry.source,
+  };
+  if (start === undefined) {
+    return {
+      ...base,
+      days: sampleDays(catalog, entry),
+      note: text(sequence ? "plan.sample-sequence" : "plan.sample-calendar"),
+    };
+  }
+  const date = parseCivilDate(start);
+  return {
+    ...base,
+    start,
+    days: weekFrom(catalog, entry, date, dayText),
+    note: text(sequence ? "week.from-start-sequence" : "week.from-start-calendar", {
+      date: dayText(date),
+    }),
+  };
 }
 
 const behaviorKeys: Record<Behavior, [StringKey, StringKey]> = {
