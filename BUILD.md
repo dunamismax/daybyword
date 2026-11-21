@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 0 of 14 items done. Phase 5, the reading engine, is finished (specification version 1) |
-| **Next item** | **P8.1**: the first three plans (Gospels at your pace, the Bible in a year, Proverbs through the month), compiled and reviewed; then **P8.2**, starting a plan |
+| **Phase** | Phase 8, first light (M2): 1 of 14 items done. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Next item** | **P8.2**: starting a plan (plan page, sample week, start date, behavior, reading days, reminder offer), on the web and in the app |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
@@ -136,9 +136,9 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
-| 8 | First light | M2 First light | 14 | 0 |
+| 8 | First light | M2 First light | 14 | 1 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
-| 10 | The launch catalog | M3 Version 1.0 | 9 | 0 |
+| 10 | The launch catalog | M3 Version 1.0 | 9 | 3 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
@@ -484,7 +484,8 @@ elsewhere, mark progress, receive a reminder, and return after a missed
 day. Reliable reminders and quick logging matter more than a long feature
 list.
 
-- [ ] **P8.1 [REVIEW]** The first three plans compiled and reviewed, each Day by Word's own: **Gospels at your pace** (sequential, P10.1), **the Bible in a year** (canonical order, balanced by reading time; pace or finish date, P10.2), and **Proverbs through the month** (follow the calendar by day of the month, P10.7). Each has its full plan-page metadata. *(Rewritten by D39: the 1979 Daily Office moved to the roadmap.)*
+- [x] **P8.1 [REVIEW]** The first three plans compiled and reviewed, each Day by Word's own: **Gospels at your pace** (sequential, P10.1), **the Bible in a year** (canonical order, balanced by reading time; pace or finish date, P10.2), and **Proverbs through the month** (follow the calendar by day of the month, P10.7). Each has its full plan-page metadata. *(Rewritten by D39: the 1979 Daily Office moved to the roadmap.)*
+  - *Result (agent, 2026-11-21):* `catalog/plans/gospels-at-your-pace.plan` (60 readings), `bible-in-a-year.plan` (365) and `proverbs-through-the-month.plan` (31), each at `reviewed`. Their schedules are computed by `scripts/plans.swift` under the rules in docs/plans.md, and `make check` fails if a schedule is not what its rule gives. Reviewed under docs/editorial.md: the rules (whole chapters, canonical order, each chapter once), the compiler's facts against each page's wording (31,102, 3,779 and 915 verses, no repeats or omissions; lightest and heaviest readings), the wording against AGENTS.md §3, and rights (`daybyword-original`, cleared). Both catalog builds hold all three. *Not yet:* a page that shows them (P8.2, P8.10).
 - [ ] **P8.2** Starting a plan: a plain plan page with a sample week and workload; a start date, or "join today's reading" for calendar plans; the behavior, explained; reading days; how the reader reads (a physical Bible, YouVersion, or another app, with Copy reference); and a reminder offer. Notification permission is requested only after the reader chooses a reminder.
 - [ ] **P8.3** Today: each active plan's next reading, with its label ("Gospels at your pace — Reading 12"), large references, **Open in …**, **Copy reference**, and **Mark read**. Rest days and finished days say so plainly, with no fanfare and no nagging.
 - [ ] **P8.4** Marking: complete with one deliberate tap; mark part read ("part of it"); skip (labeled as a scheduling decision); log late for an earlier date; undo and redo. All of these are journal events.
@@ -518,13 +519,16 @@ rules, compiled, checked against its claims (P4.4), reviewed
 prayer-book plans, and the deuterocanonical books follow after 1.0
 (roadmap).
 
-- [ ] **P10.1 [REVIEW]** **Gospels at your pace** (from P8.1): the four Gospels, 89 chapters, in readings sized by reading time.
-- [ ] **P10.2 [REVIEW]** **The Bible in a year**, canonical order, balanced by reading time without splitting chapters unless the plan says so; permits pace and finish-date behaviors.
+- [x] **P10.1 [REVIEW]** **Gospels at your pace** (from P8.1): the four Gospels, 89 chapters, in readings sized by reading time.
+  - *Result (agent, 2026-11-21):* done with P8.1: 60 readings of one to three whole chapters, each Gospel on its own, about 3 to 10 minutes (docs/plans.md).
+- [x] **P10.2 [REVIEW]** **The Bible in a year**, canonical order, balanced by reading time without splitting chapters unless the plan says so; permits pace and finish-date behaviors.
+  - *Result (agent, 2026-11-21):* done with P8.1: 365 readings of whole chapters, the testaments balanced apart (280 and 85), about 6 to 15 minutes; `whole-bible` over the Protestant canon, which the compiler verifies.
 - [ ] **P10.3 [REVIEW]** **The Bible in a year, five days a week**, with rest days intentional.
 - [ ] **P10.4 [REVIEW]** **The New Testament in a year, five days a week**: its 260 chapters, one a day.
 - [ ] **P10.5 [REVIEW]** **The Story of Scripture**: a short introduction to the biblical narrative in about 50 readings. Its selection involves editorial judgment, which the plan page explains.
 - [ ] **P10.6 [REVIEW]** **A psalm a day**: 150 readings, with Psalm 119 in sections if workload calls for it, in English (Hebrew) numbering, which the plan page states. *(Rewritten by D39; other numberings are P3.8.)*
-- [ ] **P10.7 [REVIEW]** **Proverbs through the month**: 31 readings by day of the month, with the 31st handled honestly in shorter months.
+- [x] **P10.7 [REVIEW]** **Proverbs through the month**: 31 readings by day of the month, with the 31st handled honestly in shorter months.
+  - *Result (agent, 2026-11-21):* done with P8.1: Proverbs *n* on day *n*; the plan's limitations say which months lack which chapters, and the engine lists them on a short month's last day (P5.7).
 - [ ] **P10.11 [REVIEW]** **Paul's letters**, in canonical order, with an optional arrangement in an order the plan page explains and labels as one view among several.
 - [ ] **P10.13** The catalog review: every launch plan at `reviewed`, every claim verified, every rights entry `cleared`, and the criteria page current. Plans that are not ready wait; the catalog launches with what is ready.
 
@@ -620,12 +624,13 @@ only when Phase 18 is finished or an item points there.
   `changing`, `progress`, `reminders`) pass in Swift and Node. To add
   one: an input and a `name`, record with `DBW_RECORD_FIXTURES=1`, check
   the output by hand, then the web tests. Choices are E44.
-- **Not run this session yet:** the new cases in Firefox
-  (`make test-domain-browser`) and on Linux (`make test-linux`); both
-  are in `make check-full`, due before the next deploy.
-- **Next, P8.1:** the three plan files in `catalog/plans/`. The catalog
-  is empty today, so tests and pages that assume no plans will need
-  their expectations updated.
+- The engine's cases pass in Firefox too (596, `make
+  test-domain-browser`). **Not run this session yet:** `make test-linux`
+  and the tours; `make check-full` is due before the next deploy.
+- **P8.1 is done** (with P10.1, P10.2, P10.7): three reviewed plans in
+  `catalog/plans/`, their schedules computed by `scripts/plans.swift`
+  (docs/plans.md). No page shows them yet; the live catalog still has
+  none until the next deploy.
 - **Not built:** the day-by-day list of coming readings (the coming week,
   the checklist); build it with P8.2, P8.10 or P13.1.
 - **Reminders on a device** (delivery across a real clock change) are

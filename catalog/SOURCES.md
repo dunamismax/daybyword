@@ -47,8 +47,8 @@ from the first word in backticks on its Status line, refuses a plan whose
   Gospels at your pace, the Bible in a year, Proverbs through the month, and
   the rest of the launch catalog (BUILD.md D14, D39).
 - **Obtained:** written in this repository, from the English versification
-  (`kjv-1769-ebible`) and the word counts (`web-ebible`) under rules each
-  plan file states. No contemporary publisher's version of a familiar plan
+  (`kjv-1769-ebible`) and the word counts (`web-ebible`) under the rules
+  in `docs/plans.md`, which `scripts/plans.swift` carries out. No contemporary publisher's version of a familiar plan
   is used or consulted (AGENTS.md §6).
 - **Basis:** original work.
 - **Attribution:** none.

@@ -34,7 +34,8 @@ catalog: ## Compile the catalog for the app bundle (RELEASE=1 for release mode)
 		--output $(CATALOG) $(if $(RELEASE),--release)
 	@cp $(CATALOG) $(APP_CATALOG)
 
-check-catalog: ## Compile the catalog in release mode too, which refuses plans with uncleared sources
+check-catalog: ## Check our own plans' schedules against their rules, and compile the catalog in release mode too, which refuses plans with uncleared sources
+	@swift scripts/plans.swift check
 	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
 		--output build/catalog/Catalog-release.sqlite --release
 

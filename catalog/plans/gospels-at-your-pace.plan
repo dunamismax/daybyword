@@ -1,0 +1,88 @@
+id: gospels-at-your-pace
+title: Gospels at your pace
+version: 1
+creator: Day by Word
+summary: The four Gospels, Matthew, Mark, Luke, and John, read straight
+  through in 60 readings of whole chapters, sized by reading time.
+suits: Readers starting a reading habit, or returning to one, who want one
+  manageable reading at a sitting and no deadline.
+schedule: sequence
+behaviors: pace, finish-date
+reading-days: 5
+coverage: books
+canon: protestant
+books: MAT, MRK, LUK, JHN
+limitations: It reads the Gospels only, in the order they are printed, so
+  much that is told in one Gospel is read again in the next. Readings keep
+  chapters whole, so their length varies, from about 3 minutes to about 10.
+instructions: Read the next reading whenever you read, in any Bible. If you
+  miss a day, your next reading waits for you. At five readings a week the
+  plan takes twelve weeks.
+source: An original plan by Day by Word. Each Gospel is divided into
+  readings of one to three whole chapters, as even in reading time as whole
+  chapters allow. Reading times are estimated from word counts of the World
+  English Bible, a public-domain translation; the plan can be read in any
+  translation.
+rights: daybyword-original
+review: reviewed
+---
+1	MAT 1-3
+2	MAT 4-5
+3	MAT 6-7
+4	MAT 8-9
+5	MAT 10-11
+6	MAT 12
+7	MAT 13
+8	MAT 14-15
+9	MAT 16-17
+10	MAT 18
+11	MAT 19-20
+12	MAT 21
+13	MAT 22-23
+14	MAT 24
+15	MAT 25
+16	MAT 26
+17	MAT 27-28
+18	MRK 1-2
+19	MRK 3-4
+20	MRK 5
+21	MRK 6
+22	MRK 7-8
+23	MRK 9
+24	MRK 10
+25	MRK 11-12
+26	MRK 13
+27	MRK 14
+28	MRK 15-16
+29	LUK 1
+30	LUK 2-3
+31	LUK 4-5
+32	LUK 6
+33	LUK 7
+34	LUK 8
+35	LUK 9
+36	LUK 10
+37	LUK 11
+38	LUK 12
+39	LUK 13-14
+40	LUK 15-16
+41	LUK 17-18
+42	LUK 19
+43	LUK 20-21
+44	LUK 22
+45	LUK 23
+46	LUK 24
+47	JHN 1-2
+48	JHN 3-4
+49	JHN 5
+50	JHN 6
+51	JHN 7
+52	JHN 8
+53	JHN 9-10
+54	JHN 11
+55	JHN 12
+56	JHN 13-14
+57	JHN 15-16
+58	JHN 17-18
+59	JHN 19
+60	JHN 20-21

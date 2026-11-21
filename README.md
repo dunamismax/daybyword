@@ -24,17 +24,19 @@ does not speak for any church, ministry, or publisher.
 
 ## Status
 
-**In development; nothing is ready to read with yet (2026-11-20).**
+**In development; nothing is ready to read with yet (2026-11-21).**
 
 - **daybyword.com is live** in development: the Today, Plans, Progress, and
   Settings pages are served by SvelteKit under a strict security policy,
-  hidden from search engines, with no plans in the catalog yet.
+  hidden from search engines. The pages do not show plans yet.
 - **The iPhone and iPad app** builds and runs in the simulator with the same
   sections. It is not yet on the App Store or in a beta.
-- **Next:** the reading engine (Phase 5), whose rules are specified in
-  [docs/engine.md](docs/engine.md), then **first light** (Phase 8): three plans, Today,
-  marking, reminders, and the return after missed days, on TestFlight and
-  at daybyword.com.
+- **The reading rules are built** ([docs/engine.md](docs/engine.md), version 1),
+  and the catalog holds its first three plans, Day by Word's own
+  ([docs/plans.md](docs/plans.md)).
+- **Next:** **first light** (Phase 8): starting a plan, Today, marking,
+  reminders, and the return after missed days, on TestFlight and at
+  daybyword.com.
 
 ## What it will do
 
@@ -121,7 +123,7 @@ scripts/                  helpers behind the Makefile
 | What every screen must and must not do | [docs/product.md](docs/product.md), [docs/design.md](docs/design.md) |
 | Reading rules | [docs/engine.md](docs/engine.md), then [tests/fixtures/](tests/fixtures/) |
 | The engine in Swift and in TypeScript | [Packages/ReadingEngine/](Packages/ReadingEngine/), [web/src/lib/domain/](web/src/lib/domain/) |
-| Plans, sources, and rights | [docs/catalog-format.md](docs/catalog-format.md), [docs/editorial.md](docs/editorial.md), [catalog/SOURCES.md](catalog/SOURCES.md) |
+| Plans, sources, and rights | [docs/catalog-format.md](docs/catalog-format.md), [docs/plans.md](docs/plans.md), [docs/editorial.md](docs/editorial.md), [catalog/SOURCES.md](catalog/SOURCES.md) |
 | Web pages and the app API | [web/src/routes/](web/src/routes/), [docs/urls.md](docs/urls.md), [docs/web.md](docs/web.md) |
 | The server database | [web/src/lib/server/db/](web/src/lib/server/db/), [web/drizzle/](web/drizzle/) |
 | The native app | [apple/](apple/), [docs/release.md](docs/release.md) |
