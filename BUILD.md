@@ -21,8 +21,8 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P5.11**: progress measures (assignments, recent reading days, coverage and books explored from the marks, the optional streak), then **P5.12**, reminder rules |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 52126aa (`/srv/www/daybyword.com/current-release`, read 2026-11-20). |
-| **Last updated** | 2026-11-20 |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving cd13494 (`/srv/www/daybyword.com/current-release`, read 2026-11-21), the first release whose database container is made from nothing in a release directory (E43). |
+| **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
 **daybyword.com**, registered by the owner at Cloudflare on 2026-10-30. The
@@ -639,25 +639,29 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-20:** Phase M is finished (BUILD-HISTORY.md). PM.20 retired
-  the Swift server; `web/test/` carries its checks (a page showing a word
-  not in `web/src/lib/strings.ts` fails `make check`).
-- **P5.1 done:** docs/engine.md's second part, "Version 1", specifies
-  everything Phase 5 builds (choices in E40). The version line stays 0
-  until both runtimes pass version 1's cases.
-- **P5.3 done:** `CivilDate` in Swift and `civil-date.ts` (E41), with the
-  instant-to-date edge beside each engine, never in it.
-- **Next:** P5.2 and P5.4 together, from the specification's "The
-  journal": cases first (a new fixture with a `plans` section of invented
-  plans), then Swift, then TypeScript. The specification's worked
-  examples are hand-checked, not yet cases: make each a case as its rule
-  is built, and fix the specification where a case shows it wrong.
-- `make check-full` passed as one run at PM.20 (659289f); `make check` and
-  `make test-linux` passed after P5.3. `make test-linux` now reuses its
-  image while `scripts/linux/` is unchanged (the container VM could not
-  reach Docker Hub); its rebuild path with the new label has not run.
-- Live: still 52126aa. Nothing deployed since; the only served change
-  waiting is a week's `start` being checked as a real date.
+- **2026-11-21:** P5.2, P5.4 to P5.8 and P5.10 are done in both runtimes:
+  the journal's fold, Today for the three behaviors, the welcome after a
+  gap, and changes with their previews. The shared cases (`journal` 95,
+  `event-ids` 31, `today` 86, `returning` 40, `changing` 21; 515 in all)
+  pass in Swift on macOS and Linux, in Node and in Firefox.
+- **Adding a case:** add an input (and a `name`) to the fixture, record
+  with `DBW_RECORD_FIXTURES=1` (tests/fixtures/README.md), check the new
+  output by hand against docs/engine.md, then run the web tests.
+- **Next, P5.11:** assignment counts, recent reading days, coverage (a
+  `partlyCompleted` event's `verses` is kept as text and not yet read),
+  books explored, the streak. Then P5.12, reminders. When both pass, set
+  the specification version to 1 in docs/engine.md and both runtimes,
+  and move Phase 5 to BUILD-HISTORY.md.
+- **Not built:** the day-by-day list of coming readings (the coming week,
+  the checklist); build it with P8.10 or P13.1 (note under P5.6).
+- **Deploys no longer restart the database** (E43, note under P7.2).
+  `make check-full` passed as one run at cd13494, which was then deployed;
+  that deploy recreated the database one last time, as expected.
+- **A mistake to avoid:** 23e9316 swept another session's uncommitted
+  deploy files in with `git add -A`; 298258a took them out and cd13494
+  landed them properly. Stage by path (AGENTS.md §8).
+- `make test-linux` reuses its image while `scripts/linux/` is unchanged;
+  its rebuild path with the new label has still not run.
 - **Open:** P7.3's encrypted off-server copy (ask the owner where backups
   go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
   upload unverified.
