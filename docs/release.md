@@ -18,9 +18,14 @@ pinned in .swift-version and the commands below remain the native path.
   P0.6): team `D9QMP3LP8H`, an individual membership. Automatic signing
   creates and renews the certificates, identifiers, and profiles; nothing
   signing-related is ever committed.
-- **`apple/Config/Secrets.xcconfig`**, gitignored, with
-  `DEVELOPMENT_TEAM = D9QMP3LP8H`. Copy `Secrets.example.xcconfig` to make
-  it.
+- **The team** is committed in `apple/Config/Base.xcconfig`
+  (`DEVELOPMENT_TEAM = D9QMP3LP8H`, E48), so no checkout needs a file of
+  its own. `apple/Config/Secrets.xcconfig` (gitignored) is optional, only
+  to sign one build with another team. `make check-signing` says whether
+  this Mac is ready: Xcode installed, a certificate for the team in the
+  login keychain, and Xcode signed in to an Apple ID; `make archive` runs
+  it first. If it fails, sign in at Xcode → Settings → Accounts (the owner
+  does this; agents never enter the owner's password).
 - **The App Store Connect record** for bundle ID `com.daybyword.app` (D1),
   Apple ID 6829425132, created on 2026-11-01 by Xcode's Distribute App
   flow: primary language English (U.S.) and SKU `com.daybyword.app` (the

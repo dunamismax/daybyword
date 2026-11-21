@@ -1273,3 +1273,22 @@ step with the engine. SQLite is already the app's store (E9, E18).
 
 **Not yet:** the widget and notification actions need the journal in the
 App Group container (P8.9, P12.1); the file moves there with them.
+
+### E48. The signing team is committed, not kept in a local file
+
+*2026-11-21, agent, at the owner's request to make TestFlight builds easy
+for every session.* `DEVELOPMENT_TEAM = D9QMP3LP8H` moves from the
+gitignored `apple/Config/Secrets.xcconfig` into `apple/Config/Base.xcconfig`.
+`Secrets.xcconfig`, still gitignored and included after it, remains only as
+an override. `make check-signing` (`scripts/check-signing.sh`) checks that
+Xcode is installed, that the login keychain holds an Apple Development or
+Distribution certificate whose organizational unit is that team, and that
+Xcode is signed in to an Apple ID; `make archive` runs it first.
+
+**Why:** a team ID is not a secret. Apple writes it into every signed app,
+it appears in the app's provisioning profile, and docs/release.md already
+published it. Keeping it in a local file only meant each new checkout or
+Mac failed `make archive` until someone recreated a one-line file.
+Certificates, profiles and the Apple ID stay out of the repository:
+automatic signing (`-allowProvisioningUpdates`) fetches them through the
+account Xcode is signed in with.

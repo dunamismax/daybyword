@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.modules.yaml
 .PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
 	test-linux run screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
-	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
+	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full check-signing archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -151,6 +151,9 @@ check: lint check-web catalog check-catalog test-packages test-app check-strings
 
 check-full: check test-domain-browser tour-web tour-app test-linux ## The milestone gate: check, the engine cases in a browser, both tours in light and dark, and Linux
 	@echo "check-full: all passed"
+
+check-signing: ## Check that this Mac can sign and upload the app: Xcode, the team's certificate, an Apple ID (docs/release.md)
+	@scripts/check-signing.sh
 
 archive: ## Build a signed Release archive for TestFlight (docs/release.md)
 	@scripts/archive.sh

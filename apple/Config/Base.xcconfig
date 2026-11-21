@@ -1,6 +1,10 @@
 // Build settings shared by every target of the Day by Word app (BUILD.md P1.5).
-// The signing team lives in the gitignored Secrets.xcconfig; copy
-// Secrets.example.xcconfig to create it. Builds for the simulator need no team.
+
+// The owner's Apple Developer team (D33). Not a secret: Apple writes it into
+// every signed app, so it is committed here and every checkout can sign
+// (docs/decisions.md E48). The gitignored Secrets.xcconfig, included after
+// it, may override it for a one-off build; nothing else belongs there.
+DEVELOPMENT_TEAM = D9QMP3LP8H
 #include? "Secrets.xcconfig"
 
 // Swift 6 language mode with complete concurrency checking, and no warnings.

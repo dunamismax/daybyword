@@ -5,10 +5,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-if [ ! -f apple/Config/Secrets.xcconfig ] || ! grep -Eq '^DEVELOPMENT_TEAM *= *[A-Z0-9]+' apple/Config/Secrets.xcconfig; then
-  echo "archive: set DEVELOPMENT_TEAM in apple/Config/Secrets.xcconfig (see Secrets.example.xcconfig)" >&2
-  exit 1
-fi
+scripts/check-signing.sh
 if [ -n "$(git status --porcelain)" ]; then
   echo "archive: commit or stash your changes first; an archive is built from a committed state" >&2
   exit 1
