@@ -641,12 +641,10 @@ only when Phase 18 is finished or an item points there.
 
 - **2026-11-21:** P5.2, P5.4 to P5.8 and P5.10 are done in both runtimes:
   the journal's fold, Today for the three behaviors, the welcome after a
-  gap, and changes with their previews. The shared cases (`journal` 95,
-  `event-ids` 31, `today` 86, `returning` 40, `changing` 21; 515 in all)
-  pass in Swift on macOS and Linux, in Node and in Firefox.
-- **Adding a case:** add an input (and a `name`) to the fixture, record
-  with `DBW_RECORD_FIXTURES=1` (tests/fixtures/README.md), check the new
-  output by hand against docs/engine.md, then run the web tests.
+  gap, and changes with previews. 515 shared cases (`journal`, `event-ids`,
+  `today`, `returning`, `changing`) pass in Swift on macOS and Linux, in
+  Node and in Firefox. To add one: an input and a `name`, record with
+  `DBW_RECORD_FIXTURES=1`, check the output by hand, then the web tests.
 - **Next, P5.11:** assignment counts, recent reading days, coverage (a
   `partlyCompleted` event's `verses` is kept as text and not yet read),
   books explored, the streak. Then P5.12, reminders. When both pass, set
@@ -655,13 +653,11 @@ only when Phase 18 is finished or an item points there.
 - **Not built:** the day-by-day list of coming readings (the coming week,
   the checklist); build it with P8.10 or P13.1 (note under P5.6).
 - **Deploys no longer restart the database** (E43, note under P7.2).
-  `make check-full` passed as one run at cd13494, which was then deployed
-  and recreated the database one last time; deploying 1cc5f7e after it
-  left the database container's id and start time unchanged. Live is
-  1cc5f7e; the commit after it changes BUILD.md only.
+  `make check-full` passed as one run at cd13494. Live is 1cc5f7e; the
+  commits after it change BUILD.md only.
 - **A mistake to avoid:** 23e9316 swept another session's uncommitted
   deploy files in with `git add -A`; 298258a took them out and cd13494
-  landed them properly. Stage by path (AGENTS.md §8).
+  landed them. Stage by path (AGENTS.md §8).
 - `make test-linux` reuses its image while `scripts/linux/` is unchanged;
   its rebuild path with the new label has still not run.
 - **Open:** P7.3's encrypted off-server copy (ask the owner where backups
