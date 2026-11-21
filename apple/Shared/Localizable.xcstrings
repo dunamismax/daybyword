@@ -1,7 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "**Review.** %@" : {
+
+    },
     "**Source.** %@" : {
+
+    },
+    "%@ — Day %lld" : {
+
+    },
+    "%@ — Reading %lld" : {
 
     },
     "%@ %@" : {
@@ -10,10 +19,61 @@
     "%@ → %@" : {
 
     },
+    "%@ has %lld days, so this plan has no reading for day %@ this month." : {
+
+    },
+    "%@ on the heaviest day. Estimates vary." : {
+
+    },
     "%@, %@, %@" : {
 
     },
+    "%@, chapter %lld" : {
+
+    },
+    "%@, chapter %lld, verse %lld" : {
+
+    },
+    "%@, chapter %lld, verse %lld, to chapter %lld, verse %lld" : {
+
+    },
+    "%@, chapter %lld, verses %lld to %lld" : {
+
+    },
+    "%@, chapters %lld to %lld" : {
+
+    },
+    "%@, rest day" : {
+
+    },
+    "%@, verse %lld" : {
+
+    },
+    "%@, verses %lld to %lld" : {
+
+    },
+    "%@; then %@" : {
+
+    },
     "%@: from %@ to %@" : {
+
+    },
+    "%lld readings" : {
+
+    },
+    "%lld readings a day, on %lld reading days." : {
+
+    },
+    "%lld to %lld readings a day, on %lld reading days." : {
+
+    },
+    "1 reading" : {
+
+    },
+    "1 reading a day, on %lld reading days." : {
+
+    },
+    "A physical Bible" : {
 
     },
     "A sample reference at this size." : {
@@ -22,16 +82,46 @@
     "A sample week" : {
 
     },
+    "A typical reading" : {
+
+    },
+    "A week's checklist" : {
+
+    },
     "About" : {
+
+    },
+    "About %lld minutes" : {
 
     },
     "About %lld minutes. Estimates vary." : {
 
     },
+    "About %lld–%lld minutes" : {
+
+    },
+    "About %lld–%lld minutes. Estimates vary." : {
+
+    },
+    "About 1 minute" : {
+
+    },
     "About 1 minute. Estimates vary." : {
 
     },
+    "Another app, with Copy reference" : {
+
+    },
     "Appearance" : {
+
+    },
+    "At" : {
+
+    },
+    "At most %lld readings a day" : {
+
+    },
+    "At most 1 reading a day" : {
 
     },
     "Automatic" : {
@@ -40,10 +130,34 @@
     "Automatic follows your device." : {
 
     },
+    "By %@" : {
+
+    },
+    "By the date" : {
+
+    },
     "Cancel" : {
 
     },
+    "Catholic" : {
+
+    },
+    "Checked automatically: every reference and claim." : {
+
+    },
+    "Choose a plan" : {
+
+    },
+    "Choose at least one day." : {
+
+    },
+    "Choose when you'd like to finish. If you miss days, Day by Word can spread the unread readings over the days ahead, up to a limit you set, or move your finish date. You'll see the change before it happens." : {
+
+    },
     "Components" : {
+
+    },
+    "Continue at my pace" : {
 
     },
     "Copied" : {
@@ -58,22 +172,97 @@
     "Dark" : {
 
     },
-    "Day by Word" : {
+    "Day %lld" : {
 
     },
-    "Day by Word is in development." : {
+    "Day by Word" : {
 
     },
     "Day by Word is independent and not affiliated with any church or denomination." : {
 
     },
+    "Day by Word never shows Bible text. Read in your own Bible, and mark what you read here." : {
+
+    },
     "Done" : {
+
+    },
+    "Each date has its own reading. Earlier dates' readings are not added to today." : {
+
+    },
+    "Each date still has its reading. Your reading days decide reminders and nothing else." : {
+
+    },
+    "Each day of the month has its own reading." : {
+
+    },
+    "Estimates vary with the reader and the translation." : {
+
+    },
+    "Every plan" : {
+
+    },
+    "Every verse of %@: %@ verses." : {
+
+    },
+    "Every verse of the %@ of the %@ canon: %@ verses." : {
 
     },
     "Find your plan. Read your Bible. Keep your place." : {
 
     },
+    "Finish by" : {
+
+    },
+    "Finish date" : {
+
+    },
+    "Finish on %@ instead" : {
+
+    },
+    "Finishing a plan is not the same as reading the whole Bible, unless its readings cover it." : {
+
+    },
+    "Follow the calendar" : {
+
+    },
+    "Friday" : {
+
+    },
+    "How it works" : {
+
+    },
+    "How long it takes" : {
+
+    },
+    "How you read" : {
+
+    },
+    "If you miss days, you'll be offered a choice, and you'll see it before anything changes." : {
+
+    },
     "It describes what you've read, and nothing more." : {
+
+    },
+    "It is paced for %lld reading days a week. You choose your own days." : {
+
+    },
+    "It is paced for 1 reading day a week. You choose your own days." : {
+
+    },
+    "It is paced for every day of the week. You choose your own days." : {
+
+    },
+    "It may have been withdrawn, or the link may be mistyped." : {
+
+    },
+    "It reads these verses more than once: %@." : {
+
+    },
+    "Its first week, begun on a Monday. Your own week depends on the day you start and the days you choose." : {
+
+    },
+    "Its readings are numbered and read in order." : {
 
     },
     "Larger" : {
@@ -88,7 +277,19 @@
     "Loading…" : {
 
     },
+    "Log" : {
+
+    },
+    "Log an earlier day…" : {
+
+    },
     "Mark 4:1–20" : {
+
+    },
+    "Mark part read" : {
+
+    },
+    "Mark part read, skip, or log an earlier day." : {
 
     },
     "Mark read" : {
@@ -97,22 +298,61 @@
     "Mark, chapter 4, verses 1 to 20" : {
 
     },
+    "Marked %@ part read." : {
+
+    },
+    "Marked %@ read on %@." : {
+
+    },
+    "Marked %@ read." : {
+
+    },
+    "Marks %@ read today." : {
+
+    },
+    "Monday" : {
+
+    },
+    "More" : {
+
+    },
+    "My plans" : {
+
+    },
     "Next reading" : {
+
+    },
+    "No verse is read twice." : {
 
     },
     "Not yet read" : {
 
     },
+    "Nothing more is scheduled today." : {
+
+    },
+    "Notifications are turned off for Day by Word in the Settings app. The plan works without them." : {
+
+    },
     "Open in YouVersion" : {
+
+    },
+    "Opens the plan's page." : {
+
+    },
+    "Optional. A reminder says what's next and nothing more." : {
+
+    },
+    "Other days are rest days." : {
 
     },
     "Part read" : {
 
     },
-    "Plan" : {
+    "Passages from %@: %@ verses. It does not read these books whole." : {
 
     },
-    "Plan pages arrive with the catalog." : {
+    "Plan" : {
 
     },
     "Plans" : {
@@ -127,7 +367,34 @@
     "Progress" : {
 
     },
+    "Protestant" : {
+
+    },
+    "Psalm %lld" : {
+
+    },
+    "Psalms %lld to %lld" : {
+
+    },
     "Read" : {
+
+    },
+    "Read in order" : {
+
+    },
+    "Read on" : {
+
+    },
+    "Read the next reading whenever you read. If you miss a day, nothing is lost: your next reading waits for you, and your finish date moves." : {
+
+    },
+    "Read the readings appointed for each date. Today's readings stay on today, as the calendar sets them. Readings from earlier dates stay in your history, and you can read them whenever you like." : {
+
+    },
+    "Reading days" : {
+
+    },
+    "Redo" : {
 
     },
     "Reference text size" : {
@@ -136,13 +403,49 @@
     "References on Today and in plans use this size, on top of your device's text size." : {
 
     },
+    "Remind me on reading days" : {
+
+    },
+    "Reminder" : {
+
+    },
+    "Rest day" : {
+
+    },
+    "Reviewed by a reader who uses its source." : {
+
+    },
+    "Reviewed: checked against its own rules and Day by Word's criteria for plans." : {
+
+    },
+    "Saturday" : {
+
+    },
+    "Schedule" : {
+
+    },
     "Settings" : {
 
     },
     "Shows the next reading in your plan." : {
 
     },
+    "Skip this reading" : {
+
+    },
+    "Skip this reading?" : {
+
+    },
+    "Skip this reading. It won't count as read." : {
+
+    },
+    "Skip this reading…" : {
+
+    },
     "Skipped" : {
+
+    },
+    "Skipped %@. It won't count as read." : {
 
     },
     "Something went wrong" : {
@@ -151,34 +454,118 @@
     "Standard" : {
 
     },
-    "This plan's page will appear here." : {
+    "Start" : {
 
     },
-    "This plan's week will appear here." : {
+    "Start it again" : {
+
+    },
+    "Start on" : {
+
+    },
+    "Start this plan" : {
+
+    },
+    "Sunday" : {
+
+    },
+    "That wasn't saved: %@" : {
+
+    },
+    "That's today's reading." : {
+
+    },
+    "The first seven days of a month. Each date has its own reading." : {
+
+    },
+    "The heaviest reading" : {
+
+    },
+    "The lightest reading" : {
+
+    },
+    "The plan catalog cannot be read." : {
+
+    },
+    "The plan could not be started: %@" : {
+
+    },
+    "The plan's first week, begun on %@, on the days it is paced for. Your own days may differ." : {
+
+    },
+    "The reading is kept on the day you read it, not today." : {
+
+    },
+    "The readings appointed for seven days from %@." : {
+
+    },
+    "This plan is paused." : {
+
+    },
+    "This plan isn't in the catalog." : {
+
+    },
+    "This plan starts on %@." : {
+
+    },
+    "Thursday" : {
+
+    },
+    "To finish by %@ you'd read up to %lld readings a day. At %lld a day you'd finish on %@." : {
 
     },
     "Today" : {
 
     },
+    "Today is a rest day in this plan." : {
+
+    },
     "Try again" : {
+
+    },
+    "Tuesday" : {
 
     },
     "Undo" : {
 
     },
+    "Undone." : {
+
+    },
     "Version" : {
+
+    },
+    "Wednesday" : {
 
     },
     "Week" : {
 
     },
-    "Weeks arrive with the catalog." : {
+    "What it covers" : {
 
     },
-    "You'll be able to choose a reading plan here." : {
+    "What it does not do" : {
+
+    },
+    "When" : {
+
+    },
+    "Who it suits" : {
+
+    },
+    "Work toward a finish date" : {
+
+    },
+    "You'll join today's readings, %@." : {
+
+    },
+    "You're following this plan. Its readings are on Today." : {
 
     },
     "You're offline" : {
+
+    },
+    "You've reached the end of this plan." : {
 
     },
     "Your next reading will appear here." : {
@@ -187,7 +574,13 @@
     "Your plans and reading record are on this device and work without a connection." : {
 
     },
+    "Your reading record can't be opened." : {
+
+    },
     "Your reading record will appear here." : {
+
+    },
+    "YouVersion or Bible.com" : {
 
     }
   },

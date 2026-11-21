@@ -163,6 +163,23 @@ func plansNeedASourceTheirBuildAllows(rights: String, mode: CatalogBuild.Mode, p
     #expect(catalog.plan(PlanID("monthly-plan")!) == (try readPlan(monthly, name: "monthly-plan")))
     #expect(catalog.registry.canon("protestant")?.books.count == 66)
     #expect(catalog.versification.verseCount(of: BookID("PSA")!) == 2461)
+
+    // The compiler's facts and each reading's words read back as computed.
+    for plan in catalog.plans {
+        let counts = try CatalogBuild.readWordCounts(from: catalogSource, versification: catalog.versification)
+        let facts = try PlanFacts(plan, versification: catalog.versification, counts: counts)
+        let read = try #require(catalog.facts[plan.id])
+        #expect(read.verses == facts.verses)
+        #expect(read.uniqueVerses == facts.uniqueVerses)
+        #expect(read.repeats == facts.repeats)
+        #expect(read.omitted == facts.omitted)
+        #expect(read.wholeChapters == facts.wholeChapters)
+        #expect(read.partialChapters == facts.partialChapters)
+        #expect(read.workload == facts.workload)
+        let version = catalog.version(of: plan)
+        #expect(plan.assignments.map { version.words[$0.id] } == facts.words)
+    }
+    #expect(catalog.versions.map(\.id) == catalog.plans.map(\.id))
 }
 
 @Test func theRepositorysCatalogOpens() throws {

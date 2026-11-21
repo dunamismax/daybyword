@@ -124,8 +124,9 @@ nothing. The database has these tables (`CatalogBuild.schemaVersion`):
 - `scripture`: `books.json` and `versification/english.tsv`, as compiled.
 
 The app and the server open it with `Catalog` in `ReadingData`, which reads
-it whole and read-only and refuses, with what to do, a missing file or one
-of another schema. Its `scripture` table holds the book registry and the
+it whole and read-only, with each plan's facts and readings' words (the
+app's plan pages and Today use them), and refuses, with what to do, a
+missing file or one of another schema. Its `scripture` table holds the book registry and the
 English versification it was compiled with, so a reader needs nothing else
 from `catalog/`. `make check` compiles it in both modes.
 

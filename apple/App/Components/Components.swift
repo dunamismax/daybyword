@@ -206,8 +206,10 @@ struct PlanCard: View {
     let title: String
     let kind: String
     let summary: String
-    let minutes: Int
-    let schedule: String
+    /// "About 6–8 minutes. Estimates vary."
+    let workload: String
+    /// "60 readings".
+    let readings: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -221,13 +223,10 @@ struct PlanCard: View {
                 .typeStyle(TypeScale.body)
                 .foregroundStyle(Palette.text)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: Spacing.xs) {
-                WorkloadLine(minutes: minutes)
-                Text(verbatim: "·").foregroundStyle(Palette.textMuted).accessibilityHidden(true)
-                Text(verbatim: schedule)
-                    .typeStyle(TypeScale.caption)
-                    .foregroundStyle(Palette.textMuted)
-            }
+            Text(verbatim: "\(readings) · \(workload)")
+                .typeStyle(TypeScale.caption)
+                .foregroundStyle(Palette.textMuted)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .card()
         .accessibilityElement(children: .combine)
@@ -247,9 +246,10 @@ struct SourceNote: View {
 }
 
 /// A plan's sample week: the first few readings, so the reader can see the
-/// workload before starting.
+/// workload before starting. A day with no reading is named a rest day.
 struct SampleWeek: View {
-    let readings: [(label: String, reference: ReferenceText)]
+    let readings: [(label: String, reference: ReferenceText?)]
+    var note: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xxs) {
@@ -261,12 +261,25 @@ struct SampleWeek: View {
                 HStack {
                     Text(verbatim: reading.label).foregroundStyle(Palette.textMuted)
                     Spacer()
-                    Text(verbatim: reading.reference.display).fontWeight(.semibold).foregroundStyle(Palette.text)
+                    if let reference = reading.reference {
+                        Text(verbatim: reference.unbroken).fontWeight(.semibold).foregroundStyle(Palette.text)
+                    } else {
+                        Text("Rest day").foregroundStyle(Palette.textMuted)
+                    }
                 }
                 .typeStyle(TypeScale.caption)
                 .padding(.vertical, Spacing.xxs)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Text(verbatim: "\(reading.label), \(reading.reference.spoken)"))
+                .accessibilityLabel(
+                    reading.reference.map { Text(verbatim: "\(reading.label), \($0.spoken)") }
+                        ?? Text("\(reading.label), rest day"))
+            }
+            if let note {
+                Text(verbatim: note)
+                    .typeStyle(TypeScale.caption)
+                    .foregroundStyle(Palette.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, Spacing.xxs)
             }
         }
         .card(padding: Spacing.m)

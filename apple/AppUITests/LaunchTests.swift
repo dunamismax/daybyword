@@ -5,6 +5,7 @@ final class LaunchTests: XCTestCase {
     @MainActor
     func testLaunchesToToday() {
         let app = XCUIApplication()
+        app.launchArguments = ["-freshJournal", "YES"]
         app.launch()
         XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Your next reading will appear here."].exists)
@@ -13,6 +14,7 @@ final class LaunchTests: XCTestCase {
     @MainActor
     func testVisitsEverySectionAndSettings() {
         let app = XCUIApplication()
+        app.launchArguments = ["-freshJournal", "YES"]
         app.launch()
         XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
 
@@ -34,6 +36,7 @@ final class LaunchTests: XCTestCase {
     @MainActor
     func testOpensDayByWordLinks() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["-freshJournal", "YES"]
         app.launch()
         XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
 

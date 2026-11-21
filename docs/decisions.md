@@ -1249,3 +1249,27 @@ search_path changed (a second exception to the contract on every role), and
 renaming the old roles in place (the host's provisioning creates and proves
 its own).
 
+
+### E47. The app's journal: one SQLite file of wire-form events
+
+*2026-11-21, agent (P8.2b, P8.3, P8.4).* The app keeps the reader's journal
+in `Journal.sqlite` in Application Support, through `JournalStore` in
+`ReadingData`: one table, `events (id TEXT PRIMARY KEY, wire TEXT)`, each
+event in the wire form docs/engine.md defines, with `PRAGMA user_version`
+for the schema. Writing an event whose id is already there changes
+nothing, so a retry is harmless; the only removal is the reader's own
+"delete all data" (P8.13). `Library` (apple/App/Model) opens it with the
+bundled catalog, folds it with the engine after every write, and resolves
+today once at the edge in the device's zone, again whenever the app
+becomes active. A new event's id is a UUIDv7 a millisecond after the last
+of its enrollment's when the clock has not moved on; `device` is the
+device's kind ("iPhone"), never its name. Debug builds take `-today
+YYYY-MM-DD` (E14) and `-freshJournal YES` for tests and screenshots.
+
+**Why:** the wire form is the one the engine's shared cases already pin,
+so the stored journal, an export (P8.13) and a later sync (P14) are the
+same bytes, and a column per field would be a second schema to keep in
+step with the engine. SQLite is already the app's store (E9, E18).
+
+**Not yet:** the widget and notification actions need the journal in the
+App Group container (P8.9, P12.1); the file moves there with them.

@@ -10,7 +10,7 @@ final class TourTests: XCTestCase {
         for (appearance, textSize) in [("light", ""), ("dark", ""), ("light", "ax5")] {
             let app = XCUIApplication()
             // The reader's own appearance choice (Settings) sets the theme.
-            app.launchArguments = ["-appearance", appearance]
+            app.launchArguments = ["-appearance", appearance, "-freshJournal", "YES"]
             if textSize == "ax5" {
                 app.launchArguments += [
                     "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
@@ -28,11 +28,11 @@ final class TourTests: XCTestCase {
                 save(app, "\(appearance)-\(section.lowercased())")
             }
 
-            app.open(try XCTUnwrap(URL(string: "daybyword://plans/psalm-a-day")))
+            app.open(try XCTUnwrap(URL(string: "daybyword://plans/gospels-at-your-pace")))
             XCTAssertTrue(app.navigationBars["Plan"].waitForExistence(timeout: 10))
             save(app, "\(appearance)-plan")
 
-            app.open(try XCTUnwrap(URL(string: "daybyword://plans/psalm-a-day/week")))
+            app.open(try XCTUnwrap(URL(string: "daybyword://plans/gospels-at-your-pace/week")))
             XCTAssertTrue(app.navigationBars["Week"].waitForExistence(timeout: 10))
             save(app, "\(appearance)-week")
 

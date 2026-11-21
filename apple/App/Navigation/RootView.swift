@@ -5,6 +5,8 @@ import SwiftUI
 /// (docs/product.md, Navigation).
 struct RootView: View {
     @State private var navigation = AppNavigation()
+    @State private var library = Library.live()
+    @Environment(\.scenePhase) private var scenePhase
     @SceneStorage("navigation") private var savedNavigation = Data()
     @State private var restored = false
     @AppStorage(Appearance.storageKey) private var appearance = Appearance.automatic
@@ -27,10 +29,16 @@ struct RootView: View {
         .sheet(isPresented: $navigation.showingSettings) {
             SettingsView()
                 .preferredColorScheme(appearance.colorScheme)
+                .environment(library)
         }
         .environment(\.referenceScale, referenceSize.scale)
         .preferredColorScheme(appearance.colorScheme)
         .environment(navigation)
+        .environment(library)
+        .onChange(of: scenePhase) { _, phase in
+            // Today is resolved again whenever the app comes back (E7).
+            if phase == .active { library.refreshToday() }
+        }
         .onAppear {
             guard !restored else { return }
             restored = true

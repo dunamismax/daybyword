@@ -89,8 +89,8 @@ does not speak for any church, ministry, or publisher.
 |---|---|---|
 | Web | SvelteKit 3, Svelte 5, TypeScript, Tailwind CSS 4 on `@sveltejs/adapter-node` | Every page server-rendered, no client runtime yet (E38) |
 | Server data | PostgreSQL 18 with Drizzle ORM and reviewed SQL migrations | Public catalog data only; no reader records on the server at 1.0 |
-| Native | SwiftUI and Observation on Swift 6.4.2, iOS and iPadOS 26 or later, WidgetKit | The app shell and a placeholder widget |
-| Local native data | SQLite through `ReadingData`, bundled read-only catalog | Catalog reader; the reading journal is still to come |
+| Native | SwiftUI and Observation on Swift 6.4.2, iOS and iPadOS 26 or later, WidgetKit | Plans, a plan's page, starting a plan, Today and marking; a placeholder widget |
+| Local native data | SQLite through `ReadingData`, bundled read-only catalog | Catalog reader, and the reader's journal in one SQLite file on the device (E47) |
 | Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, workload, and civil dates in both; scheduling is specified and being built (Phase 5) |
 | Catalog | Plain-text plan sources, compiled and checked by a Swift tool that refuses unverified references and uncleared sources | No plans yet |
 | Hosting | `daybyword-web.service` on the host's Node and PostgreSQL 18, behind its Caddy; each release checked as a candidate before it serves; nightly `pg_dump` and monthly restore checks, and the host's daily encrypted backup of the database | Live |
@@ -106,7 +106,7 @@ AGENTS.md  BUILD.md  BUILD-HISTORY.md  README.md  LICENSE  Makefile
 apple/                    the iPhone and iPad app: project.yml (XcodeGen), App/, Widgets/, tests, Config/
 web/                      daybyword.com: SvelteKit routes, components, the TypeScript engine, Drizzle schema and migrations
 Packages/ReadingEngine/   the Swift engine: references, verse sets, workload, and the scheduling rules to come
-Packages/ReadingData/     SQLite wrapper and catalog reader for the app
+Packages/ReadingData/     SQLite wrapper, catalog reader, and the journal store for the app
 Packages/CatalogCompiler/ the `catalog` tool that builds and exports the catalog
 catalog/                  plan sources, scripture data (book registry, versification), and SOURCES.md (rights)
 tests/fixtures/           the shared cases both engines must pass, and the web's address contract
