@@ -21,7 +21,7 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P5.11**: progress measures (assignments, recent reading days, coverage and books explored from the marks, the optional streak), then **P5.12**, reminder rules |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving cd13494 (`/srv/www/daybyword.com/current-release`, read 2026-11-21), the first release whose database container is made from nothing in a release directory (E43). |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -494,7 +494,7 @@ but nightly PostgreSQL backups begin with the first database deployment.
   - *Result (agent, 2026-11-20):* `make deploy` (deploy/bin/release.sh) from a clean checkout equal to origin/main: export, `git archive` to `releases/<commit>`, `deploy.sh` inside `with-deploy-lock` (image, migrate/import, candidate on 4319, activate, rollback on failure), then public check-live.
 - [ ] **P7.3** Provision only this project's Compose/Postgres/env/Caddy/backup resources; record other-site responses before/after, archive /etc/caddy, validate/reload only this site's configuration. Use systemd timers for nightly pg_dump, encrypted off-server copy and an isolated restore drill. Coordinate missing shared Caddy modules/account settings without changing other sites.
   - *Note (agent, 2026-11-20):* Done: the project's Compose/Postgres/env/Caddy resources, /etc/caddy archived, other sites compared, nightly pg_dump and monthly restore-check timers installed, first backup and restore check passed on the host. Open: the encrypted off-server copy; no `ubuntu-vm-backup` checkout or tool exists on the host or the Mac, so the owner's arrangement is needed.
-  - *Note (agent, 2026-11-21):* each deploy had been recreating the database container (a few seconds without it, no data lost), because its two mounted files came from the release directory. They now come from `shared/postgres` (E43), and `make rehearse-deploy` deploys its second release from another directory and fails if the database container changes.
+  - *Note (agent, 2026-11-21):* each deploy had been recreating the database container (a few seconds without it, no data lost), because its two mounted files came from the release directory. They now come from `shared/postgres` (E43), and `make rehearse-deploy` deploys its second release from another directory and fails if the database container changes. On the host, cd13494 recreated the database one last time (its mounts moved), and the next deploy, 1cc5f7e, left `daybyword-postgres-1` with the same id (618753ad60f5) and start time (2026-11-21T05:23:29Z); 22 other site names answered the same before and after both.
 - [x] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
   - *Result (agent, 2026-11-20):* live 2026-11-20 at commit 7be7f76 (image `daybyword-web:<commit>`, schema 2 migrations, catalog ac986b77…, 0 plans): apex HTTPS, www 301 keeping path and query, HSTS, strict CSP and headers, healthy `/up` with a current catalog; all 20 other site names unchanged. `make check-full`'s parts all passed today (check, test-domain-browser, both tours, test-linux), not as one run.
 - [x] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
@@ -655,8 +655,10 @@ only when Phase 18 is finished or an item points there.
 - **Not built:** the day-by-day list of coming readings (the coming week,
   the checklist); build it with P8.10 or P13.1 (note under P5.6).
 - **Deploys no longer restart the database** (E43, note under P7.2).
-  `make check-full` passed as one run at cd13494, which was then deployed;
-  that deploy recreated the database one last time, as expected.
+  `make check-full` passed as one run at cd13494, which was then deployed
+  and recreated the database one last time; deploying 1cc5f7e after it
+  left the database container's id and start time unchanged. Live is
+  1cc5f7e; the commit after it changes BUILD.md only.
 - **A mistake to avoid:** 23e9316 swept another session's uncommitted
   deploy files in with `git add -A`; 298258a took them out and cd13494
   landed them properly. Stage by path (AGENTS.md §8).
