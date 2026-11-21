@@ -23,11 +23,14 @@ trap 'rm -f "$partial"' EXIT
 runuser -u postgres -- pg_dump --format=custom --compress=6 --dbname="$DBW_DATABASE" >"$partial" ||
   fail "pg_dump of $DBW_DATABASE failed; no backup was written"
 check_dump "$partial" || fail "the dump failed its check; no backup was written"
-mv "$partial" "$DBW_BACKUPS/$name.dump"
-
+# The manifest's facts, read before anything is kept, so a backup is either
+# whole (dump, SHA-256, manifest) or not there. The catalog is found through
+# the search path: in app since migration 0002, in public before it (the
+# pre-migration backup of the first native deploy).
 migrations=$(psql_admin -c "select count(*) from drizzle.__drizzle_migrations")
-catalog=$(psql_admin -c "select i.content_sha256 from app.catalog_current c join app.catalog_imports i on i.id = c.import_id")
+catalog=$(psql_admin -c "set search_path = app, public; select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
 release=$(cat "$DBW_ROOT/current/REVISION" 2>/dev/null || echo unknown)
+mv "$partial" "$DBW_BACKUPS/$name.dump"
 (cd "$DBW_BACKUPS" && sha256sum "$name.dump") >"$DBW_BACKUPS/$name.sha256"
 cat >"$DBW_BACKUPS/$name.json" <<JSON
 { "created": "$stamp", "release": "$release", "migrations": ${migrations:-0},
