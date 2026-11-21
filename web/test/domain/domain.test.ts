@@ -25,9 +25,11 @@ import {
   workload,
 } from "#lib/domain/index.ts";
 import {
+  answer,
   checkParity,
   computers,
   domainFixtures,
+  fixturePlans,
   type DomainFixture,
   type FixtureFile,
   type Resources,
@@ -62,11 +64,13 @@ describe("the shared fixtures", () => {
       const file = fixtures[name];
       expect(file.fixture).toBe(name);
       expect(file.cases.length).toBeGreaterThan(0);
+      const plans = fixturePlans(file, resources);
       file.cases.forEach((testCase, index) => {
-        const actual = (compute[name] as (input: unknown) => unknown)(testCase.input);
-        expect(actual, `${name} case ${index}: ${JSON.stringify(testCase.input)}`).toEqual(
-          testCase.output,
-        );
+        const actual = answer(compute, name, testCase.input, plans);
+        expect(
+          actual,
+          `${name} case ${index} ${testCase.name ?? ""}: ${JSON.stringify(testCase.input)}`,
+        ).toEqual(testCase.output);
       });
     });
   }

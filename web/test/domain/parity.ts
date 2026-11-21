@@ -11,6 +11,11 @@ import {
   canonBooks,
   CivilDateError,
   civilDateText,
+  eventIDMilliseconds,
+  foldJournal,
+  isEventID,
+  JournalError,
+  makeEventID,
   dayOfYear,
   daysBetween,
   daysInMonth,
@@ -32,10 +37,14 @@ import {
   VersificationError,
   weekday,
   WordCounts,
+  wallTimeText,
   WordCountsError,
   workload,
+  type Behavior,
   type BookName,
   type NamingConvention,
+  type PlanVersion,
+  type ScheduleKind,
 } from "#lib/domain/index.ts";
 
 export interface Resources {
@@ -45,14 +54,28 @@ export interface Resources {
 }
 
 export interface FixtureCase {
+  /** What the case shows, in the scheduling fixtures. */
+  name?: string;
   input: unknown;
   output?: unknown;
+}
+
+/** An invented plan version in a scheduling fixture's `plans`. */
+export interface FixturePlan {
+  id: string;
+  version: number;
+  schedule: ScheduleKind;
+  behaviors: Behavior[];
+  readingDays: number;
+  assignments: { id: number; reading: string }[];
 }
 
 export interface FixtureFile {
   fixture: string;
   version: number;
   about: string;
+  /** The invented plans a scheduling fixture's cases enroll in. */
+  plans?: FixturePlan[];
   cases: FixtureCase[];
 }
 
@@ -66,14 +89,41 @@ export const domainFixtures = [
   "plan-ids",
   "scripture-files",
   "civil-dates",
+  "event-ids",
+  "journal",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
-type Compute = (input: never) => unknown;
+/** A fixture's answer for one input; the scheduling fixtures are also given the file's plans. */
+type Compute = (input: never, plans: readonly PlanVersion[]) => unknown;
 
 /** Leaves out undefined fields, as Swift's encoder leaves out nil ones. */
 function present<T extends object>(value: T): T {
   return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T;
+}
+
+/** One fixture's answer for an input, which is whatever shape its file gives. */
+export function answer(
+  compute: Record<DomainFixture, Compute>,
+  name: DomainFixture,
+  input: unknown,
+  plans: readonly PlanVersion[],
+): unknown {
+  return (compute[name] as unknown as (input: unknown, plans: readonly PlanVersion[]) => unknown)(
+    input,
+    plans,
+  );
+}
+
+/** A fixture file's invented plans, as the engine takes them. */
+export function fixturePlans(file: FixtureFile, resources: Resources): PlanVersion[] {
+  return (file.plans ?? []).map((plan) => ({
+    ...plan,
+    assignments: plan.assignments.map((assignment) => ({
+      id: assignment.id,
+      reading: parseReading(assignment.reading, resources.english),
+    })),
+  }));
 }
 
 export function computers(resources: Resources): Record<DomainFixture, Compute> {
@@ -249,6 +299,75 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
         toError,
       });
     },
+
+    "event-ids": (input: { text?: string; milliseconds?: number; random?: number[] }) => {
+      if (input.text !== undefined) {
+        const valid = isEventID(input.text);
+        return present({
+          valid,
+          milliseconds: valid ? eventIDMilliseconds(input.text) : undefined,
+        });
+      }
+      const id = makeEventID(input.milliseconds as number, input.random as number[]);
+      return id === undefined ? {} : { id, milliseconds: eventIDMilliseconds(id) };
+    },
+
+    journal: (input: { events: unknown[]; on?: string[] }, plans: readonly PlanVersion[]) => {
+      let journal;
+      try {
+        journal = foldJournal(input.events, plans);
+      } catch (error) {
+        if (error instanceof JournalError) return { error: error.kind, message: error.message };
+        throw error;
+      }
+      const dates = (input.on ?? []).map(parseCivilDate);
+      const inert = new Set(journal.inert.map((entry) => entry.event));
+      const text = (date: Parameters<typeof civilDateText>[0] | undefined) =>
+        date && civilDateText(date);
+      return {
+        events: journal.events.length,
+        inert: journal.inert,
+        undone: journal.events
+          .map((event) => event.id)
+          .filter((id) => !inert.has(id) && !journal.isActive(id)),
+        enrollments: journal.enrollments.map((enrollment) =>
+          present({
+            id: enrollment.id,
+            plan: enrollment.plan.id,
+            version: enrollment.plan.version,
+            start: civilDateText(enrollment.start),
+            ended: text(enrollment.ended),
+            slots: enrollment.settled.map((slot) =>
+              present({
+                assignment: slot.assignment,
+                appointed: text(slot.appointed),
+                state: slot.state,
+                date: civilDateText(slot.date),
+                event: slot.event,
+                verses: slot.verses,
+              }),
+            ),
+            paused: enrollment.pauses.map((pause) =>
+              present({ from: civilDateText(pause.from), until: text(pause.until) }),
+            ),
+            on:
+              dates.length === 0
+                ? undefined
+                : dates.map((date) => {
+                    const arrangement = enrollment.arrangement(date);
+                    return present({
+                      date: civilDateText(date),
+                      behavior: arrangement.behavior,
+                      readingDays: arrangement.readingDays,
+                      limit: arrangement.limit,
+                      reminder: arrangement.reminder && wallTimeText(arrangement.reminder),
+                      paused: enrollment.isPaused(date),
+                    });
+                  }),
+          }),
+        ),
+      };
+    },
   };
 }
 
@@ -279,17 +398,24 @@ export function checkParity(
       report.failures.push(`${name}: not the ${name} fixture, or it has no cases`);
       continue;
     }
+    let plans: PlanVersion[];
+    try {
+      plans = fixturePlans(file, resources);
+    } catch (error) {
+      report.failures.push(`${name}: its plans could not be read: ${String(error)}`);
+      continue;
+    }
     file.cases.forEach((testCase, index) => {
       report.cases += 1;
       let actual: unknown;
       try {
-        actual = (compute[name] as (input: unknown) => unknown)(testCase.input);
+        actual = answer(compute, name, testCase.input, plans);
       } catch (error) {
         actual = { thrown: String(error) };
       }
       if (canonicalJSON(actual) !== canonicalJSON(testCase.output)) {
         report.failures.push(
-          `${name} case ${index} (${JSON.stringify(testCase.input).slice(0, 60)}): expected ${canonicalJSON(testCase.output).slice(0, 300)}, got ${canonicalJSON(actual).slice(0, 300)}`,
+          `${name} case ${index} (${testCase.name ?? JSON.stringify(testCase.input).slice(0, 60)}): expected ${canonicalJSON(testCase.output).slice(0, 300)}, got ${canonicalJSON(actual).slice(0, 300)}`,
         );
       }
     });

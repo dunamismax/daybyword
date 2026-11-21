@@ -275,17 +275,25 @@ The journal is a set of events. Nothing is ever changed or removed except
 at the reader's request to delete their data (E3).
 
 **Every event** has an `id`, a `kind`, the `enrollment` it belongs to, `at`
-(the instant it was made, RFC 3339 in UTC, `2027-03-01T11:02:03Z`), `zone`
-(the IANA zone the device was in) and `device` (an opaque name, 1 to 64
-characters). The engine orders by `id` and never reads `at` or `zone`;
-they are the record of when and where.
+(the instant it was made, in UTC to the second, written exactly
+`2027-03-01T11:02:03Z`), `zone` (the IANA zone the device was in: 1 to 64
+ASCII letters, digits, `/`, `_`, `-` and `+`; the engine has no zone
+database and checks only that) and `device` (an opaque name of 1 to 64
+Unicode characters, counted as scalar values). The engine orders by `id`
+and never reads `at` or `zone`; they are the record of when and where.
 
 **Ids** are UUIDv7 (RFC 9562) in lowercase with hyphens:
 `0195a7c2-3f10-7abc-8def-0123456789ab`. The first 48 bits are Unix
 milliseconds, so ids sort by the time they were made. The engine makes one
-from a millisecond count and ten random bytes that the client supplies;
-it checks the shape, the version (7) and the variant of any id it is
-given. An enrollment's id is a UUIDv7 too.
+from a millisecond count (0 up to, not including, 2^48) and ten random
+bytes that the client supplies: the milliseconds, then `7` and the low
+four bits of the first byte, the second byte, the variant bits `10` and
+the low six bits of the third byte, and the last seven bytes as they are.
+It checks the shape, the version (7) and the variant of any id it is
+given. An enrollment's id is a UUIDv7 too. *A client's rule:* an event
+that follows others in its enrollment (an undo above all) is given a
+millisecond count later than theirs, so a slow clock cannot put it before
+the event it answers.
 
 | Kind | Its fields | Meaning |
 |---|---|---|
@@ -297,46 +305,79 @@ given. An enrollment's id is a UUIDv7 too.
 | `changed` | `from`, and any of `start`, `readingDays`, `behavior`, `finish`, `limit`, `remaining`, `reminder` | The reader changed the arrangement, from that date |
 | `paused` | `from` | Paused from that date |
 | `resumed` | `from`; optionally `finish`, `remaining` | Resumed on that date |
-| `returned` | `date`, `choice`; optionally `finish`, `remaining` | The reader answered the welcome after a gap |
+| `returned` | `date`, `choice`; for `spread` and `moveFinish` also `finish`, `remaining` | The reader answered the welcome after a gap |
 | `ended` | `date` | The reader stopped following the plan |
 
 `date` is the civil date the reading happened, which the reader may set
 to an earlier day (**late logging**: "Log an earlier day" records the
 reading on the day it happened, never as today's). `appointed` is the
 civil date of the calendar slot. `readingDays` is a list of weekday
-numbers, ascending, at least one. `reminder` is a wall-clock time
-`HH:MM`, or `off`.
+numbers, ascending with none twice, at least one. `reminder` is a
+wall-clock time `HH:MM` (`00:00` to `23:59`), or `off`. `version`,
+`assignment`, `limit` and `remaining` are whole numbers from 1. `choice`
+is one of the return choices ("Returning after a break"). `verses` is
+kept as the text it is; only coverage reads it ("Progress").
 
-**The fold.** State is computed from the whole journal, the same in any
-arrival order:
+`finish` and `remaining` set a schedule's basis ("Work toward a finish
+date"), so they come together: an event with one and not the other is
+malformed, and so is a change of `behavior` to `finish-date` without
+`finish`, `limit` and `remaining`. A field its kind does not have is
+ignored (a `returned` event's `finish` and `remaining` too, unless its
+choice is `spread` or `moveFinish`).
+
+**The fold.** State is computed from the whole journal and the plan
+versions the engine is given, the same in any arrival order:
 
 1. Put the events in order of `id`, as text. This is *journal order*.
-2. An id that appears more than once is one event. If two copies differ,
-   the journal is refused (`conflictingEvent`): ids do not collide by
-   accident.
+2. An id that appears more than once is one event. If two copies differ
+   in a field the engine reads, the journal is refused
+   (`conflictingEvent`): ids do not collide by accident.
 3. An event is **inert**, with a reason the fold reports, when it can mean
-   nothing: `noEnrollment` (no `enrolled` event with that enrollment id
-   comes before it), `unknownAssignment` (not in that plan version),
-   `wrongSlot` (`appointed` missing on a calendar plan or present on
-   another, its day of the month not the assignment's, or before the
-   start), `notPermitted` (a behavior the plan does not permit, or
-   `finish` without `finish-date`), `noTarget` (an `undone` whose target is
-   not an earlier event of the same enrollment, or is its `enrolled`
-   event), `ended` (after the enrollment's active `ended` event, other
-   than undoing it) and `noEffect` (pausing what is paused, resuming what
-   is not). An inert event is kept and never deleted; it only does nothing.
+   nothing. This is decided in journal order, from the events before it
+   alone, and once decided it never changes; the first reason that
+   applies is given:
+   - an `enrolled` event: `noEffect` (its enrollment is already
+     enrolled), `unknownPlan` (the engine was not given that plan
+     version), `notPermitted` (a behavior the plan does not permit, or
+     `finish` or `limit` without `finish-date`);
+   - any other event: `noEnrollment` (no `enrolled` event with that
+     enrollment id, itself not inert, comes before it), then `ended`
+     (the enrollment has an active `ended` event; only an `undone` event
+     whose target is that event still has effect);
+   - a marking event: `unknownAssignment` (not in that plan version),
+     `wrongSlot` (`appointed` missing on a calendar plan or present on
+     another, its day of the month not the assignment's, or before the
+     start as it then stood);
+   - `undone`: `noTarget` (the target is not an earlier event of the same
+     enrollment, is inert, or is the `enrolled` event);
+   - `changed`: `noEffect` (it has none of its fields), `notPermitted` (a
+     behavior the plan does not permit, or `finish`, `limit` or
+     `remaining` when the behavior, its own or else the one arranged for
+     its `from`, is not `finish-date`);
+   - `paused` and `resumed`: `noEffect` (pausing what is paused, resuming
+     what is not: that is, whether the last active `paused` or `resumed`
+     event before it is a `paused` one), and for `resumed`,
+     `notPermitted` as for `changed`;
+   - `returned`: `notPermitted` (a choice that is not one for the
+     behavior arranged for its `date`).
+
+   An inert event is kept and never deleted; it only does nothing.
 4. **Undo.** An event is *active* unless an active `undone` event targets
    it. Undoing an undo makes its target active again: that is **redo**.
    So for `completed` C, then `undone` U1 of C, then `undone` U2 of U1:
-   U2 is active, U1 is not, and C is active.
+   U2 is active, U1 is not, and C is active. Two undos of one event are
+   one undo: both must be undone to bring it back.
 5. **A slot's state** is what its last active marking event in journal
    order says: `completed` gives **read**, `partlyCompleted` **partly
    read**, `skipped` **skipped**; with none it is **unread**. A slot that
    is not unread is *settled*.
-6. **The arrangement** on a date is the `enrolled` event's fields, each
-   replaced by the last active `changed` event in journal order that has
-   the field and whose `from` is on or before that date. `start` is not
-   dated this way: the last active change to it replaces it outright.
+6. **The arrangement** on a date is the `enrolled` event's `behavior`,
+   `readingDays`, `limit` and `reminder`, each replaced by the last active
+   `changed` event in journal order that has the field and whose `from`
+   is on or before that date. `reminder: off` leaves no reminder. `start`
+   is not dated this way: the last active change to it replaces it
+   outright. Nor is `finish`, which belongs to the schedule's basis
+   ("Work toward a finish date").
 7. **Paused days** run from an active `paused` event's `from` up to, not
    including, the next active `resumed` event's `from`; with no
    `resumed`, they run on.
@@ -352,9 +393,15 @@ The reader sees four states, in words and symbols as well as color:
 "Read", "Part read", "Skipped", "Not yet read". Skipping says: "Skip this
 reading. It won't count as read."
 
-Errors, refusing the whole journal: `malformedEvent` (a field missing, of
-the wrong type, or not a date, id or kind this version knows) and
-`conflictingEvent`. Everything else is inert.
+Errors, refusing the whole journal: `malformedEvent` (not an object, a
+field missing, of the wrong type, or not a date, id or kind this version
+knows) and `conflictingEvent`. Every event is checked before any is
+folded, so a journal with a malformed event is `malformedEvent` whatever
+else is wrong with it; the message names the first one as the events were
+given, counting from 1, and the first field at fault in the order above
+(`event 3 has no "date"`, `event 3's "date" is not a date`). A
+`conflictingEvent` message names the lowest such id. Everything else is
+inert.
 
 ## Reading days and rest days
 
@@ -387,9 +434,17 @@ or readings for the day, and the next unread reading:
 | `finished` | a sequence with no unread reading | "You've reached the end of this plan." |
 | `ended` | the reader stopped | (shown only among finished plans) |
 
-On every status but `upcoming`, `finished` and `ended`, the next unread
-reading is given too, so the reader can read ahead on a rest day or after
-today's reading. Reading ahead is never suggested.
+The first that applies is the status: `ended`; `finished`; `upcoming`;
+`paused`; `rest`; and then, on a reading day, `reading`, `done` or `open`
+as the behavior says.
+
+With the status the engine gives whether today is one of the reader's
+reading days, the readings to read today in reading order, the slots read
+or partly read with today's date, and, on every status but `upcoming`,
+`finished` and `ended`, a sequence's next unread reading, so the reader
+can read ahead on a rest day or after today's reading. Reading ahead is
+never suggested. Which rules apply is settled by the behavior arranged
+for today.
 
 ## Continue at my pace
 
@@ -401,8 +456,10 @@ finish date moves."
   reader marked partly read or skipped is settled and the plan moves on;
   it stays in history as what it is, and the reader can mark it read later.
 - **Today:** on a reading day the status is `done` once any reading is
-  marked read or partly read with today's date, and `reading` until then.
-  A skip does not make the day done: the next reading takes its place.
+  marked read or partly read with today's date, and `reading` until then,
+  with the next reading as today's. A skip does not make the day done:
+  the next reading takes its place. A reading logged for an earlier day
+  is that day's, so today's is still to read.
 - **Finished** means no assignment is unread. Completion is counted
   apart: "85 of 89 readings read, 2 part read, 2 skipped."
 - **The finish date** is projected, never promised. With *r* unread
@@ -414,7 +471,10 @@ finish date moves."
     before the start): *a* readings marked read or partly read with dates
     in them, over *b* reading days. When *b* ≥ 5 and *a* ≥ 1 it is the
     ⌈*r* × *b* ÷ *a*⌉-th reading day; otherwise there is none yet.
-  A paused or finished enrollment has no projection.
+  The window is the 28 dates ending yesterday, or from the start when
+  that is later. A day that never comes (a pause with no end lies ahead)
+  gives no date. On a paused day, and once finished or ended, there is
+  no projection.
 - **Ahead and behind.** A pace plan has no schedule to be behind. The
   engine gives the two dates and, for comparison, the date the plan would
   have finished at one reading every reading day since the start; the
@@ -441,35 +501,42 @@ before it happens."
 *R*, the readings unread when it was set. Enrolling sets one (*A* the
 start, *R* every reading). A `changed`, `resumed` or `returned` event
 that carries `finish` and `remaining` sets a new one from its own date;
-the last active such event in journal order is the basis. The reader's
-**limit** is the most readings on one reading day they accept.
+the last active such event in journal order is the basis. An *R* above
+the plan's readings counts as all of them. The reader's **limit** is the
+most readings on one reading day they accept.
 
 - **Scheduled days** are the reading days from *A* to *F*, *N* of them.
 - **The target** after the *i*-th scheduled day is (total − *R*) +
   ⌊*i* × *R* ÷ *N*⌋ settled readings, so readings are spread as evenly as
-  whole readings allow, and all are due after *F*. With no scheduled days
-  everything is due at once.
-- **Each day's share** is the target after it less the target before it.
-  The *k*-th unread reading is expected on scheduled day ⌈*k* × *N* ÷ *R*⌉;
-  that gives the coming week and the printable checklist.
+  whole readings allow, and all are due after *F*. Before *A* it is
+  total − *R*. With no scheduled days everything is due from *A*.
+- **Each day's share** is the target after it less the target before it;
+  a day that is not a scheduled day has none. The *k*-th of the basis's
+  readings is expected on scheduled day ⌈*k* × *N* ÷ *R*⌉; that gives the
+  coming week and the printable checklist. When *u* readings are unread,
+  the *j*-th of them is the (*R* − *u* + *j*)-th of the basis's, kept
+  within 1 to *R*.
 - **Outstanding** readings are the target before today less the readings
   settled, when that is above zero.
-- **Today** shows the next unread readings, as many as bring the reader
-  to today's target, but never more than today's share (or one, when
-  readings are outstanding and today's share is none): a backlog is never
-  put on one day. When that count is none the status is `open`; when the
-  reader has read that many today it is `done`. Skipping a reading
-  settles it, so it leaves today's count without being a reading.
+- **Today** shows the next unread readings: as many as bring the settled
+  readings to today's target, but with those read or partly read today
+  never more than today's share (or one, when readings are outstanding
+  and today's share is none): a backlog is never put on one day. When
+  there are none to show, the status is `done` if the reader has read
+  today and `open` if not. Skipping a reading settles it, so it leaves
+  today's count without being a reading.
 - **Before the reader accepts** a finish date, the engine gives the
-  number of scheduled days, the least and most readings on one day, and
-  the heaviest day's words, from which the interface shows minutes
-  ("About 20–25 minutes on the heaviest day. Estimates vary.").
+  number of scheduled days, the least and most readings on one day
+  (⌊*R* ÷ *N*⌋ and ⌈*R* ÷ *N*⌉; all *R* when there are no scheduled
+  days), and the words of the heaviest day ahead, from which the
+  interface shows minutes ("About 20–25 minutes on the heaviest day.
+  Estimates vary."). The words are absent when a reading has no count.
 - **A target beyond the limit** is never met by leaving readings out. The
-  engine says how many readings a day it would need, and the earliest
-  finish date that fits the limit: the ⌈*r* ÷ limit⌉-th reading day. The
-  interface offers that later date or a shorter plan: "To finish by 31
-  March you'd read up to 4 readings a day. At 2 a day you'd finish on 28
-  April."
+  engine says how many readings a day it would need (the most, above),
+  and the earliest finish date that fits the limit: the ⌈*R* ÷ limit⌉-th
+  reading day from *A*. The interface offers that later date or a
+  shorter plan: "To finish by 31 March you'd read up to 4 readings a day.
+  At 2 a day you'd finish on 28 April."
 
 *Example:* a 10-reading plan started Monday 2027-03-01, reading days 1 to
 5, finish Friday 2027-03-05, limit 2. Five scheduled days: targets 2, 4,
@@ -485,7 +552,11 @@ Today's readings stay on today, as the calendar sets them. Readings you
 missed stay in your history, and you can read them whenever you like."
 
 - **The appointment** for a date on or after the start is the assignment
-  whose id is the date's day of the month.
+  whose id is the date's day of the month. There is no next reading: the
+  appointment is the day's reading.
+- **Today:** on a reading day the status is `reading` while today's slot
+  is unread, `done` once it is read or partly read (on whatever day), and
+  `open` if the reader skipped it.
 - **It never moves.** A missed appointment stays unread in history under
   its own date; nothing is carried to another day, and rejoining marks
   nothing read.
@@ -500,8 +571,8 @@ missed stay in your history, and you can read them whenever you like."
   so: "April has 30 days, so this plan has no reading for the 31st this
   month."
 - **Missed** appointments are the unread slots from the start to
-  yesterday, paused days excluded. The count is given and shown only
-  where the reader asks.
+  yesterday, paused days excluded and rest days included. The count is
+  given and shown only where the reader asks.
 - A calendar enrollment is never `finished`; it runs until the reader
   ends it.
 

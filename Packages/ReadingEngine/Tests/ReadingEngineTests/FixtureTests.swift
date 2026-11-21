@@ -11,8 +11,35 @@ import Testing
 let fixturesURL = registryURL.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     .appending(path: "tests/fixtures", directoryHint: .isDirectory)
 
+/// An invented plan version in a scheduling fixture's `plans`: enough to
+/// enroll in and mark, with readings in the plan-file format.
+struct FixturePlan: Codable, Sendable {
+    struct Assignment: Codable, Sendable {
+        var id: Int
+        var reading: String
+    }
+
+    var id: String
+    var version: Int
+    var schedule: String
+    var behaviors: [String]
+    var readingDays: Int
+    var assignments: [Assignment]
+
+    func planVersion(in versification: Versification) throws -> PlanVersion {
+        PlanVersion(
+            id: try #require(PlanID(id)), version: version, schedule: try #require(Plan.Schedule(rawValue: schedule)),
+            behaviors: try behaviors.map { try #require(Plan.Behavior(rawValue: $0)) }, readingDays: readingDays,
+            assignments: try assignments.map {
+                Plan.Assignment(id: $0.id, reading: try ReferenceFormat.reading($0.reading, in: versification))
+            })
+    }
+}
+
 struct FixtureFile<Input: Codable & Sendable, Output: Codable & Equatable & Sendable>: Codable, Sendable {
     struct Case: Codable, Sendable {
+        /// What the case shows, in the scheduling fixtures.
+        var name: String?
         var input: Input
         var output: Output?
     }
@@ -20,6 +47,8 @@ struct FixtureFile<Input: Codable & Sendable, Output: Codable & Equatable & Send
     var fixture: String
     var version: Int
     var about: String
+    /// The invented plans a scheduling fixture's cases enroll in.
+    var plans: [FixturePlan]?
     var cases: [Case]
 }
 
@@ -28,11 +57,22 @@ struct FixtureFile<Input: Codable & Sendable, Output: Codable & Equatable & Send
 func checkFixture<Input: Codable & Sendable, Output: Codable & Equatable & Sendable>(
     _ name: String, sourceLocation: SourceLocation = #_sourceLocation, _ compute: (Input) throws -> Output
 ) throws {
+    try checkFixture(name, sourceLocation: sourceLocation) { input, _ in try compute(input) }
+}
+
+/// The same, for a scheduling fixture: `compute` is also given the file's
+/// invented plans.
+func checkFixture<Input: Codable & Sendable, Output: Codable & Equatable & Sendable>(
+    _ name: String, sourceLocation: SourceLocation = #_sourceLocation,
+    _ compute: (Input, [PlanVersion]) throws -> Output
+) throws {
     let url = fixturesURL.appending(path: "\(name).json")
     var file = try JSONDecoder().decode(FixtureFile<Input, Output>.self, from: Data(contentsOf: url))
     #expect(file.fixture == name, sourceLocation: sourceLocation)
+    let english = try loadEnglish()
+    let plans = try (file.plans ?? []).map { try $0.planVersion(in: english) }
     if ProcessInfo.processInfo.environment["DBW_RECORD_FIXTURES"] != nil {
-        for index in file.cases.indices { file.cases[index].output = try compute(file.cases[index].input) }
+        for index in file.cases.indices { file.cases[index].output = try compute(file.cases[index].input, plans) }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         try (encoder.encode(file) + Data("\n".utf8)).write(to: url, options: .atomic)
@@ -40,8 +80,10 @@ func checkFixture<Input: Codable & Sendable, Output: Codable & Equatable & Senda
     }
     #expect(!file.cases.isEmpty, sourceLocation: sourceLocation)
     for (index, testCase) in file.cases.enumerated() {
-        let output = try compute(testCase.input)
-        #expect(testCase.output == output, "\(name) case \(index): \(testCase.input)", sourceLocation: sourceLocation)
+        let output = try compute(testCase.input, plans)
+        #expect(
+            testCase.output == output, "\(name) case \(index) \(testCase.name ?? ""): \(testCase.input)",
+            sourceLocation: sourceLocation)
     }
 }
 
@@ -387,5 +429,138 @@ struct CivilDateOutput: Codable, Equatable, Sendable {
             }
         }
         return output
+    }
+}
+
+// MARK: Event ids
+
+struct EventIDInput: Codable, Sendable {
+    /// Text that may be an id.
+    var text: String?
+    /// Or the millisecond count and random bytes to make one from.
+    var milliseconds: Double?
+    var random: [Int]?
+}
+
+struct EventIDOutput: Codable, Equatable, Sendable {
+    /// Whether the text is an id.
+    var valid: Bool?
+    /// The id made, or the milliseconds the id was made at.
+    var id: String?
+    var milliseconds: Int?
+}
+
+@Test func eventIDsMatchTheirFixture() throws {
+    try checkFixture("event-ids") { (input: EventIDInput) -> EventIDOutput in
+        if let text = input.text {
+            let id = EventID(text)
+            return EventIDOutput(valid: id != nil, milliseconds: id?.milliseconds)
+        }
+        // A count or byte that is not a whole number in range makes no id.
+        guard let milliseconds = Int(exactly: try #require(input.milliseconds)),
+            let random = try #require(input.random).reduce(
+                into: [UInt8]?([]),
+                { bytes, byte in
+                    if let value = UInt8(exactly: byte) { bytes?.append(value) } else { bytes = nil }
+                }), let id = EventID(milliseconds: milliseconds, random: random)
+        else { return EventIDOutput() }
+        return EventIDOutput(id: id.rawValue, milliseconds: id.milliseconds)
+    }
+}
+
+// MARK: The journal
+
+struct JournalInput: Codable, Sendable {
+    /// Events in their wire form, in the order they arrived.
+    var events: [JSONValue]
+    /// Dates to give the arrangement on.
+    var on: [String]?
+}
+
+struct JournalOutput: Codable, Equatable, Sendable {
+    struct Inert: Codable, Equatable, Sendable {
+        var event: String
+        var reason: String
+    }
+
+    struct Slot: Codable, Equatable, Sendable {
+        var assignment: Int
+        var appointed: String?
+        var state: String
+        var date: String
+        var event: String
+        var verses: String?
+    }
+
+    struct Pause: Codable, Equatable, Sendable {
+        var from: String
+        var until: String?
+    }
+
+    struct Arrangement: Codable, Equatable, Sendable {
+        var date: String
+        var behavior: String
+        var readingDays: [Int]
+        var limit: Int?
+        var reminder: String?
+        var paused: Bool
+    }
+
+    struct Enrollment: Codable, Equatable, Sendable {
+        var id: String
+        var plan: String
+        var version: Int
+        var start: String
+        var ended: String?
+        var slots: [Slot]
+        var paused: [Pause]
+        var on: [Arrangement]?
+    }
+
+    /// The distinct events.
+    var events: Int?
+    var inert: [Inert]?
+    /// The events an active undo has taken back, in journal order.
+    var undone: [String]?
+    var enrollments: [Enrollment]?
+    var error: String?
+    var message: String?
+}
+
+@Test func theJournalMatchesItsFixture() throws {
+    try checkFixture("journal") { (input: JournalInput, plans: [PlanVersion]) -> JournalOutput in
+        let journal: Journal
+        do throws(JournalError) {
+            journal = try Journal(wire: input.events, plans: plans)
+        } catch {
+            return JournalOutput(error: error.kind, message: error.description)
+        }
+        let dates = try (input.on ?? []).map { try CivilDate($0) }
+        let inert = Set(journal.inert.map(\.event))
+        return JournalOutput(
+            events: journal.events.count,
+            inert: journal.inert.map { .init(event: $0.event.rawValue, reason: $0.reason.rawValue) },
+            undone: journal.events.map(\.id).filter { !inert.contains($0) && !journal.isActive($0) }.map(\.rawValue),
+            enrollments: journal.enrollments.map { enrollment in
+                JournalOutput.Enrollment(
+                    id: enrollment.id.rawValue, plan: enrollment.plan.id.rawValue, version: enrollment.plan.version,
+                    start: enrollment.start.description, ended: enrollment.ended?.description,
+                    slots: enrollment.settled.map {
+                        .init(
+                            assignment: $0.slot.assignment, appointed: $0.slot.appointed?.description,
+                            state: $0.state.rawValue, date: $0.date.description, event: $0.event.rawValue,
+                            verses: $0.verses)
+                    },
+                    paused: enrollment.pauses.map { .init(from: $0.from.description, until: $0.until?.description) },
+                    on: dates.isEmpty
+                        ? nil
+                        : dates.map { date in
+                            let arrangement = enrollment.arrangement(on: date)
+                            return .init(
+                                date: date.description, behavior: arrangement.behavior.rawValue,
+                                readingDays: arrangement.readingDays, limit: arrangement.limit,
+                                reminder: arrangement.reminder?.description, paused: enrollment.isPaused(date))
+                        })
+            })
     }
 }

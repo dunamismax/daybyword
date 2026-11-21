@@ -1076,3 +1076,34 @@ libraries that differ (Foundation's Gregorian calendar is Julian before
 1582). Whole-day integer arithmetic is the same in both runtimes, is
 checked against every date from year 1 to 9999 and against both libraries
 for 1583 to 2400, and leaves the zone in one small place per client (E7).
+
+### E42. The journal's fold: inert in journal order, a hand-read wire form, and one basis
+
+*2026-11-20, agent (P5.2, P5.4).* Building the fold settled what E40 left
+open:
+
+- **Whether an event is inert is decided at its place in journal order,
+  from the events before it, and never changes.** The alternative, judging
+  every event against the journal's final state, would make a reading
+  marked while a plan was un-ended vanish when the reader ended it again.
+  Whether an event is *active* (not undone) is still a matter of the whole
+  journal: two undos of one event are one undo.
+- **The wire form is read field by field** through a small `JSONValue` in
+  Swift and plain objects in TypeScript, in one stated order, rather than
+  through `Codable` and a schema library. Both runtimes then name the same
+  first fault in the same words, `true` is never taken for 1, and no
+  package is added.
+- **What refuses a journal can be told from one event alone** (a field
+  missing or of the wrong type), or from two copies under one id.
+  Everything that depends on the rest of the journal is inert instead, so
+  a reader's history stays readable (E40).
+- **`finish` and `remaining` travel together and are not dated.** They set
+  a schedule's basis; the arrangement on a date holds only the behavior,
+  reading days, limit and reminder. Otherwise a finish date could be read
+  two ways.
+- **Ids are checked, never parsed for meaning beyond their milliseconds**,
+  and the engine makes one only from a millisecond count and random bytes
+  the client supplies, so it stays a pure function.
+
+**Why:** the fold must give two runtimes, and any arrival order, one
+answer (E3, E33), and must never lose what a reader recorded.

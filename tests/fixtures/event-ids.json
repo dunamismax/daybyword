@@ -1,0 +1,409 @@
+{
+  "about" : "Event and enrollment ids (docs/engine.md, \"The journal\"): whether `text` is a UUIDv7 in lowercase with hyphens, and the Unix milliseconds it was made at; or the id made from a millisecond count and ten random bytes, of which 74 bits are used. Nothing is made from a count outside 0 to 2^48 - 1, a count or byte that is not whole, or other than ten bytes.",
+  "cases" : [
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-8def-0123456789ab"
+      },
+      "output" : {
+        "milliseconds" : 1742276280080,
+        "valid" : true
+      }
+    },
+    {
+      "input" : {
+        "text" : "00000000-0000-7000-8000-000000000000"
+      },
+      "output" : {
+        "milliseconds" : 0,
+        "valid" : true
+      }
+    },
+    {
+      "input" : {
+        "text" : "ffffffff-ffff-7fff-bfff-ffffffffffff"
+      },
+      "output" : {
+        "milliseconds" : 281474976710655,
+        "valid" : true
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-9def-0123456789ab"
+      },
+      "output" : {
+        "milliseconds" : 1742276280080,
+        "valid" : true
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-adef-0123456789ab"
+      },
+      "output" : {
+        "milliseconds" : 1742276280080,
+        "valid" : true
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195A7C2-3F10-7ABC-8DEF-0123456789AB"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-4abc-8def-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-8abc-8def-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-7def-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-cdef-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c23f107abc8def0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-8def-0123456789a"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-8def-0123456789abc"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2-3f10-7abc-8def-0123456789ag"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "0195a7c2_3f10_7abc_8def_0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : " 0195a7c2-3f10-7abc-8def-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "{0195a7c2-3f10-7abc-8def-0123456789ab}"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : "０195a7c2-3f10-7abc-8def-0123456789ab"
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "text" : ""
+      },
+      "output" : {
+        "valid" : false
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 0,
+        "random" : [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "output" : {
+        "id" : "00000000-0000-7000-8000-000000000000",
+        "milliseconds" : 0
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923000,
+        "random" : [
+          255,
+          255,
+          255,
+          255,
+          255,
+          255,
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      "output" : {
+        "id" : "01a400c1-27f8-7fff-bfff-ffffffffffff",
+        "milliseconds" : 1803898923000
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          171,
+          205,
+          239,
+          1,
+          35,
+          69,
+          103,
+          137,
+          171,
+          205
+        ]
+      },
+      "output" : {
+        "id" : "01a400c1-29c0-7bcd-af01-23456789abcd",
+        "milliseconds" : 1803898923456
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          16,
+          0,
+          64,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "output" : {
+        "id" : "01a400c1-29c0-7000-8000-000000000001",
+        "milliseconds" : 1803898923456
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 281474976710655,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "output" : {
+        "id" : "ffffffff-ffff-7102-8304-05060708090a",
+        "milliseconds" : 281474976710655
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 281474976710656,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : -1,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456.5,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          256
+        ]
+      },
+      "output" : {
+
+      }
+    },
+    {
+      "input" : {
+        "milliseconds" : 1803898923456,
+        "random" : [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ]
+      },
+      "output" : {
+
+      }
+    }
+  ],
+  "fixture" : "event-ids",
+  "version" : 1
+}
