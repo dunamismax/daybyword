@@ -8,8 +8,7 @@ line is *Find your plan. Read your Bible. Keep your place.*
 It is a native iPhone and iPad app in SwiftUI and a SvelteKit web version
 at daybyword.com, backed by PostgreSQL 18 and Drizzle on the owner's own
 machine behind Caddy (stack decision D42). SvelteKit in `web/` serves every
-page; the original Swift/Hummingbird server in `Server/` remains only until
-BUILD.md's PM.20 retires it. Swift stays because the native app is Swift;
+page and is the only server. Swift stays because the native app is Swift;
 Python is optional tooling, never a required language or a rewrite.
 
 Every AI agent session follows this file. [BUILD.md](BUILD.md) says *what*
@@ -85,10 +84,9 @@ a church, tradition, or faith story to them.
 
 ## 2. The session loop
 
-1. The owner's request in chat comes first. Otherwise finish **Phase M**
-   first (PM.1–PM.11 are withdrawn; BUILD.md's **Now** names the next
-   item). In general, take the **first unchecked `- [ ]` item in the
-   earliest phase that is not complete**, skipping items whose gate is
+1. The owner's request in chat comes first. Otherwise take the **first
+   unchecked `- [ ]` item in the earliest phase that is not complete**
+   (BUILD.md's **Now** names it), skipping items whose gate is
    still closed and [OWNER] steps still waiting on the owner (§4). Phases
    are ordered, and items inside a phase are ordered unless marked
    *(parallel-safe)* or the phase says otherwise. Phase 10 (the launch
@@ -450,8 +448,7 @@ An item is done only when all of these hold:
    and raw colors; the web gate (lint, svelte-check, unit tests, the
    production build booted and checked, the catalog export, schema drift,
    and real PostgreSQL 18 tests); the catalog compile and integrity suite;
-   the package and server tests; the app's unit tests; and the String
-   Catalog. The engine cases pass in both runtimes. The build has zero
+   the package tests; the app's unit tests; and the String Catalog. The engine cases pass in both runtimes. The build has zero
    warnings in the touched targets (xcodebuild prints warnings only for
    files it recompiles, so touch the sources or clean before trusting
    that).
@@ -476,7 +473,7 @@ An item is done only when all of these hold:
 **At each milestone, and before every TestFlight build or deploy**, run
 `make check-full` (`make check`, the engine cases in a browser, the web
 tour in light and dark at desktop and narrow widths, the app tour in light
-and dark, and the packages and server on Linux), and check by hand what the
+and dark, and the Swift packages on Linux), and check by hand what the
 tours cannot: a phone width and 200% text on the web, one large Dynamic
 Type size, and dark mode in the new screens. Fix what it finds before
 shipping.
@@ -599,7 +596,7 @@ Agents never:
 
 | Command | What it does | When |
 |---|---|---|
-| `make check` | Lint, the web gate, the catalog in both modes, package, server, and app tests, and the String Catalog | Before every commit |
+| `make check` | Lint, the web gate, the catalog in both modes, package and app tests, and the String Catalog | Before every commit |
 | `make check-full` | `check`, the engine cases in headless Firefox, both tours in light and dark, and Linux | At milestones, before TestFlight or a deploy |
 | `make check-web` | The web part of `check` alone: lint, svelte-check, unit tests, production build booted, export check, schema drift, `test-db` | While working on `web/` |
 | `make test-db` | Migrations, the catalog import, and the roles on a throwaway PostgreSQL 18 cluster | After schema or import changes |
@@ -607,7 +604,7 @@ Agents never:
 | `make run` | Build, boot a simulator, install, and launch the app (`SIM_DEVICE=…`) | Seeing app work |
 | `make test-domain-browser` | The shared engine cases in a real browser | After engine changes |
 | `make tour-web`, `make tour-app` | Every section in light and dark, with semantic checks and screenshots | UI changes; part of `check-full` |
-| `make test-linux` | The packages and the server on Linux in a container | Part of `check-full` |
+| `make test-linux` | The Swift packages on Linux in a container | Part of `check-full` |
 | `make tokens` | Regenerate color assets, `DesignTokens.swift`, and `tokens.css` from `design/tokens.json` | After a token change |
 | `make db-generate NAME=…` | Generate a SQL migration from the Drizzle schema; review it before committing | Schema changes |
 | `make rehearse-deploy` | Deploy, backup, restore check, redeploy, and rollback in Docker on a throwaway project | Before changing `deploy/` |

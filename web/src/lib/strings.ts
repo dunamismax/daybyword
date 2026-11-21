@@ -1,7 +1,8 @@
-// The web's interface text, by key (docs/decisions.md E15, E25), ported from
-// the Swift server's Strings.swift and pinned by tests/fixtures/strings.json.
-// Pages and components never write interface words themselves; they ask for
-// a key, so adding a language means adding a table. English only for now.
+// The web's interface text, by key (docs/decisions.md E15, E25). Pages and
+// components never write interface words themselves; they ask for a key, so
+// adding a language means adding a table, and a test of the production
+// server refuses a page that shows words from anywhere else. English only
+// for now.
 
 const english = {
   "site.name": "Day by Word",

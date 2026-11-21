@@ -1,5 +1,5 @@
 {
-  "about" : "Each address the current web answers, by GET: status, content type, cache policy, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated.",
+  "about" : "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. Version 2 (BUILD.md PM.20) is the SvelteKit site's own contract: it folds in the four differences from the retired Swift server that docs/decisions.md E38 records, and is edited by hand.",
   "cases" : [
     {
       "input" : {
@@ -132,24 +132,6 @@
     },
     {
       "input" : {
-        "path" : "/assets/site.css"
-      },
-      "output" : {
-        "contentType" : "text/css",
-        "status" : 200
-      }
-    },
-    {
-      "input" : {
-        "path" : "/assets/tokens.css"
-      },
-      "output" : {
-        "contentType" : "text/css",
-        "status" : 200
-      }
-    },
-    {
-      "input" : {
         "path" : "/assets/support.js"
       },
       "output" : {
@@ -216,7 +198,7 @@
         "path" : "/favicon.ico"
       },
       "output" : {
-        "contentType" : "image/vnd.microsoft.icon",
+        "contentType" : "image/x-icon",
         "status" : 200
       }
     },
@@ -324,11 +306,8 @@
         "path" : "/today/"
       },
       "output" : {
-        "contentType" : "text/html; charset=utf-8",
-        "current" : "Today",
-        "heading" : "Today",
-        "status" : 200,
-        "title" : "Today · Day by Word"
+        "location" : "/today",
+        "status" : 308
       }
     },
     {
@@ -336,10 +315,9 @@
         "path" : "/api/v1/plans"
       },
       "output" : {
-        "contentType" : "text/html; charset=utf-8",
-        "heading" : "Page not found",
-        "status" : 404,
-        "title" : "Page not found · Day by Word"
+        "cacheControl" : "no-store",
+        "contentType" : "application/json",
+        "status" : 404
       }
     },
     {
@@ -376,5 +354,5 @@
     "x-content-type-options" : "nosniff",
     "x-frame-options" : "DENY"
   },
-  "version" : 1
+  "version" : 2
 }

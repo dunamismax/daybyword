@@ -225,6 +225,9 @@ the first screen costs almost nothing.
 
 ### E16. Swift on the server: Hummingbird 2 and SQLite
 
+*Retired by PM.20 (2026-11-20): `Server/` is removed; SvelteKit is the only
+server (E36, E38).*
+
 *Implementation superseded by E32 (D40); retain the applicable behavior and
 data invariants.*
 
@@ -283,6 +286,9 @@ the backup API are added to this wrapper when an item needs them.
 
 ### E19. Server-rendered HTML through the project's own `HTML` type
 
+*Retired by PM.20 (2026-11-20): `Server/` is removed; SvelteKit is the only
+server (E36, E38).*
+
 *Implementation superseded by E32 (D40); retain the applicable behavior and
 data invariants.*
 
@@ -306,6 +312,9 @@ Swift. If the pages outgrow string literals, a result-builder DSL of our own
 can replace them behind the same functions.
 
 ### E20. The server's packages
+
+*Retired by PM.20 (2026-11-20): `Server/` is removed; SvelteKit is the only
+server (E36, E38).*
 
 *Implementation superseded by E32 (D40); retain the applicable behavior and
 data invariants.*

@@ -7,10 +7,9 @@ path spell the same thing (`daybyword://plans/psalm-a-day` is
 `https://daybyword.com/plans/psalm-a-day`). Universal links (P12.8) will let
 daybyword.com addresses open the app directly, using these same paths.
 
-**D42 migration contract:** preserve all addresses/deep links. SvelteKit
-routes (`web/src/routes/`) replace the web route code below; native Swift
-routes stay. Reserve /api/v1 for SvelteKit catalog/compute and later consented sync,
-never a direct database connection. Update code pointers after parity.
+SvelteKit routes (`web/src/routes/`) answer on the web and native Swift
+routes in the app. `/api/v1` is reserved for SvelteKit catalog and compute
+endpoints and later consented sync, never a direct database connection.
 
 ## The addresses
 
@@ -40,8 +39,8 @@ P14).
 
 - **Plan ids** are one to 64 lowercase ASCII letters and digits, in words
   joined by single hyphens (`gospels-at-your-pace`, `mcheyne-1842`).
-  `ReadingEngine`'s `PlanID` is the single check, used by the catalog
-  compiler, the server, and the app. An address with any other id is not
+  The engine's plan-id rule (docs/engine.md) is the single check: Swift's
+  `PlanID` in the catalog compiler and the app, `isPlanID` on the web. An address with any other id is not
   found.
 - **Lowercase, no trailing slash, no file extensions.** The web redirects
   an address with a trailing slash to the one without (308); the app also
@@ -62,9 +61,8 @@ P14).
 ## Where the code is
 
 - Web: SvelteKit's `web/src/routes/` (plan ids matched in `web/src/params.ts`),
-  tested against tests/fixtures/routes.json in `web/test/production/server.test.ts`.
-  The Swift server's routes (`Server/Sources/DayByWordWeb/Application+build.swift`)
-  stay until PM.20 retires them.
+  tested against tests/fixtures/routes.json, the web's address contract, in
+  `web/test/production/server.test.ts`.
 - App: `AppRoute` in `apple/App/Navigation/AppRoute.swift`, tested in
   `apple/AppTests/NavigationTests.swift`. Both test files cover every row of
   the table above.

@@ -3,8 +3,7 @@
    `make tokens`). Tailwind's own colors are removed there, so no raw color
    can be written as a class; this file writes none either (AGENTS.md §5,
    scripts/check-colors.sh). Pages use utility classes; the few patterns
-   every page repeats are components below, ported from the Swift server's
-   site.css (BUILD.md PM.16). */
+   every page repeats are components below. */
 @import "tailwindcss";
 @import "./tokens.css";
 

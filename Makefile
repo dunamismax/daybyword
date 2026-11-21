@@ -8,16 +8,15 @@ SHELL := /bin/sh
 CATALOG := build/catalog/Catalog.sqlite
 APP_CATALOG := apple/App/Resources/Catalog.sqlite
 PACKAGES := ReadingEngine ReadingData CatalogCompiler
-SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift \
-	Server/Sources Server/Tests Server/Package.swift apple
+SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift apple
 PORT ?= 8080
 WEB_STAMP := web/node_modules/.package-lock.json
 
 # SvelteKit, Vite, and Tailwind send no telemetry; nothing to switch off
 # (AGENTS.md §5, decision E36).
 
-.PHONY: help tokens generate catalog check-catalog build test-packages test-server test-app test-ui \
-	test-linux run serve screenshot lint format \
+.PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
+	test-linux run screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
 	catalog-export check-export db-generate db-drift test-db rehearse-deploy strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
@@ -30,7 +29,7 @@ tokens: ## Regenerate the color assets, DesignTokens.swift, and tokens.css from 
 generate: catalog ## Generate apple/DayByWord.xcodeproj from apple/project.yml
 	@cd apple && xcodegen generate --quiet
 
-catalog: ## Compile the catalog for the server and the app bundle (RELEASE=1 for release mode)
+catalog: ## Compile the catalog for the app bundle (RELEASE=1 for release mode)
 	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
 		--output $(CATALOG) $(if $(RELEASE),--release)
 	@cp $(CATALOG) $(APP_CATALOG)
@@ -48,25 +47,17 @@ test-packages: ## Test the shared packages on macOS
 		swift test --package-path Packages/$$package --quiet || exit 1; \
 	done
 
-test-server: ## Test the server on macOS
-	@echo "== Server"
-	@swift test --package-path Server --quiet
-
 test-app: generate ## Run the app's unit tests in the simulator
 	@scripts/xcodebuild.sh test-app -destination "$$(scripts/sim-destination.sh)" -only-testing:AppTests test
 
 test-ui: generate ## Run the app's UI tests in the simulator
 	@scripts/xcodebuild.sh test-ui -destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests test
 
-test-linux: ## Test the packages and the server on Linux, in a container
+test-linux: ## Test the Swift packages on Linux, in a container
 	@scripts/test-linux.sh
 
 run: generate ## Build, boot, install, and launch the app in the simulator
 	@scripts/run-app.sh
-
-serve: catalog ## Serve the site on http://localhost:8080 with the development catalog (PORT=…)
-	@DBW_PORT=$(PORT) DBW_PUBLIC_DIR=Server/Public DBW_CATALOG=$(CATALOG) \
-		swift run --package-path Server --quiet DayByWordServer
 
 screenshot: ## Save a screenshot of the booted simulator in screenshots/
 	@mkdir -p screenshots
@@ -154,7 +145,7 @@ tour-app: generate ## Tour the app in the simulator; screenshots go to screensho
 tour-web: build-web ## Tour the SvelteKit site in a real browser through WebDriver; screenshots go to screenshots/web/
 	@swift scripts/webtour.swift
 
-check: lint check-web catalog check-catalog test-packages test-server test-app check-strings ## The gate before every commit
+check: lint check-web catalog check-catalog test-packages test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
 check-full: check test-domain-browser tour-web tour-app test-linux ## The milestone gate: check, the engine cases in a browser, both tours in light and dark, and Linux
@@ -173,4 +164,4 @@ deploy: ## Deploy origin/main to daybyword.com on the host (DBW_HOST=root@ubuntu
 	@deploy/bin/release.sh
 
 clean: ## Remove build products and the generated Xcode project
-	rm -rf build Packages/*/.build Server/.build apple/DayByWord.xcodeproj web/build web/.svelte-kit web/node_modules
+	rm -rf build Packages/*/.build apple/DayByWord.xcodeproj web/build web/.svelte-kit web/node_modules

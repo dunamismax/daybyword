@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 // The app's shared components (BUILD.md P2.6), in the Morning design
-// (docs/design.md). The web has the same set (Server/.../Components.swift).
+// (docs/design.md). The web has the same set (web/src/lib/components/).
 
 // MARK: - Cards and buttons
 

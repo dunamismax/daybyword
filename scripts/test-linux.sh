@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds and tests the shared packages and the server on Linux, in a container
+# Builds and tests the shared Swift packages on Linux, in a container
 # with the toolchain pinned in .swift-version (BUILD.md P1.6). The repository
 # is mounted read-only; build products live in a named volume between runs.
 set -eu
@@ -32,6 +32,4 @@ fi
       echo "== $package"
       swift test --package-path "/src/Packages/$package" --scratch-path "/scratch/$package"
     done
-    echo "== Server"
-    swift test --package-path /src/Server --scratch-path /scratch/Server --force-resolved-versions
   '

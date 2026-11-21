@@ -1,6 +1,6 @@
 #!/bin/sh
 # Fails unless the Swift compiler on the PATH is the version pinned in
-# .swift-version, so this Mac, CI, and the server build with the same
+# .swift-version, so this Mac and CI build with the same
 # toolchain (BUILD.md P1.6), and that Node and npm are the versions
 # .node-version and web/package.json pin (PM.13).
 set -eu

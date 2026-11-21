@@ -1,7 +1,6 @@
 # The Linux environment for make test-linux and the CI Linux job: Ubuntu
 # 24.04 with the Swift toolchain named in .swift-version, installed and
-# signature-checked by install-swift.sh, as on the server (docs/decisions.md
-# E22). Build it with
+# signature-checked by install-swift.sh (docs/decisions.md E22). Build it with
 #   docker build --build-arg SWIFT_VERSION=$(cat .swift-version) scripts/linux
 FROM ubuntu:24.04
 

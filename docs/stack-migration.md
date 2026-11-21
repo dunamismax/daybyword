@@ -1,14 +1,14 @@
 # Final stack alignment
 
-**D42, 2026-11-20.** The stack is SvelteKit 3 · Svelte 5 · TypeScript ·
-Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) ·
-Caddy. It replaces D41's Astro web (2026-11-02); D41's other choices stand
-(E33, E36). `web/` is already the SvelteKit workspace (PM.21); the pages
-are still the Swift server's until PM.16.
-Swift/Python are used only when this project needs them. The existing
-iPhone/iPad app needs Swift; no Python application is required.
-D40's Next/Expo proposal and PM.1–PM.11 are withdrawn before implementation.
-Phase M now starts at PM.12 and precedes all feature work.
+**Finished 2026-11-20 (PM.20).** This is the record of Phase M: what was
+kept, what was replaced, and the evidence. The stack is SvelteKit 3 ·
+Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node
+(adapter-node) · Caddy (D42, replacing D41's Astro web; E33 and E36).
+SvelteKit in `web/` serves every page, and the Swift/Hummingbird server
+it replaced is removed. The native iPhone and iPad app stays Swift; no
+Python application is required. For current rules read AGENTS.md §5,
+docs/web.md and docs/engine.md; the sections below are kept as written
+during the migration.
 
 ## What remains and what changes
 

@@ -1,11 +1,15 @@
-// The production build (vite build, then node server.ts) against the routes
-// the Swift server answered (tests/fixtures/routes.json), with the
-// differences docs/decisions.md E38 records; run by make smoke-web after the
-// build (DBW_TEST_BUILD=1), never by the unit tests.
+// The production build (vite build, then node server.ts) against the site's
+// address contract (tests/fixtures/routes.json, docs/urls.md) and the checks
+// the Swift server's tests made before PM.20 retired it: the shell every page
+// shares, Settings, the configuration, the gallery's components, and that
+// pages write no interface words of their own. Run by make smoke-web after
+// the build (DBW_TEST_BUILD=1), never by the unit tests.
 import { spawn, type ChildProcess } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { settings } from "#lib/settings.ts";
+import { englishStrings } from "#lib/strings.ts";
 
 interface RouteCase {
   input: { path: string; environment?: string };
@@ -13,6 +17,8 @@ interface RouteCase {
     status: number;
     contentType?: string;
     cacheControl?: string;
+    /** Where a redirect leads. */
+    location?: string;
     title?: string;
     heading?: string;
     current?: string;
@@ -22,34 +28,6 @@ interface RouteCase {
 const fixture = JSON.parse(
   readFileSync(new URL("../../../tests/fixtures/routes.json", import.meta.url), "utf8"),
 ) as { cases: RouteCase[]; headers: Record<string, string> };
-
-/** What the SvelteKit site answers differently from the Swift server, and why (E38). */
-type Difference = { [K in keyof RouteCase["output"]]?: RouteCase["output"][K] | undefined } & {
-  location?: string;
-};
-const differences: Record<string, Difference> = {
-  // No trailing slash (docs/urls.md): a permanent redirect, not a second address.
-  "/today/": { status: 308, location: "/today" },
-  // The stylesheets are now one fingerprinted file under /_app/immutable/.
-  "/assets/site.css": {
-    status: 404,
-    contentType: "text/html; charset=utf-8",
-    heading: "Page not found",
-  },
-  "/assets/tokens.css": {
-    status: 404,
-    contentType: "text/html; charset=utf-8",
-    heading: "Page not found",
-  },
-  "/favicon.ico": { status: 200, contentType: "image/x-icon" },
-  // The app's and the browser's calls get JSON, never the HTML page.
-  "/api/v1/plans": {
-    status: 404,
-    contentType: "application/json",
-    title: undefined,
-    heading: undefined,
-  },
-};
 
 async function freePort(): Promise<number> {
   const server = createServer();
@@ -66,28 +44,35 @@ interface Running {
   log: string[];
 }
 
-async function start(environment: "development" | "production"): Promise<Running> {
-  const port = await freePort();
+function launch(environment: Record<string, string>, port: number): Running {
   const log: string[] = [];
   const child = spawn(process.execPath, ["server.ts"], {
     cwd: new URL("../../", import.meta.url),
-    env: { ...process.env, HOST: "127.0.0.1", PORT: String(port), DBW_ENV: environment },
+    env: { ...process.env, HOST: "127.0.0.1", PORT: String(port), ...environment },
   });
   child.stdout?.on("data", (chunk: Buffer) => log.push(...chunk.toString().split("\n")));
   child.stderr?.on("data", (chunk: Buffer) => log.push(...chunk.toString().split("\n")));
-  const base = `http://127.0.0.1:${port}`;
+  return { base: `http://127.0.0.1:${port}`, process: child, log };
+}
+
+async function start(environment: Record<string, string>): Promise<Running> {
+  const running = launch(environment, await freePort());
   for (let i = 0; ; i += 1) {
     if (
-      await fetch(`${base}/up`).then(
+      await fetch(`${running.base}/up`).then(
         (r) => r.ok,
         () => false,
       )
     )
       break;
-    if (i > 100) throw new Error(`the server did not start:\n${log.join("\n")}`);
+    if (i > 100) throw new Error(`the server did not start:\n${running.log.join("\n")}`);
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
-  return { base, process: child, log };
+  return running;
+}
+
+async function page(server: Running, path: string): Promise<string> {
+  return (await fetch(`${server.base}${path}`)).text();
 }
 
 function title(html: string): string | undefined {
@@ -102,30 +87,72 @@ function current(html: string): string | undefined {
   return /<a[^>]*aria-current="page"[^>]*>([^<]*)<\/a>/.exec(html)?.[1];
 }
 
+/**
+ * The words a page shows: the text between tags, and the attributes a reader
+ * meets (labels, titles, and the copy button's messages).
+ */
+function readerText(html: string): string[] {
+  const plain = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<svg[\s\S]*?<\/svg>/g, "")
+    // A reference keeps its chapter and verses together in a span; read it whole.
+    .replace(/<span class="whitespace-nowrap">([^<]*)<\/span>/g, "$1");
+  const found = [
+    ...[...plain.matchAll(/>([^<]+)</g)].map((match) => match[1] ?? ""),
+    ...[...plain.matchAll(/(?:aria-label|title|alt|data-copied|data-failed)="([^"]*)"/g)].map(
+      (match) => match[1] ?? "",
+    ),
+  ];
+  return found
+    .map((piece) =>
+      piece
+        .replaceAll("&#39;", "'")
+        .replaceAll("&quot;", '"')
+        .replaceAll("&lt;", "<")
+        .replaceAll("&gt;", ">")
+        .replaceAll("&amp;", "&")
+        .trim(),
+    )
+    .filter((piece) => piece !== "");
+}
+
+/** Whether a piece of page text is one of the table's values, a placeholder standing for any text. */
+function isFromTheTable(piece: string): boolean {
+  return Object.values(englishStrings).some((value) =>
+    new RegExp(
+      `^${value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\\{[a-z]+\\\}/g, ".+")}$`,
+    ).test(piece),
+  );
+}
+
 let development: Running;
 let production: Running;
+let deployed: Running;
+const commit = "A333B3F0123456789ABCDEF";
 
 beforeAll(async () => {
-  [development, production] = await Promise.all([start("development"), start("production")]);
+  [development, production, deployed] = await Promise.all([
+    start({ DBW_ENV: "development" }),
+    start({ DBW_ENV: "production" }),
+    start({ DBW_ENV: "production", DBW_COMMIT: commit }),
+  ]);
 });
 
 afterAll(() => {
-  development.process.kill();
-  production.process.kill();
+  for (const server of [development, production, deployed]) server.process.kill();
 });
 
 describe("the production server", () => {
   for (const testCase of fixture.cases) {
     const { path, environment } = testCase.input;
-    const changed = differences[path];
-    const expected = { ...testCase.output, ...changed };
-    it(`answers ${path}${environment ? ` (${environment})` : ""} as the Swift server did${changed ? ", with E38's difference" : ""}`, async () => {
+    const expected = testCase.output;
+    it(`answers ${path}${environment ? ` (${environment})` : ""} as docs/urls.md says`, async () => {
       const server = environment === "production" ? production : development;
       const response = await fetch(`${server.base}${path}`, { redirect: "manual" });
       expect(response.status).toBe(expected.status);
-      if (changed?.location) {
+      if (expected.location) {
         const location = new URL(response.headers.get("location") ?? "", `${server.base}${path}`);
-        expect(location.pathname).toBe(changed.location);
+        expect(location.pathname).toBe(expected.location);
         return;
       }
       if (expected.contentType) {
@@ -135,9 +162,10 @@ describe("the production server", () => {
         expect(response.headers.get("cache-control")).toBe(expected.cacheControl);
       }
       const body = await response.text();
-      if (expected.title) expect(title(body)).toBe(expected.title);
-      if (expected.heading) expect(heading(body)).toBe(expected.heading);
-      expect(current(body)).toBe(expected.current);
+      const html = response.headers.get("content-type")?.startsWith("text/html") === true;
+      expect(html ? title(body) : undefined).toBe(expected.title);
+      expect(html ? heading(body) : undefined).toBe(expected.heading);
+      expect(html ? current(body) : undefined).toBe(expected.current);
     });
   }
 
@@ -186,9 +214,29 @@ describe("the production server", () => {
   });
 
   it("shows the deployed commit in Settings only when one is given", async () => {
-    const html = await (await fetch(`${production.base}/settings`)).text();
-    expect(html).toContain("Development build");
-    for (const name of ["appearance", "reference-size"]) expect(html).toContain(`name="${name}"`);
+    expect(await page(production, "/settings")).toContain("Development build");
+    const html = await page(deployed, "/settings");
+    expect(html).toContain(`Version ${commit.toLowerCase().slice(0, 12)}`);
+    expect(html).not.toContain("Development build");
+  });
+
+  it("refuses to start with settings it cannot use", async () => {
+    for (const environment of [{ DBW_ENV: "staging" }, { DBW_COMMIT: "main" }]) {
+      const server = launch(environment, await freePort());
+      const code = await new Promise<number | null>((resolve) => {
+        const timer = setTimeout(() => {
+          server.process.kill();
+          resolve(null);
+        }, 5000);
+        server.process.on("exit", (exitCode) => {
+          clearTimeout(timer);
+          resolve(exitCode);
+        });
+      });
+      expect(code, JSON.stringify(environment)).not.toBe(0);
+      expect(code, `${JSON.stringify(environment)} kept running`).not.toBeNull();
+      expect(server.log.join("\n")).toMatch(/DBW_(ENV|COMMIT) must be/);
+    }
   });
 
   it("logs the method, route pattern, status and time, never the address", async () => {
@@ -202,4 +250,93 @@ describe("the production server", () => {
     );
     expect(production.log.join("\n")).not.toMatch(/psalm-a-day|2027-01-04|start=/);
   });
+});
+
+describe("the shell every page shares", () => {
+  for (const path of ["/", "/today", "/plans/psalm-a-day/week", "/settings", "/no-such-page"]) {
+    it(`wraps ${path}`, async () => {
+      const html = await page(production, path);
+      expect(html.startsWith("<!doctype html>")).toBe(true);
+      expect(html).toContain('<meta name="robots" content="noindex" />');
+      // The skip link is the first thing in the page, before the header.
+      const body = html.slice(html.indexOf("<body"));
+      expect(/<a [^>]*>/.exec(body)?.[0]).toContain('href="#content"');
+      expect(body).toContain('<main id="content"');
+      expect(body.split("<main").length).toBe(2);
+      expect(body).toContain('<nav aria-label="Sections">');
+      expect(body.split("aria-current").length).toBeLessThanOrEqual(2);
+      expect(body).toContain("not affiliated with any church or denomination");
+      // The old-browser notice starts hidden, with a copy for JavaScript turned off (D30).
+      expect(html).toContain('<script type="module" src="/assets/support.js"></script>');
+      expect(html).toContain('<script nomodule defer src="/assets/unsupported.js"></script>');
+      expect(body).toMatch(/id="browser-notice" role="note" hidden(="")?>/);
+      expect(body).toContain("<noscript>");
+    });
+  }
+
+  it("keeps a plan's pages in the Plans section", async () => {
+    for (const path of ["/plans/psalm-a-day", "/plans/psalm-a-day/week"]) {
+      expect(current(await page(production, path)), path).toBe("Plans");
+    }
+  });
+});
+
+describe("Settings", () => {
+  it("offers each setting's values, with its default checked", async () => {
+    const html = await page(production, "/settings");
+    for (const setting of settings) {
+      for (const value of setting.values) {
+        const input = new RegExp(`<input[^>]*name="${setting.name}" value="${value}"[^>]*>`).exec(
+          html,
+        )?.[0];
+        expect(input, `${setting.name} ${value}`).toBeDefined();
+        expect(input?.includes(" checked"), `${setting.name} ${value}`).toBe(
+          value === setting.fallback,
+        );
+      }
+    }
+    expect(html).toMatch(/<legend[^>]*>Appearance<\/legend>/);
+    expect(html).toContain("never sent to daybyword.com");
+  });
+});
+
+describe("the component gallery", () => {
+  it("is read in words: spoken references, and a status's word beside its symbol", async () => {
+    const html = await page(development, "/dev/components");
+    expect(html.replace(/<!--[\s\S]*?-->/g, "")).toContain(
+      '<span aria-hidden="true">Mark <span class="whitespace-nowrap">4:1–20</span></span>' +
+        '<span class="sr-only">Mark, chapter 4, verses 1 to 20</span>',
+    );
+    const statuses = [
+      englishStrings["component.status-read"],
+      englishStrings["component.status-partly-read"],
+      englishStrings["component.status-skipped"],
+      englishStrings["component.status-unread"],
+    ];
+    expect(new Set(statuses).size).toBe(statuses.length);
+    for (const status of statuses) expect(html, status).toContain(status);
+    expect(html).toMatch(/About \d+ minutes?\. Estimates vary\./);
+  });
+});
+
+describe("the interface text", () => {
+  // No page writes interface words of its own: every word a reader sees comes
+  // from the string table, so adding a language is adding a table (E25). The
+  // gallery is excluded; its content is invented for layout.
+  for (const path of [
+    "/",
+    "/today",
+    "/plans",
+    "/plans/psalm-a-day",
+    "/plans/psalm-a-day/week",
+    "/progress",
+    "/settings",
+    "/no-such-page",
+  ]) {
+    it(`on ${path} comes only from the string table`, async () => {
+      const pieces = readerText(await page(deployed, path));
+      expect(pieces.length).toBeGreaterThan(0);
+      for (const piece of pieces) expect(isFromTheTable(piece), piece).toBe(true);
+    });
+  }
 });

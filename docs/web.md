@@ -2,8 +2,8 @@
 
 **D42/E36.** `web/` is a SvelteKit 3 workspace (Svelte 5, TypeScript,
 Tailwind CSS 4) built by @sveltejs/adapter-node into a standalone Node
-server behind the host's Caddy, with PostgreSQL 18 through Drizzle. Until
-PM.16 ports them, readers' pages are still served by the Swift server.
+server behind the host's Caddy, with PostgreSQL 18 through Drizzle. It
+serves every page; the Swift server it replaced is gone (PM.20).
 Prerender static public content as appropriate; do not deploy only static
 files when APIs are needed.
 
@@ -55,13 +55,14 @@ files when APIs are needed.
 - D30 browsers, keyboard/focus/Reduce Motion, light/dark, 320px reflow,
   200% text and 400% zoom remain required. Public server-rendered content
   and plain unsupported/noscript notices remain usable without hydration.
-- Port every existing web tour assertion before retiring Swift web tools.
-  Test the production server (`node server.ts` around the adapter-node
+- Test the production server (`node server.ts` around the adapter-node
   build; `make serve-web`, `make smoke-web`), route/error/health
   behavior, form actions and hydration in a real browser, not only the
   development server.
 
-Existing Server/Public and Server/Sources/DayByWordWeb are the porting
-oracle. After parity update the code pointers and the `make serve`
-command; preserve /assets URLs or explicit redirects. Svelte components are
-web-only; native SwiftUI stays independent of them.
+The checks the retired Swift server's tests made now live in
+`web/test/` (PM.20): the address contract (tests/fixtures/routes.json),
+the shell every page shares, Settings, the configuration, and that pages
+show only words from the string table (`src/lib/strings.ts`). Preserve
+/assets URLs or explicit redirects. Svelte components are web-only;
+native SwiftUI stays independent of them.

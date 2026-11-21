@@ -1,6 +1,6 @@
 # Continuous integration, on manual dispatch only (D31). The local `make check`
 # is the gate before every commit; this confirms it and the web tour on clean
-# machines, and confirms the packages, the server, and the web app on Linux.
+# machines, and confirms the Swift packages and the web app on Linux.
 name: Check
 
 on:
@@ -46,7 +46,7 @@ jobs:
           if-no-files-found: ignore
 
   linux:
-    name: Linux (packages and server)
+    name: Linux (the Swift packages)
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:

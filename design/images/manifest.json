@@ -43,7 +43,7 @@
       "width": 180,
       "height": 180,
       "copies": [
-        "Server/Public/assets/images/apple-touch-icon.png"
+        "web/static/assets/images/apple-touch-icon.png"
       ],
       "purpose": "Apple web shortcut icon"
     },
@@ -54,7 +54,7 @@
       "width": 32,
       "height": 32,
       "copies": [
-        "Server/Public/assets/images/favicon-32.png"
+        "web/static/assets/images/favicon-32.png"
       ],
       "purpose": "Browser tab icon"
     },
@@ -74,7 +74,7 @@
       "width": 1200,
       "height": 630,
       "copies": [
-        "Server/Public/assets/images/share.png"
+        "web/static/assets/images/share.png"
       ],
       "purpose": "Homepage link preview"
     },
@@ -85,7 +85,7 @@
       "width": 192,
       "height": 192,
       "copies": [
-        "Server/Public/assets/images/web-app-192.png"
+        "web/static/assets/images/web-app-192.png"
       ],
       "purpose": "Installable web app icon"
     },
@@ -96,7 +96,7 @@
       "width": 512,
       "height": 512,
       "copies": [
-        "Server/Public/assets/images/web-app-512.png"
+        "web/static/assets/images/web-app-512.png"
       ],
       "purpose": "Maskable installable web app icon"
     },
@@ -107,7 +107,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/bible-in-a-year-five-days.jpg"
+        "web/static/assets/images/plans/bible-in-a-year-five-days.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -118,7 +118,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/bible-in-a-year.jpg"
+        "web/static/assets/images/plans/bible-in-a-year.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -129,7 +129,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/daily-office-1979.jpg"
+        "web/static/assets/images/plans/daily-office-1979.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -140,7 +140,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/deuterocanonical-books.jpg"
+        "web/static/assets/images/plans/deuterocanonical-books.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -151,7 +151,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/gospels-at-your-pace.jpg"
+        "web/static/assets/images/plans/gospels-at-your-pace.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -162,7 +162,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/mcheyne-1842.jpg"
+        "web/static/assets/images/plans/mcheyne-1842.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -173,7 +173,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/new-testament-in-a-year-five-days.jpg"
+        "web/static/assets/images/plans/new-testament-in-a-year-five-days.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -184,7 +184,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/pauls-letters.jpg"
+        "web/static/assets/images/plans/pauls-letters.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -195,7 +195,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/proverbs-through-the-month.jpg"
+        "web/static/assets/images/plans/proverbs-through-the-month.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -206,7 +206,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/psalm-a-day.jpg"
+        "web/static/assets/images/plans/psalm-a-day.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -217,7 +217,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/story-of-scripture.jpg"
+        "web/static/assets/images/plans/story-of-scripture.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -228,7 +228,7 @@
       "width": 1600,
       "height": 900,
       "copies": [
-        "Server/Public/assets/images/plans/table-of-lessons-1662.jpg"
+        "web/static/assets/images/plans/table-of-lessons-1662.jpg"
       ],
       "purpose": "Decorative plan cover"
     },
@@ -237,7 +237,7 @@
       "bytes": 1336,
       "sha256": "31937d7b124fdb2a663a91b92c35280d63ad67b1d1481d80d80b071419f131bb",
       "copies": [
-        "Server/Public/assets/images/mark.svg"
+        "web/static/assets/images/mark.svg"
       ],
       "purpose": "Adaptive single-color site mark"
     },
@@ -251,7 +251,7 @@
         16
       ],
       "copies": [
-        "Server/Public/favicon.ico"
+        "web/static/favicon.ico"
       ]
     }
   ]

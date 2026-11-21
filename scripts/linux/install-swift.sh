@@ -1,8 +1,8 @@
 #!/bin/sh
 # Installs a Swift toolchain release for Ubuntu 24.04 into <prefix>/<version>,
 # after checking its signature against swift.org's public signing keys kept
-# beside this script (swift-signing-keys.asc). Used by the Linux test image,
-# CI, and the server, so all three run the compiler pinned in .swift-version
+# beside this script (swift-signing-keys.asc). Used by the Linux test image
+# and CI, so both run the compiler pinned in .swift-version
 # (docs/decisions.md E22). Needs curl, gpg, and tar; the toolchain's own
 # system packages are installed separately (scripts/linux/Dockerfile lists them).
 #

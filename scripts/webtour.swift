@@ -8,12 +8,10 @@
 //   DBW_WEBDRIVER=safari swift scripts/webtour.swift
 //                                          Safari through safaridriver, once "Allow
 //                                          remote automation" is on in Safari's settings
-//   DBW_TOUR_SERVER=swift swift scripts/webtour.swift
-//                                          the Swift server, until PM.20 retires it
 //
 // The checks are semantic (headings, the nav's current link, the footer, the
-// first focusable element), so the same tour holds both servers to one
-// standard. The server must be built first (make tour-web does it). The WebDriver
+// first focusable element), not tied to the markup's classes. The server must
+// be built first (make tour-web does it). The WebDriver
 // client is this file's own: a few W3C WebDriver commands over URLSession.
 import Foundation
 
@@ -151,28 +149,13 @@ func expect(_ condition: Bool, _ message: @autoclosure () -> String) {
 }
 
 let browser = ProcessInfo.processInfo.environment["DBW_WEBDRIVER"] ?? "firefox"
-let server = ProcessInfo.processInfo.environment["DBW_TOUR_SERVER"] ?? "sveltekit"
-switch server {
-case "swift":
-    let serverBinary = root.appendingPathComponent("Server/.build/debug/DayByWordServer").path
-    guard FileManager.default.isExecutableFile(atPath: serverBinary) else { fail("build the Swift server first") }
-    _ = start(
-        serverBinary, [],
-        environment: [
-            "DBW_PORT": String(serverPort), "DBW_PUBLIC_DIR": root.appendingPathComponent("Server/Public").path,
-            "DBW_CATALOG": root.appendingPathComponent("build/catalog/Catalog.sqlite").path, "LOG_LEVEL": "warning",
-        ])
-case "sveltekit":
-    let web = root.appendingPathComponent("web")
-    guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/handler.js").path) else {
-        fail("build the web app first (make build-web)")
-    }
-    // The pinned Node from the PATH, as make uses it (scripts/check-toolchain.sh).
-    FileManager.default.changeCurrentDirectoryPath(web.path)
-    _ = start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
-default:
-    fail("DBW_TOUR_SERVER must be sveltekit or swift, not \(server)")
+let web = root.appendingPathComponent("web")
+guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/handler.js").path) else {
+    fail("build the web app first (make build-web)")
 }
+// The pinned Node from the PATH, as make uses it (scripts/check-toolchain.sh).
+FileManager.default.changeCurrentDirectoryPath(web.path)
+_ = start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
 switch browser {
 case "firefox":
     guard let gecko = ["/opt/homebrew/bin/geckodriver", "/usr/local/bin/geckodriver"].first(where: {
@@ -250,4 +233,4 @@ await driver.run("localStorage.clear()")
 
 await driver.end()
 stopAll()
-print("tour-web: \(checked) checks passed on the \(server) server in \(browser); screenshots in screenshots/web/")
+print("tour-web: \(checked) checks passed in \(browser); screenshots in screenshots/web/")

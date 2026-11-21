@@ -74,7 +74,7 @@ does not speak for any church, ministry, or publisher.
 
 | Milestone | What it delivers |
 |---|---|
-| M0 Stack alignment | The web and server on SvelteKit and PostgreSQL, the native app kept as it is (nearly done) |
+| M0 Stack alignment | The web and server on SvelteKit and PostgreSQL, the native app kept as it is (done) |
 | M1 Foundation | References, the catalog compiler, the reading engine, and daybyword.com deployed in development |
 | M2 First light | Three plans, Today, marking, reminders, and the return flow, on TestFlight and the web |
 | M3 Version 1.0 | Choosing a plan, the eight-plan launch catalog, progress, widgets, print, the installable web app, legal pages, a beta, and launch |
@@ -91,7 +91,6 @@ does not speak for any church, ministry, or publisher.
 | Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, and workload in both; scheduling is Phase 5 |
 | Catalog | Plain-text plan sources, compiled and checked by a Swift tool that refuses unverified references and uncleared sources | No plans yet |
 | Hosting | Docker Compose behind the host's Caddy, nightly `pg_dump` and restore checks | Live; the off-server backup copy is still open (P7.3) |
-| Legacy | The original Hummingbird web server in `Server/` | Retired by PM.20 |
 
 The apps call the server only over HTTPS; nothing outside the server
 connects to PostgreSQL. The full stack decision is D42 in BUILD.md, and
@@ -107,12 +106,11 @@ Packages/ReadingEngine/   the Swift engine: references, verse sets, workload, an
 Packages/ReadingData/     SQLite wrapper and catalog reader for the app
 Packages/CatalogCompiler/ the `catalog` tool that builds and exports the catalog
 catalog/                  plan sources, scripture data (book registry, versification), and SOURCES.md (rights)
-tests/fixtures/           the shared cases both engines and both sites must pass
+tests/fixtures/           the shared cases both engines must pass, and the web's address contract
 deploy/                   Dockerfile, Compose project, Caddy site file, systemd timers, deploy and backup scripts
 design/                   Morning's design tokens, mockups, image prompts, and the owner's artwork
 docs/                     product rules, design, engine, catalog, editorial, deployment, release, decisions
 scripts/                  helpers behind the Makefile
-Server/                   the original Hummingbird site, until PM.20 removes it
 .github/workflows/        CI, run by hand (D31)
 ```
 
@@ -132,7 +130,7 @@ Server/                   the original Hummingbird site, until PM.20 removes it
 ### Quick start
 
 ```sh
-make check       # the gate before every commit: lint, web, catalog, packages, server, app tests, String Catalog
+make check       # the gate before every commit: lint, web, catalog, packages, app tests, String Catalog
 make serve-web   # the SvelteKit production build at http://localhost:8080
 make run         # build, boot the newest iPhone simulator, install, and launch the app
 make check-full  # check, the engine cases in Firefox, both tours in light and dark, and Linux
@@ -143,8 +141,7 @@ web gate alone), `make test-db` (migrations, catalog import, and roles on a
 throwaway PostgreSQL 18), `make tour-web` and `make tour-app`, `make
 test-linux`, `make rehearse-deploy`, `make format`, and `make archive` and
 `make testflight` ([docs/release.md](docs/release.md)). Set `SIM_DEVICE` to
-choose a simulator and `PORT` to serve elsewhere. `make serve` still serves
-the Swift site until PM.20.
+choose a simulator and `PORT` to serve elsewhere.
 
 ### Prerequisites
 

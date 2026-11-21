@@ -1,7 +1,7 @@
 // The production server (BUILD.md PM.16, docs/deploy.md): adapter-node's
 // handler, wrapped so that every response, static files and errors included,
-// carries the security headers the Swift server sent (tests/fixtures/
-// routes.json, "headers"), a cache policy, and one log line of metadata only:
+// carries the site's security headers (tests/fixtures/routes.json,
+// "headers"), a cache policy, and one log line of metadata only:
 // the method, the route pattern (never the address or its query), the status
 // and the time taken (docs/decisions.md E17). HSTS is Caddy's.
 //

@@ -37,7 +37,6 @@ Catalog.sqlite-*
 apple/App/Resources/Catalog.sqlite
 
 # Local server databases
-Server/storage/
 *.sqlite-wal
 *.sqlite-shm
 

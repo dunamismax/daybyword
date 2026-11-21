@@ -15,7 +15,7 @@ const fixtures = JSON.parse(
 describe("/up", () => {
   const expected = fixtures.cases.find((c) => c.input.path === "/up")?.output;
 
-  it("matches the captured Swift server fixture", async () => {
+  it("answers as the address contract says", async () => {
     expect(expected).toBeDefined();
     const response = await GET({} as RequestEvent);
     expect(response.status).toBe(expected?.status);

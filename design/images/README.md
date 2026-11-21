@@ -71,10 +71,10 @@ editorial gate.
 - The three app icons are registered in
   `apple/App/Resources/Brand.xcassets/AppIcon.appiconset`. The app target in
   `apple/project.yml` selects `AppIcon`; Xcode generates the required sizes.
-- Ready-to-serve web copies are under `Server/Public/assets/images/`,
+- Ready-to-serve web copies are under `web/static/assets/images/`,
   with the same names and `plans/` subdirectory. Only the web variants,
   sharing image, and plan covers are copied there. The fallback favicon is
-  also served from `Server/Public/favicon.ico`.
+  also served from `web/static/favicon.ico`.
 - P2.8 will place the mark in the web header; P9.4 and P9.9 will use the
   covers and sharing metadata; P15.1 and P16.8 will wire the web manifest
   and favicon links. Those features remain unchecked. No plan-page or

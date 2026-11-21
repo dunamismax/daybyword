@@ -1,7 +1,7 @@
 // The server's settings from the environment (SvelteKit 3's explicit
-// environment variables), checked at start-up rather than guessed, as the
-// Swift server's ServerConfiguration did. All are private: none reaches the
-// browser.
+// environment variables), checked at start-up rather than guessed (a test
+// starts the production server with bad values). All are private: none
+// reaches the browser.
 import { defineEnvVars } from "@sveltejs/kit/env";
 
 export const variables = defineEnvVars({
