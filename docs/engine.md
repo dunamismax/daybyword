@@ -13,7 +13,8 @@ both do.
 The first part covers identifiers, scripture data, references, verse
 sets, word counts and workload (version 0, BUILD.md PM.15). The second
 part, **version 1**, covers civil dates, plans, enrollments, the journal,
-the three behaviors, returning, progress and reminders (P5.1 to P5.12).
+the three behaviors, the days ahead, returning, progress and reminders
+(P5.1 to P5.12, P8.2a).
 Both runtimes pass every case of both parts and state the version they
 implement (`ReadingEngine.specificationVersion`, `specificationVersion`);
 a web test checks that the two and the line above agree.
@@ -581,6 +582,34 @@ missed stay in your history, and you can read them whenever you like."
 reading 30, and reading 31 is listed as not appointed this month. On 1
 May it is reading 1. If the reader was away from 2 to 5 May, on 6 May the
 appointment is reading 6 and four slots are unread in history.
+
+## The days ahead
+
+For a plan's sample week, the coming week and the printable checklist,
+the engine lists the dates from today on, each with whether it is one of
+the reader's reading days and the readings expected on it. It is Today's
+own answer for each date in turn, supposing the reader reads what each
+day shows and nothing more, so the list never disagrees with what Today
+will say.
+
+- **Today** has today's readings.
+- **Pace:** each later reading day has one reading, the next unread
+  after those listed before it.
+- **Finish-date:** each later reading day has as many as bring the
+  settled readings to that day's target, and never more than the day's
+  share (or one, where readings are outstanding and the day has no
+  share), as on Today.
+- **Calendar:** every date on or after the start has its own
+  appointment, on rest days and paused days too, unless it is already
+  settled or the month does not appoint it.
+- A sequence's rest days, paused days and dates before the start have no
+  readings, and an ended enrollment has none on any date.
+- **A sample week** before the reader starts is this list for a candidate
+  `enrolled` event, as for any preview ("Returning after a break").
+
+*Example:* the finish-date example on Thursday 2027-03-04, with readings
+1 and 2 read: Thursday has readings 3 and 4, Friday 5 and 6, and from
+Monday, past the finish date, one reading each reading day: 7, 8, 9, 10.
 
 ## Returning after a break
 

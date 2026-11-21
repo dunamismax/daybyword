@@ -18,7 +18,7 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | Phase 8, first light (M2): 1 of 14 items done. Phase 10 (the launch catalog, in parallel): 3 of 9 |
-| **Next item** | **P8.2**: starting a plan (plan page, sample week, start date, behavior, reading days, reminder offer), on the web and in the app |
+| **Next item** | **P8.2b**: the plan page with its sample week and workload, and the start flow, on the web and in the app (P8.2a, the engine's list of the days ahead, is done) |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
@@ -487,6 +487,10 @@ list.
 - [x] **P8.1 [REVIEW]** The first three plans compiled and reviewed, each Day by Word's own: **Gospels at your pace** (sequential, P10.1), **the Bible in a year** (canonical order, balanced by reading time; pace or finish date, P10.2), and **Proverbs through the month** (follow the calendar by day of the month, P10.7). Each has its full plan-page metadata. *(Rewritten by D39: the 1979 Daily Office moved to the roadmap.)*
   - *Result (agent, 2026-11-21):* `catalog/plans/gospels-at-your-pace.plan` (60 readings), `bible-in-a-year.plan` (365) and `proverbs-through-the-month.plan` (31), each at `reviewed`. Their schedules are computed by `scripts/plans.swift` under the rules in docs/plans.md, and `make check` fails if a schedule is not what its rule gives. Reviewed under docs/editorial.md: the rules (whole chapters, canonical order, each chapter once), the compiler's facts against each page's wording (31,102, 3,779 and 915 verses, no repeats or omissions; lightest and heaviest readings), the wording against AGENTS.md §3, and rights (`daybyword-original`, cleared). Both catalog builds hold all three. *Not yet:* a page that shows them (P8.2, P8.10).
 - [ ] **P8.2** Starting a plan: a plain plan page with a sample week and workload; a start date, or "join today's reading" for calendar plans; the behavior, explained; reading days; how the reader reads (a physical Bible, YouVersion, or another app, with Copy reference); and a reminder offer. Notification permission is requested only after the reader chooses a reminder.
+  - *Note (agent, 2026-11-21):* split in two. P8.2a is the engine's part; P8.2b is the flow itself, on the web and in the app.
+  - [x] **P8.2a** The days ahead, in both runtimes: for an enrollment and a date, each coming date with the readings expected on it, which gives the sample week (a candidate `enrolled` event), the coming week, and the checklist (P8.10, P13.1).
+    - *Result (agent, 2026-11-21):* `Enrollment.comingDays(from:count:)` (`Ahead.swift`) and `comingDays` (`ahead.ts`), specified in docs/engine.md's "The days ahead". `ahead.json` (29 cases, checked by hand) passes in Swift and Node, and a Swift test marks each listed day's readings read and finds Today showing the next day's list.
+  - [ ] **P8.2b** The plan page with its sample week and workload, and the start flow: start date or "join today's reading", the behavior explained, reading days, how the reader reads, and the reminder offer.
 - [ ] **P8.3** Today: each active plan's next reading, with its label ("Gospels at your pace — Reading 12"), large references, **Open in …**, **Copy reference**, and **Mark read**. Rest days and finished days say so plainly, with no fanfare and no nagging.
 - [ ] **P8.4** Marking: complete with one deliberate tap; mark part read ("part of it"); skip (labeled as a scheduling decision); log late for an earlier date; undo and redo. All of these are journal events.
 - [ ] **P8.5** Opening a reading (D26): an adapter for YouVersion and Bible.com that builds the best link it can (the passage, or the chapter where that is the limit, said plainly) in the reader's chosen translation, opening the app where it is installed, and Copy reference everywhere. Test it on a device and record the date, app version, link format, and limits in `docs/destinations.md`.
@@ -631,8 +635,8 @@ only when Phase 18 is finished or an item points there.
   `catalog/plans/`, their schedules computed by `scripts/plans.swift`
   (docs/plans.md). No page shows them yet; the live catalog still has
   none until the next deploy.
-- **Not built:** the day-by-day list of coming readings (the coming week,
-  the checklist); build it with P8.2, P8.10 or P13.1.
+- **P8.2a is done:** the engine lists the days ahead (`comingDays`,
+  `ahead.json`), for the sample week, the coming week and the checklist.
 - **Reminders on a device** (delivery across a real clock change) are
   P8.8, P17.4 and P17.9; the engine and its Swift edge are tested.
 - **A mistake to avoid:** stage by path, never `git add -A`: other

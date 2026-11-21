@@ -950,3 +950,82 @@ struct RemindersOutput: Codable, Equatable, Sendable {
             })
     }
 }
+
+// MARK: The days ahead
+
+struct AheadInput: Codable, Sendable {
+    var events: [JSONValue]
+    var today: String
+    var days: Int
+}
+
+struct AheadOutput: Codable, Equatable, Sendable {
+    struct Day: Codable, Equatable, Sendable {
+        var date: String
+        var readingDay: Bool
+        var readings: [TodayOutput.Place]
+    }
+
+    struct Enrollment: Codable, Equatable, Sendable {
+        var id: String
+        var days: [Day]
+    }
+
+    var enrollments: [Enrollment]
+}
+
+@Test func theDaysAheadMatchTheirFixture() throws {
+    try checkFixture("ahead") { (input: AheadInput, plans: [PlanVersion]) -> AheadOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        return AheadOutput(
+            enrollments: journal.enrollments.map { enrollment in
+                .init(
+                    id: enrollment.id.rawValue,
+                    days: enrollment.comingDays(from: date, count: input.days).map { day in
+                        .init(
+                            date: day.date.description, readingDay: day.isReadingDay,
+                            readings: day.readings.map { .init($0, in: enrollment.plan) })
+                    })
+            })
+    }
+}
+
+/// The days ahead are Today's answer for each date in turn, supposing the
+/// reader reads what each day shows: so marking each day's readings read,
+/// one day after another, must find Today showing what was listed.
+@Test func theDaysAheadAreWhatTodayWillShow() throws {
+    let url = fixturesURL.appending(path: "ahead.json")
+    let file = try JSONDecoder().decode(FixtureFile<AheadInput, AheadOutput>.self, from: Data(contentsOf: url))
+    let (english, counts) = (try loadEnglish(), try loadWordCounts())
+    let plans = try (file.plans ?? []).map { try $0.planVersion(in: english, counts: counts) }
+    for testCase in file.cases {
+        var journal = try Journal(wire: testCase.input.events, plans: plans)
+        let first = try CivilDate(testCase.input.today)
+        let listed = journal.enrollments.map { $0.comingDays(from: first, count: testCase.input.days) }
+        for offset in 0..<testCase.input.days {
+            let date = try first.adding(days: offset)
+            for (index, enrollment) in journal.enrollments.enumerated() {
+                let day = listed[index][offset]
+                #expect(day.date == date)
+                let today = enrollment.today(date)
+                #expect(day.isReadingDay == today.isReadingDay, "\(testCase.name ?? "") on \(date)")
+                if enrollment.plan.schedule == .sequence {
+                    #expect(day.readings == today.readings, "\(testCase.name ?? "") on \(date)")
+                } else {
+                    // The appointment is the day's, on rest and paused days too.
+                    let appointed = today.calendar.map { $0.state == .unread ? [$0.appointment] : [] } ?? []
+                    #expect(day.readings == appointed, "\(testCase.name ?? "") on \(date)")
+                }
+            }
+            // Read everything the day listed, in every enrollment.
+            for (index, enrollment) in journal.enrollments.enumerated() {
+                for slot in listed[index][offset].readings {
+                    let mark = JournalEvent.Marked(
+                        .completed, assignment: slot.assignment, date: date, appointed: slot.appointed)
+                    journal = try #require(journal.previewing(.marked(mark), in: enrollment.id))
+                }
+            }
+        }
+    }
+}

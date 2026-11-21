@@ -230,7 +230,7 @@ extension Enrollment {
     // MARK: Work toward a finish date
 
     /// The settled readings due once `date` is over.
-    private func target(after date: CivilDate) -> Int {
+    func target(after date: CivilDate) -> Int {
         let total = plan.assignments.count
         guard let basis else { return total }
         guard date >= basis.first else { return total - basis.remaining }

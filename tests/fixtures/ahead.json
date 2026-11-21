@@ -1,0 +1,3323 @@
+{
+  "about" : "The days ahead (docs/engine.md, \"The days ahead\"; P8.2a): for each enrollment, the dates from today on, each with whether it is a reading day and the readings expected on it, supposing the reader reads what each day shows. A sample week is the same list for a plan just enrolled in. The plans are invented.",
+  "cases" : [
+    {
+      "input" : {
+        "days" : 9,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "a sample week: one reading each reading day from the start, and none at the weekend",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 7,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-03",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "a sample week from a Wednesday start",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 6,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-04",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "before the start: nothing until the start date",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "pace: today's reading is read, so the next is tomorrow's",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 3,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "pace: two read today; tomorrow has the third",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 3,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "partlyCompleted",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-02"
+      },
+      "name" : "pace: skipped and part-read readings are settled; the days ahead go on from the next unread",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-06"
+      },
+      "name" : "pace: asked on a rest day, the next reading is Monday's",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 10,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-03",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-09",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "pace: a pause ahead has no readings; they go on the day it ends",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-10",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 5,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-03",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "pace: a pause with no end: nothing after it begins",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-02"
+      },
+      "name" : "pace: two readings left, then nothing",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 3,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 9,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0010-7000-8000-000000000010",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 10,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0011-7000-8000-000000000011",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-02"
+      },
+      "name" : "a finished plan has no days ahead",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 3,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "ended",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "an ended enrollment has no days ahead, even before the day it ended",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 8,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-04",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "changed",
+            "readingDays" : [
+              1,
+              4,
+              6
+            ],
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "a change of reading days counts from its date",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 6,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "finish-date: ten readings over five days are two a day",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  },
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  },
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  },
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  },
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  },
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 8,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "finish-date: the example on Thursday, two days behind: two today, two on Friday, then one a reading day",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  },
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  },
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-10",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-11",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 12,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-26",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "finish-date: ten readings over twenty reading days fall on every other day",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-10",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-11",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-12",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 9,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-09",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "finish-date: seven days for ten readings: three days have two",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  },
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  },
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  },
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-02"
+      },
+      "name" : "finish-date: today's share is read; the rest follow the schedule",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  },
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  },
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  },
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 12,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-12",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-03",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-10",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "finish-date: a pause takes its days out, so the days left carry more",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  },
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  },
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-09",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-10",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  },
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-11",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  },
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-12",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  },
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 6,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "from" : "2027-03-03",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "changed",
+            "limit" : 4,
+            "remaining" : 10,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "a change to finish-date from Wednesday: one a day until then, then the schedule's share",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-04",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 4,
+                    "position" : 4
+                  },
+                  {
+                    "assignment" : 5,
+                    "position" : 5
+                  },
+                  {
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 7,
+                    "position" : 7
+                  },
+                  {
+                    "assignment" : 8,
+                    "position" : 8
+                  },
+                  {
+                    "assignment" : 9,
+                    "position" : 9
+                  },
+                  {
+                    "assignment" : 10,
+                    "position" : 10
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 6,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-28"
+      },
+      "name" : "calendar: each date has its own appointment; April has no 31st",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-29",
+                    "assignment" : 29,
+                    "position" : 29
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-30",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-30",
+                    "assignment" : 30,
+                    "position" : 30
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-01",
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-02",
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-03",
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 6,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-28"
+      },
+      "name" : "calendar: rest days have their appointments too",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-29",
+                    "assignment" : 29,
+                    "position" : 29
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-30",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-30",
+                    "assignment" : 30,
+                    "position" : 30
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-01",
+                "readingDay" : false,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-01",
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-02",
+                "readingDay" : false,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-02",
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-03",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-03",
+                    "assignment" : 3,
+                    "position" : 3
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 5,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-29",
+            "assignment" : 29,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-04-28",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-30",
+            "assignment" : 30,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-04-28",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-28"
+      },
+      "name" : "calendar: an appointment already settled is not listed again",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-30",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-05-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-01",
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-02",
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 5,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-25"
+      },
+      "name" : "calendar: before the start there is nothing",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-25",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-26",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-27",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-29",
+                    "assignment" : 29,
+                    "position" : 29
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-04-29",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-28"
+      },
+      "name" : "calendar: a pause does not stop the calendar",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : false,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-29",
+                    "assignment" : 29,
+                    "position" : 29
+                  }
+                ]
+              },
+              {
+                "date" : "2027-04-30",
+                "readingDay" : false,
+                "readings" : [
+                  {
+                    "appointed" : "2027-04-30",
+                    "assignment" : 30,
+                    "position" : 30
+                  }
+                ]
+              },
+              {
+                "date" : "2027-05-01",
+                "readingDay" : false,
+                "readings" : [
+                  {
+                    "appointed" : "2027-05-01",
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-28",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-04-29",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "ended",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-28"
+      },
+      "name" : "calendar: an ended enrollment has no days ahead",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-04-28",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-29",
+                "readingDay" : true,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-04-30",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-05-01",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-02-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-02-27"
+      },
+      "name" : "calendar: February runs from the 28th to the 1st",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-02-27",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-02-27",
+                    "assignment" : 27,
+                    "position" : 27
+                  }
+                ]
+              },
+              {
+                "date" : "2027-02-28",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-02-28",
+                    "assignment" : 28,
+                    "position" : 28
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-01",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-01",
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-02",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-02",
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 4,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "two enrollments are listed apart",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 1,
+                    "position" : 1
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : false,
+                "readings" : [
+
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "assignment" : 2,
+                    "position" : 2
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          },
+          {
+            "days" : [
+              {
+                "date" : "2027-03-05",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-05",
+                    "assignment" : 5,
+                    "position" : 5
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-06",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-06",
+                    "assignment" : 6,
+                    "position" : 6
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-07",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-07",
+                    "assignment" : 7,
+                    "position" : 7
+                  }
+                ]
+              },
+              {
+                "date" : "2027-03-08",
+                "readingDay" : true,
+                "readings" : [
+                  {
+                    "appointed" : "2027-03-08",
+                    "assignment" : 8,
+                    "position" : 8
+                  }
+                ]
+              }
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000b"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "days" : 0,
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "no days asked for: none given",
+      "output" : {
+        "enrollments" : [
+          {
+            "days" : [
+
+            ],
+            "id" : "0195a7c1-0000-7000-8000-00000000000a"
+          }
+        ]
+      }
+    }
+  ],
+  "fixture" : "ahead",
+  "plans" : [
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "RUT 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "RUT 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "RUT 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "RUT 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "JON 1"
+        },
+        {
+          "id" : 6,
+          "reading" : "JON 2"
+        },
+        {
+          "id" : 7,
+          "reading" : "JON 3"
+        },
+        {
+          "id" : 8,
+          "reading" : "JON 4"
+        },
+        {
+          "id" : 9,
+          "reading" : "PHM 1"
+        },
+        {
+          "id" : 10,
+          "reading" : "JUD 1"
+        }
+      ],
+      "behaviors" : [
+        "pace",
+        "finish-date"
+      ],
+      "id" : "invented-ten",
+      "readingDays" : 5,
+      "schedule" : "sequence",
+      "version" : 1
+    },
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "ECC 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "ECC 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "ECC 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "ECC 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "ECC 5"
+        },
+        {
+          "id" : 6,
+          "reading" : "ECC 6"
+        },
+        {
+          "id" : 7,
+          "reading" : "ECC 7"
+        },
+        {
+          "id" : 8,
+          "reading" : "ECC 8"
+        },
+        {
+          "id" : 9,
+          "reading" : "ECC 9"
+        },
+        {
+          "id" : 10,
+          "reading" : "ECC 10"
+        },
+        {
+          "id" : 11,
+          "reading" : "ECC 11"
+        },
+        {
+          "id" : 12,
+          "reading" : "ECC 12"
+        },
+        {
+          "id" : 13,
+          "reading" : "SNG 1"
+        },
+        {
+          "id" : 14,
+          "reading" : "SNG 2"
+        },
+        {
+          "id" : 15,
+          "reading" : "SNG 3"
+        },
+        {
+          "id" : 16,
+          "reading" : "SNG 4"
+        },
+        {
+          "id" : 17,
+          "reading" : "SNG 5"
+        },
+        {
+          "id" : 18,
+          "reading" : "SNG 6"
+        },
+        {
+          "id" : 19,
+          "reading" : "SNG 7"
+        },
+        {
+          "id" : 20,
+          "reading" : "SNG 8"
+        },
+        {
+          "id" : 21,
+          "reading" : "LAM 1"
+        },
+        {
+          "id" : 22,
+          "reading" : "LAM 2"
+        },
+        {
+          "id" : 23,
+          "reading" : "LAM 3"
+        },
+        {
+          "id" : 24,
+          "reading" : "LAM 4"
+        },
+        {
+          "id" : 25,
+          "reading" : "LAM 5"
+        },
+        {
+          "id" : 26,
+          "reading" : "JOL 1"
+        },
+        {
+          "id" : 27,
+          "reading" : "JOL 2"
+        },
+        {
+          "id" : 28,
+          "reading" : "JOL 3"
+        },
+        {
+          "id" : 29,
+          "reading" : "HAB 1"
+        },
+        {
+          "id" : 30,
+          "reading" : "HAB 2"
+        },
+        {
+          "id" : 31,
+          "reading" : "HAB 3"
+        }
+      ],
+      "behaviors" : [
+        "calendar"
+      ],
+      "id" : "invented-month",
+      "readingDays" : 7,
+      "schedule" : "day-of-month",
+      "version" : 1
+    }
+  ],
+  "version" : 1
+}

@@ -14,6 +14,7 @@ import {
   coverage,
   CivilDateError,
   civilDateText,
+  comingDays,
   eventIDMilliseconds,
   foldJournal,
   isEventID,
@@ -114,6 +115,7 @@ export const domainFixtures = [
   "changing",
   "progress",
   "reminders",
+  "ahead",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -634,6 +636,32 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
             appointed: slot?.appointed && civilDateText(slot.appointed),
             snooze: reminder.isSnooze ? true : undefined,
           });
+        }),
+      };
+    },
+    ahead: (
+      input: { events: unknown[]; today: string; days: number },
+      plans: readonly PlanVersion[],
+    ) => {
+      const journal = foldJournal(input.events, plans);
+      const date = parseCivilDate(input.today);
+      return {
+        enrollments: journal.enrollments.map((enrollment) => {
+          const positions = assignmentPositions(enrollment.plan);
+          return {
+            id: enrollment.id,
+            days: comingDays(enrollment, date, input.days).map((day) => ({
+              date: civilDateText(day.date),
+              readingDay: day.isReadingDay,
+              readings: day.readings.map((slot) =>
+                present({
+                  assignment: slot.assignment,
+                  position: positions.get(slot.assignment) ?? 0,
+                  appointed: slot.appointed && civilDateText(slot.appointed),
+                }),
+              ),
+            })),
+          };
         }),
       };
     },

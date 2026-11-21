@@ -191,7 +191,7 @@ export function basisOf(enrollment: Enrollment): Basis | undefined {
 }
 
 /** The settled readings due once `date` is over. */
-function targetAfter(enrollment: Enrollment, basis: Basis, date: CivilDate): number {
+export function targetAfter(enrollment: Enrollment, basis: Basis, date: CivilDate): number {
   const total = enrollment.plan.assignments.length;
   if (before(date, basis.first)) return total - basis.remaining;
   const scheduled = readingDaysBetween(enrollment, basis.first, basis.finish);
