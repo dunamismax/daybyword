@@ -11,6 +11,7 @@ import {
   bookName,
   canonBooks,
   changeOf,
+  coverage,
   CivilDateError,
   civilDateText,
   eventIDMilliseconds,
@@ -32,6 +33,10 @@ import {
   parseReading,
   planWorkload,
   previewing,
+  progressCounts,
+  recentDays,
+  reminders,
+  streak,
   today,
   welcome,
   welcomeAnswer,
@@ -49,11 +54,13 @@ import {
   WordCountsError,
   workload,
   type Behavior,
+  type ChapterCoverage,
   type BookName,
   type NamingConvention,
   type CivilDate,
   type Enrollment,
   type PlanVersion,
+  type WallTime,
   type ScheduleKind,
   type Slot,
 } from "#lib/domain/index.ts";
@@ -105,6 +112,8 @@ export const domainFixtures = [
   "today",
   "returning",
   "changing",
+  "progress",
+  "reminders",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -541,6 +550,92 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
         before: day(enrollment),
         after: day(after),
       });
+    },
+
+    progress: (input: { events: unknown[]; today: string }, plans: readonly PlanVersion[]) => {
+      const journal = foldJournal(input.events, plans);
+      const date = parseCivilDate(input.today);
+      const covered = coverage(journal, english);
+      const whole = (chapters: readonly ChapterCoverage[]) =>
+        chapters.filter(isWholeChapter).length;
+      return {
+        enrollments: journal.enrollments.map((enrollment) => ({
+          id: enrollment.id,
+          ...progressCounts(enrollment, date),
+        })),
+        recent: recentDays(journal, date).map((day) => ({
+          date: civilDateText(day.date),
+          read: day.isRead,
+          readingDay: day.isReadingDay,
+        })),
+        coverage: {
+          verses: covered.verses.count,
+          passages: covered.verses
+            .passages(english)
+            .map((passage) => readingText({ passages: [passage] }, english)),
+          wholeChapters: whole(covered.chapters),
+          partialChapters: covered.chapters.length - whole(covered.chapters),
+          books: covered.books.map((book) => {
+            const chapters = covered.chapters.filter((chapter) => chapter.book === book);
+            return {
+              book,
+              verses: covered.verses.countIn(book),
+              of: english.verseCount(book),
+              wholeChapters: whole(chapters),
+              partialChapters: chapters.length - whole(chapters),
+            };
+          }),
+        },
+        streak: streak(journal, date),
+      };
+    },
+
+    reminders: (
+      input: {
+        events: unknown[];
+        today: string;
+        time: string;
+        quiet?: { from: string; until: string };
+        most?: number;
+        window?: number;
+        snoozes?: { enrollment: string; date: string; time: string }[];
+      },
+      plans: readonly PlanVersion[],
+    ) => {
+      const journal = foldJournal(input.events, plans);
+      const time = (text: string): WallTime => {
+        const parsed = parseWallTime(text);
+        if (!parsed) throw new Error(`${text} is not a time`);
+        return parsed;
+      };
+      const settings = present({
+        quietHours: input.quiet && { from: time(input.quiet.from), until: time(input.quiet.until) },
+        mostADay: input.most,
+        window: input.window ?? 60,
+        snoozes: (input.snoozes ?? []).map((snooze) => {
+          if (!isEventID(snooze.enrollment)) throw new Error("not an enrollment id");
+          return {
+            enrollment: snooze.enrollment,
+            at: { date: parseCivilDate(snooze.date), time: time(snooze.time) },
+          };
+        }),
+      });
+      const now = { date: parseCivilDate(input.today), time: time(input.time) };
+      return {
+        reminders: reminders(journal, now, settings).map((reminder) => {
+          const plan = journal.enrollments.find((other) => other.id === reminder.enrollment)?.plan;
+          const { slot } = reminder;
+          return present({
+            enrollment: reminder.enrollment,
+            date: civilDateText(reminder.at.date),
+            time: wallTimeText(reminder.at.time),
+            assignment: slot?.assignment,
+            position: slot && plan && assignmentPositions(plan).get(slot.assignment),
+            appointed: slot?.appointed && civilDateText(slot.appointed),
+            snooze: reminder.isSnooze ? true : undefined,
+          });
+        }),
+      };
     },
   };
 }

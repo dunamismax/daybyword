@@ -1,0 +1,3111 @@
+{
+  "about" : "Reminder rules (docs/engine.md, \"Reminders\"; P5.12): from the journal, the local date and wall-clock time now, quiet hours, the most a day, snoozes and a window size, the local dates and times at which reminders should fire, earliest first, each with the reading it is about. Times are wall-clock; no case has an instant or a zone. The plans are invented.",
+  "cases" : [
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "the example: at 07:30 on a Friday today's 07:00 has passed, so Monday's is first",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-17",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "08:00"
+        },
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "the example with quiet hours to 08:00: each moves to 08:00, and today's is still to come",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "08:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "08:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "08:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "before its time, today's reminder is first",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "07:00",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "at its very minute a reminder has passed",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "today's reading is read: no reminder today, and the rest name the next reading",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 2,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 2,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "partlyCompleted",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "part read is done for today too",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 2,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a skip leaves today's reminder, for the reading that is now next",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 2,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-13",
+        "window" : 1
+      },
+      "name" : "a rest day has no reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "no reminder time: no reminders",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-16",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "changed",
+            "reminder" : "20:15",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "a new reminder time counts from its date",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "20:15"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-17",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "20:15"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-16",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "changed",
+            "reminder" : "off",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "reminders turned off from a date: none from then on",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-10",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-17",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "a pause with an end: reminders begin again the day it ends",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-17",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-18",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-10",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "a pause with no end: no reminders",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "ended",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "an ended enrollment has no reminders",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 5
+      },
+      "name" : "a sequence gets no more reminders than it has unread readings",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 9,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 9,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 9,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 9,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 9,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0010-7000-8000-000000000010",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 10,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0011-7000-8000-000000000011",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 5
+      },
+      "name" : "a finished plan has no reminders",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-17",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "before the start: the first reminder is on the start date",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-17",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-18",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-02",
+        "window" : 3
+      },
+      "name" : "finish-date: one reminder a reading day, however many readings the day has",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 3,
+            "date" : "2027-03-02",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 3,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 3,
+            "date" : "2027-03-03",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 3,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 3,
+            "date" : "2027-03-04",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 3,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "finish-date",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "finish" : "2027-03-05",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "limit" : 2,
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-02",
+        "window" : 2
+      },
+      "name" : "finish-date: today's share is read, so today has no reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 3,
+            "date" : "2027-03-03",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 3,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 3,
+            "date" : "2027-03-04",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 3,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "23:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "07:00"
+        },
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "quiet hours across midnight: a late reminder is dropped every day, never held to the morning",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "05:30",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "07:00"
+        },
+        "time" : "05:00",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "quiet hours across midnight: an early reminder moves to their end",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "14:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "13:00",
+          "until" : "15:00"
+        },
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "quiet hours in the afternoon: a reminder inside them moves to their end",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "15:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "15:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "14:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "13:00",
+          "until" : "13:00"
+        },
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "quiet hours end where they begin: there are none",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "14:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "07:00"
+        },
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a reminder at the minute quiet hours end is outside them",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "22:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "07:00"
+        },
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a reminder at the minute quiet hours begin is inside them",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 4
+      },
+      "name" : "two plans at one time: in the order the plans are listed",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-12",
+            "assignment" : 12,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 12,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 13,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 14,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "20:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "most" : 1,
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 4
+      },
+      "name" : "the most a day: the earliest are kept",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-12",
+            "assignment" : 12,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 12,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 13,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 14,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-15",
+            "assignment" : 15,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 15,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "most" : 1,
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "the most a day, with a tie: the plan listed first is kept",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 13,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 14,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "06:45",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 4
+      },
+      "name" : "the window: the earliest overall",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-12",
+            "assignment" : 12,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 12,
+            "time" : "06:45"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 13,
+            "time" : "06:45"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 14,
+            "time" : "06:45"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 0
+      },
+      "name" : "a window of none: no reminders",
+      "output" : {
+        "reminders" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "07:20"
+          }
+        ],
+        "time" : "07:10",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "a snooze: one more reminder at its time, for today's reading",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "snooze" : true,
+            "time" : "07:20"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "07:20"
+          }
+        ],
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a snooze whose time has passed is dropped",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "07:20"
+          }
+        ],
+        "time" : "07:10",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a snooze is dropped once today's reading is read",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 2,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "21:45",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "07:00"
+        },
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "22:05"
+          }
+        ],
+        "time" : "21:55",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a snooze into quiet hours that end tomorrow is dropped",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "21:45"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "quiet" : {
+          "from" : "22:00",
+          "until" : "08:00"
+        },
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "06:50"
+          }
+        ],
+        "time" : "06:40",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "a snooze inside the morning's quiet hours moves to their end, where it is the day's own reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "08:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "08:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "23:45",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "snoozes" : [
+          {
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "00:05"
+          }
+        ],
+        "time" : "23:55",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "a snooze past midnight is kept while the reading it was about is unread",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "snooze" : true,
+            "time" : "00:05"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "23:45"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "20:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "most" : 1,
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "time" : "07:20"
+          }
+        ],
+        "time" : "07:10",
+        "today" : "2027-03-12",
+        "window" : 3
+      },
+      "name" : "a snooze counts toward the most a day",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "snooze" : true,
+            "time" : "07:20"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 13,
+            "time" : "20:00"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "position" : 14,
+            "time" : "20:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "snoozes" : [
+          {
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "time" : "07:20"
+          }
+        ],
+        "time" : "07:10",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "a snooze for an enrollment the journal does not have is ignored",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-30",
+        "window" : 4
+      },
+      "name" : "calendar: each reminder names its own date's appointment",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-30",
+            "assignment" : 30,
+            "date" : "2027-03-30",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 30,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-31",
+            "assignment" : 31,
+            "date" : "2027-03-31",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 31,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-04-01",
+            "assignment" : 1,
+            "date" : "2027-04-01",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-04-02",
+            "assignment" : 2,
+            "date" : "2027-04-02",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-04-29",
+        "window" : 4
+      },
+      "name" : "calendar: April has no 31st, so no reminder is lost or doubled at the month's end",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-04-29",
+            "assignment" : 29,
+            "date" : "2027-04-29",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 29,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-04-30",
+            "assignment" : 30,
+            "date" : "2027-04-30",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 30,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-05-01",
+            "assignment" : 1,
+            "date" : "2027-05-01",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-05-02",
+            "assignment" : 2,
+            "date" : "2027-05-02",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 2,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "calendar: an appointment already read ahead gets no reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-12",
+            "assignment" : 12,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 12,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 14,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-03-12",
+            "assignment" : 12,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-12",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "06:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "calendar: today's appointment was skipped, so today has no reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-13",
+            "assignment" : 13,
+            "date" : "2027-03-13",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 13,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "07:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "calendar: a rest day has an appointment and no reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-15",
+            "assignment" : 15,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 15,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-16",
+            "assignment" : 16,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 16,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "20:00",
+        "today" : "2027-03-13",
+        "window" : 3
+      },
+      "name" : "the clocks go forward tonight (14 March in Chicago): 07:00 stays 07:00",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 14,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-15",
+            "assignment" : 15,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 15,
+            "time" : "07:00"
+          },
+          {
+            "appointed" : "2027-03-16",
+            "assignment" : 16,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 16,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "02:30",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "20:00",
+        "today" : "2027-03-13",
+        "window" : 2
+      },
+      "name" : "a reminder at 02:30 on the night 02:30 is skipped is still given at 02:30: the system delivers it at the next minute that exists",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-03-14",
+            "assignment" : 14,
+            "date" : "2027-03-14",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 14,
+            "time" : "02:30"
+          },
+          {
+            "appointed" : "2027-03-15",
+            "assignment" : 15,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 15,
+            "time" : "02:30"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "reminder" : "01:30",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "20:00",
+        "today" : "2027-11-06",
+        "window" : 2
+      },
+      "name" : "the clocks go back tonight (7 November in Chicago): 01:30 happens twice and is one reminder",
+      "output" : {
+        "reminders" : [
+          {
+            "appointed" : "2027-11-07",
+            "assignment" : 7,
+            "date" : "2027-11-07",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 7,
+            "time" : "01:30"
+          },
+          {
+            "appointed" : "2027-11-08",
+            "assignment" : 8,
+            "date" : "2027-11-08",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 8,
+            "time" : "01:30"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "22:30",
+        "today" : "2027-03-12",
+        "window" : 2
+      },
+      "name" : "travel east: it is already evening where the reader landed, so today's 07:00 is left out",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-16",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "21:00",
+        "today" : "2027-03-11",
+        "window" : 2
+      },
+      "name" : "travel west across the date line: it is yesterday again, and the reminders start from that date",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          },
+          {
+            "assignment" : 1,
+            "date" : "2027-03-15",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ten",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "reminder" : "07:00",
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "time" : "05:30",
+        "today" : "2027-03-12",
+        "window" : 1
+      },
+      "name" : "travel west: it is 05:30 again where the reader landed, so today's 07:00 is still to come",
+      "output" : {
+        "reminders" : [
+          {
+            "assignment" : 1,
+            "date" : "2027-03-12",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "position" : 1,
+            "time" : "07:00"
+          }
+        ]
+      }
+    }
+  ],
+  "fixture" : "reminders",
+  "plans" : [
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "RUT 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "RUT 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "RUT 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "RUT 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "JON 1"
+        },
+        {
+          "id" : 6,
+          "reading" : "JON 2"
+        },
+        {
+          "id" : 7,
+          "reading" : "JON 3"
+        },
+        {
+          "id" : 8,
+          "reading" : "JON 4"
+        },
+        {
+          "id" : 9,
+          "reading" : "PHM 1"
+        },
+        {
+          "id" : 10,
+          "reading" : "JUD 1"
+        }
+      ],
+      "behaviors" : [
+        "pace",
+        "finish-date"
+      ],
+      "id" : "invented-ten",
+      "readingDays" : 5,
+      "schedule" : "sequence",
+      "version" : 1
+    },
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "ECC 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "ECC 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "ECC 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "ECC 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "ECC 5"
+        },
+        {
+          "id" : 6,
+          "reading" : "ECC 6"
+        },
+        {
+          "id" : 7,
+          "reading" : "ECC 7"
+        },
+        {
+          "id" : 8,
+          "reading" : "ECC 8"
+        },
+        {
+          "id" : 9,
+          "reading" : "ECC 9"
+        },
+        {
+          "id" : 10,
+          "reading" : "ECC 10"
+        },
+        {
+          "id" : 11,
+          "reading" : "ECC 11"
+        },
+        {
+          "id" : 12,
+          "reading" : "ECC 12"
+        },
+        {
+          "id" : 13,
+          "reading" : "SNG 1"
+        },
+        {
+          "id" : 14,
+          "reading" : "SNG 2"
+        },
+        {
+          "id" : 15,
+          "reading" : "SNG 3"
+        },
+        {
+          "id" : 16,
+          "reading" : "SNG 4"
+        },
+        {
+          "id" : 17,
+          "reading" : "SNG 5"
+        },
+        {
+          "id" : 18,
+          "reading" : "SNG 6"
+        },
+        {
+          "id" : 19,
+          "reading" : "SNG 7"
+        },
+        {
+          "id" : 20,
+          "reading" : "SNG 8"
+        },
+        {
+          "id" : 21,
+          "reading" : "LAM 1"
+        },
+        {
+          "id" : 22,
+          "reading" : "LAM 2"
+        },
+        {
+          "id" : 23,
+          "reading" : "LAM 3"
+        },
+        {
+          "id" : 24,
+          "reading" : "LAM 4"
+        },
+        {
+          "id" : 25,
+          "reading" : "LAM 5"
+        },
+        {
+          "id" : 26,
+          "reading" : "JOL 1"
+        },
+        {
+          "id" : 27,
+          "reading" : "JOL 2"
+        },
+        {
+          "id" : 28,
+          "reading" : "JOL 3"
+        },
+        {
+          "id" : 29,
+          "reading" : "HAB 1"
+        },
+        {
+          "id" : 30,
+          "reading" : "HAB 2"
+        },
+        {
+          "id" : 31,
+          "reading" : "HAB 3"
+        }
+      ],
+      "behaviors" : [
+        "calendar"
+      ],
+      "id" : "invented-month",
+      "readingDays" : 7,
+      "schedule" : "day-of-month",
+      "version" : 1
+    }
+  ],
+  "version" : 1
+}

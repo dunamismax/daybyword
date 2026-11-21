@@ -805,3 +805,148 @@ struct ChangingOutput: Codable, Equatable, Sendable {
             after: .init(try #require(previewed.enrollments.first), on: date))
     }
 }
+
+// MARK: Progress
+
+struct ProgressOutput: Codable, Equatable, Sendable {
+    struct Enrollment: Codable, Equatable, Sendable {
+        var id: String
+        var read: Int
+        var partlyRead: Int
+        var skipped: Int
+        var unread: Int
+        var total: Int
+    }
+
+    struct Day: Codable, Equatable, Sendable {
+        var date: String
+        var read: Bool
+        var readingDay: Bool
+    }
+
+    struct Book: Codable, Equatable, Sendable {
+        var book: String
+        /// The verses read, of the verses the book has.
+        var verses: Int
+        var of: Int
+        var wholeChapters: Int
+        var partialChapters: Int
+    }
+
+    struct Coverage: Codable, Equatable, Sendable {
+        var verses: Int
+        /// The verses read as the fewest passages, in the plan-file format.
+        var passages: [String]
+        var wholeChapters: Int
+        var partialChapters: Int
+        /// The books explored, in the scheme's order.
+        var books: [Book]
+    }
+
+    var enrollments: [Enrollment]
+    /// The seven dates ending today.
+    var recent: [Day]
+    var coverage: Coverage
+    var streak: Int
+}
+
+@Test func progressMatchesItsFixture() throws {
+    let english = try loadEnglish()
+    try checkFixture("progress") { (input: TodayInput, plans: [PlanVersion]) -> ProgressOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        let coverage = journal.coverage(in: english)
+        return ProgressOutput(
+            enrollments: journal.enrollments.map {
+                let counts = $0.counts(on: date)
+                #expect(counts.read + counts.partlyRead + counts.skipped + counts.unread == counts.total)
+                return .init(
+                    id: $0.id.rawValue, read: counts.read, partlyRead: counts.partlyRead, skipped: counts.skipped,
+                    unread: counts.unread, total: counts.total)
+            },
+            recent: journal.recentDays(ending: date).map {
+                .init(date: $0.date.description, read: $0.isRead, readingDay: $0.isReadingDay)
+            },
+            coverage: .init(
+                verses: coverage.verses.count,
+                passages: coverage.verses.passages(in: english).map { ReferenceFormat.text(of: $0, in: english) },
+                wholeChapters: coverage.chapters.count(where: \.isWhole),
+                partialChapters: coverage.chapters.count(where: { !$0.isWhole }),
+                books: coverage.books.map { book in
+                    let chapters = coverage.chapters.filter { $0.book == book }
+                    return .init(
+                        book: book.rawValue, verses: coverage.verses.count(in: book), of: english.verseCount(of: book),
+                        wholeChapters: chapters.count(where: \.isWhole),
+                        partialChapters: chapters.count(where: { !$0.isWhole }))
+                }),
+            streak: journal.streak(on: date))
+    }
+}
+
+// MARK: Reminders
+
+struct RemindersInput: Codable, Sendable {
+    struct Quiet: Codable, Sendable {
+        var from: String
+        var until: String
+    }
+
+    struct Snooze: Codable, Sendable {
+        var enrollment: String
+        var date: String
+        var time: String
+    }
+
+    var events: [JSONValue]
+    /// The local date and wall-clock time now.
+    var today: String
+    var time: String
+    var quiet: Quiet?
+    var most: Int?
+    var window: Int?
+    var snoozes: [Snooze]?
+}
+
+struct RemindersOutput: Codable, Equatable, Sendable {
+    struct Reminder: Codable, Equatable, Sendable {
+        var enrollment: String
+        var date: String
+        var time: String
+        /// The reading it is about.
+        var assignment: Int?
+        var position: Int?
+        var appointed: String?
+        /// Present, and true, for a reminder the reader snoozed.
+        var snooze: Bool?
+    }
+
+    var reminders: [Reminder]
+}
+
+@Test func remindersMatchTheirFixture() throws {
+    try checkFixture("reminders") { (input: RemindersInput, plans: [PlanVersion]) -> RemindersOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let now = LocalDateTime(date: try CivilDate(input.today), time: try #require(WallTime(input.time)))
+        var settings = ReminderSettings()
+        if let quiet = input.quiet {
+            settings.quietHours = .init(
+                from: try #require(WallTime(quiet.from)), until: try #require(WallTime(quiet.until)))
+        }
+        settings.mostADay = input.most
+        settings.window = input.window ?? settings.window
+        settings.snoozes = try (input.snoozes ?? []).map {
+            .init(
+                enrollment: try #require(EventID($0.enrollment)),
+                at: LocalDateTime(date: try CivilDate($0.date), time: try #require(WallTime($0.time))))
+        }
+        return RemindersOutput(
+            reminders: journal.reminders(now: now, settings: settings).map { reminder in
+                let plan = journal.enrollments.first { $0.id == reminder.enrollment }?.plan
+                return .init(
+                    enrollment: reminder.enrollment.rawValue, date: reminder.at.date.description,
+                    time: reminder.at.time.description, assignment: reminder.slot?.assignment,
+                    position: reminder.slot.flatMap { plan?.positions[$0.assignment] },
+                    appointed: reminder.slot?.appointed?.description, snooze: reminder.isSnooze ? true : nil)
+            })
+    }
+}

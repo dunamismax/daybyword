@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 5, the reading engine (M1 Foundation): 9 of 11 items done |
-| **Next item** | **P5.11**: progress measures (assignments, recent reading days, coverage and books explored from the marks, the optional streak), then **P5.12**, reminder rules |
+| **Phase** | Phase 8, first light (M2): 0 of 14 items done. Phase 5, the reading engine, is finished (specification version 1) |
+| **Next item** | **P8.1**: the first three plans (Gospels at your pace, the Bible in a year, Proverbs through the month), compiled and reviewed; then **P8.2**, starting a plan |
 | **Also open** | **P7.3**: the encrypted off-server copy of the nightly backups |
 | **Waiting on the owner** | Where off-server backups go (P7.3): no `ubuntu-vm-backup` checkout or backup tool exists on the host or the Mac. `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): SvelteKit pages, an empty catalog, PostgreSQL 18, nightly backups and monthly restore checks on the host. Serving 1cc5f7e (`/srv/www/daybyword.com/current-release`, read 2026-11-21). Deploys leave the database container running (E43). |
@@ -133,7 +133,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 2 | Product, design system, and shells | M1 Foundation | 12 | 12 |
 | 3 | Scripture references | M1 Foundation | 8 | 8 |
 | 4 | The catalog | M1 Foundation | 8 | 8 |
-| 5 | The reading engine | M1 Foundation | 11 | 9 |
+| 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 0 |
@@ -448,33 +448,7 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 5: The reading engine
 
-Swift ReadingEngine and the web's TypeScript domain module
-follow one specification and the same versioned parity cases (E33). The
-specification comes first, then the cases, then the code. It covers what
-1.0's plans need; sessions and church-year schedules wait (roadmap).
-
-- [x] **P5.1** Write `docs/engine.md`, the specification, for what 1.0 needs: plan versions, assignments, enrollments, the journal and its event kinds, assignment states, the three behaviors, reading days and rest days, pausing, late logging, undo, partial completion, skips, the return choices and their previews, changing an enrollment, progress measures, and reminder rules. Each rule has a worked example and the plain wording the reader sees. *(Rewritten by D39.)*
-  - *Result (agent, 2026-11-20):* docs/engine.md's second part, "Version 1": civil dates, plans and slots, enrollments, the journal's ten event kinds and its fold (id order, inert events, undo and redo), reading and rest days, Today's statuses, the three behaviors, returning and its previews, changing and pausing, progress, the streak and reminders, each with a worked example and the reader's wording. The choices are E40. The version line stays 0 until both runtimes pass version 1's cases (P5.2–P5.12); the examples were worked by hand and are not yet cases.
-- [x] **P5.2** The case format and runner: table-driven JSON cases (catalog fixture, enrollment, events, today, expected output) in `ReadingEngine`'s tests, using invented plans with invented references and never a real plan's schedule. The same cases run against Swift and TypeScript on macOS/Linux and the web runtime (E33).
-  - *Result (agent, 2026-11-20):* a scheduling fixture has `plans` (invented plan versions) and named cases whose input is the events in their wire form (tests/fixtures/README.md); `journal.json` is the first. `FixtureTests.swift` and `web/test/domain/parity.ts` give each case the plans, so the same cases run in Swift, Node and Firefox (368 cases, `make test-domain-browser`). Not run on Linux yet this session.
-- [x] **P5.3** `CivilDate`, written fresh (D22): weekdays, day arithmetic, the day of the month and of the year, and conversion at the edge to and from Foundation dates in a given time zone, with exhaustive tests. *(Rewritten by D39: the nth weekday and Julian Day Number come with Phase 6.)*
-  - *Result (agent, 2026-11-20):* `CivilDate` in `ReadingEngine` and `web/src/lib/domain/civil-date.ts` (E41): parsing, weekdays (1 Monday to 7 Sunday), day arithmetic, the day of the month and year, month lengths. Both walk every date from 0001-01-01 to 9999-12-31 and agree with Foundation and JavaScript for 1583–2400; `tests/fixtures/civil-dates.json` (52 cases, also checked against Python's calendar) passes in Swift, Node and Firefox. The edge is `CivilDate+Foundation.swift` and `web/src/lib/today.ts`, tested for the date line, midnight, daylight saving and a skipped midnight. A week's `start` in an address is now a real date or ignored, in the app and on the web. `make test-linux` passes with them (Linux's own time zone data included).
-- [x] **P5.4** The journal: event kinds, UUIDv7 ids, and a deterministic fold to state that gives the same result in any arrival order. Duplicate events are no-ops, and undo and redo are events. Cases cover a double tap, a retry, and recovery from an accidental completion.
-  - *Note (agent, 2026-11-01):* from P4.6: an enrollment records the plan id and version it follows.
-  - *Result (agent, 2026-11-20):* `EventID`, `JournalEvent` (the ten kinds, read from and written to the wire), `Journal` (the fold) and `Enrollment` (slots, the arrangement on a date, paused days, the end) in `ReadingEngine`, and `event-id.ts`, `journal.ts`, `plan.ts` in the web's domain module. `journal.json` (95 cases) and `event-ids.json` (31) pass in both; each runtime also folds every case reversed, shuffled and doubled to the same state. docs/engine.md's "The journal" now states the field shapes, each inert reason and when it is decided, and the two refusals; the choices are E42.
-- [x] **P5.5** **Continue at my pace**: the next unread assignment is next; the projected finish follows the reader's recent pace and reading days; five-day plans keep rest days intentional; "ahead" and "behind" are stated neutrally, and only when useful.
-  - *Result (agent, 2026-11-20):* `Enrollment.today(_:)` in `Today.swift` and `today()` in `web/src/lib/domain/today.ts`: the status (in one stated order), reading and rest days, the next reading, what was read today, and three projected dates (the plan's pace, the last 28 days' pace, and had no day been missed), from which the interface says only "Your finish date is now…". `today.json` (86 cases across the three behaviors, each answer checked by hand) passes in Swift, Node and Firefox.
-- [x] **P5.6** **Work toward a finish date**: the workload per reading day is computed before the reader accepts. Redistribution stays within a limit the reader sets and is previewed before it applies. An unrealistic target is met with a later date or a narrower plan, and readings are never silently omitted.
-  - *Result (agent, 2026-11-20):* the basis and its counted targets: today's readings (never more than the day's share, one at a time after the finish), the readings outstanding, the scheduled days, the least and most on a day, the heaviest day's words, and, beyond the limit, the earliest finish that fits it. A pause shortens the schedule and the engine says so; nothing is moved or left out. A candidate `enrolled` or `changed` event folded into the journal is the preview. *Not built:* the choices that set a new basis (P5.8), and the day-by-day list of coming readings the specification mentions for the coming week and the checklist, which P8.10 and P13.1 need first.
-- [x] **P5.7** **Follow the calendar** for civil-date schedules (a day of the month, as in Proverbs through the month, or a date in the year): today's appointment comes from the plan's dates; missed appointments stay in history as unread; rejoining marks nothing complete; pausing reminders never pauses the calendar. *(Rewritten by D39; church-year schedules are P28.4.)*
-  - *Note (agent, 2026-11-20):* a date in the year is not built for 1.0: the catalog format has only `sequence` and `day-of-month`, and no launch plan needs it (E40; roadmap P28.4).
-  - *Result (agent, 2026-11-20):* a day-of-month enrollment's day: the appointment on every date from the start (rest and paused days too), `reading`, `done` or `open` (skipped) on a reading day, the readings a short month does not appoint on its last day, and the missed count (unread slots to yesterday, paused days left out). Nothing is carried to another day.
-- [x] **P5.8** **Return after a break**: detect a gap against the enrollment's reading days, then offer the choices that apply (continue from the next unread passage, redistribute outstanding readings, rejoin today's calendar), each with an exact preview. Applying a choice is an event.
-  - *Result (agent, 2026-11-20):* `Enrollment.welcome(on:)` (`Welcome.swift`, `welcome.ts`): the gap (two reading days since the reader last read, answered, or resumed), then `continue`, `spread` within the limit (or the limit it would need), `moveFinish` at the present daily amount, or `rejoin`. `Journal.previewing(_:in:)` (`Preview.swift`, `preview.ts`) folds a candidate event after every other, so a preview is Today's own answer. `returning.json` (40 cases, checked by hand) passes in Swift and Node.
-- [x] **P5.10** Changing an enrollment (reading days, start date, behavior) without deleting history, with the effect previewed first.
-  - *Result (agent, 2026-11-20):* `Enrollment.change(from:…)` and `changeOf` make the `changed` event, adding a new basis when a finish-date arrangement's reading days, finish or behavior change; the preview is the same fold. `changing.json` (21 cases) gives the candidate event, why it would be inert, and today before and after, with the settled readings the same on both sides.
-- [ ] **P5.11** Progress measures: assignments completed, recent reading days, books explored, and the next reading. Unique coverage counts each verse once and partly read chapters as partial, and plan completion is reported apart from coverage. The optional streak (D17) is measured against the reader's own reading days.
-- [ ] **P5.12** Reminder rules: from enrollments, settings, the time zone, and the journal, compute the next fire times, honoring selected days, snooze, quiet hours, a maximum per day, stopping once the day's reading is marked, and the 64-request window (Research finding 9). Cases cover daylight saving changes and travel across zones.
+Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 6: Church calendars and lectionaries
 
@@ -639,27 +613,27 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21:** P5.2, P5.4 to P5.8 and P5.10 are done in both runtimes:
-  the journal's fold, Today for the three behaviors, the welcome after a
-  gap, and changes with previews. 515 shared cases (`journal`, `event-ids`,
-  `today`, `returning`, `changing`) pass in Swift on macOS and Linux, in
-  Node and in Firefox. To add one: an input and a `name`, record with
-  `DBW_RECORD_FIXTURES=1`, check the output by hand, then the web tests.
-- **Next, P5.11:** assignment counts, recent reading days, coverage (a
-  `partlyCompleted` event's `verses` is kept as text and not yet read),
-  books explored, the streak. Then P5.12, reminders. When both pass, set
-  the specification version to 1 in docs/engine.md and both runtimes,
-  and move Phase 5 to BUILD-HISTORY.md.
+- **2026-11-21:** Phase 5 is finished and moved to BUILD-HISTORY.md.
+  P5.11 (progress: counts, recent days, coverage, the streak) and P5.12
+  (reminder rules) are in both runtimes; the specification is version 1.
+  354 scheduling cases (`journal`, `event-ids`, `today`, `returning`,
+  `changing`, `progress`, `reminders`) pass in Swift and Node. To add
+  one: an input and a `name`, record with `DBW_RECORD_FIXTURES=1`, check
+  the output by hand, then the web tests. Choices are E44.
+- **Not run this session yet:** the new cases in Firefox
+  (`make test-domain-browser`) and on Linux (`make test-linux`); both
+  are in `make check-full`, due before the next deploy.
+- **Next, P8.1:** the three plan files in `catalog/plans/`. The catalog
+  is empty today, so tests and pages that assume no plans will need
+  their expectations updated.
 - **Not built:** the day-by-day list of coming readings (the coming week,
-  the checklist); build it with P8.10 or P13.1 (note under P5.6).
-- **Deploys no longer restart the database** (E43, note under P7.2).
-  `make check-full` passed as one run at cd13494. Live is 1cc5f7e; the
-  commits after it change BUILD.md only.
-- **A mistake to avoid:** 23e9316 swept another session's uncommitted
-  deploy files in with `git add -A`; 298258a took them out and cd13494
-  landed them. Stage by path (AGENTS.md §8).
+  the checklist); build it with P8.2, P8.10 or P13.1.
+- **Reminders on a device** (delivery across a real clock change) are
+  P8.8, P17.4 and P17.9; the engine and its Swift edge are tested.
+- **A mistake to avoid:** stage by path, never `git add -A`: other
+  sessions may have work in this checkout (AGENTS.md §8).
 - `make test-linux` reuses its image while `scripts/linux/` is unchanged;
   its rebuild path with the new label has still not run.
 - **Open:** P7.3's encrypted off-server copy (ask the owner where backups
   go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
-  upload unverified.
+  upload unverified. Live is 1cc5f7e.

@@ -1131,3 +1131,39 @@ from under it; and it would hide a real change to the service the day
 one is meant. A fixed path makes the container's definition independent
 of the release, which is what "the database outlives every release"
 means (E39).
+
+### E44. Progress and reminders: what building them settled
+
+*2026-11-21, agent (P5.11, P5.12).* Version 1 of docs/engine.md is now
+implemented in both runtimes. The choices E40 left open:
+
+- **A day read is any active reading event's date**, not the date a slot
+  now holds. A reading begun on Monday and finished on Tuesday is two
+  days read, though the slot keeps Tuesday's mark. The alternative,
+  going by each slot's last mark, would take Monday away when the reader
+  finished the reading. Its cost is stated in a case: a reading marked
+  read and then skipped with no undo leaves the day a day read until the
+  reading is undone, so clients offer Undo, not Skip, on a read slot.
+- **A finished sequence asks nothing after its last marked day.** Its
+  later dates are not reading days for the recent days or the streak;
+  otherwise finishing a plan would end a streak the next morning.
+- **A calendar enrollment's total includes slots settled outside its
+  appointed days** (on a paused day, or read ahead), so read, part read,
+  skipped and unread always add up to the total.
+- **Stated verses count only as far as they are the reading's own**, and
+  text that is not a reading counts as none stated. Coverage cannot be
+  inflated by a client's mistake.
+- **A sequence's reminders all name its next unread reading.** Naming
+  the second-next reading for tomorrow would be wrong whenever the
+  reader does not read today; since every mark asks the engine again,
+  the next reading as things stand is right on every day.
+- **Quiet hours, the most a day and snoozes are device settings, not
+  journal events.** They say how one device may interrupt, not what the
+  reader arranged for a plan; only an enrollment's reminder time is in
+  the journal. A snooze is kept while the enrollment's status today is
+  `reading`.
+- **A horizon of 366 days** bounds the search, so a reminder time that
+  quiet hours drop every day ends the search instead of running on.
+
+**Why:** each keeps the record what the reader did (product principle 5,
+honest records) and keeps a notification from saying something untrue.

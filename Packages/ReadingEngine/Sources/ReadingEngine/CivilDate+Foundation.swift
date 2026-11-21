@@ -26,9 +26,30 @@ extension CivilDate {
         return calendar.startOfDay(for: noon)
     }
 
-    private static func calendar(in zone: TimeZone) -> Calendar {
+    fileprivate static func calendar(in zone: TimeZone) -> Calendar {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = zone
         return calendar
+    }
+}
+
+// The same edge for reminders (docs/engine.md, "Reminders"): the device
+// tells the engine the local date and wall-clock time now, and schedules
+// what the engine returns by wall-clock time in its present zone.
+extension LocalDateTime {
+    /// The local date and wall-clock time it is at `instant` in `zone`.
+    public init(_ instant: Date, in zone: TimeZone) throws(CivilDateError) {
+        let parts = CivilDate.calendar(in: zone).dateComponents([.hour, .minute], from: instant)
+        guard let hour = parts.hour, let minute = parts.minute, let time = WallTime(hour: hour, minute: minute)
+        else { throw .outOfRange }
+        self.init(date: try CivilDate(instant, in: zone), time: time)
+    }
+
+    /// The date and time as calendar components with no zone, which a
+    /// calendar notification trigger fires at by the wall clock: at the
+    /// next minute that exists when a daylight saving change skips this
+    /// one, and once when it happens twice.
+    public var components: DateComponents {
+        DateComponents(year: date.year, month: date.month, day: date.day, hour: time.hour, minute: time.minute)
     }
 }

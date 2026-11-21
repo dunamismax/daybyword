@@ -1,6 +1,6 @@
 # The reading engine
 
-Specification version: **0**
+Specification version: **1**
 
 Day by Word's reading logic has one specification, this file, and two
 runtimes held to it: Swift's `ReadingEngine` (`Packages/ReadingEngine`)
@@ -10,16 +10,13 @@ domain module (`web/src/lib/domain/`) for the web's server and browser
 [tests/fixtures/](../tests/fixtures/README.md), and a rule is not done until
 both do.
 
-Version 0 covers what both runtimes do today: identifiers, scripture
-data, references, verse sets, word counts and workload (BUILD.md PM.15).
-**Version 1**, the second part of this file, specifies civil dates,
-plans, enrollments, the journal, the three behaviors, returning,
-progress and reminders (P5.1). It is being built item by item (P5.2 to
-P5.12), each rule with its cases in both runtimes; the line above
-becomes 1 when both pass them all. Both runtimes state the version they
-implement (`ReadingEngine.specificationVersion`,
-`specificationVersion`), and a web test checks that the two and that
-line agree.
+The first part covers identifiers, scripture data, references, verse
+sets, word counts and workload (version 0, BUILD.md PM.15). The second
+part, **version 1**, covers civil dates, plans, enrollments, the journal,
+the three behaviors, returning, progress and reminders (P5.1 to P5.12).
+Both runtimes pass every case of both parts and state the version they
+implement (`ReadingEngine.specificationVersion`, `specificationVersion`);
+a web test checks that the two and the line above agree.
 
 ## The boundary
 
@@ -649,19 +646,28 @@ understanding, and no wording may suggest they do (AGENTS.md §3).
 
 - **Assignments** in each enrollment: read, partly read, skipped and
   unread, and the total. For a calendar enrollment the total is the slots
-  appointed from the start to today, paused days excluded. "62 of 89
-  readings read."
+  appointed from the start to today (or to the day it ended), paused days
+  excluded, together with any slot the reader settled outside those days
+  (on a paused day, or read ahead), so the four states always add up to
+  the total. "62 of 89 readings read."
 - **Recent reading days:** the seven dates ending today, each with
   whether the reader read on it (any active `completed` or
   `partlyCompleted` with that date, in any enrollment) and whether it was
-  a reading day of any enrollment.
+  a reading day of any enrollment. A reading begun one day and finished
+  the next is two days read, though its slot keeps only the later mark.
+- **A finished sequence asks nothing** after the last day the reader
+  marked in it (*app convention*): its later dates are not reading days
+  here or for the streak, so finishing a plan never ends a streak.
 - **Coverage** is across all enrollments, each verse once: every reading
-  marked read, and the stated verses of readings marked partly read. A
-  reading marked partly read with no verses stated adds no verses; its
-  chapters count as partial and its books as explored. Chapters are whole
-  or partial as verse sets define, so a partly read chapter is never
-  counted as read. Repeats add nothing.
-- **Books explored** are the books coverage touches.
+  marked read, and the stated verses of readings marked partly read, as
+  far as they are verses of that reading. A reading marked partly read
+  with no verses stated (or none that are its own, or text that is not a
+  reading) adds no verses; its chapters count as partial and its books as
+  explored. Chapters are whole or partial as verse sets define, so a
+  partly read chapter is never counted as read. Repeats add nothing, and
+  a skipped reading covers nothing.
+- **Books explored** are the books coverage touches, in the scheme's
+  order, each with its verses read of the verses it has.
 - **Plan completion is not coverage.** Each is reported on its own;
   finishing a plan says nothing about the whole Bible unless its verses
   do.
@@ -669,8 +675,9 @@ understanding, and no wording may suggest they do (AGENTS.md §3).
   of consecutive reading days, of any enrollment that is not ended, on
   which the reader read, counting back from today, or from the last
   reading day before today when today is not yet read. Rest days and
-  paused days neither break it nor add to it. It is shown small, never in
-  a notification, and never with words of loss.
+  paused days neither break it nor add to it, even when the reader read
+  on one. It is shown small, never in a notification, and never with
+  words of loss.
 
 *Example:* reading days 1 to 5; read Thursday and Friday, nothing at the
 weekend, read Monday. On Tuesday morning the streak is 3: the weekend
@@ -682,32 +689,49 @@ The engine works in wall-clock times and never in instants: it is given
 the local date and time now, and returns the local dates and times at
 which reminders should fire. The device schedules them by wall-clock time
 in its present zone, and asks again whenever a reading is marked, a
-setting changes, or the time zone changes.
+setting changes, or the time zone changes. Quiet hours, the most a day
+and snoozes are the device's settings, not events; only an enrollment's
+reminder time is in the journal.
 
 Given the enrollments, the journal, now, quiet hours, the most reminders
 a day, any snoozes, and a window size:
 
-1. **Candidates.** For each enrollment that is active (not paused, ended
-   or finished) and has a reminder time, one on each reading day from
-   today on at that time. Today's is left out when today's status is
-   `done` or `open`, or when its time, after rule 3, has passed. A
-   `sequence` enrollment gets no more candidates than it has unread
-   readings.
-2. **A snooze** adds one candidate at its time, if that is still to come
-   and that day's reading is not done.
+1. **Candidates.** For each enrollment that has not ended and is not
+   finished, one on each of its reading days from today on (a paused day
+   is not one), at the reminder time arranged for that day. Today's is
+   left out unless today's status is `reading`, and when its time, after
+   rule 3, is not still to come: at its own minute a reminder has passed.
+   A `sequence` enrollment gets no more candidates than it has unread
+   readings. A calendar enrollment gets none on a date whose appointment
+   is already settled, or that appoints nothing.
+2. **A snooze** (an enrollment, a local date and a time) adds one
+   candidate at its time, if that is still to come after rule 3 and the
+   enrollment's status today is `reading`: the reading it was about is
+   still to read. A snooze for an enrollment the journal does not have is
+   ignored.
 3. **Quiet hours** run from one wall-clock time up to another and may
-   cross midnight. A candidate inside them moves to their end when that
-   is later the same day, and is dropped otherwise: a reminder never
-   arrives the next morning about the day before.
-4. **The most a day:** on each date the earliest are kept, in the order
-   the reader's plans are listed when times tie.
-5. **The window:** the earliest candidates overall, up to the window
+   cross midnight; hours that end where they begin are none. A candidate
+   inside them moves to their end when that is later the same day, and is
+   dropped otherwise: a reminder never arrives the next morning about the
+   day before.
+4. **One at a time.** An enrollment has one candidate at one date and
+   time; where a snooze lands on the day's own reminder, that reminder
+   stands.
+5. **The most a day:** on each date the earliest are kept, in the order
+   the reader's plans are listed when times tie. A snooze counts.
+6. **The window:** the earliest candidates overall, up to the window
    size. iOS keeps at most 64 pending requests (Research finding 9), so
-   the app asks for 60 and refills as days pass.
-6. **Never about the past.** No reminder concerns a missed day, counts
+   the app asks for 60 and refills as days pass. The engine looks no
+   further ahead than today and the 365 days after it (*app convention*).
+7. **Never about the past.** No reminder concerns a missed day, counts
    days, or mentions the streak. The text is the plan and the reading:
    "Gospels at your pace: Mark 4:1–20.", or only the plan's name when the
-   reader hides passage details.
+   reader hides passage details. Each reminder comes with the reading it
+   is about: a calendar date's own appointment, or a sequence's next
+   unread reading as things stand now, on every one of its days. If the
+   reader reads nothing that reading is still next, and marking one asks
+   the engine again, so a reminder never names a reading that has been
+   read.
 
 *Daylight saving time and travel.* Because the times are wall-clock, a
 07:00 reminder stays at 07:00 when the clocks change. A time the clock
@@ -715,7 +739,10 @@ skips (02:30 on the night clocks go forward) is delivered by the system
 at the next minute that exists, and a time that happens twice fires once,
 the first time. After travel the device gives the engine the new local
 now; reminders keep their wall-clock times in the new zone, and one whose
-time has already passed there today is left out.
+time has already passed there today is left out. Each runtime's edge
+turns an instant into the local date and time (Swift:
+`LocalDateTime(_:in:)`, tested for both clock changes and for travel);
+the web has no reminders at 1.0.
 
 *Example:* a reminder at 07:00 on reading days 1 to 5; now is Friday
 2027-03-12 at 07:30 with today's reading unread. The first candidates are

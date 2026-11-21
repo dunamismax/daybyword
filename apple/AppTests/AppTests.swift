@@ -8,7 +8,7 @@ import Testing
 
 /// The app links the shared packages and can reach them.
 @Test func linksTheSharedPackages() {
-    #expect(ReadingEngine.specificationVersion == 0)
+    #expect(ReadingEngine.specificationVersion == 1)
     #expect(Database.libraryVersion.hasPrefix("3."))
 }
 

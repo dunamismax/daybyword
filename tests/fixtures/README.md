@@ -4,7 +4,7 @@ Inputs, and the outputs Day by Word's Swift engine gives for them, which
 the TypeScript web module must give too (docs/decisions.md E33,
 docs/engine.md); the Swift tests named below check them on every
 `make check`, so a fixture never drifts from the code that made it. The
-engine fixtures (`references` through `changing`) are also checked by
+engine fixtures (`references` through `reminders`) are also checked by
 the TypeScript domain module in Node (`web/test/domain/`, every `make check`)
 and in headless Firefox (`make test-domain-browser`, in `make check-full`).
 
@@ -22,6 +22,8 @@ and in headless Firefox (`make test-domain-browser`, in `make check-full`).
 | `today.json` | Today for each enrollment on a date: its status, the readings to read, those read today, the next reading; a pace enrollment's projected finish; a finish-date enrollment's schedule, share and outstanding readings; a calendar enrollment's appointment, the readings a short month does not appoint, and the missed count (P5.5 to P5.7) | same |
 | `returning.json` | Whether each enrollment is offered the welcome after a gap, the choices that apply with the finish and readings remaining each would set, and each one's preview: today's answer were it recorded (P5.8) | same |
 | `changing.json` | A change the reader is considering: the candidate event the engine makes (with a new basis where the rules call for one), why it would be inert, and today's answer before and after (P5.10) | same |
+| `progress.json` | Each enrollment's readings by state, the seven dates ending today (read, and a reading day), coverage across all enrollments with each verse once (verses, passages, whole and partial chapters, books explored), and the streak (P5.11) | same |
+| `reminders.json` | From the journal, the local date and wall-clock time now, quiet hours, the most a day, snoozes and a window: the local dates and times reminders should fire at, earliest first, each with the reading it is about (P5.12) | same; the wall-clock edge in `CivilDateTests.swift` |
 | `plan-files.json` | Invented plan files and what the compiler reads and computes, or its first problem | `CatalogCompilerTests/FixtureTests.swift` |
 | `catalog-export.json` | An invented release catalog as `catalog export` writes it (PM.14), whose checksum the PostgreSQL import recomputes; not in the cases format | `CatalogCompilerTests/CatalogExportTests.swift`, `web/test/` |
 | `routes.json` | The web's address contract (docs/urls.md): each address's status, content type, cache policy, redirect, title, heading, and current section; the security headers (written by hand since PM.20) | `web/test/production/server.test.ts` |

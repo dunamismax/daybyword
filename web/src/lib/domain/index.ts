@@ -6,7 +6,7 @@
 // (books.json, the versification, the word counts) and pass their text in.
 
 /** The version of docs/engine.md this module implements; Swift's ReadingEngine states the same. */
-export const specificationVersion = 0;
+export const specificationVersion = 1;
 
 export * from "./ids.ts";
 export * from "./numbers.ts";
@@ -26,3 +26,5 @@ export * from "./journal.ts";
 export * from "./today.ts";
 export * from "./preview.ts";
 export * from "./welcome.ts";
+export * from "./progress.ts";
+export * from "./reminders.ts";

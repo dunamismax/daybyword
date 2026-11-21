@@ -185,3 +185,56 @@ private func zone(_ name: String) throws -> TimeZone { try #require(TimeZone(ide
         }
     }
 }
+
+// MARK: The edge for reminders
+
+@Test func anInstantIsADifferentWallClockTimeInDifferentPlaces() throws {
+    // 13:30 UTC on 12 March 2027: 07:30 in Chicago, 22:30 in Tokyo, and
+    // 03:30 in Honolulu.
+    let moment = try instant("2027-03-12T13:30:00Z")
+    let chicago = try LocalDateTime(moment, in: zone("America/Chicago"))
+    #expect(chicago.date.description == "2027-03-12" && chicago.time.description == "07:30")
+    let tokyo = try LocalDateTime(moment, in: zone("Asia/Tokyo"))
+    #expect(tokyo.date.description == "2027-03-12" && tokyo.time.description == "22:30")
+    let honolulu = try LocalDateTime(moment, in: zone("Pacific/Honolulu"))
+    #expect(honolulu.date.description == "2027-03-12" && honolulu.time.description == "03:30")
+    // Across the date line the same instant is another date.
+    let auckland = try LocalDateTime(moment, in: zone("Pacific/Auckland"))
+    #expect(auckland.date.description == "2027-03-13" && auckland.time.description == "02:30")
+    #expect(chicago < tokyo && tokyo < auckland)
+}
+
+@Test func theWallClockSkipsAndRepeatsAnHourWhenTheClocksChange() throws {
+    let chicago = try zone("America/Chicago")
+    // The clocks go forward on 14 March 2027: 01:59 is followed by 03:00.
+    let before = try LocalDateTime(instant("2027-03-14T07:59:00Z"), in: chicago)
+    let after = try LocalDateTime(instant("2027-03-14T08:00:00Z"), in: chicago)
+    #expect(before.time.description == "01:59" && after.time.description == "03:00")
+    // They go back on 7 November 2027: 01:30 happens twice.
+    let first = try LocalDateTime(instant("2027-11-07T06:30:00Z"), in: chicago)
+    let second = try LocalDateTime(instant("2027-11-07T07:30:00Z"), in: chicago)
+    #expect(first == second && first.time.description == "01:30")
+}
+
+@Test func aReminderKeepsItsWallClockTimeAcrossAClockChange() throws {
+    // A calendar in the device's zone turns the engine's wall-clock answer
+    // into the instant the system fires at: 07:00 the day before, the day
+    // of, and the day after the clocks go forward, 24, 23 and 24 hours apart.
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = try zone("America/Chicago")
+    let time = try #require(WallTime("07:00"))
+    let fires = try ["2027-03-13", "2027-03-14", "2027-03-15"].map {
+        try #require(calendar.date(from: LocalDateTime(date: try CivilDate($0), time: time).components))
+    }
+    #expect(fires[0] == (try instant("2027-03-13T13:00:00Z")))
+    #expect(fires[1].timeIntervalSince(fires[0]) == 23 * 3600)
+    #expect(fires[2].timeIntervalSince(fires[1]) == 24 * 3600)
+    for fire in fires { #expect(try LocalDateTime(fire, in: calendar.timeZone).time == time) }
+
+    // 02:30 does not exist on 14 March; the next minute that does is 03:00.
+    let skipped = LocalDateTime(date: try CivilDate("2027-03-14"), time: try #require(WallTime("02:30")))
+    let next = try #require(
+        calendar.nextDate(
+            after: try instant("2027-03-14T06:00:00Z"), matching: skipped.components, matchingPolicy: .nextTime))
+    #expect(try LocalDateTime(next, in: calendar.timeZone).time.description == "03:00")
+}

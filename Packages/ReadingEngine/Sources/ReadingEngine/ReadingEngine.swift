@@ -6,7 +6,8 @@
 /// in `tests/fixtures/` (docs/decisions.md E33). Nothing else reimplements it.
 public enum ReadingEngine {
     /// The version of `docs/engine.md` this build implements. Version 0 covers
-    /// references, verse sets, word counts, and workload; P5.1 adds scheduling
-    /// and makes it 1. The web module states the same version.
-    public static let specificationVersion = 0
+    /// references, verse sets, word counts, and workload; version 1 adds
+    /// civil dates, the journal, the three behaviors, returning, progress and
+    /// reminders (P5.1 to P5.12). The web module states the same version.
+    public static let specificationVersion = 1
 }
