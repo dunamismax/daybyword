@@ -11,7 +11,7 @@ import {
   check,
   foreignKey,
   integer,
-  pgTable,
+  pgSchema,
   primaryKey,
   smallint,
   text,
@@ -19,7 +19,14 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 
-export const catalogImports = pgTable(
+/**
+ * Every table lives in schema app, as on the server's PostgreSQL cluster
+ * (the host's web platform contract); migration 0002 moved them there from
+ * public. The roles' search_path is app, pg_catalog.
+ */
+export const app = pgSchema("app");
+
+export const catalogImports = app.table(
   "catalog_imports",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -36,7 +43,7 @@ export const catalogImports = pgTable(
   ],
 );
 
-export const plans = pgTable(
+export const plans = app.table(
   "plans",
   {
     id: text().notNull(),
@@ -76,7 +83,7 @@ export const plans = pgTable(
   ],
 );
 
-export const planFacts = pgTable(
+export const planFacts = app.table(
   "plan_facts",
   {
     planId: text().notNull(),
@@ -97,7 +104,7 @@ export const planFacts = pgTable(
   ],
 );
 
-export const assignments = pgTable(
+export const assignments = app.table(
   "assignments",
   {
     planId: text().notNull(),
@@ -116,7 +123,7 @@ export const assignments = pgTable(
   ],
 );
 
-export const catalogImportPlans = pgTable(
+export const catalogImportPlans = app.table(
   "catalog_import_plans",
   {
     importId: integer()
@@ -134,7 +141,7 @@ export const catalogImportPlans = pgTable(
   ],
 );
 
-export const scriptureResources = pgTable(
+export const scriptureResources = app.table(
   "scripture_resources",
   {
     importId: integer()
@@ -147,7 +154,7 @@ export const scriptureResources = pgTable(
 );
 
 // One row: the import being served.
-export const catalogCurrent = pgTable(
+export const catalogCurrent = app.table(
   "catalog_current",
   {
     singleton: smallint().primaryKey().default(1),

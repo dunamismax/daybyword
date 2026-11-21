@@ -1,45 +1,50 @@
 #!/bin/sh
-# Proves the newest backup restores (docs/deploy.md): checks its SHA-256,
-# restores it into a throwaway PostgreSQL 18 container on no network at all,
-# recreates the roles from web/db/roles.sql, and checks the migrations and
-# the current catalog against the backup's manifest. The live database is
-# never touched. Run monthly by daybyword-restore-check.timer, and before
-# the first deploy.
+# Proves the newest backup restores (docs/deploy.md, "Backups"): checks its
+# SHA-256, restores it into a throwaway PostgreSQL 18 cluster that listens on
+# no TCP port at all (a Unix socket in a private directory, run by the
+# postgres account and deleted afterwards), recreates the roles from
+# db/roles.sql, and checks the migrations and the current catalog against the
+# backup's manifest and that the web role can read the plans. The live
+# database is never touched. Run monthly by daybyword-restore-check.timer, as
+# root.
 set -eu
 # shellcheck source=deploy/bin/common.sh
 . "$(dirname "$0")/common.sh"
 
+[ "$(id -u)" = 0 ] || fail "run as root"
 dump=$(ls -1 "$DBW_BACKUPS"/daybyword-*.dump 2>/dev/null | sort | tail -n 1)
 [ -n "$dump" ] || fail "no backup in $DBW_BACKUPS"
 base=${dump%.dump}
-(cd "$DBW_BACKUPS" && { sha256sum -c "$(basename "$base").sha256" 2>/dev/null ||
-  shasum -a 256 -c "$(basename "$base").sha256"; }) >/dev/null || fail "$dump does not match its checksum"
+(cd "$DBW_BACKUPS" && sha256sum -c "$(basename "$base").sha256" >/dev/null 2>&1) ||
+  fail "$dump does not match its checksum"
+check_dump "$dump" || fail "$dump failed its check"
 
-image=$(sed -n 's/^ *image: \(postgres:.*\)$/\1/p' "$DBW_RELEASE_DIR/deploy/compose.yaml" | head -n 1)
-[ -n "$image" ] || fail "no PostgreSQL image in deploy/compose.yaml"
-container="${DBW_PROJECT}-restore-check-$$"
-trap 'docker rm -fv "$container" >/dev/null 2>&1 || true' EXIT
-docker run -d --name "$container" --network none \
-  -e POSTGRES_DB=daybyword -e POSTGRES_PASSWORD=restore-check-only \
-  "$image" >/dev/null
-i=0
-until docker exec "$container" pg_isready -U postgres -d daybyword >/dev/null 2>&1; do
-  i=$((i + 1)); [ "$i" -le 60 ] || fail "the throwaway database did not start"; sleep 1
-done
-# The image's init runs once more after its first readiness; wait for the real start.
-sleep 2
-until docker exec "$container" pg_isready -U postgres -d daybyword >/dev/null 2>&1; do sleep 1; done
+work=$(mktemp -d /var/tmp/daybyword-restore-check.XXXXXX)
+chown postgres:postgres "$work"
+chmod 0700 "$work"
+pg() { runuser -u postgres -- env PATH="$DBW_PG_BIN:/usr/bin:/bin" "$@"; }
+cleanup() {
+  pg pg_ctl -D "$work/data" -m immediate stop >/dev/null 2>&1 || true
+  rm -rf "$work"
+}
+trap cleanup EXIT INT TERM
 
-docker exec -i "$container" psql -v ON_ERROR_STOP=1 -U postgres -d daybyword -q \
-  <"$DBW_RELEASE_DIR/web/db/roles.sql" >/dev/null
-docker exec -i "$container" pg_restore -U postgres -d daybyword --exit-on-error <"$dump"
+pg initdb -D "$work/data" -U postgres -A trust -E UTF8 --locale=C --no-instructions >"$work/initdb.log" 2>&1 ||
+  fail "the throwaway cluster did not initialise"
+pg pg_ctl -D "$work/data" -l "$work/server.log" -w -s \
+  -o "-c listen_addresses='' -k $work -p 5432 -c fsync=off" start || fail "the throwaway cluster did not start"
+q() { pg psql -X -v ON_ERROR_STOP=1 -h "$work" -p 5432 "$@"; }
 
-query() { docker exec "$container" psql -v ON_ERROR_STOP=1 -U postgres -d daybyword -At -c "$1"; }
-migrations=$(query "select count(*) from drizzle.__drizzle_migrations")
-catalog=$(query "select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
-readable=$(docker exec "$container" psql -v ON_ERROR_STOP=1 -U daybyword_app -d daybyword -At -c "select count(*) from plans")
+q -U postgres -d postgres -qc "create database $DBW_DATABASE"
+q -U postgres -d "$DBW_DATABASE" -q <"$DBW_RELEASE_DIR/db/roles.sql" >/dev/null
+pg pg_restore -h "$work" -p 5432 -U postgres -d "$DBW_DATABASE" --exit-on-error <"$dump"
+
+migrations=$(q -U postgres -d "$DBW_DATABASE" -At -c "select count(*) from drizzle.__drizzle_migrations")
+catalog=$(q -U postgres -d "$DBW_DATABASE" -At -c "select i.content_sha256 from app.catalog_current c join app.catalog_imports i on i.id = c.import_id")
+readable=$(q -U daybyword_web -d "$DBW_DATABASE" -At -c "select count(*) from plans")
 expected_migrations=$(sed -n 's/.*"migrations": \([0-9]*\).*/\1/p' "$base.json")
 expected_catalog=$(sed -n 's/.*"catalogSha256": "\([0-9a-f]*\)".*/\1/p' "$base.json")
 [ "$migrations" = "$expected_migrations" ] || fail "restored $migrations migrations, the manifest says $expected_migrations"
 [ "$catalog" = "$expected_catalog" ] || fail "restored catalog $catalog, the manifest says $expected_catalog"
-say "$(basename "$dump") restores: $migrations migrations, catalog ${catalog%"${catalog#????????????}"}…, $readable plan(s) readable as daybyword_app"
+[ "$readable" -gt 0 ] || fail "the web role reads no plans from the restored database"
+say "$(basename "$dump") restores: $migrations migrations, catalog ${catalog%"${catalog#????????????}"}…, $readable plan(s) readable as daybyword_web"

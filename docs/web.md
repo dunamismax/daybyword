@@ -39,7 +39,7 @@ files when APIs are needed.
   engine's days ahead for a candidate enrollment), and words from the
   string table. A plan's own words (title, summary, limitations and the
   rest) are the catalog's and are shown as written. With no
-  `DBW_DATABASE_URL` there is no catalog: Plans is empty and a plan's
+  `DATABASE_URL` there is no catalog: Plans is empty and a plan's
   address is not found.
 - `scripts/with-catalog.sh COMMAND` runs a command with a throwaway
   PostgreSQL holding the roles, the migrations and the release catalog,

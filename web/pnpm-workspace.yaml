@@ -1,0 +1,8 @@
+# web/ is one pnpm project (no workspace packages). pnpm 12 reads its
+# settings here, not from .npmrc (the host's web platform contract):
+# exact versions only, the pinned engines enforced, and install scripts only
+# for the packages listed.
+saveExact: true
+engineStrict: true
+allowBuilds:
+  esbuild: true

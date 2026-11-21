@@ -1,164 +1,118 @@
-# SvelteKit/PostgreSQL deployment plan
+# Deployment
 
-**D41, as D42 revised it (2026-11-20).** PM.18 built the files below and
-rehearsed them on the owner's Mac in Docker (`make rehearse-deploy`).
-**daybyword.com went live on 2026-11-20** (P7): see "The live host". No
-server SQLite, Litestream or mandatory Python service.
+daybyword.com runs on the owner's host, `ubuntu-vm`, under the host's web
+platform contract (`ubuntu-vm-backup/docs/web-platform.md`, adopted by the
+owner on 2026-11-21): a native systemd service on the host's one Node, the
+host's PostgreSQL 18 cluster, the shared Caddy, and fix-forward deploys that
+check every release as a candidate before it takes traffic (decisions.md
+E46). Nothing in production runs in a container. Where this file and the
+contract disagree, the contract wins and this file is out of date.
 
-## The live host (2026-11-20)
+## The live host
 
-- ubuntu-vm: Ubuntu 26.04.1, x86_64, Docker 29.10 with Compose v5.8, the
-  system Caddy 2.11.9 (a custom build with caddy-ratelimit) importing
-  `/etc/caddy/sites/*.caddy`. DNS for daybyword.com and www points at the
-  host directly.
-- `/srv/www/daybyword.com/`: `releases/<commit>`, `current` (symlink),
-  `current-release`, `previous-release`, `shared/env` (root 0600, hex
-  passwords generated on the host), `shared/backups` (0700),
-  `shared/postgres` (the database container's two files, below).
-- Compose project `daybyword`: web on 127.0.0.1:4318 (4316 and 4317 belong
-  to other sites), candidate checks on a Docker-assigned loopback port, PostgreSQL 18.6 on the
-  internal network only, volume `daybyword_postgres_data`. The host's own
-  PostgreSQL on 127.0.0.1:5432 is untouched. The database container is
-  made from nothing in a release directory, so a deploy leaves it running
-  (E43); only a change to the `postgres` service itself recreates it, and
-  `deploy.sh` says so when it happens.
-- Lock: `with-deploy-lock` (flock on `/run/web-deploy/lock`).
-- Caddy: `/etc/caddy/sites/daybyword.com.caddy` only; `/etc/caddy` was
-  archived first to `/root/caddy-archives/`; validated, then reloaded.
-- Timers: `daybyword-backup.timer` (nightly) and
-  `daybyword-restore-check.timer` (monthly); the first backup and restore
-  check ran on the host and passed.
-- **Not yet:** an encrypted off-server copy of `shared/backups`. No
-  `ubuntu-vm-backup` checkout or backup tool was found on the host or the
-  Mac; the owner's existing off-server arrangement must be found (or one
-  agreed) before P7.3 is done.
-- Every other site's name answered the same before and after (20 names).
-
-## The files (PM.18)
-
-| File | What it does |
+| Thing | Where |
 |---|---|
-| `deploy/Dockerfile` | The web image: `vite build`, then a runtime stage with only drizzle-orm and pg, `server.ts`, the jobs, `drizzle/` and the release's catalog export, as the unprivileged `node` user; Node pinned by index digest |
-| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; its two files mounted from `shared/postgres`, never from a release; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4318 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
-| `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file. The container reads it, and `roles.sql`, from `shared/postgres` |
-| `deploy/bin/deploy.sh` | Under the shared lock: build the image, copy `init.sh` and `roles.sql` into `shared/postgres` in place, start the database (saying so if its container was recreated), reapply the roles, back up, migrate and import, check a candidate on a Docker-assigned loopback port, activate, check, record `current-release`; rolls back if the activated release fails |
-| `deploy/bin/rollback.sh` | Switches the web back to `previous-release`'s image, keeping the database |
-| `deploy/bin/check-live.sh` | Checks a base URL: `/up`, the sections, 404s, headers and policy, no cookie or third-party load, noindex, stylesheet; with https, also www's redirect, the certificate and HSTS (P7.6) |
-| `deploy/bin/backup.sh` | `pg_dump` (custom format) with SHA-256 and a manifest (release, migrations, catalog digest), 14 days kept in `shared/backups` (0700) |
-| `deploy/bin/restore-check.sh` | Restores the newest dump into a throwaway PostgreSQL with no network, recreates the roles, checks migrations, catalog and the web role's reads against the manifest |
-| `deploy/systemd/` | `daybyword-backup.timer` (nightly 03:20) and `daybyword-restore-check.timer` (monthly), checked with `systemd-analyze verify` |
-| `deploy/caddy/daybyword.com.caddy` | The site file: apex to 127.0.0.1:4318 with HSTS, www redirected permanently with path and query, no access log |
-| `deploy/bin/release.sh` | `make deploy`: from a clean checkout equal to origin/main, builds the export, unpacks the commit and export into `releases/<commit>` on the host, runs `deploy.sh` inside `with-deploy-lock`, then `check-live.sh https://daybyword.com` |
-| `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, a second deploy from another release directory, rollback, logs, teardown. It fails if the database container's id or start time changes across the second deploy or the rollback. Run it from a checkout Docker can mount (under `/Users` on this Mac): what containers mount goes under the gitignored `build/` |
+| Web | `daybyword-web.service` (`deploy/systemd/daybyword-web.service`): `/opt/node-26/bin/node server.ts` (web/server.ts around adapter-node's build) from `/srv/www/daybyword.com/current`, as `daybyword-web` (system account, no login, no home), on `127.0.0.1:4318`, with the contract's sandbox and the drop-in `daybyword-web.service.d/50-resource-boundaries.conf` |
+| Releases | `/srv/www/daybyword.com/releases/<full commit>/` (root-owned, never edited) and `current`, an absolute symlink; no pointer to any other release |
+| Database | `daybyword` on the host cluster, `127.0.0.1:5432`, SCRAM over loopback only; every table in schema `app` (migration 0002) |
+| Roles | `daybyword_owner` owns everything and cannot log in; `daybyword_migration` becomes it with `SET ROLE` for migrations and the catalog import; `daybyword_web` reads, in read-only transactions (`db/roles.sql` is the same model for tests) |
+| Secrets | `/etc/web-apps/daybyword/` (0700 root; files 0600 root): `web.env` for the web unit, `migration.env` for the deploy's migration step only. No other secret exists at 1.0 |
+| Backups | `/srv/www/daybyword.com/shared/backups/` (0700): nightly `daybyword-backup.timer` and a dump before each migration, each with its SHA-256 and manifest, 14 days; `daybyword-restore-check.timer` restores the newest monthly into a throwaway cluster. Off the server: ubuntu-vm-backup's daily encrypted dump of every database in the cluster |
+| Caddy | `/etc/caddy/sites/daybyword.com.caddy` from `deploy/caddy/daybyword.com.caddy`, changed only through `caddy-apply` |
+| What is live | `sudo ubuntu-vm-backup/bin/web-live daybyword-web.service` (release directory and revision from the running process) or `https://daybyword.com/healthz`; never a checkout |
 
-The env file (`shared/env`, root 0600) holds `POSTGRES_PASSWORD`,
-`DBW_APP_PASSWORD` and `DBW_MIGRATE_PASSWORD` (hex); the scripts take
-`DBW_ROOT`, `DBW_PORT`, `DBW_DEPLOY_LOCK` (required: the host's lock, P7.1),
-`DBW_DATABASE_FILES` (default `shared/postgres` under the root) and
-`DBW_RELEASE` from the environment. `/up` answers OK only once the
-database answers and a catalog is current, as the read-only web role.
-Encryption and the off-server copy of `shared/backups` are the host's
-`ubuntu-vm-backup` entry (P7.3).
+DNS is the owner's DNS-only Cloudflare records; Caddy obtains its own Let's
+Encrypt certificates. No DNS challenge, plugin, token, proxying or SSL-mode
+work; agents never change Cloudflare settings. Caddy writes no access log:
+the app logs one metadata-only line per request (method, route pattern,
+status, time), never an address, query or body.
 
-## Isolation and layout
+## Provisioning (once)
 
-| Resource | Planned convention; inspect before use |
-|---|---|
-| Host | ubuntu-vm under D34; existing shared Caddy |
-| Release root | /srv/www/daybyword.com/releases/<commit>, current pointer |
-| Persistent resources | shared/env (root-owned 0600), shared/backups (0700), shared/postgres (`init.sh` and `roles.sql`, which the database container mounts; no secrets) |
-| Source files | deploy/compose.yaml, deploy/Dockerfile, deploy/caddy/daybyword.com |
-| Compose project | daybyword; web (adapter-node), postgres (PostgreSQL 18), one-shot migration/catalog import |
-| Web listener | adapter-node in the container on 0.0.0.0:3000 (`HOST`, `PORT`), published only at 127.0.0.1:4318 (4316 and 4317 are other sites') |
-| Postgres | private Docker network port 5432; no production host port |
-| DB/role | daybyword; `daybyword_app` (web, read-only) and `daybyword_migrate` (migration/import jobs), from `web/db/roles.sql` (PM.14) |
-| Volume | explicit daybyword_postgres_data; stable across release directories, as is the whole database container (E43) |
-| Host Caddy site | /etc/caddy/sites/daybyword.com.caddy, imported by the main Caddyfile's `import /etc/caddy/sites/*.caddy` |
-| Health | /up, no-store, ready only with compatible DB/catalog |
-| Shared deploy lock | the host's `with-deploy-lock COMMAND` (flock on `/run/web-deploy/lock`, fd 9), which the scripts recognise |
+```sh
+cd /home/sawyer/github/ubuntu-vm-backup
+sudo with-deploy-lock bin/provision-app-database daybyword --web-access read-only
+```
 
-Record other sites' responses before/after every server change. Archive
-/etc/caddy before touching it. Add only this site's configuration; never
-edit another site's file, DB, service, user or backup entry. No second
-Caddy, Coolify or Dokploy. Missing shared DNS modules need coordinated
-host work, not unilateral proxy replacement. No live host access occurred
-for this documentation revision.
+It creates the three roles, the database, schema `app`, `web.env`,
+`migration.env` and their `pg_hba.conf` rules, and proves them with real
+logins. Safe to repeat. The first deploy's migration then moves the restored
+tables into `app` and grants the web role what it reads.
 
-## Application and secrets
+## Deploying
 
-Use @sveltejs/adapter-node: `vite build` writes `web/build/`, run as
-`node server.ts` (in `web/`), which wraps adapter-node's handler so every
-response carries the security headers, a cache policy and a metadata-only
-log line (E38). This app needs runtime API/form-action/database
-work; static public routes may prerender. A pure static content deployment
-can be served directly by Caddy, but it cannot replace runtime APIs.
-Build a pinned non-root Node image from a clean origin/main archive: build
-in one stage, then copy `web/build/`, `web/server.ts`, `package.json`, the lockfile's
-production dependencies (`npm ci --omit=dev`: drizzle-orm and pg, which
-adapter-node leaves external), the jobs' `scripts/` and `src/lib/server/`,
-and `drizzle/`, and test the actual image. PostgreSQL's image is the
-pinned 18 major. No checkout as web root or runtime bind mount.
+```sh
+make deploy        # on the Mac, from a clean main equal to origin/main
+```
 
-Document runtime HOST/PORT, DBW_ENV (production; `development` serves
-/dev/components), the public origin (SvelteKit 3 removed adapter-node's
-`ORIGIN`: Caddy passes the Host header and adapter-node assumes https, or
-set `paths.origin` in `web/vite.config.ts` at build when form actions
-arrive), `BODY_SIZE_LIMIT`, DBW_DATABASE_URL (the web as
-daybyword_app; the jobs as daybyword_migrate, PM.14), DBW_COMMIT and catalog digest/schema. Existing Swift DBW_HOST,
-DBW_PORT, DBW_PUBLIC_DIR and DBW_CATALOG need explicit mapping/removal.
-Only public config may use client-exposed environment variables. No secrets
-in build args, layers, logs, JS/native bundles or repository. Framework/
-build telemetry is disabled. No auth/model/billing secret is needed at 1.0.
+`deploy/bin/release.sh` builds the release catalog export here (the catalog
+compiler is Swift), copies it to the host, and then:
 
-Postgres readiness must precede one-shot migration/import and candidate
-readiness. Use bounded connection pools, restart/resource/log limits and
-graceful shutdown. Persist only project data; never down -v during release.
+1. **Build**, on the host as `sawyer`, outside the lock: the commit's own
+   `deploy/bin/build-release.sh` archives the commit into
+   `/home/sawyer/web-work/daybyword.com-<commit>/`, installs with `pnpm
+   install --frozen-lockfile`, and runs `pnpm run check`, `lint` and `test`,
+   the export's check, the database tests and the production server's tests
+   (throwaway PostgreSQL 18 clusters), and the adapter-node build. The
+   release gets production dependencies only. A failure changes nothing.
+2. **Activate**, one `with-deploy-lock` process as root, the release's
+   `deploy/bin/activate.sh`:
+   - stage it as `releases/<commit>`, root-owned, and continue from there;
+   - `deploy/bin/backup.sh` (a checked dump);
+   - `scripts/db-migrate.ts`, then `scripts/catalog-import.ts`, each as
+     `daybyword-web` with `migration.env` only (`systemd-run`), and the
+     migrations counted against the release's journal;
+   - a **candidate**: a copy of the release's own unit file with the release
+     directory and a free port in 4400–4499, started under systemd (same
+     account, sandbox, env file and Node as will serve, against the real
+     database), checked by `deploy/bin/check-live.sh` including
+     `{"status":"ok","revision":"<commit>","database":"ok"}` from `/healthz`,
+     and always removed;
+   - the unit files installed if they changed (`systemd-analyze verify`
+     first), `current` replaced atomically, the service restarted;
+   - what is live checked: `/healthz` on 4318 with the commit,
+     `check-live.sh`, and `web-live` (release directory, revision, Node
+     26.13.1, state `current`);
+   - Caddy only if the site file changed (`caddy-apply`);
+   - `logger -t web-deploy`, `check-live.sh https://daybyword.com`, and the
+     other sites answering as they did before.
 
-## Proxy/TLS
+**When a step fails** the script stops and says why. Up to the candidate the
+previous release is still serving and nothing needs undoing. After the
+switch there is no way back to an older release, and none is kept: read
+`journalctl -u daybyword-web`, fix it in a new commit and deploy that, and
+close the gap in the candidate check in the same commit. Restoring a dump
+over the live database is a decision for the owner, never a deploy step.
 
-DNS is owner-managed, DNS-only (not proxied) Cloudflare records pointing at
-the server's public IP; host Caddy is the reverse proxy and obtains and renews
-its own Let's Encrypt certificates. There is no Cloudflare DNS challenge,
-caddy-dns plugin, Caddy Cloudflare token or SSL/TLS-mode setting in this
-stack: do not plan or add any. Record changes and Cloudflare account settings
-are the owner's; shared binary changes need coordination.
-Verify apex HTTPS, permanent www redirect retaining path/query, renewal,
-headers and the SvelteKit build's actual CSP and hydration behavior. No remote resources.
-Do not cache private APIs or personal HTML. Proxy/app logs omit bodies,
-cookies/tokens, query strings and concrete plan paths; retain route pattern,
-method, status and duration only.
+**Migrations** must leave the serving release working, because it serves
+through the migration and the candidate: add, never remove or rename in the
+same release. The catalog is immutable once imported (E39); each release's
+import adds an import and moves `catalog_current`, which the serving release
+reads as its current catalog.
 
-## Release and rollback
+## Backups
 
-1. Run make check-full and push main. Under the existing shared lock,
-   resolve clean origin/main and record active image/config/schema/catalog.
-2. Back up the project database. Apply reviewed generated Drizzle SQL once
-   with migration credentials; import release-cleared catalog atomically
-   and idempotently. No production schema push.
-3. Boot the candidate on a verified spare loopback port. Verify /up,
-   routes/assets/SSR, form actions and hydration, CSP and matching catalog digest.
-4. Activate only this project's web container/release. Run check-live over
-   public apex/www and compare other sites. Retain previous image/config.
-5. On failure roll back compatible code/config. Use expand/contract SQL;
-   never assume code rollback reverses destructive SQL, delete volumes or
-   blindly restore over newer reader records. Rehearse DB recovery apart.
+`deploy/bin/backup.sh` dumps `daybyword` as the postgres superuser to a
+temporary file and keeps it only if pg_dump finished, the file is not
+empty, and `pg_restore --list` reads it and finds tables; anything else
+exits non-zero and leaves nothing. Its manifest records the release, the
+migrations and the current catalog's digest. `deploy/bin/restore-check.sh`
+checks the newest dump's SHA-256, restores it into a cluster of its own (a
+Unix socket in a private directory, no TCP port, deleted afterwards) with
+`db/roles.sql`, and compares the migrations and the catalog with the
+manifest and that `daybyword_web` reads the plans. Both run as root from the
+serving release; neither touches the live database beyond the dump.
 
-Retain the in-development/noindex/robots block until P18.5.
+ubuntu-vm-backup's daily run dumps every database in the cluster with the
+roles, encrypts them and keeps them off the server, and boots the archived
+release against them (`config/applications.json`: entry `server.ts`,
+database `daybyword`). `/etc/web-apps/daybyword/` and the units are in the
+same backup.
 
-## Backups and jobs
+## History
 
-Start nightly pg_dump with the first Postgres deployment, even while the
-DB holds only reproducible public catalog data. Use a compatible client,
-custom-format dump, checksums/manifest (schema/migrations/catalog/commit/
-time), encrypted off-server transfer, retention and failure reporting.
-Use systemd timers for recurring jobs; shell/pg tools suffice unless a
-Python utility is actually needed. If used, Python runs through uv with
-ruff and only needed libraries; use a least-privilege Postgres driver.
-
-Only daybyword.com's entry in ubuntu-vm-backup may change. Protect role/
-grant/bootstrap and environment recovery separately: a database dump does
-not capture all cluster roles. Test restore into an isolated database,
-reapply restricted grants, check catalog/migrations and app readiness.
-Record a restore before first deploy and quarterly afterward. No backup
-is proved by merely creating a file on the same server. Phase 14 must
-update retention, consent and deletion behavior before storing reader data.
+Until 2026-11-21 the site ran as the Compose project `daybyword`: the web in
+`daybyword-web:<commit>` images and PostgreSQL in a `postgres:18.6` container
+with the volume `daybyword_postgres_data` (E43, superseded by E46). The
+move to the host cluster and the native unit, with the row counts it
+checked, is in E46 and BUILD.md's notes.

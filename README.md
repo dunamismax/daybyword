@@ -93,7 +93,7 @@ does not speak for any church, ministry, or publisher.
 | Local native data | SQLite through `ReadingData`, bundled read-only catalog | Catalog reader; the reading journal is still to come |
 | Reading rules | One specification ([docs/engine.md](docs/engine.md)), a Swift and a TypeScript runtime held to the same JSON cases | References, verse sets, workload, and civil dates in both; scheduling is specified and being built (Phase 5) |
 | Catalog | Plain-text plan sources, compiled and checked by a Swift tool that refuses unverified references and uncleared sources | No plans yet |
-| Hosting | Docker Compose behind the host's Caddy, nightly `pg_dump` and restore checks | Live; the off-server backup copy is still open (P7.3) |
+| Hosting | `daybyword-web.service` on the host's Node and PostgreSQL 18, behind its Caddy; each release checked as a candidate before it serves; nightly `pg_dump` and monthly restore checks, and the host's daily encrypted backup of the database | Live |
 
 The apps call the server only over HTTPS; nothing outside the server
 connects to PostgreSQL. The full stack decision is D42 in BUILD.md, and
@@ -110,7 +110,7 @@ Packages/ReadingData/     SQLite wrapper and catalog reader for the app
 Packages/CatalogCompiler/ the `catalog` tool that builds and exports the catalog
 catalog/                  plan sources, scripture data (book registry, versification), and SOURCES.md (rights)
 tests/fixtures/           the shared cases both engines must pass, and the web's address contract
-deploy/                   Dockerfile, Compose project, Caddy site file, systemd timers, deploy and backup scripts
+deploy/                   systemd units and timers, Caddy site file, build, deploy, check and backup scripts
 design/                   Morning's design tokens, mockups, image prompts, and the owner's artwork
 docs/                     product rules, design, engine, catalog, editorial, deployment, release, decisions
 scripts/                  helpers behind the Makefile
@@ -142,26 +142,26 @@ make check-full  # check, the engine cases in Firefox, both tours in light and d
 `make help` lists every target. Others worth knowing: `make check-web` (the
 web gate alone), `make test-db` (migrations, catalog import, and roles on a
 throwaway PostgreSQL 18), `make tour-web` and `make tour-app`, `make
-test-linux`, `make rehearse-deploy`, `make format`, and `make archive` and
+test-linux`, `make format`, and `make archive` and
 `make testflight` ([docs/release.md](docs/release.md)). Set `SIM_DEVICE` to
 choose a simulator and `PORT` to serve elsewhere.
 
 ### Prerequisites
 
-`make check` refuses any Swift, Node, or npm version other than the pinned
+`make check` refuses any Swift, Node, or pnpm version other than the pinned
 one. Confirmed on the owner's Mac (macOS 27.2, Apple silicon):
 
 | Tool | Version | Needed for |
 |---|---|---|
 | Xcode | 27.2 (27B52), with Swift 6.4.2 (`.swift-version`) and an iOS 27 simulator with an iPhone | everything Swift; its `swift format` formats and lints. Xcode 27 calls the simulator app DeviceHub |
 | XcodeGen | 2.46.0 (`brew install xcodegen`) | generating the Xcode project |
-| Node | 26.13.0 (`.node-version`) | the web workspace; install from nodejs.org or a version manager that reads `.node-version` |
-| npm | 11.20.0 (`packageManager` in `web/package.json`) | `make web-install` runs `npm ci`; `npm install --global npm@11.20.0` if needed |
+| Node | 26.13.1 (`.node-version`), the version the server runs | the web workspace; install from nodejs.org or a version manager that reads `.node-version` |
+| pnpm | 12.18.0 (`packageManager` in `web/package.json`), a native executable; no Corepack | `make web-install` runs `pnpm install --frozen-lockfile` |
 | PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, `make serve-web`, the production tests and the web tour, each of which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
 | python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh` |
 | curl | any | `scripts/web-smoke.sh` |
 | Firefox and geckodriver | Firefox 159, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari make tour-web`) |
-| Docker with Compose v2 | Docker Desktop, or Colima (`brew install colima docker docker-compose`, then `colima start`) | `make test-linux` and `make rehearse-deploy`; the first run downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB) |
+| Docker with Compose v2 | Docker Desktop, or Colima (`brew install colima docker docker-compose`, then `colima start`) | `make test-linux`; the first run downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB) |
 
 For device builds and TestFlight only: Xcode signed in to the owner's Apple
 Developer account, and `apple/Config/Secrets.xcconfig` with the team ID

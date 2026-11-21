@@ -17,12 +17,17 @@ if (!process.env["PGHOST"] || !repositoryExport)
   throw new Error("run these through make test-db (scripts/with-postgres.sh)");
 
 const name = `dbw_read_${process.pid}`;
-const url = `postgresql://daybyword_app@localhost/${name}?host=${process.env["PGHOST"]}`;
+const url = `postgresql://daybyword_web@localhost/${name}?host=${process.env["PGHOST"]}`;
 
 async function job(script: string, args: string[]) {
   return run("node", [`scripts/${script}`, ...args], {
     cwd: web,
-    env: { ...process.env, PGDATABASE: name, PGUSER: "daybyword_migrate" },
+    env: {
+      ...process.env,
+      PGDATABASE: name,
+      PGUSER: "daybyword_migration",
+      DB_OWNER_ROLE: "daybyword_owner",
+    },
   });
 }
 

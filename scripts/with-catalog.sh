@@ -1,7 +1,7 @@
 #!/bin/sh
 # Runs a command with the web's database as a deploy leaves it: a throwaway
 # PostgreSQL (scripts/with-postgres.sh) holding this project's roles, every
-# migration, and the release catalog's export, with DBW_DATABASE_URL naming
+# migration, and the release catalog's export, with DATABASE_URL naming
 # it for the read-only web role. So `make serve-web`, the production tests
 # and the web tour see the plans the way daybyword.com serves them, through
 # the same code (BUILD.md P8.10). Everything is deleted when the command ends.
@@ -24,8 +24,9 @@ createdb daybyword
 psql -q -v ON_ERROR_STOP=1 -d daybyword -f "$root/web/db/roles.sql" >/dev/null
 (
   cd "$root/web"
-  PGDATABASE=daybyword PGUSER=daybyword_migrate node scripts/db-migrate.ts >/dev/null
-  PGDATABASE=daybyword PGUSER=daybyword_migrate node scripts/catalog-import.ts "$export" >/dev/null
+  export PGDATABASE=daybyword PGUSER=daybyword_migration DB_OWNER_ROLE=daybyword_owner
+  node scripts/db-migrate.ts >/dev/null
+  node scripts/catalog-import.ts "$export" >/dev/null
 )
 # pg reads the socket directory from the URL's host parameter.
-DBW_DATABASE_URL="postgresql://daybyword_app@localhost/daybyword?host=$PGHOST" "$@"
+DATABASE_URL="postgresql://daybyword_web@localhost/daybyword?host=$PGHOST" "$@"

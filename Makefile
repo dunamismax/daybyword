@@ -10,7 +10,7 @@ APP_CATALOG := apple/App/Resources/Catalog.sqlite
 PACKAGES := ReadingEngine ReadingData CatalogCompiler
 SWIFT_SOURCES := Packages/*/Sources Packages/*/Tests Packages/*/Package.swift apple
 PORT ?= 8080
-WEB_STAMP := web/node_modules/.package-lock.json
+WEB_STAMP := web/node_modules/.modules.yaml
 
 # SvelteKit, Vite, and Tailwind send no telemetry; nothing to switch off
 # (AGENTS.md §5, decision E36).
@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.package-lock.json
 .PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
 	test-linux run screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
-	catalog-export check-export db-generate db-drift test-db rehearse-deploy strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
+	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -73,33 +73,33 @@ lint: ## Check the toolchain, formatting, imports, design tokens, and raw colors
 
 format: web-install ## Format the Swift and web sources in place
 	@swift format format --in-place --recursive --parallel $(SWIFT_SOURCES)
-	@cd web && npx prettier --write --log-level warn .
+	@cd web && pnpm exec prettier --write --log-level warn .
 
 web-install: $(WEB_STAMP) ## Install the web workspace's pinned packages from its lockfile
 
-$(WEB_STAMP): web/package.json web/package-lock.json
-	@cd web && npm ci --no-audit --loglevel=error
+$(WEB_STAMP): web/package.json web/pnpm-lock.yaml web/pnpm-workspace.yaml
+	@cd web && pnpm install --frozen-lockfile --reporter=silent
 	@touch $@
 
 lint-web: web-install ## Lint and check the formatting of the web sources
 	@echo "== web lint"
-	@cd web && npx eslint . && npx prettier --check --log-level warn .
+	@cd web && pnpm exec eslint . && pnpm exec prettier --check --log-level warn .
 
 types-web: web-install ## Type-check the web sources and Svelte components
 	@echo "== web types"
-	@cd web && npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --fail-on-warnings --output human
+	@cd web && pnpm exec svelte-kit sync && pnpm exec svelte-check --tsconfig ./tsconfig.json --fail-on-warnings --output human
 
 test-web: web-install ## Run the web unit tests
 	@echo "== web tests"
-	@cd web && npx vitest run
+	@cd web && pnpm exec vitest run
 
 build-web: web-install ## Build the web app for production (web/build, adapter-node)
 	@echo "== web build"
-	@cd web && npx vite build --logLevel warn
+	@cd web && pnpm exec vite build --logLevel warn
 
 smoke-web: build-web catalog-export ## Boot the production web server and check every route it serves, with the release catalog in a throwaway PostgreSQL
 	@scripts/web-smoke.sh
-	@scripts/with-catalog.sh sh -c 'cd web && DBW_TEST_BUILD=1 npx vitest run'
+	@scripts/with-catalog.sh sh -c 'cd web && DBW_TEST_BUILD=1 pnpm exec vitest run'
 
 serve-web: build-web catalog-export ## Serve the SvelteKit site's production build on http://localhost:8080 (PORT=…), with the release catalog and the component gallery
 	@scripts/with-catalog.sh sh -c 'cd web && HOST=127.0.0.1 PORT=$(PORT) DBW_ENV=development node server.ts'
@@ -120,7 +120,7 @@ check-export: catalog-export web-install ## Check the release catalog's export a
 	@cd web && node scripts/catalog-import.ts --check ../$(CATALOG_EXPORT)
 
 db-generate: web-install ## Generate a SQL migration in web/drizzle/ from web/src/lib/server/db/schema.ts (NAME=…)
-	@cd web && npx drizzle-kit generate $(if $(NAME),--name $(NAME))
+	@cd web && pnpm exec drizzle-kit generate $(if $(NAME),--name $(NAME))
 
 db-drift: web-install ## Fail if web/src/lib/server/db/schema.ts has changes no migration in web/drizzle/ holds
 	@scripts/db-drift.sh
@@ -128,7 +128,7 @@ db-drift: web-install ## Fail if web/src/lib/server/db/schema.ts has changes no 
 test-db: catalog-export web-install ## Test migrations, the catalog import, and the roles on a throwaway PostgreSQL
 	@echo "== web database tests"
 	@cd web && DBW_TEST_DB=1 DBW_REPOSITORY_EXPORT="$(CURDIR)/$(CATALOG_EXPORT)" \
-		../scripts/with-postgres.sh npx vitest run
+		../scripts/with-postgres.sh pnpm exec vitest run
 
 strings: build ## Add the app's new interface strings to its String Catalog and drop stale ones
 	@swift scripts/strings.swift sync
@@ -158,10 +158,7 @@ archive: ## Build a signed Release archive for TestFlight (docs/release.md)
 testflight: ## Upload build/DayByWord.xcarchive to App Store Connect (docs/release.md)
 	@scripts/testflight.sh
 
-rehearse-deploy: catalog-export ## Rehearse deploy, backup, restore check, redeploy and rollback in Docker, on a throwaway project
-	@deploy/bin/rehearse.sh
-
-deploy: ## Deploy origin/main to daybyword.com on the host (DBW_HOST=root@ubuntu-vm), then check it live
+deploy: ## Deploy origin/main to daybyword.com: build and check on the host, a candidate first, then live (docs/deploy.md)
 	@deploy/bin/release.sh
 
 clean: ## Remove build products and the generated Xcode project

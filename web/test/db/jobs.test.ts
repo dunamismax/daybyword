@@ -1,5 +1,5 @@
 // The one-shot jobs as a deploy runs them: node on the scripts, as
-// daybyword_migrate, against a new database (make test-db).
+// daybyword_migration as daybyword_owner, against a new database (make test-db).
 import { execFile } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { promisify } from "node:util";
@@ -14,7 +14,12 @@ const repositoryExport = process.env["DBW_REPOSITORY_EXPORT"];
 async function job(script: string, args: string[], database: string) {
   return run("node", [`scripts/${script}`, ...args], {
     cwd: web,
-    env: { ...process.env, PGDATABASE: database, PGUSER: "daybyword_migrate" },
+    env: {
+      ...process.env,
+      PGDATABASE: database,
+      PGUSER: "daybyword_migration",
+      DB_OWNER_ROLE: "daybyword_owner",
+    },
   });
 }
 

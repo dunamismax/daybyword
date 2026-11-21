@@ -4,6 +4,7 @@
 // on a request.
 import { readFileSync } from "node:fs";
 import { sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import type { Database } from "./client.ts";
 
@@ -25,9 +26,22 @@ export class SchemaError extends Error {
   override name = "SchemaError";
 }
 
-/** Applies every migration not yet applied; applying them again changes nothing. */
+/**
+ * Applies every migration not yet applied; applying them again changes
+ * nothing. On one connection with search_path public: 0000 and 0001 name
+ * their tables without a schema, as they did when they were first applied,
+ * and 0002 moves everything to schema app with qualified names, as every
+ * later migration names it.
+ */
 export async function applyMigrations(db: Database): Promise<void> {
-  await migrate(db, { migrationsFolder });
+  const client = await db.$client.connect();
+  try {
+    await client.query("set search_path to public, pg_catalog");
+    await migrate(drizzle({ client, casing: "snake_case" }), { migrationsFolder });
+  } finally {
+    await client.query("reset search_path").catch(() => undefined);
+    client.release();
+  }
 }
 
 /**

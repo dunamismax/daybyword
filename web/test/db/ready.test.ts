@@ -26,10 +26,15 @@ describe("readiness", () => {
     await owner.end();
 
     const host = encodeURIComponent(process.env["PGHOST"] ?? "");
-    const url = `postgresql://daybyword_app@/${name}?host=${host}&port=${process.env["PGPORT"] ?? "5432"}`;
+    const url = `postgresql://daybyword_web@/${name}?host=${host}&port=${process.env["PGPORT"] ?? "5432"}`;
     expect(await databaseReady(url)).toBe(false);
 
-    const env = { ...process.env, PGDATABASE: name, PGUSER: "daybyword_migrate" };
+    const env = {
+      ...process.env,
+      PGDATABASE: name,
+      PGUSER: "daybyword_migration",
+      DB_OWNER_ROLE: "daybyword_owner",
+    };
     await run("node", ["scripts/db-migrate.ts"], { cwd: web, env });
     await closeReadiness();
     expect(await databaseReady(url)).toBe(false);

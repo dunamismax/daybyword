@@ -11,7 +11,8 @@ that supersedes it, and add a single line under the old entry pointing to
 the new one (*Superseded by E12*). Every third-party package needs an entry
 here before it is added (AGENTS.md §5).
 
-**Current direction:** D42 (E36) and E33's engine boundary (E37) govern;
+**Current direction:** D42 (E36) and E33's engine boundary (E37) govern,
+and E46 sets how the site runs on the host;
 D40/E32 are withdrawn. Old implementation entries below record the Swift
 server that PM.20 retired; do not use them to select the stack for new
 work. Pure product/data rules remain in force.
@@ -1110,6 +1111,8 @@ answer (E3, E33), and must never lose what a reader recorded.
 
 ### E43. The database container's files live outside every release
 
+*Superseded by E46.*
+
 *2026-11-20, agent (P7).* The `postgres` service mounted its first-start
 hook and `web/db/roles.sql` from the release directory. On the host every
 release is unpacked into a directory of its own, so the mounts' paths
@@ -1193,4 +1196,56 @@ reader's own week depends on their start and their days; and **Plans
 lists the shortest plan first**, by readings and then by title, until
 P9.3 groups plans by goal. Neither ranks a plan by popularity (D23,
 BUILD.md P9.2).
+
+### E46. A native service on the host's PostgreSQL, deployed fix-forward
+
+*2026-11-21, agent, carrying out the owner's web platform contract for the
+host (`ubuntu-vm-backup/docs/web-platform.md`).* daybyword.com leaves its
+Compose project: `daybyword-web.service` runs `/opt/node-26/bin/node
+server.ts` from `/srv/www/daybyword.com/current` as `daybyword-web`, under
+the contract's sandbox, against `daybyword` on the host's PostgreSQL 18
+cluster. The image, the database container and its volume are gone (E43
+described them). `web/` moves from npm to pnpm 12.18.0 (a native
+executable; `pnpm import` wrote the lockfile from the npm one), Node goes
+to 26.13.1, and the shared dependencies take the contract's baseline
+versions.
+
+- **Roles.** The host's model replaces `daybyword_migrate` and
+  `daybyword_app`: `daybyword_owner` owns everything and cannot log in;
+  `daybyword_migration` becomes it with `SET ROLE` (`DB_OWNER_ROLE` in
+  `migration.env`) for migrations and the import; `daybyword_web` reads,
+  with read-only transactions. `db/roles.sql` builds the same model in every
+  test cluster, so the tests run as production's roles.
+- **Schema app.** The host's roles have `search_path = app, pg_catalog`, so
+  migration 0002 (hand-written: drizzle-kit can only ask interactively
+  whether a table moved) moves the seven tables and the trigger function
+  from public to app and grants the web role its reads; `schema.ts` names
+  `pgSchema("app")`. 0000 and 0001 still create the catalog in public, so the
+  migrator runs on one connection with `search_path` public; every later
+  migration is qualified. Raw queries name `app.` themselves.
+- **One database variable.** The server, the jobs and the tests read
+  `DATABASE_URL` (`web.env`, `migration.env`), the contract's name, instead
+  of `DBW_DATABASE_URL`.
+- **Deploys.** `deploy/bin/build-release.sh` builds and checks on the host as
+  the checkout owner; `deploy/bin/activate.sh`, inside the lock, backs up,
+  migrates and imports as the service account, starts the release as a
+  candidate under a copy of its own unit on a 44xx port, checks it, then
+  switches and checks what is live. It keeps 52126aa's candidate-then-verify
+  shape and drops its rollback branch, `rollback.sh` and the Docker
+  rehearsal: a failed release is fixed by a new commit. Settings and
+  `/healthz` show the commit from the release's `REVISION`.
+- **Backups.** `backup.sh` and `restore-check.sh` keep their manifest and
+  checks but dump the host cluster as postgres and restore into a throwaway
+  cluster on a private socket; neither needs Docker. A dump is kept only
+  after pg_restore can read it, because a shell redirect creates its file
+  before pg_dump runs.
+
+**Why:** the owner's one standard for every site on the host, and the
+host's PostgreSQL stays listening on loopback only, which a container on a
+bridge network cannot reach.
+
+**Alternatives rejected:** keeping the tables in public with the roles'
+search_path changed (a second exception to the contract on every role), and
+renaming the old roles in place (the host's provisioning creates and proves
+its own).
 

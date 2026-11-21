@@ -3,7 +3,7 @@
 // import `catalog_current` names, with their facts and assignments, and the
 // scripture it was compiled with. Server-only. Read once per import and
 // kept in memory; each request asks only which import is current. Without
-// DBW_DATABASE_URL (local work with no database) there is no catalog.
+// DATABASE_URL (local work with no database) there is no catalog.
 import pg from "pg";
 import {
   BookRegistry,
@@ -103,23 +103,23 @@ interface AssignmentRow {
 async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
   const [resources, plans, assignments] = await Promise.all([
     client.query<{ name: string; content: string }>(
-      "select name, content from scripture_resources where import_id = $1",
+      "select name, content from app.scripture_resources where import_id = $1",
       [importId],
     ),
     client.query<PlanRow>(
       `select p.*, f.verses, f.unique_verses, f.repeats, f.omitted, f.whole_chapters,
               f.partial_chapters, f.words_minimum, f.words_median, f.words_maximum
-         from catalog_import_plans i
-         join plans p on p.id = i.plan_id and p.version = i.plan_version
-         join plan_facts f on f.plan_id = p.id and f.plan_version = p.version
+         from app.catalog_import_plans i
+         join app.plans p on p.id = i.plan_id and p.version = i.plan_version
+         join app.plan_facts f on f.plan_id = p.id and f.plan_version = p.version
         where i.import_id = $1
         order by i.position`,
       [importId],
     ),
     client.query<AssignmentRow>(
       `select a.plan_id, a.id, a.reading, a.words
-         from catalog_import_plans i
-         join assignments a on a.plan_id = i.plan_id and a.plan_version = i.plan_version
+         from app.catalog_import_plans i
+         join app.assignments a on a.plan_id = i.plan_id and a.plan_version = i.plan_version
         where i.import_id = $1
         order by a.plan_id, a.position`,
       [importId],
@@ -187,7 +187,7 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
  * import is current. Throws when the database cannot be reached.
  */
 export async function servedCatalog(
-  url: string | undefined = process.env["DBW_DATABASE_URL"],
+  url: string | undefined = process.env["DATABASE_URL"],
 ): Promise<ServedCatalog | undefined> {
   if (url === undefined || url === "") return undefined;
   pool ??= new pg.Pool({
@@ -197,7 +197,7 @@ export async function servedCatalog(
     idleTimeoutMillis: 30_000,
   });
   const current = await pool.query<{ import_id: number }>(
-    "select import_id from catalog_current limit 1",
+    "select import_id from app.catalog_current limit 1",
   );
   const importId = current.rows[0]?.import_id;
   if (importId === undefined) return undefined;

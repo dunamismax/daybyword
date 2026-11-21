@@ -321,7 +321,7 @@ the browser's IndexedDB. Better Auth inside SvelteKit with Drizzle waits
 for Phase 14 and keeps the optional passkey and recovery-code design (D8).
 Billing stays gated (D11). D23 excludes every AI feature and model SDK.
 
-**Versions and dependencies.** Pin Node, npm, SvelteKit, Svelte, Vite,
+**Versions and dependencies.** Pin Node, pnpm, SvelteKit, Svelte, Vite,
 Tailwind, Drizzle, pg, and PostgreSQL 18, with an exact lockfile, and keep
 Swift pinned. Record any real new package in `docs/decisions.md` before
 adding it. No analytics, tracking, advertising, session replay, remote
@@ -356,33 +356,33 @@ paths, tokens, or personal data. Private API responses are `no-store` and
 kept out of shared caches. No personal data in URLs, except the future
 protected, revocable calendar-feed credential.
 
-**The live host** (docs/deploy.md, "The live host"; inspect before
-changing anything)
-- `ubuntu-vm`. Releases in `/srv/www/daybyword.com/releases/<commit>`,
-  with `current`, `current-release`, `previous-release`, `shared/env`
-  (root 0600), `shared/backups` (0700), and `shared/postgres` (the two
-  files the database container mounts, kept out of every release so a
-  deploy never recreates the database: E43).
-- Compose project `daybyword` (`deploy/compose.yaml`, `deploy/Dockerfile`):
-  the web on 127.0.0.1:4318 to the adapter-node container's port 3000
-  (4316 and 4317 belong to other sites), candidates checked on a
-  Docker-assigned loopback port, PostgreSQL 18 on the internal network only
-  with volume `daybyword_postgres_data`, database `daybyword`, role
-  `daybyword_app` for the web and a separate `daybyword_migrate`
-  credential. The origin comes from Caddy's Host header or `paths.origin`,
-  since SvelteKit 3 dropped `ORIGIN`.
-- Deploys run inside the shared lock (`with-deploy-lock`). Caddy's site file
-  is `/etc/caddy/sites/daybyword.com.caddy`, from
-  `deploy/caddy/daybyword.com.caddy`. Only `origin/main` releases are
-  served (`make deploy`).
+**The live host** (docs/deploy.md; inspect before changing anything; the
+host's web platform contract, `ubuntu-vm-backup/docs/web-platform.md`,
+governs and wins where this file differs)
+- `ubuntu-vm`. `daybyword-web.service` runs `/opt/node-26/bin/node
+  server.ts` from `/srv/www/daybyword.com/current` (an absolute symlink to
+  `releases/<commit>`) as `daybyword-web` on 127.0.0.1:4318, with the
+  contract's sandbox. No production container (E46).
+- The database is `daybyword` on the host's PostgreSQL 18 cluster
+  (127.0.0.1:5432), every table in schema `app`: `daybyword_owner` (no
+  login), `daybyword_migration` (deploy only, `SET ROLE`), `daybyword_web`
+  (read-only). Credentials are `/etc/web-apps/daybyword/web.env` and
+  `migration.env`, root-only; the code reads `DATABASE_URL`.
+- Deploys (`make deploy`) build on the host as the checkout owner, then run
+  `deploy/bin/activate.sh` inside the shared lock (`with-deploy-lock`):
+  backup, migrate and import, a candidate on a 44xx port, switch, verify.
+  Fix-forward only: no rollback scripts, pointers or old releases kept to
+  go back to. Caddy's site file is `/etc/caddy/sites/daybyword.com.caddy`,
+  from `deploy/caddy/daybyword.com.caddy`, changed only with `caddy-apply`.
+  Only `origin/main` releases are served.
 - DNS is owner-managed, DNS-only (not proxied) Cloudflare records pointing
   at the host; the host's Caddy obtains its own Let's Encrypt certificates.
   No Cloudflare DNS challenge, Caddy DNS plugin, token, or proxy or SSL-mode
   work; never change Cloudflare settings. Coordinate changes to shared
   binaries, and never edit another site.
-- Backups: nightly `pg_dump` and a monthly isolated restore check
-  (systemd timers), with an encrypted off-server copy still to arrange
-  (P7.3).
+- Backups: nightly `pg_dump` and a monthly isolated restore check (systemd
+  timers, `deploy/bin/backup.sh` and `restore-check.sh`), and
+  ubuntu-vm-backup's daily encrypted dump of the cluster off the server.
 
 **Secrets.** Never commit `.env` files, signing keys, certificates,
 profiles, `Secrets.xcconfig`, database credentials, or DNS tokens. No
@@ -569,7 +569,7 @@ Letters go out only after the owner confirms each one (D38).
 
 **Developer tools** (D3): on the owner's Mac, agents may install the
 developer tools the work needs without asking: Homebrew formulae and casks,
-needed Node/npm and Swift tools, uv/ruff only for justified Python work,
+needed Node/pnpm and Swift tools, uv/ruff only for justified Python work,
 and user-local tools. Prefer well-known, maintained tools from their
 official sources, and record in README.md's prerequisites table any tool a
 script or `make check` depends on. This does not cover `sudo`, macOS
@@ -609,8 +609,7 @@ Agents never:
 | `make test-linux` | The Swift packages on Linux in a container | Part of `check-full` |
 | `make tokens` | Regenerate color assets, `DesignTokens.swift`, and `tokens.css` from `design/tokens.json` | After a token change |
 | `make db-generate NAME=…` | Generate a SQL migration from the Drizzle schema; review it before committing | Schema changes |
-| `make rehearse-deploy` | Deploy, backup, restore check, redeploy, and rollback in Docker on a throwaway project | Before changing `deploy/` |
-| `make deploy` | Deploy `origin/main` to daybyword.com inside the host's lock, then check it live | Shipping; run `make check-full` first |
+| `make deploy` | Deploy `origin/main` to daybyword.com: build and check on the host, a candidate first, then live | Shipping; run `make check-full` first |
 | `make archive`, `make testflight` | A signed Release archive and its upload (docs/release.md) | TestFlight builds |
 | `make format` | Format the Swift and web sources in place | Before committing |
 
@@ -645,7 +644,7 @@ remove an entry once it no longer applies.
 - **xcodebuild hides warnings** in files it does not recompile, so a clean
   build log is not proof of zero warnings (§7).
 - **Pinned versions are enforced.** `make check` refuses any Swift, Node,
-  or npm version other than the pinned one; install the pinned version
+  or pnpm version other than the pinned one; install the pinned version
   rather than loosening the check.
 
 ## 12. Keeping this file useful

@@ -1,8 +1,12 @@
+# Nightly backup of daybyword.com's database (deploy/bin/backup.sh), from the
+# serving release. It runs as root, an exception to the web units' account:
+# it dumps as the postgres superuser (runuser) and writes the root-only
+# shared/backups. Node is not involved.
 [Unit]
 Description=Back up daybyword.com's PostgreSQL database (pg_dump)
-Documentation=file:///srv/www/daybyword.com/current/docs/deploy.md
-Requires=docker.service
-After=docker.service
+Documentation=file:///srv/www/daybyword.com/current/deploy/systemd/daybyword-backup.service
+After=postgresql.service
+Requires=postgresql.service
 
 [Service]
 Type=oneshot
@@ -10,3 +14,9 @@ WorkingDirectory=/srv/www/daybyword.com/current
 ExecStart=/srv/www/daybyword.com/current/deploy/bin/backup.sh
 Nice=10
 IOSchedulingClass=idle
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/srv/www/daybyword.com/shared/backups

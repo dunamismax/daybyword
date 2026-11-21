@@ -5,7 +5,7 @@ import pg from "pg";
 import { afterAll, describe, expect, it } from "vitest";
 import { ExportError } from "#lib/server/catalog/export.ts";
 import { importCatalog } from "#lib/server/catalog/import.ts";
-import { database } from "#lib/server/db/client.ts";
+import { createPool, database } from "#lib/server/db/client.ts";
 import {
   applyMigrations,
   checkSchema,
@@ -18,6 +18,8 @@ if (!process.env["PGHOST"])
   throw new Error("run these through make test-db (scripts/with-postgres.sh)");
 
 const roles = readFileSync(new URL("../../db/roles.sql", import.meta.url), "utf8");
+const host = encodeURIComponent(process.env["PGHOST"] ?? "");
+const port = process.env["PGPORT"] ?? "5432";
 const pools: pg.Pool[] = [];
 let counter = 0;
 
@@ -31,13 +33,13 @@ async function freshDatabase() {
   await owner.connect();
   await owner.query(roles);
   await owner.end();
-  const connect = (user: string) => {
-    const pool = new pg.Pool({ database: name, user });
+  const connect = (user: string, ownerRole?: string) => {
+    const pool = createPool(`postgresql://${user}@/${name}?host=${host}&port=${port}`, ownerRole);
     pools.push(pool);
     return pool;
   };
-  const migratePool = connect("daybyword_migrate");
-  return { name, migratePool, migrator: database(migratePool), app: connect("daybyword_app") };
+  const migratePool = connect("daybyword_migration", "daybyword_owner");
+  return { name, migratePool, migrator: database(migratePool), app: connect("daybyword_web") };
 }
 
 async function count(pool: pg.Pool, table: string): Promise<number> {
@@ -170,7 +172,10 @@ describe("importing the catalog", () => {
   it("imports one export once when two jobs race", async () => {
     const { migrator, name } = await freshDatabase();
     await applyMigrations(migrator);
-    const otherPool = new pg.Pool({ database: name, user: "daybyword_migrate" });
+    const otherPool = createPool(
+      `postgresql://daybyword_migration@/${name}?host=${host}&port=${port}`,
+      "daybyword_owner",
+    );
     pools.push(otherPool);
     const results = await Promise.all([
       importCatalog(migrator, fixtureExport()),
@@ -198,13 +203,24 @@ describe("the database's rules", () => {
     await applyMigrations(migrator);
     const { importId } = await importCatalog(migrator, fixtureExport());
     expect(await count(app, "plans")).toBe(2);
+    // Its transactions are read-only, and a read-write one is refused too.
     await expect(app.query("insert into catalog_current (import_id) values (1)")).rejects.toThrow(
-      /permission denied/,
+      /read-only transaction/,
     );
-    await expect(
-      app.query("update catalog_current set import_id = $1", [importId]),
-    ).rejects.toThrow(/permission denied/);
-    await expect(app.query("create table mine (x int)")).rejects.toThrow(/permission denied/);
+    const client = await app.connect();
+    try {
+      await client.query("set default_transaction_read_only = off");
+      await expect(
+        client.query("insert into catalog_current (import_id) values (1)"),
+      ).rejects.toThrow(/permission denied/);
+      await expect(
+        client.query("update catalog_current set import_id = $1", [importId]),
+      ).rejects.toThrow(/permission denied/);
+      await expect(client.query("create table mine (x int)")).rejects.toThrow(/permission denied/);
+      await expect(client.query("set role daybyword_owner")).rejects.toThrow(/permission denied/);
+    } finally {
+      client.release(true);
+    }
     await expect(app.query("select * from drizzle.__drizzle_migrations")).rejects.toThrow(
       /permission denied/,
     );

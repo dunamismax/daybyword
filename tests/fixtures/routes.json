@@ -178,6 +178,16 @@
     },
     {
       "input": {
+        "path": "/healthz"
+      },
+      "output": {
+        "cacheControl": "no-store",
+        "contentType": "application/json",
+        "status": 200
+      }
+    },
+    {
+      "input": {
         "path": "/assets/support.js"
       },
       "output": {

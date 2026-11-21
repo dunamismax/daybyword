@@ -1,11 +1,20 @@
+# Monthly proof that the newest backup restores (deploy/bin/restore-check.sh):
+# a throwaway PostgreSQL 18 cluster with no TCP port, run by the postgres
+# account in a private directory under /var/tmp, deleted afterwards. It runs
+# as root, an exception to the web units' account: it reads the root-only
+# backups and starts that cluster as postgres. Node is not involved.
 [Unit]
 Description=Restore daybyword.com's newest backup into a throwaway database and check it
-Documentation=file:///srv/www/daybyword.com/current/docs/deploy.md
-Requires=docker.service
-After=docker.service
+Documentation=file:///srv/www/daybyword.com/current/deploy/systemd/daybyword-restore-check.service
+After=postgresql.service
 
 [Service]
 Type=oneshot
 WorkingDirectory=/srv/www/daybyword.com/current
 ExecStart=/srv/www/daybyword.com/current/deploy/bin/restore-check.sh
 Nice=10
+UMask=0077
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/tmp

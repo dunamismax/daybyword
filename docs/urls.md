@@ -28,7 +28,8 @@ P8.10a). Today, Progress, a plan's week, and the app's sections are
 placeholders until their items build them; every address is final.
 
 Addresses for the server's own use, never linked from a page a reader sees:
-`/up` (the health check), `/assets/…` (the site's own files), and
+`/up` (the health check), `/healthz` (the deploy's check: status, the
+release's commit and the database, as JSON), `/assets/…` (the site's own files), and
 `/dev/components` (the component gallery, in development only).
 
 Reserved for later phases, so nothing else takes them: `/api/v1/…` (sync,

@@ -3,9 +3,10 @@
 //   node scripts/catalog-import.ts [--check] [--allow-development] EXPORT.json
 //
 // --check reads and checks the export without a database. Otherwise it
-// imports it into the database in DBW_DATABASE_URL (or the PG* variables)
-// in one transaction, as daybyword_migrate. Development builds are refused
-// unless --allow-development is given, which is for local work only.
+// imports it into the database in DATABASE_URL (or the PG* variables)
+// in one transaction, as the owner (migration.env's DB_OWNER_ROLE).
+// Development builds are refused unless --allow-development is given, which
+// is for local work only.
 import { readFileSync } from "node:fs";
 import { checkExport } from "#lib/server/catalog/export.ts";
 import { importCatalog } from "#lib/server/catalog/import.ts";

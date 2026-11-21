@@ -1,20 +1,28 @@
 #!/bin/sh
 # Checks a running daybyword.com from outside (BUILD.md P7.6): the health
 # check, every section, a 404, the security headers and strict policy, no
-# third-party loads, and no cookie. With an https:// base it also checks the
-# certificate and the www redirect.
+# third-party loads, and no cookie; /healthz, with the release's commit when
+# one is given. With an https:// base it also checks the certificate and the
+# www redirect. It only reads. deploy/bin/activate.sh runs it on the
+# candidate, the live port and https://daybyword.com.
 #
-#   deploy/bin/check-live.sh https://daybyword.com
-#   deploy/bin/check-live.sh http://127.0.0.1:4318
+#   deploy/bin/check-live.sh https://daybyword.com [COMMIT]
+#   deploy/bin/check-live.sh http://127.0.0.1:4318 [COMMIT]
 set -eu
-base=${1:?usage: check-live.sh BASE-URL}
+base=${1:?usage: check-live.sh BASE-URL [COMMIT]}
 base=${base%/}
+commit=${2:-}
 problems=0
 problem() { printf 'check-live: %s\n' "$*" >&2; problems=$((problems + 1)); }
 
 status() { curl -sS -o /dev/null -w '%{http_code}' "$base$1"; }
 
 [ "$(curl -fsS "$base/up" 2>/dev/null)" = "OK" ] || problem "/up is not OK"
+health=$(curl -fsS "$base/healthz" 2>/dev/null || true)
+case $health in
+'{"status":"ok","revision":"'"${commit:-}"*'","database":"ok"}') ;;
+*) problem "/healthz answered ${health:-nothing}${commit:+; expected revision $commit and a database}" ;;
+esac
 for path in / /today /plans /progress /settings /plans/gospels-at-your-pace; do
   [ "$(status "$path")" = 200 ] || problem "$path answered $(status "$path")"
 done
@@ -51,4 +59,4 @@ https://*)
 esac
 
 [ "$problems" -eq 0 ] || { echo "check-live: $problems problem(s) at $base" >&2; exit 1; }
-echo "check-live: $base answers as it should"
+echo "check-live: $base answers as it should${commit:+ (revision $commit)}"

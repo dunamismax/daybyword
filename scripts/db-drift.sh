@@ -11,8 +11,8 @@ copy=$(mktemp -d ../build/drizzle-drift.XXXXXX)
 trap 'rm -rf "$copy"' EXIT INT TERM
 cp -R drizzle/. "$copy/"
 before=$(cd "$copy" && find . -type f | sort | xargs cat | shasum -a 256)
-DBW_DRIZZLE_OUT="$copy" npx drizzle-kit check >/dev/null
-DBW_DRIZZLE_OUT="$copy" npx drizzle-kit generate --name drift >/dev/null
+DBW_DRIZZLE_OUT="$copy" pnpm exec drizzle-kit check >/dev/null
+DBW_DRIZZLE_OUT="$copy" pnpm exec drizzle-kit generate --name drift >/dev/null
 after=$(cd "$copy" && find . -type f | sort | xargs cat | shasum -a 256)
 if [ "$before" != "$after" ]; then
   echo "db-drift: web/src/lib/server/db/schema.ts has changes with no migration; run make db-generate NAME=… and review the SQL" >&2

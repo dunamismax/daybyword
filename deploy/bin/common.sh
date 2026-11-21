@@ -1,50 +1,30 @@
 # Shared settings for deploy/bin/*.sh (docs/deploy.md). Sourced, not run.
-# Every path and name can be overridden, so the rehearsal (rehearse.sh) runs
-# the same scripts against a throwaway project on this machine.
+DBW_SITE=daybyword.com
 DBW_ROOT=${DBW_ROOT:-/srv/www/daybyword.com}
-DBW_ENV_FILE=${DBW_ENV_FILE:-$DBW_ROOT/shared/env}
 DBW_BACKUPS=${DBW_BACKUPS:-$DBW_ROOT/shared/backups}
-# The database container's two files (its first-start hook and the roles),
-# kept outside every release so a release never changes the container
-# (deploy/compose.yaml); deploy.sh copies them here.
-DBW_DATABASE_FILES=${DBW_DATABASE_FILES:-$DBW_ROOT/shared/postgres}
-DBW_PROJECT=${DBW_PROJECT:-daybyword}
-DBW_PORT=${DBW_PORT:-4318}
+DBW_DATABASE=daybyword
+DBW_UNIT=daybyword-web
+DBW_ACCOUNT=daybyword-web
+DBW_PORT=4318
+DBW_ENV_DIR=/etc/web-apps/daybyword
+DBW_NODE=/opt/node-26/bin/node
+# PostgreSQL 18's own programs (initdb and pg_ctl for the restore check).
+DBW_PG_BIN=/usr/lib/postgresql/18/bin
 # The release directory these scripts belong to: deploy/bin/../..
 DBW_RELEASE_DIR=${DBW_RELEASE_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}
-# The release Compose names in its image tags: the one serving, unless a
-# script is given another (deploy.sh, rollback.sh).
-DBW_RELEASE=${DBW_RELEASE:-$(cat "$DBW_ROOT/current-release" 2>/dev/null || echo none)}
-export DBW_PROJECT DBW_PORT DBW_RELEASE DBW_DATABASE_FILES
-
-# Takes the host's shared deploy lock (P7.1: /run/web-deploy/lock, which
-# `with-deploy-lock COMMAND` holds on fd 9 for the whole command), or
-# accepts it when the caller already holds it that way.
-take_lock() {
-  lock=$1
-  if [ -e "/proc/$$/fd/9" ] && [ "$(readlink "/proc/$$/fd/9")" = "$lock" ]; then return 0; fi
-  if command -v flock >/dev/null 2>&1; then
-    exec 9<"$lock"
-    flock -w 900 9 || fail "could not take the deploy lock $lock"
-  else
-    until mkdir "$lock.d" 2>/dev/null; do sleep 1; done
-    trap 'rmdir "$lock.d"' EXIT
-  fi
-}
 
 say() { printf '%s: %s\n' "$(basename "$0" .sh)" "$*"; }
 fail() { printf '%s: %s\n' "$(basename "$0" .sh)" "$*" >&2; exit 1; }
 
-# Compose for this project, from a release directory (default: this one).
-compose_in() {
-  release_dir=$1
-  shift
-  docker compose -p "$DBW_PROJECT" -f "$release_dir/deploy/compose.yaml" --env-file "$DBW_ENV_FILE" "$@"
+# The caller already holds the host's deploy lock on fd 9
+# (`with-deploy-lock COMMAND`), or this stops.
+require_lock() {
+  [ "$(readlink "/proc/$$/fd/9" 2>/dev/null)" = /run/web-deploy/lock ] && flock -n 9 ||
+    fail "run inside the deploy lock: with-deploy-lock $0 ..."
 }
-compose() { compose_in "$DBW_RELEASE_DIR" "$@"; }
 
-# psql as the superuser inside this project's database container.
-psql_admin() { compose exec -T postgres psql -v ON_ERROR_STOP=1 -U postgres -d daybyword -At "$@"; }
+# psql as the cluster's superuser, on the server's own database.
+psql_admin() { runuser -u postgres -- psql -X -v ON_ERROR_STOP=1 -d "$DBW_DATABASE" -At "$@"; }
 
 # Waits until URL answers 200, or fails after about 30 seconds.
 wait_for() {
@@ -54,4 +34,14 @@ wait_for() {
     [ "$i" -le 60 ] || return 1
     sleep 0.5
   done
+}
+
+# Exits non-zero unless FILE is a pg_dump archive pg_restore can read with at
+# least one table in it. A shell redirect creates its file before the command
+# runs, so a failed pg_dump leaves an empty file; this is what refuses it.
+check_dump() {
+  [ -s "$1" ] || { echo "$1 is empty" >&2; return 1; }
+  pg_restore --list "$1" >/dev/null 2>&1 || { echo "$1 is not a readable pg_dump archive" >&2; return 1; }
+  pg_restore --list "$1" | awk '$1 ~ /^[0-9]+;$/ && $4 == "TABLE" && $5 != "DATA" { n++ } END { exit n > 0 ? 0 : 1 }' ||
+    { echo "$1 holds no tables" >&2; return 1; }
 }

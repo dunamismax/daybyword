@@ -1,0 +1,45 @@
+# daybyword.com's web server (docs/deploy.md), installed by
+# deploy/bin/activate.sh as /etc/systemd/system/daybyword-web.service:
+# web/server.ts around adapter-node's build, from the release that
+# /srv/www/daybyword.com/current points at, on the host's one Node, as its own
+# account, with the host's web platform sandbox. Caddy is the only ingress;
+# the port is loopback only. The deploy's candidate is a copy of this file
+# with the release directory and a 44xx port put in.
+[Unit]
+Description=daybyword.com SvelteKit website
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=daybyword-web
+Group=daybyword-web
+WorkingDirectory=/srv/www/daybyword.com/current
+Environment=NODE_ENV=production HOST=127.0.0.1 PORT=4318 BODY_SIZE_LIMIT=64K DBW_ENV=production
+# The read-only web role (daybyword_web). Never migration.env.
+EnvironmentFile=/etc/web-apps/daybyword/web.env
+ExecStart=/opt/node-26/bin/node /srv/www/daybyword.com/current/server.ts
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
