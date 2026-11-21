@@ -631,28 +631,25 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-20:** Phase M is finished and in BUILD-HISTORY.md. PM.20
-  retired the Swift server; SvelteKit in `web/` is the only server, and
-  its tests carry the retired server's checks (a page showing a word not
-  in `web/src/lib/strings.ts` fails `make check`).
-- **P5.1 done:** docs/engine.md now has a second part, "Version 1", the
-  specification for everything Phase 5 builds; its choices are E40. The
-  version line stays 0 until both runtimes pass version 1's cases.
+- **2026-11-20:** Phase M is finished (BUILD-HISTORY.md). PM.20 retired
+  the Swift server; `web/test/` carries its checks (a page showing a word
+  not in `web/src/lib/strings.ts` fails `make check`).
+- **P5.1 done:** docs/engine.md's second part, "Version 1", specifies
+  everything Phase 5 builds (choices in E40). The version line stays 0
+  until both runtimes pass version 1's cases.
 - **P5.3 done:** `CivilDate` in Swift and `civil-date.ts` (E41), with the
   instant-to-date edge beside each engine, never in it.
-- **Next:** P5.2 and P5.4 together. Build the journal from the
-  specification's "The journal": cases first (a new fixture with a
-  `plans` section of invented plans), then Swift, then TypeScript. The
-  specification's worked examples are hand-checked, not yet cases: make
-  each one a case as its rule is built, and fix the specification if a
-  case shows it wrong.
-- `make check-full` passed as one run at PM.20 (659289f); `make check`
-  and `make test-linux` passed after P5.3. `make test-linux` now reuses
-  its image while `scripts/linux/` is unchanged (the container VM could
-  not reach Docker Hub tonight); the rebuild path with the new label has
-  not been run, so the first run after a change there needs watching.
-- The live site still serves 52126aa; nothing since changed what is
-  deployed except a week's `start` check, so no deploy was made.
-- **Open:** P7.3's encrypted off-server copy (ask the owner where
-  backups go). No `apple/Config/Secrets.xcconfig` here; build 25's
-  TestFlight upload unverified.
+- **Next:** P5.2 and P5.4 together, from the specification's "The
+  journal": cases first (a new fixture with a `plans` section of invented
+  plans), then Swift, then TypeScript. The specification's worked
+  examples are hand-checked, not yet cases: make each a case as its rule
+  is built, and fix the specification where a case shows it wrong.
+- `make check-full` passed as one run at PM.20 (659289f); `make check` and
+  `make test-linux` passed after P5.3. `make test-linux` now reuses its
+  image while `scripts/linux/` is unchanged (the container VM could not
+  reach Docker Hub); its rebuild path with the new label has not run.
+- Live: still 52126aa. Nothing deployed since; the only served change
+  waiting is a week's `start` being checked as a real date.
+- **Open:** P7.3's encrypted off-server copy (ask the owner where backups
+  go). No `apple/Config/Secrets.xcconfig` here; build 25's TestFlight
+  upload unverified.
