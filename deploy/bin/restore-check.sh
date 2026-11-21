@@ -40,7 +40,7 @@ q -U postgres -d "$DBW_DATABASE" -q <"$DBW_RELEASE_DIR/db/roles.sql" >/dev/null
 pg pg_restore -h "$work" -p 5432 -U postgres -d "$DBW_DATABASE" --exit-on-error <"$dump"
 
 migrations=$(q -U postgres -d "$DBW_DATABASE" -At -c "select count(*) from drizzle.__drizzle_migrations")
-catalog=$(q -U postgres -d "$DBW_DATABASE" -At -c "set search_path = app, public; select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
+catalog=$(PGOPTIONS="-c search_path=app,public" q -U postgres -d "$DBW_DATABASE" -At -c "select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
 readable=$(q -U daybyword_web -d "$DBW_DATABASE" -At -c "select count(*) from plans")
 expected_migrations=$(sed -n 's/.*"migrations": \([0-9]*\).*/\1/p' "$base.json")
 expected_catalog=$(sed -n 's/.*"catalogSha256": "\([0-9a-f]*\)".*/\1/p' "$base.json")

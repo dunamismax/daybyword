@@ -28,7 +28,7 @@ check_dump "$partial" || fail "the dump failed its check; no backup was written"
 # the search path: in app since migration 0002, in public before it (the
 # pre-migration backup of the first native deploy).
 migrations=$(psql_admin -c "select count(*) from drizzle.__drizzle_migrations")
-catalog=$(psql_admin -c "set search_path = app, public; select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
+catalog=$(PGOPTIONS="-c search_path=app,public" psql_admin -c "select i.content_sha256 from catalog_current c join catalog_imports i on i.id = c.import_id")
 release=$(cat "$DBW_ROOT/current/REVISION" 2>/dev/null || echo unknown)
 mv "$partial" "$DBW_BACKUPS/$name.dump"
 (cd "$DBW_BACKUPS" && sha256sum "$name.dump") >"$DBW_BACKUPS/$name.sha256"
