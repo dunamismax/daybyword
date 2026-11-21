@@ -13,11 +13,15 @@ server SQLite, Litestream or mandatory Python service.
   host directly.
 - `/srv/www/daybyword.com/`: `releases/<commit>`, `current` (symlink),
   `current-release`, `previous-release`, `shared/env` (root 0600, hex
-  passwords generated on the host), `shared/backups` (0700).
+  passwords generated on the host), `shared/backups` (0700),
+  `shared/postgres` (the database container's two files, below).
 - Compose project `daybyword`: web on 127.0.0.1:4318 (4316 and 4317 belong
   to other sites), candidate checks on a Docker-assigned loopback port, PostgreSQL 18.6 on the
   internal network only, volume `daybyword_postgres_data`. The host's own
-  PostgreSQL on 127.0.0.1:5432 is untouched.
+  PostgreSQL on 127.0.0.1:5432 is untouched. The database container is
+  made from nothing in a release directory, so a deploy leaves it running
+  (E43); only a change to the `postgres` service itself recreates it, and
+  `deploy.sh` says so when it happens.
 - Lock: `with-deploy-lock` (flock on `/run/web-deploy/lock`).
 - Caddy: `/etc/caddy/sites/daybyword.com.caddy` only; `/etc/caddy` was
   archived first to `/root/caddy-archives/`; validated, then reloaded.
@@ -35,9 +39,9 @@ server SQLite, Litestream or mandatory Python service.
 | File | What it does |
 |---|---|
 | `deploy/Dockerfile` | The web image: `vite build`, then a runtime stage with only drizzle-orm and pg, `server.ts`, the jobs, `drizzle/` and the release's catalog export, as the unprivileged `node` user; Node pinned by index digest |
-| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4318 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
-| `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file |
-| `deploy/bin/deploy.sh` | Under the shared lock: build the image, start the database, reapply the roles, back up, migrate and import, check a candidate on a Docker-assigned loopback port, activate, check, record `current-release`; rolls back if the activated release fails |
+| `deploy/compose.yaml` | Project `daybyword`: `postgres` (18.6, pinned by digest; volume `daybyword_postgres_data` at `/var/lib/postgresql`; its two files mounted from `shared/postgres`, never from a release; internal network, no host port), `web` (read-only root, no capabilities, 127.0.0.1:4318 → 3000, waits for a healthy database), and the `migrate` job (profile `jobs`) |
+| `deploy/postgres/init.sh` | On a new volume only: `web/db/roles.sql` and the two roles' passwords from the env file. The container reads it, and `roles.sql`, from `shared/postgres` |
+| `deploy/bin/deploy.sh` | Under the shared lock: build the image, copy `init.sh` and `roles.sql` into `shared/postgres` in place, start the database (saying so if its container was recreated), reapply the roles, back up, migrate and import, check a candidate on a Docker-assigned loopback port, activate, check, record `current-release`; rolls back if the activated release fails |
 | `deploy/bin/rollback.sh` | Switches the web back to `previous-release`'s image, keeping the database |
 | `deploy/bin/check-live.sh` | Checks a base URL: `/up`, the sections, 404s, headers and policy, no cookie or third-party load, noindex, stylesheet; with https, also www's redirect, the certificate and HSTS (P7.6) |
 | `deploy/bin/backup.sh` | `pg_dump` (custom format) with SHA-256 and a manifest (release, migrations, catalog digest), 14 days kept in `shared/backups` (0700) |
@@ -45,12 +49,13 @@ server SQLite, Litestream or mandatory Python service.
 | `deploy/systemd/` | `daybyword-backup.timer` (nightly 03:20) and `daybyword-restore-check.timer` (monthly), checked with `systemd-analyze verify` |
 | `deploy/caddy/daybyword.com.caddy` | The site file: apex to 127.0.0.1:4318 with HSTS, www redirected permanently with path and query, no access log |
 | `deploy/bin/release.sh` | `make deploy`: from a clean checkout equal to origin/main, builds the export, unpacks the commit and export into `releases/<commit>` on the host, runs `deploy.sh` inside `with-deploy-lock`, then `check-live.sh https://daybyword.com` |
-| `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, redeploy, rollback, logs, teardown |
+| `deploy/bin/rehearse.sh` | The whole cycle on a throwaway project: deploy, backup, restore check, role limits, a second deploy from another release directory, rollback, logs, teardown. It fails if the database container's id or start time changes across the second deploy or the rollback. Run it from a checkout Docker can mount (under `/Users` on this Mac): what containers mount goes under the gitignored `build/` |
 
 The env file (`shared/env`, root 0600) holds `POSTGRES_PASSWORD`,
 `DBW_APP_PASSWORD` and `DBW_MIGRATE_PASSWORD` (hex); the scripts take
-`DBW_ROOT`, `DBW_PORT`, `DBW_DEPLOY_LOCK` (required: the host's lock, P7.1)
-and `DBW_RELEASE` from the environment. `/up` answers OK only once the
+`DBW_ROOT`, `DBW_PORT`, `DBW_DEPLOY_LOCK` (required: the host's lock, P7.1),
+`DBW_DATABASE_FILES` (default `shared/postgres` under the root) and
+`DBW_RELEASE` from the environment. `/up` answers OK only once the
 database answers and a catalog is current, as the read-only web role.
 Encryption and the off-server copy of `shared/backups` are the host's
 `ubuntu-vm-backup` entry (P7.3).
@@ -61,13 +66,13 @@ Encryption and the off-server copy of `shared/backups` are the host's
 |---|---|
 | Host | ubuntu-vm under D34; existing shared Caddy |
 | Release root | /srv/www/daybyword.com/releases/<commit>, current pointer |
-| Persistent resources | shared/env (root-owned 0600), shared/storage, shared/backups |
+| Persistent resources | shared/env (root-owned 0600), shared/backups (0700), shared/postgres (`init.sh` and `roles.sql`, which the database container mounts; no secrets) |
 | Source files | deploy/compose.yaml, deploy/Dockerfile, deploy/caddy/daybyword.com |
 | Compose project | daybyword; web (adapter-node), postgres (PostgreSQL 18), one-shot migration/catalog import |
 | Web listener | adapter-node in the container on 0.0.0.0:3000 (`HOST`, `PORT`), published only at 127.0.0.1:4318 (4316 and 4317 are other sites') |
 | Postgres | private Docker network port 5432; no production host port |
 | DB/role | daybyword; `daybyword_app` (web, read-only) and `daybyword_migrate` (migration/import jobs), from `web/db/roles.sql` (PM.14) |
-| Volume | explicit daybyword_postgres_data; stable across release directories |
+| Volume | explicit daybyword_postgres_data; stable across release directories, as is the whole database container (E43) |
 | Host Caddy site | /etc/caddy/sites/daybyword.com.caddy, imported by the main Caddyfile's `import /etc/caddy/sites/*.caddy` |
 | Health | /up, no-store, ready only with compatible DB/catalog |
 | Shared deploy lock | the host's `with-deploy-lock COMMAND` (flock on `/run/web-deploy/lock`, fd 9), which the scripts recognise |

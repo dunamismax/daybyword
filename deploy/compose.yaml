@@ -9,6 +9,12 @@
 # The env file holds POSTGRES_PASSWORD, DBW_APP_PASSWORD and
 # DBW_MIGRATE_PASSWORD (hex, never committed); deploy/bin/*.sh set
 # DBW_RELEASE, the image tag, from the release being deployed or serving.
+#
+# Nothing in the postgres service may depend on the release directory: a
+# path that changes with each release changes the container's definition,
+# and Compose then recreates the database on every deploy. Its two files
+# are mounted from DBW_DATABASE_FILES, a fixed directory that
+# deploy/bin/deploy.sh keeps current (docs/decisions.md E43).
 name: ${DBW_PROJECT:-daybyword}
 
 services:
@@ -24,8 +30,8 @@ services:
     volumes:
       # PostgreSQL 18's images keep their data under /var/lib/postgresql/18.
       - postgres-data:/var/lib/postgresql
-      - ../web/db/roles.sql:/etc/daybyword/roles.sql:ro
-      - ./postgres/init.sh:/docker-entrypoint-initdb.d/10-daybyword.sh:ro
+      - ${DBW_DATABASE_FILES:-/srv/www/daybyword.com/shared/postgres}/roles.sql:/etc/daybyword/roles.sql:ro
+      - ${DBW_DATABASE_FILES:-/srv/www/daybyword.com/shared/postgres}/init.sh:/docker-entrypoint-initdb.d/10-daybyword.sh:ro
     networks: [database]
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "daybyword"]

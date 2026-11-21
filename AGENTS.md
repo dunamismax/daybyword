@@ -360,7 +360,9 @@ protected, revocable calendar-feed credential.
 changing anything)
 - `ubuntu-vm`. Releases in `/srv/www/daybyword.com/releases/<commit>`,
   with `current`, `current-release`, `previous-release`, `shared/env`
-  (root 0600), and `shared/backups` (0700).
+  (root 0600), `shared/backups` (0700), and `shared/postgres` (the two
+  files the database container mounts, kept out of every release so a
+  deploy never recreates the database: E43).
 - Compose project `daybyword` (`deploy/compose.yaml`, `deploy/Dockerfile`):
   the web on 127.0.0.1:4318 to the adapter-node container's port 3000
   (4316 and 4317 belong to other sites), candidates checked on a

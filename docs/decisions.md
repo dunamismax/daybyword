@@ -1107,3 +1107,27 @@ open:
 
 **Why:** the fold must give two runtimes, and any arrival order, one
 answer (E3, E33), and must never lose what a reader recorded.
+
+### E43. The database container's files live outside every release
+
+*2026-11-20, agent (P7).* The `postgres` service mounted its first-start
+hook and `web/db/roles.sql` from the release directory. On the host every
+release is unpacked into a directory of its own, so the mounts' paths
+changed with each deploy, Compose saw a changed container, and every
+deploy recreated the database: a few seconds without it, no data lost.
+The rehearsal missed it because it deployed twice from one directory.
+
+Now the two files are mounted from a fixed directory,
+`/srv/www/daybyword.com/shared/postgres` (`DBW_DATABASE_FILES`), which
+`deploy/bin/deploy.sh` keeps current by writing them in place, and
+`deploy/bin/rehearse.sh` deploys its second release from another
+directory and fails if the database container's id or start time changes
+across that deploy or the rollback.
+
+**Why:** the alternative, `docker compose up --no-recreate`, would stop
+the restarts but leave the running container mounting files from an old
+release directory, which a later cleanup of old releases would remove
+from under it; and it would hide a real change to the service the day
+one is meant. A fixed path makes the container's definition independent
+of the release, which is what "the database outlives every release"
+means (E39).
