@@ -21,7 +21,7 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P8.5**: the YouVersion and Bible.com adapter (Open in …), which also finishes P8.3; it needs a device test. Then **P8.8** (iOS reminders) and **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC) |
 | **Waiting on the owner** | `apple/Config/Secrets.xcconfig` is absent on this Mac, which `make archive` needs, and build 25's TestFlight upload was never verified. P8.5 needs a real iPhone with YouVersion installed to test links on. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page, from PostgreSQL 18; a plan cannot be started on the web yet. Not redeployed this session, so the printable week (P8.10b) is not live yet (`https://daybyword.com/healthz` names the serving commit) |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18; a plan cannot be started on the web yet. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -647,8 +647,8 @@ only when Phase 18 is finished or an item points there.
   `-freshJournal YES` starts empty (Debug only); UI tests pass the latter.
   Another session's app may hold the first booted simulator; use
   `scripts/sim-destination.sh`'s device.
-- **Not run this session:** `make check-full` (tours, Linux, browser
-  engine), `make test-ui`, and a deploy. Run check-full before P8.14.
+- **Deployed bbc97fb** after `make check-full` passed (tours, Linux,
+  browser engine); `make test-ui` was not run on its own.
 - **Next:** P8.5 needs a device test (see Now). P8.10c needs E38's choice
   for client code under the strict CSP; the app's screens are the model.
 - **Open:** P7.3 waits for the first verified daily snapshot. No
