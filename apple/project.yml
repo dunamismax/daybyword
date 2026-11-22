@@ -41,6 +41,12 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+    # The App Group holds the journal the app and its widget share (E47, P8.9).
+    entitlements:
+      path: App/App.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.daybyword.app
     dependencies:
       - package: ReadingEngine
       - package: ReadingData
@@ -52,6 +58,9 @@ targets:
     sources:
       - path: Widgets
       - path: Shared
+      # The widget reads its own copy of the bundled catalog (make catalog).
+      - path: App/Resources/Catalog.sqlite
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: Widgets
@@ -62,8 +71,14 @@ targets:
         ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: NO
         INFOPLIST_KEY_CFBundleDisplayName: Day by Word
         SKIP_INSTALL: YES
+    entitlements:
+      path: Widgets/Widgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.daybyword.app
     dependencies:
       - package: ReadingEngine
+      - package: ReadingData
       - sdk: WidgetKit.framework
       - sdk: SwiftUI.framework
 

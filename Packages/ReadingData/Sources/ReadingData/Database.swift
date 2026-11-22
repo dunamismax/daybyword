@@ -73,6 +73,9 @@ public final class Database {
         }
         handle = opened
         sqlite3_extended_result_codes(handle, 1)
+        // The app and its widget share the journal; a writer waits briefly
+        // for the other's lock rather than failing (P8.9).
+        sqlite3_busy_timeout(handle, 2000)
     }
 
     /// Opens a new, empty database that lives only in memory.

@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 8 of 14 items done (P8.1–P8.4, P8.6–P8.8, P8.12), with P8.5, P8.10 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
-| **Next item** | **P8.9** (the widget), then **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
+| **Phase** | Phase 8, first light (M2): 9 of 14 items done (P8.1–P8.4, P8.6–P8.9, P8.12), with P8.5, P8.10 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Next item** | **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18; a plan cannot be started on the web yet. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
@@ -136,7 +136,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
-| 8 | First light | M2 First light | 14 | 8 |
+| 8 | First light | M2 First light | 14 | 9 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 3 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
@@ -505,7 +505,8 @@ list.
   - *Result (agent, 2026-11-21):* in the app, `WelcomeBack` heads a plan's card on Today after a gap: "Welcome back. Here's where you left off.", each choice the engine offers with its effect worked out by folding the journal with the answer added (`Journal.previewing`), a confirmation sheet, and the `returned` event with Undo. Tested in `LibraryTests` and seen in the Simulator. The web's is with P8.10c.
 - [x] **P8.8** iOS reminders over P5.12: local notifications in a rolling window; actions **Mark read**, **Snooze**, and **Open**, grouped by plan; an option to hide passage details on the Lock Screen; quiet hours; a maximum per day; pending requests removed when the day's reading is marked; rescheduling on time-zone change. Turning reminders off never limits the app.
   - *Result (agent, 2026-11-21):* `ReminderScheduler` asks the engine for 60 reminders and replaces the pending ones after every journal write, setting change, activation, and time-zone or clock change (E50); requests are threaded by enrollment. Settings has each plan's reminder (a `changed` event from today), "Name the reading in reminders", quiet hours and reminders a day. Five tests in `RemindersTests`. Seen in the iOS Simulator: permission asked only on turning a reminder on; a real reminder arrived at its minute ("Proverbs through the month: Proverbs 21."); its Mark read recorded the reading; tapping a reminder opened Today from Plans. *Not exercised end to end:* Snooze and a time-zone change on a device (unit-tested; P17.4, P17.9 field-test them).
-- [ ] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
+- [x] **P8.9** A small and a Lock Screen widget showing the next reading, with an interactive **Mark read** (an App Intent writing to the shared journal through the App Group) and an obvious way to undo in the app.
+  - *Result (agent, 2026-11-21):* the journal moved to the App Group container (an earlier one is moved there once, E51); `MarkReadIntent` records the reading the widget shows, only while unread; the small widget and the Lock Screen's rectangular one show the first plan with a reading today, or its day in Today's words, and open Today when tapped. Today offers Undo for the last mark made today (the widget's, a reminder's). Seen in the iOS Simulator: the journal moved, the widget's Mark read recorded the reading and the widget redrew, Undo in the app brought it back, and the Lock Screen widget showed the real state. *Before a device build:* register the App Group through automatic signing (P12.1).
 - [ ] **P8.10** The web: browse and preview plans; print a week's checklist; start a plan and use Today and marking, with progress kept in the reader's own browser and nothing stored on the server (D39). SvelteKit endpoints compute through the TypeScript domain module from request bodies, retain nothing and log no personal records; cached upcoming readings and IndexedDB marks support offline use. Swift uses the same contract fixtures (E33). A plain page says what is kept where and how to export or clear it. *(Rewritten by D39; server-side profiles are P28.8.)*
   - *Note (agent, 2026-11-21):* split in three, in the order they can be built.
   - [x] **P8.10a** Browse and preview: Plans lists the catalog's plans, and each plan has its page (what it is, whom it suits, workload, a sample week, coverage, how it works, limitations, source and review), rendered on the server from PostgreSQL.
@@ -519,7 +520,7 @@ list.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
   - *Note (agent, 2026-11-21):* in the app now: how you read (and keeping the screen awake for paper), book names (D29, from the registry's conventions, applied to every reference), appearance and reference size, export of the journal as JSON (`Library.export`, the engine's wire form; tested), delete everything with a confirmation, about and version. The share sheet did not open under the Simulator's injected taps, so Export is unverified on screen. Since added: the translation for links (P8.5) and reminders (P8.8). Left: the web's Settings with P8.10c.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
-  - *Note (agent, 2026-11-21):* build 96 (8872016) uploaded to App Store Connect with `make testflight` after `make check-full` passed, and daybyword.com serves bbc97fb with the three plans. Not ticked: first light still lacks P8.5's device test, P8.9–P8.11 and P8.13 (P8.3 and P8.8 are done since, and not yet in a TestFlight build), and the build's processing is unconfirmed.
+  - *Note (agent, 2026-11-21):* build 96 (8872016) uploaded to App Store Connect with `make testflight` after `make check-full` passed, and daybyword.com serves bbc97fb with the three plans. Not ticked: first light still lacks P8.5's device test, P8.10, P8.11 and P8.13 (P8.3, P8.8 and P8.9 are done since, and not yet in a TestFlight build; the next one needs P12.1's App Group registration), and the build's processing is unconfirmed.
 
 ## Phase 9: Choosing a plan
 

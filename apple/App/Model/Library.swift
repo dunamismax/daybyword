@@ -2,7 +2,6 @@ import Foundation
 import Observation
 import ReadingData
 import ReadingEngine
-import UIKit
 
 /// The reader's plans and record on this device: the bundled catalog, the
 /// journal in its SQLite file, the journal folded by the engine, and today's
@@ -22,7 +21,11 @@ final class Library {
 
     /// The reader's book-name convention (D29), kept in user defaults.
     var convention: NamingConvention {
-        didSet { UserDefaults.standard.set(convention.rawValue, forKey: Self.conventionKey) }
+        didSet {
+            UserDefaults.standard.set(convention.rawValue, forKey: Self.conventionKey)
+            // The widget names books the same way (P8.9).
+            SharedJournal.defaults.set(convention.rawValue, forKey: Self.conventionKey)
+        }
     }
     static let conventionKey = "bookNames"
 
@@ -73,15 +76,16 @@ final class Library {
         return Library(catalog: catalog, store: store, problem: problems.first)
     }
 
+    /// The journal in the App Group container, which the widget shares
+    /// (E47, P8.9); a journal from an earlier build is moved there first.
     private static func journalURL() throws -> URL {
-        let folder = try FileManager.default.url(
-            for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let url = folder.appending(path: "Journal.sqlite")
+        let url = try SharedJournal.url()
         #if DEBUG
             if UserDefaults.standard.bool(forKey: "freshJournal") {
                 try? FileManager.default.removeItem(at: url)
             }
         #endif
+        try SharedJournal.moveEarlierJournal(to: url)
         return url
     }
 
@@ -103,6 +107,12 @@ final class Library {
     var localNow: LocalDateTime {
         (try? LocalDateTime(clock(), in: .current))
             ?? LocalDateTime(date: today, time: WallTime(hour: 0, minute: 0)!)
+    }
+
+    /// Reads the journal again, as when the app comes back and the widget
+    /// may have written to it.
+    func reloadJournal() {
+        reload()
     }
 
     /// Reads the journal again and folds it.
@@ -139,7 +149,7 @@ final class Library {
     /// enrollment's id.
     @discardableResult
     func start(_ enrolled: JournalEvent.Enrolled) throws -> EventID {
-        let enrollment = newID(after: nil)
+        let enrollment = SharedJournal.newID(after: nil, now: clock())
         try record(.enrolled(enrolled), enrollment: enrollment)
         return enrollment
     }
@@ -155,34 +165,13 @@ final class Library {
     @discardableResult
     func record(_ body: JournalEvent.Body, enrollment: EventID) throws -> JournalEvent {
         guard let store else { throw LibraryError.unavailable }
-        let latest = journal?.events.filter { $0.enrollment == enrollment }.map(\.id).max()
-        let event = JournalEvent(
-            id: newID(after: latest ?? enrollment), enrollment: enrollment,
-            at: clock().formatted(.iso8601), zone: Self.zone, device: Self.device, body: body)
+        let event = SharedJournal.event(
+            body, enrollment: enrollment, after: SharedJournal.latest(in: journal, enrollment: enrollment),
+            now: clock())
         try store.append([event])
         reload()
         return event
     }
-
-    /// A new UUIDv7 id, later than `earlier` so a slow clock never puts an
-    /// event before the one it answers (docs/engine.md, "The journal").
-    private func newID(after earlier: EventID?) -> EventID {
-        var milliseconds = Int(clock().timeIntervalSince1970 * 1000)
-        if let earlier { milliseconds = max(milliseconds, earlier.milliseconds + 1) }
-        var generator = SystemRandomNumberGenerator()
-        let random = (0..<10).map { _ in UInt8.random(in: .min ... .max, using: &generator) }
-        return EventID(milliseconds: milliseconds, random: random)!
-    }
-
-    /// The device's IANA zone, as the journal records it.
-    private static var zone: String {
-        let identifier = TimeZone.current.identifier
-        return identifier.wholeMatch(of: /[A-Za-z0-9\/_+\-]{1,64}/) != nil ? identifier : "UTC"
-    }
-
-    /// An opaque name for the device in the journal: its kind, never its
-    /// owner's name.
-    private static var device: String { UIDevice.current.model }
 }
 
 enum LibraryError: Error, CustomStringConvertible {

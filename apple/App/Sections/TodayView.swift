@@ -16,6 +16,7 @@ struct TodayView: View {
     /// The last thing the reader did, for the Undo (or Redo) banner.
     @State private var lastAction: LastAction?
     @State private var failure: String?
+    @Environment(\.scenePhase) private var scenePhase
 
     struct LastAction: Equatable {
         let message: String
@@ -48,7 +49,7 @@ struct TodayView: View {
                             }
                             TodayCard(
                                 enrollment: enrollment, plan: plan, today: library.today, formatter: formatter,
-                                act: act)
+                                act: act, todaysMark: todaysMark(enrollment), undoMark: undoMark)
                         }
                     }
                 }
@@ -75,6 +76,12 @@ struct TodayView: View {
         .onAppear { UIApplication.shared.isIdleTimerDisabled = wayToRead == .physicalBible && keepAwake }
         .onChange(of: keepAwake) { UIApplication.shared.isIdleTimerDisabled = wayToRead == .physicalBible && keepAwake }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+        // The banner is for what was just done here; once the reader leaves,
+        // the widget or a reminder may change the record, and each card
+        // offers Undo for today's mark instead.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { lastAction = nil }
+        }
     }
 
     /// No plan yet: a short welcome and the way into choosing one.
@@ -124,6 +131,24 @@ struct TodayView: View {
         }
     }
 
+    /// The last mark made today in an enrollment and still standing, when
+    /// the banner is not already offering to undo it: a mark from the widget
+    /// or a reminder, or from earlier today (P8.9).
+    private func todaysMark(_ enrollment: Enrollment) -> JournalEvent? {
+        guard let journal = library.journal else { return nil }
+        let mark = journal.events.last { event in
+            guard event.enrollment == enrollment.id, case .marked(let marked) = event.body else { return false }
+            return marked.date == library.today && journal.isActive(event.id)
+        }
+        guard let mark, mark.id != lastAction?.event.id else { return nil }
+        return mark
+    }
+
+    /// Undo for a mark Today did not make in this visit.
+    private func undoMark(_ event: JournalEvent, message: String) {
+        undo(LastAction(message: message, event: event, isUndo: false, original: message))
+    }
+
     /// Takes back the last action: an undo of a mark, or of an undo (redo).
     private func undo(_ action: LastAction) {
         do {
@@ -146,6 +171,9 @@ struct TodayCard: View {
     let today: CivilDate
     let formatter: ReferenceFormatter
     let act: (JournalEvent.Body, EventID, String) -> Void
+    /// The last mark made today, to offer Undo for (P8.9).
+    var todaysMark: JournalEvent?
+    var undoMark: (JournalEvent, String) -> Void = { _, _ in }
 
     @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
     @State private var confirmingSkip: Slot?
@@ -166,6 +194,24 @@ struct TodayCard: View {
                     .typeStyle(TypeScale.referenceList)
                     .foregroundStyle(Palette.text)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+            if let todaysMark, case .marked(let marked) = todaysMark.body {
+                let message = markMessage(
+                    marked.mark,
+                    display: reference(Slot(assignment: marked.assignment, appointed: marked.appointed)).display,
+                    on: marked.date)
+                HStack(spacing: Spacing.s) {
+                    Text(verbatim: message)
+                        .typeStyle(TypeScale.body)
+                        .foregroundStyle(Palette.textMuted)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: Spacing.xs)
+                    Button("Undo") { undoMark(todaysMark, message) }
+                        .typeStyle(TypeStyle(size: 17, weight: .semibold, relativeTo: .body))
+                        .foregroundStyle(Palette.accent)
+                        .frame(minHeight: 44)
+                        .accessibilityHint(Text("Takes back: \(message)"))
+                }
             }
             if let note = shortMonthNote {
                 Text(verbatim: note)
@@ -293,17 +339,19 @@ struct TodayCard: View {
         }
     }
 
+    private func markMessage(_ mark: JournalEvent.Mark, display: String, on date: CivilDate) -> String {
+        switch mark {
+        case .completed:
+            date == today
+                ? String(localized: "Marked \(display) read.")
+                : String(localized: "Marked \(display) read on \(PlanPresentation.dayText(date)).")
+        case .partlyCompleted: String(localized: "Marked \(display) part read.")
+        case .skipped: String(localized: "Skipped \(display). It won't count as read.")
+        }
+    }
+
     private func mark(_ mark: JournalEvent.Mark, _ slot: Slot, on date: CivilDate) {
-        let display = reference(slot).display
-        let message: String =
-            switch mark {
-            case .completed:
-                date == today
-                    ? String(localized: "Marked \(display) read.")
-                    : String(localized: "Marked \(display) read on \(PlanPresentation.dayText(date)).")
-            case .partlyCompleted: String(localized: "Marked \(display) part read.")
-            case .skipped: String(localized: "Skipped \(display). It won't count as read.")
-            }
+        let message = markMessage(mark, display: reference(slot).display, on: date)
         act(
             .marked(.init(mark, assignment: slot.assignment, date: date, appointed: slot.appointed)), enrollment.id,
             message)

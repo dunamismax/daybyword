@@ -1271,8 +1271,8 @@ so the stored journal, an export (P8.13) and a later sync (P14) are the
 same bytes, and a column per field would be a second schema to keep in
 step with the engine. SQLite is already the app's store (E9, E18).
 
-**Not yet:** the widget and notification actions need the journal in the
-App Group container (P8.9, P12.1); the file moves there with them.
+**Since (P8.9, E51):** the journal lives in the App Group container, which
+the widget shares.
 
 ### E48. The signing team is committed, not kept in a local file
 
@@ -1340,3 +1340,26 @@ background, writes the same journal the interface reads. Choices:
 
 **Why:** one place that asks the engine and replaces everything is easy to
 reason about and cannot drift from what Today shows.
+
+### E51. The widget shares the journal through the App Group
+
+*2026-11-21, agent (P8.9).* The journal moves to `Journal.sqlite` in the
+`group.com.daybyword.app` container; the app moves an earlier journal from
+Application Support there once, and never over one already there. Event
+making (`SharedJournal`, apple/Shared) is shared, so a mark from the
+widget's `MarkReadIntent` has the same kind of id, zone and device as one
+from the app. The widget bundles its own copy of the catalog (115 KB)
+rather than reading the app's bundle or a copy in the container, and reads
+the reader's book names from the group's user defaults. SQLite gets a
+two-second busy timeout, since two processes now write the file.
+
+Undo for a mark made outside the app (the widget, a reminder) is on
+Today: each card offers Undo for the last mark made today, as the banner
+does for one made there.
+
+**Not yet:** a device build needs the App Group registered on the
+developer account through automatic signing (P12.1); the Simulator needs
+none.
+
+**Why:** one file is one truth, and the widget computes Today with the
+same engine and catalog the app does.

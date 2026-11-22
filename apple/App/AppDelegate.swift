@@ -2,6 +2,7 @@ import ReadingEngine
 import SwiftUI
 import UIKit
 import UserNotifications
+import WidgetKit
 
 /// The app's model and its answers to the system: the library, the
 /// reminders, and what a reminder's actions do (BUILD.md P8.8). One library
@@ -20,7 +21,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUser
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         center.setNotificationCategories([ReminderScheduler.category])
-        library.onChange = { [weak self] in self?.reminders.setNeedsReschedule() }
+        library.onChange = { [weak self] in
+            self?.reminders.setNeedsReschedule()
+            // The widget shows the same next reading (P8.9).
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         // Reminders are wall-clock times: after travel or a clock change,
         // today and the reminders are worked out again (E40, E44).
         for name in [Notification.Name.NSSystemTimeZoneDidChange, UIApplication.significantTimeChangeNotification] {

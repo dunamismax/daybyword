@@ -43,6 +43,8 @@ struct RootView: View {
             // Today, and the reminders, are worked out again whenever the
             // app comes back (E7, P8.8).
             if phase == .active {
+                // The widget may have marked a reading meanwhile (P8.9).
+                library.reloadJournal()
                 library.refreshToday()
                 reminders.setNeedsReschedule()
             }
