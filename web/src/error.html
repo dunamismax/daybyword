@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex" />
+    <!-- SvelteKit's last resort, for an error the layout's own error page
+         cannot show (BUILD.md P16.8). No stylesheet, so nothing else can
+         fail: the browser's own light and dark colors. Its words are the
+         string table's (component.error-title, component.error-message,
+         site.go-to-today), which a test checks. -->
+    <title>Something went wrong · Day by Word</title>
+  </head>
+  <body>
+    <main>
+      <h1>Something went wrong</h1>
+      <p>
+        Day by Word couldn't show this page just now. Please try again in a moment. Your plans and
+        what you've marked are kept in your browser, and nothing is lost.
+      </p>
+      <p><a href="/today">Go to Today</a></p>
+    </main>
+  </body>
+</html>

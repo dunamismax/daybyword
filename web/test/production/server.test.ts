@@ -668,6 +668,39 @@ describe("the accessibility statement (P16.6)", () => {
   });
 });
 
+describe("the error pages (P16.8)", () => {
+  it("answers in the site's own words when the catalog's database is out of reach", async () => {
+    const port = await freePort();
+    const closed = await freePort();
+    const server = launch(
+      { DBW_ENV: "production", DATABASE_URL: `postgres://nobody@127.0.0.1:${closed}/none` },
+      port,
+    );
+    try {
+      for (let i = 0; i < 100; i += 1) {
+        if (
+          await fetch(`${server.base}/up`).then(
+            (r) => r.ok,
+            () => false,
+          )
+        )
+          break;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      const response = await fetch(`${server.base}/plans`);
+      expect(response.status).toBe(500);
+      const html = await response.text();
+      expect(title(html)).toBe("Something went wrong · Day by Word");
+      expect(readerText(html)).toContain(englishStrings["component.error-message"]);
+      // In the layout, with the way back.
+      expect(html).toContain('<main id="content"');
+      expect(html).toContain('href="/today"');
+    } finally {
+      server.process.kill();
+    }
+  });
+});
+
 describe("the installable web app (P15.1)", () => {
   it("serves a manifest with Morning's colors, the owner's icons, and Today to open on", async () => {
     const response = await fetch(`${production.base}/manifest.webmanifest`);

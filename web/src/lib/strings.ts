@@ -553,6 +553,8 @@ const english = {
   "offline.message":
     "This page isn't kept on this device yet. Today, Plans, Progress and Settings open without a connection, and so do the plan pages you've opened before.",
   "component.error-title": "Something went wrong",
+  "component.error-message":
+    "Day by Word couldn't show this page just now. Please try again in a moment. Your plans and what you've marked are kept in your browser, and nothing is lost.",
   "component.try-again": "Try again",
 } as const;
 

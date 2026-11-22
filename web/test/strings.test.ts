@@ -32,6 +32,17 @@ describe("the interface text", () => {
     }
   });
 
+  it("gives SvelteKit's last-resort error page the table's words (P16.8)", () => {
+    const page = read("web/src/error.html").replace(/\s+/g, " ");
+    for (const key of [
+      "component.error-title",
+      "component.error-message",
+      "site.go-to-today",
+    ] as const) {
+      expect(page, key).toContain(englishStrings[key]);
+    }
+  });
+
   it("fills placeholders, and says estimates vary", () => {
     expect(text("site.page-title", { page: "Today" })).toBe("Today · Day by Word");
     expect(workloadText(1)).toBe("About 1 minute. Estimates vary.");

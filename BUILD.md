@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a and P15.6a done). Phase 16: 4 of 9 (P16.1, P16.2, P16.5, P16.6; P16.3 and P16.4 drafted) |
-| **Next item** | **Phase 16**: P16.8 (icons, 404 and 500 pages, sitemap), P16.9 (link and HTML check), P16.7 (the App Store package); P16.3 and P16.4 wait on the owner's approval of the drafts. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac), **P15.1b** (installing on Android) and **P15.6b** (the tour in Safari), each waiting on the owner or a device |
+| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a and P15.6a done). Phase 16: 5 of 9 (P16.1, P16.2, P16.5, P16.6, P16.8; P16.3 and P16.4 drafted) |
+| **Next item** | **Phase 16**: P16.9 (link and HTML check), P16.7 (the App Store package); P16.3 and P16.4 wait on the owner's approval of the drafts. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac), **P15.1b** (installing on Android) and **P15.6b** (the tour in Safari), each waiting on the owner or a device |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
 | **Waiting on the owner** | **Build 131**: try Siri ("What's my reading today in Day by Word?"), the iPad sidebar, Share as PDF on a plan's week, and Add the next four weeks to a calendar. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P12.6b**: install build 131 on the Mac with TestFlight for Mac and say whether it runs (or allow an agent to register this Mac in Xcode). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an agent to download an Android emulator image. **P15.6b**: turn on Safari's "Allow remote automation" (Settings › Advanced › Show features for web developers, then Developer › Allow remote automation). **P16.3**: read and approve `docs/legal/privacy.md` and `docs/legal/terms.md`, answering the questions at the end of each |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2b906ec (deployed 2026-11-22 after `make check-full`): everything before, plus large print on a plan's week, the calendar download on Progress, the installable web app (manifest and icons), and the offline page with Plans kept offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
@@ -144,7 +144,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 3 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
 | 15 | The web app: install and offline | M3 Version 1.0 | 5 | 3 |
-| 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 4 |
+| 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 5 |
 | 17 | Quality hardening | M3 Version 1.0 | 9 | 0 |
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
@@ -536,7 +536,8 @@ SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
 - [x] **P16.6** The accessibility statement: WCAG 2.2 AA, what was tested, known gaps, and how to report a barrier.
   - *Result (agent, 2026-11-22):* `/accessibility` states the aim (WCAG 2.2 AA), only what has run (keyboard alone, 320 px reflow, AA contrast in both appearances, state in words, spoken references, the app's AX5 tour screens), the gaps Phase 17 closes (screen readers, the app's other screens at AX5, 400% zoom, forced colors, Bold Text and the rest), and how to report a barrier (a `mailto:` with a subject). To make the keyboard claim true for every page, the web tour now Tabs through each one and checks every visible control is reached with its focus outline, in Firefox and Chrome (505 and 739 checks). Linked from every footer and the app's Settings; routes.json version 8. Update it as Phase 17 lands.
 - [ ] **P16.7** The App Store package in `docs/app-store/`: the privacy manifest with accurate required-reason declarations; the privacy label (target "Data Not Collected" without an account, and accurate once accounts exist); age rating; export compliance; name, subtitle, description with the independence statement, and keywords; support and privacy URLs; review notes; and screenshots automated by UI tests in light and dark.
-- [ ] **P16.8** Favicons and icons from the owner's files (D19); custom 404 and 500 pages; and a sitemap.
+- [x] **P16.8** Favicons and icons from the owner's files (D19); custom 404 and 500 pages; and a sitemap.
+  - *Result (agent, 2026-11-22):* the icons were already the owner's (`favicon.ico`, the 32 px PNG, the touch and web-app icons, `design/images/manifest.json`), the 404 the site's own, and the sitemap P9.9's (now with the public pages). The 500 page now says plainly that the page could not be shown and nothing is lost, in the layout; `src/error.html`, SvelteKit's last resort, says the same with no stylesheet to fail, in the table's words (a unit test checks). A production test starts a server whose database is out of reach and gets the site's 500 page; seen in the browser pane the same way.
 - [ ] **P16.9** A link check in `make check`: every internal link resolves, pages validate as HTML, and nothing loads from another host.
 
 ## Phase 17: Quality hardening
