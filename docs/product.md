@@ -245,7 +245,7 @@ Paper Bibles are first-class (D26).
 | Surface | Does | Never does |
 |---|---|---|
 | **App** | Everything, offline, without an account | Show Bible text, require sign-in, track |
-| **Widget** (P8.9, P12.2) | Shows the next reading; **Mark read** from the widget; honors "hide passage details" | Show a streak, nag, or claim a reading happened that the reader did not confirm |
+| **Widget** (P8.9, P12.2) | Shows the next reading (small) or today's reading in each plan (medium) with **Mark read**; on the Lock Screen, the next reading with Mark read, a line, or a symbol that opens Today; with "Name the reading in reminders and on the Lock Screen" off, the Lock Screen shows the plan and "Reading 12", never the passage | Show a streak, nag, or claim a reading happened that the reader did not confirm |
 | **Notification** (P8.8) | Says what is next; **Mark read**, **Snooze**, **Open** | Mention missed days, streaks, or urgency |
 | **Web** (daybyword.com) | Public plan pages anyone can read; the same Today, Plans, Progress, and Settings, with progress kept in the reader's own browser at 1.0 and nothing stored on the server (D39); printable weeks | Load anything from another host, set a cookie that is not strictly necessary, or store reading data on the server |
 

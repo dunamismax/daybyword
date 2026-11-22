@@ -651,6 +651,14 @@ remove an entry once it no longer applies.
 - **Pinned versions are enforced.** `make check` refuses any Swift, Node,
   or pnpm version other than the pinned one; install the pinned version
   rather than loosening the check.
+- **UI tests: `app.open(daybyword://…)` launches the app again** with its
+  launch arguments, so `-freshJournal YES` empties the record mid-test;
+  once a test has made its state, move through the app's own buttons. A
+  `Form`'s rows exist only once scrolled into view: swipe until an
+  element is hittable before asserting on it.
+- **Web tests run on a fixed clock**, so two plans started in one test
+  share a millisecond and their order in the journal is random: find a
+  plan by its id or name, never by its index.
 
 ## 12. Keeping this file useful
 

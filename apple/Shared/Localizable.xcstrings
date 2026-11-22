@@ -181,6 +181,9 @@
     "A reading for each day of the month, begun again each month." : {
 
     },
+    "A reading for today" : {
+
+    },
     "A reading in your plan" : {
 
     },
@@ -604,6 +607,9 @@
     "Marks %@ read today." : {
 
     },
+    "Marks %@, %@, read today." : {
+
+    },
     "Marks the reading the widget shows as read today." : {
 
     },
@@ -619,7 +625,7 @@
     "My plans" : {
 
     },
-    "Name the reading in reminders" : {
+    "Name the reading in reminders and on the Lock Screen" : {
 
     },
     "Next reading" : {
@@ -665,6 +671,9 @@
 
     },
     "Open Day by Word to see your next reading." : {
+
+    },
+    "Open Day by Word." : {
 
     },
     "Open in YouVersion" : {
@@ -835,7 +844,7 @@
     "Show reading days in a row on Progress" : {
 
     },
-    "Shows the next reading in your plan, with Mark read." : {
+    "Shows today's reading in your plans, with Mark read." : {
 
     },
     "Shows what changes before anything does." : {

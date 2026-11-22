@@ -18,7 +18,7 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phases 9, 10 and 11 are finished (in BUILD-HISTORY.md). Phase 12: 0 of 4 |
-| **Next item** | **P12.2** (the medium and Lock Screen widgets, with Mark read; the Simulator needs no signing), P12.4, P12.6; **P8.14** once the owner's steps below are done |
+| **Next item** | **P12.2b** (seeing the Lock Screen accessories where they run), **P12.4** (App Intents and Shortcuts), P12.6; **P8.14** once the owner's steps below are done |
 | **Also open** | **P7.3**: tick it once ubuntu-vm-backup's daily snapshot with the `daybyword` database is verified on the host (it was due 2026-11-22 07:30 UTC; this session's SSH to the host was refused by its permission policy, so it is unverified). **P12.1** waits on the Xcode sign-in below |
 | **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves ce22517 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today, Progress (with books explored), Settings and offline. **Not yet deployed:** P11.2–P11.5 (celebrations, reading days in a row, books by verse, History and the archive) are on `main`; `make deploy` needs SSH to the host, which this session could not use |
@@ -543,6 +543,10 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 - [ ] **P12.1** The App Group and the capabilities the extensions need, registered through Xcode's automatic signing on the owner's account (D33).
   - *Note (agent, 2026-11-22):* the app and widget carry `group.com.daybyword.app` (P8.9). `make archive` (with `-allowProvisioningUpdates`) failed: Xcode has no account signed in ("No Accounts"), so the wildcard profile lacks the App Groups capability. Waits on the owner's Xcode sign-in.
 - [ ] **P12.2** Widgets: small (the next reading), medium (today's readings), and Lock Screen accessories, each with interactive **Mark read** and the hide-passage option honored. *(Rewritten by D39; the large widget is P28.6.)*
+  - *Note (agent, 2026-11-22):* split in two: the Home Screen widgets were seen working in the iOS Simulator; the Lock Screen's new accessories were not, since its editor would not open there. Mark read stays only where the reading is named: an inline accessory cannot hold a button, and the circular one names no reading, so it opens Today.
+  - [x] **P12.2a** The Home Screen: small (the next reading) and medium (today's reading in each plan, up to three, each with Mark read).
+    - *Result (agent, 2026-11-22):* one provider gives today's readings across plans; the medium widget lists them with Mark read (`MarkReadIntent`). Seen in the iOS Simulator (iPhone 18 Pro): added from the widget gallery, it showed Psalm 1 and Proverbs 22; Mark read recorded each in the shared journal and the widget redrew (once only after the app opened: the Simulator held the first reload).
+  - [ ] **P12.2b** The Lock Screen: the rectangular accessory (the next reading, Mark read), an inline line and a circular symbol that opens Today, and with "Name the reading in reminders and on the Lock Screen" off (mirrored into the App Group by `Library` and the setting), the plan and "Reading 12" instead of the passage. Built with P12.2a; *not seen yet*: the Simulator's Lock Screen editor did not open from Customize. See them on a Lock Screen (a device, or a Simulator whose editor opens) and tick.
 - [ ] **P12.4** App Intents and App Shortcuts: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
 - [ ] **P12.6** iPad: a sidebar layout and readable widths. Check that it runs on a Mac with Apple silicon as an iPad app. *(Rewritten by D39: comparison is P9.6.)*
 
@@ -616,24 +620,26 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-22 session:** P8.13 (Export's share sheet: SwiftUI's ShareLink
-  closed Settings, so `ShareSheet` presents through UIKit); five more
-  plans, P10.3–P10.6 and P10.11, so all eight 1.0 plans are in; Phase 9
-  finished (the picker and recommendations, E54; goals; plan pages'
-  length and permissions; descriptions, link previews and the sitemap,
-  E55); P11.1 (books explored on Progress). Deployed twice.
-- **Catalog schema 4, export format 2:** goals live in `catalog/goals.json`
-  (not plan front matter: changing a published plan's content needs a new
-  version). PostgreSQL keeps them per import in `catalog_goals` (0003).
-- **Forms on the web** work only with `Referrer-Policy: same-origin` and
-  `server.ts`'s `X-Forwarded-Proto` default (AGENTS.md §11, E54).
-- **The Story of Scripture** is an editorial list in `scripts/plans.swift`;
-  `generate` writes it and refuses a reading not in its shortest writing.
-- **TestFlight is blocked** on the owner's Xcode sign-in (Now). Nothing
-  else waits on it; the archive builds once signing is possible.
-- **Testing:** the Simulator tool's taps never reach rows inside the
-  Settings sheet; use an XCUITest there (`LaunchTests`). Booted simulators
-  are often other sessions'; iPhone Air (CC73BF5B-…) was free.
-- **Next:** P11.2 needs an engine rule (finishing a book or a plan, a
-  rhythm kept): specification and shared cases first, then both runtimes.
-  Stage by path (§8).
+- **2026-11-22, second session:** P11.2 (quiet celebrations: a new engine
+  rule, E56, `celebrations.json`), P11.3 (reading days in a row, off by
+  default), P11.4 (books by verse and chapter), P11.5 (History and the
+  archive, with pause, resume and stop, E57), so Phase 11 is finished;
+  P10.13 (the catalog review), so Phase 10 is finished; P12.2a (the medium
+  widget). P12.2 is split: P12.2b, the Lock Screen accessories, is built
+  but unseen (the Simulator's Lock Screen editor would not open).
+- **Not deployed.** daybyword.com still serves ce22517. `make deploy` and
+  P7.3's check both need root SSH to the host, which this session's
+  permission policy refused. Run `make check-full`, then `make deploy`.
+- **Engine additions** (both runtimes, pinned by fixtures): `celebrations`,
+  `recordSlots` (History's readings, also behind the counts), and
+  `BookCoverage` / `coverageByBook`. Specification version stays 1.
+- **Web:** History is a `<details>` in each plan's card on Progress; the
+  events endpoint gained `pause`, `resume` and `end`; a dated History mark
+  on a calendar plan sends `appointed`. `/assets/*.js` are cached for an
+  hour, so after rebuilding, refetch them with `cache: "reload"`; the
+  browser pane refuses service workers on localhost.
+- **UI tests** (`make test-ui`, not in `make check`): the streak toggle,
+  and History (about four minutes: it scrolls 60 readings). AGENTS.md §11
+  has the two traps they hit.
+- **Next:** P12.2b on a Lock Screen, P12.4 (App Intents and Shortcuts),
+  P12.6 (iPad), then Phase 13. TestFlight still waits on the Xcode sign-in.

@@ -1,6 +1,7 @@
 import ReadingEngine
 import SwiftUI
 import UserNotifications
+import WidgetKit
 
 /// Reminders in Settings (BUILD.md P8.8, docs/product.md "Reminders and
 /// notifications"): each plan's reminder, which is in the journal, and this
@@ -30,7 +31,7 @@ struct RemindersSection: View {
                     }
                 }
             }
-            Toggle("Name the reading in reminders", isOn: $showsReading)
+            Toggle("Name the reading in reminders and on the Lock Screen", isOn: $showsReading)
             Toggle("Quiet hours", isOn: $quietHours)
             if quietHours {
                 DatePicker("From", selection: time($quietFrom), displayedComponents: .hourAndMinute)
@@ -48,7 +49,12 @@ struct RemindersSection: View {
             footer
         }
         .listRowBackground(Palette.surface)
-        .onChange(of: showsReading) { reminders.setNeedsReschedule() }
+        .onChange(of: showsReading) {
+            reminders.setNeedsReschedule()
+            // The Lock Screen widgets follow it too (P12.2).
+            SharedJournal.defaults.set(showsReading, forKey: ReminderPreferences.showReadingKey)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         .onChange(of: quietHours) { reminders.setNeedsReschedule() }
         .onChange(of: quietFrom) { reminders.setNeedsReschedule() }
         .onChange(of: quietUntil) { reminders.setNeedsReschedule() }

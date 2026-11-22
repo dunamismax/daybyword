@@ -45,6 +45,9 @@ final class Library {
             NamingConvention(rawValue: UserDefaults.standard.string(forKey: Self.conventionKey) ?? "") ?? .common
         today = Self.civilDate(clock())
         reload()
+        // The widgets read these from the App Group (P8.9, P12.2).
+        SharedJournal.defaults.set(convention.rawValue, forKey: Self.conventionKey)
+        SharedJournal.defaults.set(ReminderPreferences.showsReading(), forKey: ReminderPreferences.showReadingKey)
     }
 
     /// The library the app runs on: the catalog in the app bundle and the
