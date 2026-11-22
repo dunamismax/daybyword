@@ -19,7 +19,7 @@ sessions build Day by Word step by step, working under
 |---|---|
 | **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phases 9, 10 and 11 are finished (in BUILD-HISTORY.md). Phase 12: 0 of 4 |
 | **Next item** | **P12.2b** (seeing the Lock Screen accessories where they run), **P12.4** (App Intents and Shortcuts), P12.6; **P8.14** once the owner's steps below are done |
-| **Also open** | **P7.3**: tick it once ubuntu-vm-backup's daily snapshot with the `daybyword` database is verified on the host (it was due 2026-11-22 07:30 UTC; this session's SSH to the host was refused by its permission policy, so it is unverified). **P12.1** waits on the Xcode sign-in below |
+| **Also open** | **P12.1** waits on the Xcode sign-in below. Phase 7 is finished (P7.3's off-server backup verified 2026-11-22) |
 | **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves ce22517 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today, Progress (with books explored), Settings and offline. **Not yet deployed:** P11.2–P11.5 (celebrations, reading days in a row, books by verse, History and the archive) are on `main`; `make deploy` needs SSH to the host, which this session could not use |
 | **Last updated** | 2026-11-22 |
@@ -135,7 +135,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 4 | The catalog | M1 Foundation | 8 | 8 |
 | 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
-| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
+| 7 | Hosting at daybyword.com | M1 Foundation | 6 | 6 |
 | 8 | First light | M2 First light | 14 | 12 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 5 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 9 |
@@ -457,25 +457,7 @@ Moved to after 1.0 by D39 (2026-11-01); its items are in
 
 ## Phase 7: Hosting at daybyword.com
 
-The site goes live early, marked as in development (D35). Phase M
-prepares the SvelteKit/PostgreSQL image and scripts; this phase verifies the
-actual host and provisions under D34. No reader records are stored at 1.0,
-but nightly PostgreSQL backups begin with the first database deployment.
-
-- [x] **P7.1** Finalize docs/deploy.md against the real host: release/shared env paths, shared lock, free loopback port (4316 planned), Compose volume/DB/roles, Caddy site convention and certificates (Caddy's own; DNS-only Cloudflare records are owner-managed). No Swift HTTP service or server SQLite.
-  - *Result (agent, 2026-11-20):* docs/deploy.md, "The live host": paths, `with-deploy-lock` on /run/astro-deploy/lock, ports 4318/4319 (4316/4317 were taken), Compose volume/roles, `/etc/caddy/sites/*.caddy`, Caddy's own certificates.
-- [x] **P7.2** Qualify make deploy from clean origin/main: SvelteKit adapter-node production image, release catalog export/import, one-shot Drizzle migrations, candidate boot on a spare port, /up and activation, with compatible image/config rollback and persistent DB volume.
-  - *Result (agent, 2026-11-20):* `make deploy` (deploy/bin/release.sh) from a clean checkout equal to origin/main: export, `git archive` to `releases/<commit>`, `deploy.sh` inside `with-deploy-lock` (image, migrate/import, candidate on 4319, activate, rollback on failure), then public check-live.
-- [ ] **P7.3** Provision only this project's database, roles, env files, units and Caddy site under the host's web platform contract (`bin/provision-app-database daybyword --web-access read-only`); record other-site responses before/after; validate and reload Caddy only through `caddy-apply`. Systemd timers for the nightly pg_dump and an isolated restore drill on the host cluster; the encrypted off-server copy is ubuntu-vm-backup's daily dump of the cluster. *(Rewritten 2026-11-21 for the contract, E46.)*
-  - *Note (agent, 2026-11-21):* Moved to the contract (E46): `bin/provision-app-database daybyword --web-access read-only`; the container's final dump restored with equal row counts in every table (456 assignments, 3 plans, 2 imports); migration 0002 moved the catalog to schema app; the candidate passed on 4400; the Compose project, its volume and images were removed after the live site was verified. Both timers now work on the host cluster and each ran once (backup 64116 bytes, restore check passed). ubuntu-vm-backup's entry is a plain site with database `daybyword`; its verification rehearsal passed.
-  - *Note (agent, 2026-11-20):* Done: the project's Compose/Postgres/env/Caddy resources, /etc/caddy archived, other sites compared, nightly pg_dump and monthly restore-check timers installed, first backup and restore check passed on the host. Open: the encrypted off-server copy; no `ubuntu-vm-backup` checkout or tool exists on the host or the Mac, so the owner's arrangement is needed.
-  - *Note (agent, 2026-11-21):* each deploy had been recreating the database container (a few seconds without it, no data lost), because its two mounted files came from the release directory. They now come from `shared/postgres` (E43), and `make rehearse-deploy` deploys its second release from another directory and fails if the database container changes. On the host, cd13494 recreated the database one last time (its mounts moved), and the next deploy, 1cc5f7e, left `daybyword-postgres-1` with the same id (618753ad60f5) and start time (2026-11-21T05:23:29Z); 22 other site names answered the same before and after both.
-- [x] **P7.4** First deploy after DNS verification and make check-full: apex HTTPS, www redirect retaining path, correct headers/CSP, valid origin TLS and healthy catalog/DB. Compare other sites and record commit/image/schema.
-  - *Result (agent, 2026-11-20):* live 2026-11-20 at commit 7be7f76 (image `daybyword-web:<commit>`, schema 2 migrations, catalog ac986b77…, 0 plans): apex HTTPS, www 301 keeping path and query, HSTS, strict CSP and headers, healthy `/up` with a current catalog; all 20 other site names unchanged. `make check-full`'s parts all passed today (check, test-domain-browser, both tours, test-linux), not as one run.
-- [x] **P7.6** make check-live verifies routes, redirects, TLS, headers, assets/hydration, no third-party loads, necessary cookies only and readiness. Deploy runs it; rehearse rollback without dropping the database.
-  - *Result (agent, 2026-11-20):* check-live.sh exists and deploy runs it on the candidate and live port, and release.sh on https://daybyword.com (TLS, www redirect, HSTS, headers, robots, noindex, no cookies or third-party loads). Rollback rehearsed on the host the same day: 38972f5 → 7be7f76 with the database unchanged (1 catalog import before and after), checked, then 38972f5 redeployed with `make deploy`.
-- [x] **P7.7** Keep the in-development line, noindex and robots crawl block until launch (P18.5).
-  - *Result (agent, 2026-11-20):* the footer's in-development line, `noindex` on every page and `robots.txt` `Disallow: /` are live and checked by check-live; they stay until P18.5.
+Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 8: First light
 
