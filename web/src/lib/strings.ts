@@ -250,6 +250,9 @@ const english = {
   "progress.empty-message": "It describes what you've read, and nothing more.",
   "progress.describes": "This describes what you've marked, and nothing more.",
   "progress.recent-days": "Recent days",
+  "progress.books": "Books explored",
+  "progress.books-note":
+    "The books you've marked a reading in, in any plan. Reading in a book is not reading all of it.",
   "progress.key": "✓ read · ○ a reading day · – a rest day",
   "progress.day-read": "{date}, read",
   "progress.day-unread": "{date}, not read",

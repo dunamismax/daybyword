@@ -333,6 +333,15 @@ describe("Today, marking and undoing", () => {
         next: "Next: Mark 3–4",
       }),
     ]);
+    // The books read in, apart from any plan's record (P11.1).
+    expect(progress.books).toBe("Mark");
+    expect(
+      progressPage(
+        catalog,
+        journalRequest({ events: started, today: "2027-03-02" }, catalog).journal,
+        request.today,
+      ).books,
+    ).toBe("");
   });
 
   it("previews a finish date's load, and refuses one beyond the reader's limit", () => {

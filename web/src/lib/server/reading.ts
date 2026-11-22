@@ -7,6 +7,8 @@
 import {
   assignmentPositions,
   bibleLink,
+  bookName,
+  coverage,
   bibleTranslation,
   chaptersPassage,
   CivilDateError,
@@ -422,6 +424,8 @@ export interface PlanRecord {
 export interface ProgressPage {
   readonly days: readonly ProgressStripDay[];
   readonly plans: readonly PlanRecord[];
+  /** The books explored in any plan, in the Bible's order, in words; empty when none (P11.1). */
+  readonly books: string;
 }
 
 const weekdayKeys = [
@@ -494,7 +498,13 @@ export function progressPage(
         : {}),
     };
   });
-  return { days, plans };
+  // Kept apart from each plan's record: reading in a book is not finishing a
+  // plan, and finishing a plan is not reading these books whole.
+  const explored = coverage(journal, catalog.versification).books.flatMap((id) => {
+    const book = catalog.registry.book(id);
+    return book ? [bookName(book, options.convention ?? "common").name] : [];
+  });
+  return { days, plans, books: listText(explored) };
 }
 
 // MARK: Making events

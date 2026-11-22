@@ -271,6 +271,9 @@
     "Book names" : {
 
     },
+    "Books explored" : {
+
+    },
     "By %@" : {
 
     },
@@ -800,6 +803,9 @@
 
     },
     "That's today's reading." : {
+
+    },
+    "The books you've marked a reading in, in any plan. Reading in a book is not reading all of it." : {
 
     },
     "The first seven days of a month. Each date has its own reading." : {

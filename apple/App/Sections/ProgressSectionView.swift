@@ -2,9 +2,9 @@ import ReadingData
 import ReadingEngine
 import SwiftUI
 
-/// Progress, first version (BUILD.md P8.12): recent reading days as a plain
-/// week strip, and for each plan the readings by state and the next
-/// reading. It describes activity and nothing more: no score, no streak
+/// Progress (BUILD.md P8.12, P11.1): recent reading days as a plain week
+/// strip, the books explored in any plan, and for each plan the readings by
+/// state and the next reading. It describes activity and nothing more: no score, no streak
 /// unless the reader asks for one (P11.3), and no comparison. (SwiftUI
 /// already has a `ProgressView`.)
 struct ProgressSectionView: View {
@@ -15,6 +15,9 @@ struct ProgressSectionView: View {
             VStack(alignment: .leading, spacing: Spacing.m) {
                 if let journal = library.journal, !journal.enrollments.isEmpty, let formatter = library.formatter {
                     weekStrip(journal)
+                    if let catalog = library.catalog {
+                        booksExplored(journal, catalog: catalog)
+                    }
                     ForEach(journal.enrollments, id: \.id) { enrollment in
                         if let plan = library.plan(of: enrollment) {
                             PlanProgress(
@@ -37,6 +40,34 @@ struct ProgressSectionView: View {
         }
         .background(Palette.background)
         .navigationTitle("Progress")
+    }
+
+    /// The books read in, in any plan, in the Bible's order (P11.1), kept
+    /// apart from each plan's record: reading in a book is not finishing a
+    /// plan, and finishing a plan is not reading these books whole.
+    @ViewBuilder
+    private func booksExplored(_ journal: Journal, catalog: Catalog) -> some View {
+        let books = journal.coverage(in: catalog.versification).books.compactMap {
+            catalog.registry.book($0)?.name(in: library.convention).name
+        }
+        if !books.isEmpty {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Text("Books explored")
+                    .typeStyle(TypeScale.referenceList)
+                    .foregroundStyle(Palette.text)
+                    .accessibilityAddTraits(.isHeader)
+                Text(verbatim: books.formatted(.list(type: .and)))
+                    .typeStyle(TypeScale.body)
+                    .foregroundStyle(Palette.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("The books you've marked a reading in, in any plan. Reading in a book is not reading all of it.")
+                    .typeStyle(TypeScale.caption)
+                    .foregroundStyle(Palette.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .card(padding: Spacing.m)
+        }
     }
 
     /// The seven days ending today: each says in words and a symbol whether

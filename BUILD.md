@@ -18,7 +18,7 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 8 of 9, with P10.13 (the catalog review) open |
-| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done); Phase 9 is finished (moved to BUILD-HISTORY.md); then Phase 11, progress and history (**P11.1**) |
+| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done); Phase 11, progress and history: **P11.2** (quiet celebrations), then P11.3–P11.5. Phase 9 is finished (in BUILD-HISTORY.md) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): the plans, their pages and printable weeks, and since 2026-11-22 starting a plan, Today with marking, the welcome back, Progress, Settings and offline, with the reader's record in their own browser (E52, E53). Deployed 2026-11-22 at 33d2573 after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, the other sites answered as before, and a 700 KB request body was accepted (the 1M limit). `https://daybyword.com/healthz` names the serving commit |
@@ -139,7 +139,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 8 | First light | M2 First light | 14 | 12 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 5 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 8 |
-| 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
+| 11 | Progress and history | M3 Version 1.0 | 5 | 1 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
@@ -558,7 +558,8 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
 
 ## Phase 11: Progress and history
 
-- [ ] **P11.1** The Progress screen: assignments completed, recent reading days (a plain week strip, never a heat map of performance), books explored, and the next reading.
+- [x] **P11.1** The Progress screen: assignments completed, recent reading days (a plain week strip, never a heat map of performance), books explored, and the next reading.
+  - *Result (agent, 2026-11-22):* first light's Progress (P8.12, P8.10d) had the week strip, each plan's readings by state and its next reading; both platforms now add "Books explored", the engine's coverage books in the Bible's order under the reader's book names, in a card of its own with "Reading in a book is not reading all of it", apart from each plan's record. Tested in `web/test/reading.test.ts`; seen in the iOS Simulator (Genesis, after marking the Story of Scripture's first reading) and in a browser.
 - [ ] **P11.2** Quiet celebrations of returning after a gap, finishing a book, finishing a plan, and keeping a rhythm the reader chose: words, not confetti, and never a comparison with anyone else.
 - [ ] **P11.3** The optional streak (D17): off by default, measured against the reader's reading days, small, and never mentioned in notifications.
 - [ ] **P11.4** Coverage: unique verses read, by book, with partly read chapters shown as partial. Repeats never inflate it, and it is kept apart from plan completion.
