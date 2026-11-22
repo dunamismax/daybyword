@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 8 of 9, with P10.13 (the catalog review) open |
-| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done); Phase 11, progress and history: **P11.2** (quiet celebrations), then P11.3–P11.5. Phase 9 is finished (in BUILD-HISTORY.md) |
-| **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
-| **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): the plans, their pages and printable weeks, and since 2026-11-22 starting a plan, Today with marking, the welcome back, Progress, Settings and offline, with the reader's record in their own browser (E52, E53). Deployed 2026-11-22 at 33d2573 after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, the other sites answered as before, and a 700 KB request body was accepted (the 1M limit). `https://daybyword.com/healthz` names the serving commit |
+| **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phase 9 is finished (in BUILD-HISTORY.md). Phase 10, the launch catalog: 8 of 9, all eight plans in the catalog, P10.13 (the catalog review) open. Phase 11: 1 of 5 |
+| **Next item** | **P11.2** (quiet celebrations: an engine rule, so its specification and cases come first), then P11.3–P11.5; **P10.13** (the catalog review and criteria page); **P8.14** once the owner's steps below are done |
+| **Also open** | **P7.3**: tick it once ubuntu-vm-backup's first daily snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P12.1** waits on the Xcode sign-in below |
+| **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): eight plans with their pages, the plan questions and grouped list, starting a plan, Today, Progress (with books explored), Settings and offline, with the reader's record in their own browser. Deployed 2026-11-22 at ce22517 after `make check-full` passed; candidate, live port and https://daybyword.com passed check-live (which now posts the plan questions), and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -524,7 +524,7 @@ list.
 - [x] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
   - *Result (agent, 2026-11-22):* in the app: how you read (and the screen kept awake for paper), the translation (P8.5), reminders (P8.8), book names (D29), appearance and reference size, Export (the journal as JSON, `Library.export`; tested), delete everything with a confirmation, about and version; the web's Settings is P8.10c and P8.10d (no reminders on the web at 1.0). SwiftUI's `ShareLink` closed the Settings sheet instead of sharing, so `ShareSheet` presents the system's share sheet through UIKit; `LaunchTests.testExportOpensTheShareSheet` sees it open over Settings with the file "Day by Word reading record" (JSON) in the iOS Simulator (iPhone Air). The Simulator tool's injected taps never reach Settings' rows; XCUITest's taps do.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
-  - *Note (agent, 2026-11-21):* build 96 (8872016) uploaded to App Store Connect with `make testflight` after `make check-full` passed, and daybyword.com serves bbc97fb with the three plans. Not ticked: first light still lacks P8.5's device test, P8.10, P8.11 and P8.13 (P8.3, P8.8 and P8.9 are done since, and not yet in a TestFlight build; the next one needs P12.1's App Group registration), and the build's processing is unconfirmed.
+  - *Note (agent, 2026-11-22):* daybyword.com serves ce22517 with all eight plans and first light's web (deployed after `make check-full`). Build 96 (8872016) is the latest TestFlight upload; the next build, with P8.3–P8.13 and Phase 9, stopped at `make archive` with "No Accounts": Xcode needs the owner's sign-in so automatic signing can register the App Group (P12.1). Not ticked: that build, and P8.5's device test.
 
 ## Phase 9: Choosing a plan
 
@@ -568,6 +568,7 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
 ## Phase 12: Widgets and Apple integration
 
 - [ ] **P12.1** The App Group and the capabilities the extensions need, registered through Xcode's automatic signing on the owner's account (D33).
+  - *Note (agent, 2026-11-22):* the app and widget carry `group.com.daybyword.app` (P8.9). `make archive` (with `-allowProvisioningUpdates`) failed: Xcode has no account signed in ("No Accounts"), so the wildcard profile lacks the App Groups capability. Waits on the owner's Xcode sign-in.
 - [ ] **P12.2** Widgets: small (the next reading), medium (today's readings), and Lock Screen accessories, each with interactive **Mark read** and the hide-passage option honored. *(Rewritten by D39; the large widget is P28.6.)*
 - [ ] **P12.4** App Intents and App Shortcuts: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
 - [ ] **P12.6** iPad: a sidebar layout and readable widths. Check that it runs on a Mac with Apple silicon as an iPad app. *(Rewritten by D39: comparison is P9.6.)*
@@ -642,28 +643,24 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21, evening session:** P8.3 and P8.5 (YouVersion links, E49;
-  its device test waits on the owner), P8.8 (reminders, E50), P8.9 (the
-  widget and the App Group, E51), and P8.10c and P8.10d (the web's start,
-  Today, marking, welcome back, Progress and Settings, E52).
-- **Before the next TestFlight build:** the app and widget now carry the
-  `group.com.daybyword.app` entitlement. Register it through automatic
-  signing (P12.1): `make archive` with `-allowProvisioningUpdates` should;
-  if signing fails, the App Group needs adding to the App ID.
-- **The web's record** is in the browser's IndexedDB (`reading.js`); the
-  compute endpoints (`/api/v1/today`, `events`, `progress`, `preview`)
-  fold it with the catalog and keep nothing. Body limit 1M in the unit.
-- **Testing:** `?today=YYYY-MM-DD` on /today, /progress and a start page;
-  `-today` and `-freshJournal YES` in the app. After `make build-web`, the
-  Browser pane may run cached `/assets/*.js` for an hour; reload them.
-  Reminders fire by the real clock; `xcrun simctl push` tests actions.
-- **Offline (P8.11, E53):** a service worker keeps the site's files and
-  pages; Today keeps seven days of cards; marks made offline wait in
-  IndexedDB with their own ids. Undo and the welcome need a connection.
-- **Deployed 33d2573** on 2026-11-22 after `make check-full` passed (the
-  owner approved Tailscale's SSH check first); the unit's 1M body limit
-  is live.
-- **Open:** P8.13 waits only on seeing the app's Export share sheet open
-  (it never has under the Simulator's taps). P7.3 waits for the daily
-  snapshot (2026-11-22 07:30 UTC). P8.14 needs a TestFlight build with
-  this session's work. Stage by path (§8).
+- **2026-11-22 session:** P8.13 (Export's share sheet: SwiftUI's ShareLink
+  closed Settings, so `ShareSheet` presents through UIKit); five more
+  plans, P10.3–P10.6 and P10.11, so all eight 1.0 plans are in; Phase 9
+  finished (the picker and recommendations, E54; goals; plan pages'
+  length and permissions; descriptions, link previews and the sitemap,
+  E55); P11.1 (books explored on Progress). Deployed twice.
+- **Catalog schema 4, export format 2:** goals live in `catalog/goals.json`
+  (not plan front matter: changing a published plan's content needs a new
+  version). PostgreSQL keeps them per import in `catalog_goals` (0003).
+- **Forms on the web** work only with `Referrer-Policy: same-origin` and
+  `server.ts`'s `X-Forwarded-Proto` default (AGENTS.md §11, E54).
+- **The Story of Scripture** is an editorial list in `scripts/plans.swift`;
+  `generate` writes it and refuses a reading not in its shortest writing.
+- **TestFlight is blocked** on the owner's Xcode sign-in (Now). Nothing
+  else waits on it; the archive builds once signing is possible.
+- **Testing:** the Simulator tool's taps never reach rows inside the
+  Settings sheet; use an XCUITest there (`LaunchTests`). Booted simulators
+  are often other sessions'; iPhone Air (CC73BF5B-…) was free.
+- **Next:** P11.2 needs an engine rule (finishing a book or a plan, a
+  rhythm kept): specification and shared cases first, then both runtimes.
+  Stage by path (§8).
