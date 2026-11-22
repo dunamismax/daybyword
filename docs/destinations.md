@@ -114,7 +114,10 @@ here, and add it to both runtimes and the fixture.
   Matthew 1 in the KJV, and Today said "Opens at Matthew 1, where this
   reading begins." Without a translation, Today offered Copy reference and
   a way to Settings to choose one.
-- **Not yet tested on a device** (P8.5): an iPhone with YouVersion
-  installed, opening a whole chapter, a verse range, a reading across
-  chapters, and a translation the app has not downloaded. Record the date,
-  the iOS and YouVersion versions, and what each link did.
+- **2026-11-22, on the owner's iPhone with YouVersion installed**
+  (TestFlight build 126, 0.1.0): the owner reported that Open in
+  YouVersion worked as it should, opening the readings in the YouVersion
+  app. Not recorded: the iOS and YouVersion versions, each case on its own
+  (a whole chapter, a verse range, a reading across chapters), and a
+  translation the app had not downloaded. Record them at the next device
+  test, and whenever YouVersion changes how its links open.
