@@ -20,7 +20,7 @@ sessions build Day by Word step by step, working under
 | **Phase** | Phase 8, first light (M2): 6 of 14 items done (P8.1, P8.2, P8.4, P8.6, P8.7, P8.12), with P8.3, P8.10 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
 | **Next item** | **P8.5**: the YouVersion and Bible.com adapter (Open in …), which also finishes P8.3; it needs a device test. Then **P8.8** (iOS reminders) and **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC) |
-| **Waiting on the owner** | **Accept Apple's updated Program License Agreement** at developer.apple.com/account: build 96 (8872016, `make check-full` passed) is archived and signed, but its upload stopped with "PLA Update available". After that, `make testflight` uploads it unchanged. P8.5 needs a real iPhone with YouVersion installed to test links on. |
+| **Waiting on the owner** | Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready, and the *Owner* group gets it automatically. P8.5 needs a real iPhone with YouVersion installed to test links on. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18; a plan cannot be started on the web yet. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
 | **Last updated** | 2026-11-21 |
 
@@ -517,6 +517,7 @@ list.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
   - *Note (agent, 2026-11-21):* in the app now: how you read (and keeping the screen awake for paper), book names (D29, from the registry's conventions, applied to every reference), appearance and reference size, export of the journal as JSON (`Library.export`, the engine's wire form; tested), delete everything with a confirmation, about and version. The share sheet did not open under the Simulator's injected taps, so Export is unverified on screen. Left: reminder settings (P8.8) and the translation for links (P8.5), and the web's Settings with P8.10c.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
+  - *Note (agent, 2026-11-21):* build 96 (8872016) uploaded to App Store Connect with `make testflight` after `make check-full` passed, and daybyword.com serves bbc97fb with the three plans. Not ticked: first light still lacks P8.3's Open in …, P8.5, P8.8–P8.11 and P8.13, and the build's processing is unconfirmed.
 
 ## Phase 9: Choosing a plan
 
@@ -653,8 +654,9 @@ only when Phase 18 is finished or an item points there.
   for client code under the strict CSP; the app's screens are the model.
 - **Signing:** the team is in `Base.xcconfig` now (E48); `make
   check-signing` says whether a Mac is ready. No Secrets.xcconfig needed.
-- **TestFlight:** build 96 is archived in `build/`; its upload waits for
-  the owner to accept Apple's updated license (see Now), then `make
-  testflight`. Build 25's upload was never verified.
+- **TestFlight:** build 96 (8872016, `make check-full` passed) uploaded
+  2026-11-21 after the owner accepted Apple's updated license; Xcode
+  reported "Upload succeeded". Its processing and arrival on a device are
+  not yet confirmed. Build 25's upload was never verified.
 - **Open:** P7.3 waits for the first verified daily snapshot. Stage by
   path (§8).
