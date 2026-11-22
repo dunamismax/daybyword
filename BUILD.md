@@ -20,7 +20,7 @@ sessions build Day by Word step by step, working under
 | **Phase** | Phase 8, first light (M2): 6 of 14 items done (P8.1, P8.2, P8.4, P8.6, P8.7, P8.12), with P8.3, P8.10 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
 | **Next item** | **P8.5**: the YouVersion and Bible.com adapter (Open in …), which also finishes P8.3; it needs a device test. Then **P8.8** (iOS reminders) and **P8.10c** (the web's start flow, Today and marking, which needs E38's choice) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC) |
-| **Waiting on the owner** | P8.5 needs a real iPhone with YouVersion installed to test links on. Build 25's TestFlight upload was never verified. |
+| **Waiting on the owner** | **Accept Apple's updated Program License Agreement** at developer.apple.com/account: build 96 (8872016, `make check-full` passed) is archived and signed, but its upload stopped with "PLA Update available". After that, `make testflight` uploads it unchanged. P8.5 needs a real iPhone with YouVersion installed to test links on. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18; a plan cannot be started on the web yet. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
 | **Last updated** | 2026-11-21 |
 
@@ -653,5 +653,8 @@ only when Phase 18 is finished or an item points there.
   for client code under the strict CSP; the app's screens are the model.
 - **Signing:** the team is in `Base.xcconfig` now (E48); `make
   check-signing` says whether a Mac is ready. No Secrets.xcconfig needed.
-- **Open:** P7.3 waits for the first verified daily snapshot. Build 25's
-  TestFlight upload unverified. Stage by path (§8).
+- **TestFlight:** build 96 is archived in `build/`; its upload waits for
+  the owner to accept Apple's updated license (see Now), then `make
+  testflight`. Build 25's upload was never verified.
+- **Open:** P7.3 waits for the first verified daily snapshot. Stage by
+  path (§8).

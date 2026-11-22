@@ -32,6 +32,11 @@ pinned in .swift-version and the commands below remain the native path.
   SKU is internal and can never change). Xcode named the record
   *DayByWord* after the product name; App Information now gives the name
   *Day by Word* and the subtitle *Your Bible reading companion*.
+  If an export reports `PLA Update available` (and then `No signing
+  certificate "iOS Distribution" found`), Apple has updated the Program
+  License Agreement: the owner accepts it at developer.apple.com/account
+  (and any new agreements in App Store Connect → Business), then `make
+  testflight` runs again unchanged. Agents never accept agreements.
   If Distribute App reports `DistributionAppRecordProviderError` right after
   creating a record, the record exists but App Store Connect has not caught
   up yet: run `make testflight` again a minute later.
