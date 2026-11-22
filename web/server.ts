@@ -40,7 +40,10 @@ const securityHeaders: Record<string, string> = {
     "usb=()",
   ].join(", "),
   "x-content-type-options": "nosniff",
-  "referrer-policy": "no-referrer",
+  // No referrer leaves for another site. Within this one a form's POST must
+  // carry the page's origin for SvelteKit's check, which no-referrer would
+  // replace with "null" (docs/decisions.md E54).
+  "referrer-policy": "same-origin",
   "cross-origin-opener-policy": "same-origin",
   "cross-origin-resource-policy": "same-origin",
   "x-frame-options": "DENY",
@@ -53,6 +56,16 @@ const staticCache = "public, max-age=3600";
 
 type Handler = (request: IncomingMessage, response: ServerResponse, next?: () => void) => void;
 
+// The public address's scheme, for SvelteKit's check that a form is posted
+// from this site (it assumes https unless a header says otherwise). This
+// server listens on loopback only: on the host every request comes through
+// Caddy, which sets X-Forwarded-Proto to https and replaces any a client
+// sent; a request with none came straight to this plain-HTTP port (make
+// serve-web, the tests), so its scheme is http. Set before the handler reads
+// its environment.
+const protocolHeader = "x-forwarded-proto";
+process.env["PROTOCOL_HEADER"] = protocolHeader;
+
 // build/handler.js exists only after `vite build`; imported by address, so
 // the type checker does not read the build.
 const { handler } = (await import(new URL("./build/handler.js", import.meta.url).href)) as {
@@ -61,6 +74,7 @@ const { handler } = (await import(new URL("./build/handler.js", import.meta.url)
 
 export function serve(request: IncomingMessage, response: ServerResponse): void {
   const start = performance.now();
+  request.headers[protocolHeader] ??= "http";
   for (const [name, value] of Object.entries(securityHeaders)) response.setHeader(name, value);
   let route = "static";
   const writeHead = response.writeHead.bind(response) as (...args: unknown[]) => ServerResponse;

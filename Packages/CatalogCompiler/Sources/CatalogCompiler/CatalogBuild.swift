@@ -6,8 +6,9 @@ import ReadingEngine
 ///
 /// It checks the book registry (`scripture/books.json`), the versification
 /// schemes (`scripture/versification/`), the word counts (`scripture/words/`),
-/// the sources registry (`SOURCES.md`), and every plan in `plans/`
-/// (docs/catalog-format.md), and writes the plans and their assignments with
+/// the sources registry (`SOURCES.md`), every plan in `plans/`
+/// (docs/catalog-format.md), and the goals the plans are grouped by
+/// (`goals.json`), and writes the plans, their assignments and the goals with
 /// a content checksum. A catalog with any problem writes nothing.
 public enum CatalogBuild {
     /// How strictly the catalog is built. A release build leaves out plans
@@ -54,8 +55,16 @@ public enum CatalogBuild {
             scripture.append(
                 (name, try String(contentsOf: source.appending(path: "scripture/\(name)"), encoding: .utf8)))
         }
+        let allGroups = try readGoals(from: source, plans: all.map(\.plan), registry: registry)
         let plans = all.map(\.plan).filter { mode == .development || $0.review >= releaseReview }
         let leftOut = all.map(\.plan).filter { !plans.contains($0) }.map(\.id)
+        // A plan a release leaves out leaves its goals too, and a goal left
+        // with no plans is not shown.
+        let included = Set(plans.map(\.id))
+        let groups = allGroups.compactMap { group -> GoalsFile.Group? in
+            let kept = group.plans.filter(included.contains)
+            return kept.isEmpty ? nil : GoalsFile.Group(goal: group.goal, plans: kept)
+        }
 
         let fileManager = FileManager.default
         try fileManager.createDirectory(
@@ -90,6 +99,10 @@ public enum CatalogBuild {
                     whole_chapters INTEGER NOT NULL, partial_chapters INTEGER NOT NULL,
                     words_minimum INTEGER NOT NULL, words_median INTEGER NOT NULL, words_maximum INTEGER NOT NULL
                 ) STRICT;
+                CREATE TABLE goals (
+                    goal TEXT NOT NULL, position INTEGER NOT NULL, plan_id TEXT NOT NULL REFERENCES plans (id),
+                    PRIMARY KEY (goal, plan_id), UNIQUE (goal, position)
+                ) STRICT;
                 """
             )
             try database.transaction {
@@ -114,8 +127,16 @@ public enum CatalogBuild {
                         "INSERT INTO plan_facts VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [.text(plan.id.rawValue)] + row(planFacts, versification: english).map(\.value))
                 }
+                for group in groups {
+                    for (position, plan) in group.plans.enumerated() {
+                        try database.run(
+                            "INSERT INTO goals VALUES (?, ?, ?)",
+                            [.text(group.goal.rawValue), .integer(Int64(position + 1)), .text(plan.rawValue)])
+                    }
+                }
                 for (key, value) in metadata(
-                    mode: mode, plans: plans, facts: facts, scripture: scripture, versification: english)
+                    mode: mode, plans: plans, facts: facts, goals: groups, scripture: scripture,
+                    versification: english)
                 {
                     try database.run("INSERT INTO catalog_meta (key, value) VALUES (?, ?)", [.text(key), .text(value)])
                 }
@@ -164,6 +185,24 @@ public enum CatalogBuild {
             }
         }
         return plans
+    }
+
+    /// Reads and checks the goals file, `goals.json`, against every plan read.
+    public static func readGoals(
+        from source: URL, plans: [Plan], registry: BookRegistry
+    ) throws -> [GoalsFile.Group] {
+        let url = source.appending(path: "goals.json")
+        let data: Data
+        do {
+            data = try Data(contentsOf: url)
+        } catch {
+            throw CatalogError(file: url, problem: "cannot be read (\(error.localizedDescription))")
+        }
+        do {
+            return try GoalsFile.read(data, plans: plans, registry: registry)
+        } catch {
+            throw CatalogError(file: url, problem: error.description)
+        }
     }
 
     /// Reads the sources registry, `SOURCES.md`.
@@ -291,11 +330,11 @@ public enum CatalogBuild {
     /// The metadata written into every catalog, in a fixed order so that two
     /// builds of the same sources write the same rows: the schema version,
     /// the build mode, the number of plans, and a SHA-256 of the scripture
-    /// data and the plans' contents and computed facts, which is the same wherever the catalog
-    /// is built.
+    /// data, the plans' contents and computed facts, and the goals, which is
+    /// the same wherever the catalog is built.
     static func metadata(
-        mode: Mode, plans: [Plan], facts: [PlanID: PlanFacts], scripture: [(name: String, content: String)],
-        versification: Versification
+        mode: Mode, plans: [Plan], facts: [PlanID: PlanFacts], goals: [GoalsFile.Group],
+        scripture: [(name: String, content: String)], versification: Versification
     ) -> [(String, String)] {
         var content: [UInt8] = []
         for (name, text) in scripture { content += Array("\(name)\n\(text)\n".utf8) }
@@ -312,6 +351,11 @@ public enum CatalogBuild {
             for (assignment, words) in zip(plan.assignments, facts[plan.id]!.words) {
                 let reading = ReferenceFormat.text(of: assignment.reading, in: versification)
                 content += Array("\(assignment.id)\t\(reading)\t\(words)\n".utf8)
+            }
+        }
+        for group in goals {
+            for (position, plan) in group.plans.enumerated() {
+                content += Array("goal\t\(group.goal.rawValue)\t\(position + 1)\t\(plan)\n".utf8)
             }
         }
         return [

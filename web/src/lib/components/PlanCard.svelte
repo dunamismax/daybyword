@@ -7,6 +7,7 @@
     workload,
     schedule,
     href,
+    level = 2,
   }: {
     title: string;
     kind: string;
@@ -15,12 +16,16 @@
     workload: string;
     schedule: string;
     href: string;
+    /** The title's heading level, under the list's own headings. */
+    level?: 2 | 3 | 4;
   } = $props();
 </script>
 
 <article class="card">
   <p class="m-0 text-label font-label text-text-muted">{kind}</p>
-  <h2 class="my-xxs text-[1.375rem]"><a class="text-text no-underline" {href}>{title}</a></h2>
+  <svelte:element this={`h${level}`} class="my-xxs text-[1.375rem]">
+    <a class="text-text no-underline" {href}>{title}</a>
+  </svelte:element>
   <p class="mt-0 mb-xxs">{summary}</p>
   <p class="m-0 text-caption text-text-muted">{schedule} · {workload}</p>
 </article>

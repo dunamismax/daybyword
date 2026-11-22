@@ -431,6 +431,37 @@ describe("the interface text", () => {
     });
   }
 
+  it("answers the plan questions posted from its own page, in the table's words", async () => {
+    const post = (origin: string) =>
+      fetch(`${deployed.base}/plans`, {
+        method: "POST",
+        // As a browser's form sends it, asking for the page back.
+        headers: {
+          origin,
+          accept: "text/html",
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ hope: "whole-bible", time: "medium", days: "5" }),
+      });
+    const answered = await post(deployed.base);
+    expect(answered.status).toBe(200);
+    expect(answered.headers.get("cache-control")).toBe("no-cache");
+    const html = await answered.text();
+    expect(html).toContain('id="suggestions"');
+    expect(html).toContain(
+      "You said about 10 minutes. A typical reading takes about 9 to 11 minutes.",
+    );
+    // The answers are checked again, as they come back to the form.
+    expect(html).toMatch(/value="whole-bible"\s+checked/);
+    const fromTheCatalog = catalogText();
+    for (const piece of readerText(html)) {
+      expect(fromTheCatalog.has(piece) || isFromTheTable(piece), piece).toBe(true);
+    }
+    // A form posted from another site, or with its origin hidden, is refused.
+    expect((await post("https://example.com")).status).toBe(403);
+    expect((await post("null")).status).toBe(403);
+  });
+
   it("shows every plan in the catalog, each with its page", async () => {
     const list = await page(deployed, "/plans");
     expect(releaseCatalog().plans.length).toBeGreaterThan(0);

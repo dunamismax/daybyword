@@ -1431,3 +1431,39 @@ the packages found no other). On the web:
 **Why:** the smallest change that keeps the reader's place offline without
 moving the rules into the browser; the cost is that marks made offline
 are shown as kept, not folded, until they are sent.
+
+### E54. Choosing a plan: goals belong to the catalog, rules to the engine, answers to a form's body
+
+*2026-11-22, agent (P9.1–P9.3).* The plan list is grouped by goal and the
+picker recommends from three answers.
+
+- **Goals are catalog data, in `catalog/goals.json`, not a plan key.** A
+  plan's front matter is part of its version's content, and the server
+  refuses changed content under a published version (docs/catalog-format.md),
+  so a `goals` key would have meant raising every plan's version to
+  regroup the list, before plan versions can move enrollments (P28.3).
+  Grouping belongs to a catalog: the compiler checks each goal's claim
+  (whole Bible, New Testament, Gospels, Psalms and Proverbs; `begin` is an
+  editorial choice), writes a `goals` table (schema 4), exports the goals
+  (format 2) and hashes them into the checksum; PostgreSQL keeps them per
+  import in `catalog_goals` (migration 0003, immutable like the rest).
+- **Recommendations are an engine rule** with its specification
+  (docs/engine.md, "Choosing a plan") and shared cases
+  (`recommendations.json`) in both runtimes. The order is fixed: fitting
+  both answers, then one; plans to begin with when the reader gave no
+  goal; the nearer pace; the nearer time; the catalog's order. Views only
+  put the engine's facts into words, the same on both platforms.
+- **The web's answers travel in a POST body**, through a SvelteKit form
+  action, never in the address (AGENTS.md §5, no personal data in URLs),
+  and the server keeps nothing. Two settings let a form post at all:
+  `Referrer-Policy` is now `same-origin`, because under `no-referrer` a
+  browser sends `Origin: null` with every form, which SvelteKit's
+  cross-site check refuses; other sites still receive no referrer.
+  `server.ts` names `X-Forwarded-Proto` as the protocol header (Caddy sets
+  it to https and drops a client's) and gives a request without one, made
+  straight to the loopback port, `http`, since SvelteKit otherwise
+  assumes https.
+
+**Why:** each part of the rule lives where AGENTS.md puts rules, the
+catalog's grouping can change without touching a published plan, and the
+reader's answers never leave the request that carries them.

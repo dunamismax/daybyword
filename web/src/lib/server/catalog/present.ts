@@ -10,11 +10,16 @@ import {
   makeEventID,
   parseCivilDate,
   parseReading,
+  recommend,
   ReferenceFormatter,
   weekday,
   workload,
+  type Answers,
   type Behavior,
+  type Candidate,
   type CivilDate,
+  type Goal,
+  type Recommendation,
 } from "#lib/domain/index.ts";
 import { referenceOf, type Reference } from "#lib/reference.ts";
 import {
@@ -90,15 +95,122 @@ export function planSummary(entry: CatalogPlan): PlanSummary {
   };
 }
 
+/** The catalog's plans in list order: the shortest first, then by title. */
+function listed(catalog: ServedCatalog): CatalogPlan[] {
+  return [...catalog.plans].sort(
+    (a, b) =>
+      a.plan.assignments.length - b.plan.assignments.length || a.title.localeCompare(b.title, "en"),
+  );
+}
+
 /** The plans as the list shows them: the shortest first, then by title. */
 export function planList(catalog: ServedCatalog): PlanSummary[] {
-  return [...catalog.plans]
-    .sort(
-      (a, b) =>
-        a.plan.assignments.length - b.plan.assignments.length ||
-        a.title.localeCompare(b.title, "en"),
-    )
-    .map(planSummary);
+  return listed(catalog).map(planSummary);
+}
+
+/** A goal's heading and its plans (BUILD.md P9.3). */
+export interface PlanGroup {
+  readonly goal: Goal;
+  readonly label: string;
+  readonly plans: readonly PlanSummary[];
+}
+
+/** The plan list grouped by goal, in the catalog's goals' order; a plan may be in more than one. */
+export function planGroups(catalog: ServedCatalog): PlanGroup[] {
+  const byID = new Map(catalog.plans.map((entry) => [entry.id as string, entry]));
+  return catalog.goals.flatMap((group) => {
+    const plans = group.plans.flatMap((id) => {
+      const entry = byID.get(id);
+      return entry ? [planSummary(entry)] : [];
+    });
+    return plans.length === 0
+      ? []
+      : [{ goal: group.goal, label: text(`goal.${group.goal}`), plans }];
+  });
+}
+
+/** A recommended plan with its reasons in words (BUILD.md P9.2). */
+export interface PlanSuggestion extends PlanSummary {
+  readonly reasons: readonly string[];
+}
+
+function minutesPhrase([low, high]: readonly [number, number]): string {
+  if (low !== high) return text("choose.minutes-range", { low: String(low), high: String(high) });
+  return low === 1
+    ? text("choose.minutes-one")
+    : text("choose.minutes-other", { minutes: String(low) });
+}
+
+function pacedPhrase(days: number): string {
+  if (days === 7) return text("choose.paced-every-day");
+  return days === 1 ? text("choose.paced-one") : text("choose.paced-other", { days: String(days) });
+}
+
+/** The engine's facts about one recommendation, as the reader reads them. */
+function reasons(found: Recommendation, answers: Answers, planDays: number): string[] {
+  const lines: string[] = [];
+  if (found.goal) lines.push(text(`choose.reason-${found.goal}`));
+  const minutes = minutesPhrase(found.minutes);
+  if (found.fitsTime === undefined || answers.time === undefined) {
+    lines.push(text("choose.reason-time", { minutes }));
+  } else if (found.fitsTime) {
+    lines.push(
+      text("choose.reason-time-fits", { said: text(`choose.said-${answers.time}`), minutes }),
+    );
+  } else {
+    lines.push(text("choose.reason-time-longer", { minutes }));
+  }
+  if (found.readerDays !== undefined) {
+    const days = pacedPhrase(planDays);
+    lines.push(
+      found.fitsDays === false
+        ? text("choose.reason-paced-more", { days })
+        : planDays === found.readerDays
+          ? text("choose.reason-paced-same", { days })
+          : text("choose.reason-paced-fewer", { days }),
+    );
+  }
+  if (found.weeks !== undefined && found.perWeek !== undefined) {
+    const per =
+      found.perWeek === 1
+        ? text("choose.per-one")
+        : text("choose.per-other", { count: String(found.perWeek) });
+    lines.push(
+      found.weeks === 1
+        ? text("choose.reason-weeks-one", { per })
+        : text("choose.reason-weeks-other", { per, weeks: count(found.weeks) }),
+    );
+  } else {
+    lines.push(text("choose.reason-calendar"));
+  }
+  return lines;
+}
+
+/** The plans to consider for the reader's answers, by the engine's rules (docs/engine.md, "Choosing a plan"). */
+export function planSuggestions(catalog: ServedCatalog, answers: Answers): PlanSuggestion[] {
+  const plans = listed(catalog);
+  const goalsOf = (id: string) =>
+    catalog.goals.filter((group) => group.plans.includes(id as never)).map((group) => group.goal);
+  const candidates: Candidate[] = plans.map((entry) => ({
+    plan: entry.id,
+    goals: goalsOf(entry.id),
+    schedule: entry.plan.schedule,
+    readingDays: entry.plan.readingDays,
+    readings: entry.plan.assignments.length,
+    typicalWords: entry.facts.wordsMedian,
+  }));
+  const byID = new Map(plans.map((entry) => [entry.id as string, entry]));
+  return recommend(candidates, answers).flatMap((found) => {
+    const entry = byID.get(found.plan);
+    return entry
+      ? [
+          {
+            ...planSummary(entry),
+            reasons: reasons(found, answers, entry.plan.readingDays),
+          },
+        ]
+      : [];
+  });
 }
 
 // A Monday that is also the first of a month, so one start serves both

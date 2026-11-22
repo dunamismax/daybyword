@@ -100,6 +100,7 @@ describe("importing the catalog", () => {
     expect(await count(app, "plan_facts")).toBe(2);
     expect(await count(app, "assignments")).toBe(33);
     expect(await count(app, "scripture_resources")).toBe(2);
+    expect(await count(app, "catalog_goals")).toBe(2);
     expect(await served(app)).toBe(first.importId);
 
     const reading = await app.query(
@@ -153,6 +154,7 @@ describe("importing the catalog", () => {
       const extra = structuredClone(plan(c, "monthly-plan"));
       extra.id = "another-plan";
       c.plans.unshift(extra);
+      c.goals[0]?.plans.push("another-plan");
       assignment(c, "test-plan", 0).reading = "MRK 2";
     });
     await expect(importCatalog(migrator, silent)).rejects.toThrow(ExportError);
@@ -195,6 +197,7 @@ describe("the database's rules", () => {
     );
     await expect(migratePool.query("delete from assignments")).rejects.toThrow(/immutable/);
     await expect(migratePool.query("delete from catalog_imports")).rejects.toThrow(/immutable/);
+    await expect(migratePool.query("delete from catalog_goals")).rejects.toThrow(/immutable/);
     await expect(migratePool.query("truncate plans cascade")).rejects.toThrow(/immutable/);
   });
 

@@ -91,6 +91,9 @@
     "%lld part read" : {
 
     },
+    "%lld reading days a week" : {
+
+    },
     "%lld readings" : {
 
     },
@@ -115,7 +118,34 @@
     "1 reading a day, on %lld reading days." : {
 
     },
+    "1 reading day a week" : {
+
+    },
+    "15 minutes or more" : {
+
+    },
+    "A few days a week" : {
+
+    },
     "A physical Bible" : {
+
+    },
+    "A place to begin" : {
+
+    },
+    "A plan for beginning, or returning to, a reading habit." : {
+
+    },
+    "A plan for reading in the New Testament." : {
+
+    },
+    "A plan for reading the Gospels." : {
+
+    },
+    "A plan for reading the Psalms or Proverbs." : {
+
+    },
+    "A plan for reading the whole Bible." : {
 
     },
     "A reading in your plan" : {
@@ -136,10 +166,19 @@
     "A typical reading" : {
 
     },
+    "A typical reading takes %@, longer than you said." : {
+
+    },
+    "A typical reading takes %@." : {
+
+    },
     "A week's checklist" : {
 
     },
     "About" : {
+
+    },
+    "about %lld minutes" : {
 
     },
     "About %lld minutes" : {
@@ -148,10 +187,16 @@
     "About %lld minutes. Estimates vary." : {
 
     },
+    "about %lld to %lld minutes" : {
+
+    },
     "About %lld–%lld minutes" : {
 
     },
     "About %lld–%lld minutes. Estimates vary." : {
+
+    },
+    "about 1 minute" : {
 
     },
     "About 1 minute" : {
@@ -160,13 +205,34 @@
     "About 1 minute. Estimates vary." : {
 
     },
+    "about 5 minutes" : {
+
+    },
+    "About 5 minutes" : {
+
+    },
+    "about 10 minutes" : {
+
+    },
+    "About 10 minutes" : {
+
+    },
     "Another app, with Copy reference" : {
+
+    },
+    "Answer what you can. Not sure is always an answer." : {
 
     },
     "Appearance" : {
 
     },
     "At" : {
+
+    },
+    "At %@ a week it takes 1 week." : {
+
+    },
+    "At %@ a week it takes about %lld weeks." : {
 
     },
     "At most %lld" : {
@@ -224,6 +290,9 @@
 
     },
     "Choose when you'd like to finish. If you miss days, Day by Word can spread the unread readings over the days ahead, up to a limit you set, or move your finish date. You'll see the change before it happens." : {
+
+    },
+    "Chosen by a few fixed rules from what you said, never by popularity. Estimates vary with the reader and the translation." : {
 
     },
     "Components" : {
@@ -295,6 +364,12 @@
     "Estimates vary with the reader and the translation." : {
 
     },
+    "every day" : {
+
+    },
+    "Every day" : {
+
+    },
     "Every plan" : {
 
     },
@@ -325,6 +400,9 @@
     "Finishing a plan is not the same as reading the whole Bible, unless its readings cover it." : {
 
     },
+    "Five days a week" : {
+
+    },
     "Follow the calendar" : {
 
     },
@@ -340,10 +418,19 @@
     "Gospels at your pace" : {
 
     },
+    "Help me choose" : {
+
+    },
     "How it works" : {
 
     },
+    "How long can a reading take?" : {
+
+    },
     "How long it takes" : {
+
+    },
+    "How many days a week do you expect to read?" : {
 
     },
     "How you read" : {
@@ -353,6 +440,9 @@
 
     },
     "It describes what you've read, and nothing more." : {
+
+    },
+    "It has a reading for each date of the month." : {
 
     },
     "It is paced for %lld reading days a week. You choose your own days." : {
@@ -368,6 +458,15 @@
 
     },
     "It reads these verses more than once: %@." : {
+
+    },
+    "It's paced for %@, as you said." : {
+
+    },
+    "It's paced for %@, fewer than you said; the others are rest days." : {
+
+    },
+    "It's paced for %@, more than you said." : {
 
     },
     "Its first week, begun on a Monday. Your own week depends on the day you start and the days you choose." : {
@@ -457,6 +556,9 @@
     "Not chosen" : {
 
     },
+    "Not sure" : {
+
+    },
     "Not yet read" : {
 
     },
@@ -512,6 +614,9 @@
 
     },
     "Plans" : {
+
+    },
+    "Plans to consider" : {
 
     },
     "Plans will appear here." : {
@@ -682,10 +787,16 @@
     "The first seven days of a month. Each date has its own reading." : {
 
     },
+    "The Gospels" : {
+
+    },
     "The heaviest reading" : {
 
     },
     "The lightest reading" : {
+
+    },
+    "The New Testament" : {
 
     },
     "The plan catalog cannot be read." : {
@@ -695,6 +806,9 @@
 
     },
     "The plan's first week, begun on %@, on the days it is paced for. Your own days may differ." : {
+
+    },
+    "The Psalms and Proverbs" : {
 
     },
     "The reading is kept on the day you read it, not today." : {
@@ -707,6 +821,9 @@
 
     },
     "The readings you missed stay in your history." : {
+
+    },
+    "The whole Bible" : {
 
     },
     "This describes what you've marked, and nothing more." : {
@@ -781,6 +898,9 @@
     "Welcome back. Here's where you left off." : {
 
     },
+    "What do you hope to read?" : {
+
+    },
     "What it covers" : {
 
     },
@@ -797,6 +917,9 @@
 
     },
     "Work toward a finish date" : {
+
+    },
+    "You said %@. A typical reading takes %@." : {
 
     },
     "You stopped following this plan." : {

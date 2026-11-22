@@ -11,7 +11,7 @@ against is described in `docs/scripture.md`, and its rights in
 ## Final stack alignment
 
 D41 retains the source grammar, native read-only catalog and compiler
-rights/claims checks below. The SQLite schema-3 catalog stays the app's
+rights/claims checks below. The SQLite schema-4 catalog stays the app's
 bundled artifact; the server reads the same content from PostgreSQL through
 the export below ("The export", "The server catalog", PM.14). Do not migrate
 the native catalog into a remote DB or weaken release review filters.
@@ -90,6 +90,30 @@ the English versification.
   belongs to the engine's rules for the calendar behavior (P5.7), and the
   plan's `instructions` say it plainly.
 
+## Goals
+
+`catalog/goals.json` groups the plans by what a reader may hope to read,
+for the plan list (BUILD.md P9.3) and the recommendations
+(docs/engine.md, "Choosing a plan"). It belongs to the catalog, not to a
+plan version, so regrouping never changes a published plan.
+
+```json
+{ "format": 1, "goals": [ { "id": "begin", "plans": ["gospels-at-your-pace"] } ] }
+```
+
+- The goals are the engine's (`begin`, `whole-bible`, `new-testament`,
+  `gospels`, `psalms-proverbs`), each at most once and in that order;
+  each lists its plans, at least one, in the order the list shows them.
+- Every plan in `plans/` is in at least one goal, and a plan may be in
+  more than one.
+- The compiler checks each goal's claim: a `whole-bible` plan covers the
+  whole Bible; a `new-testament` plan reads only New Testament books; a
+  `gospels` plan only Matthew, Mark, Luke and John; a `psalms-proverbs`
+  plan only Psalms and Proverbs. `begin`, a place to begin, is an
+  editorial choice with nothing to check.
+- A release build drops the plans it leaves out from their goals, and a
+  goal left with none.
+
 ## Stable assignment ids
 
 An assignment's id is how the journal records it (E3), so a reader's
@@ -113,8 +137,9 @@ problem anywhere stops the build with the file and line, and writes
 nothing. The database has these tables (`CatalogBuild.schemaVersion`):
 
 - `catalog_meta`: `schema_version`, `build_mode`, `plans` (how many), and
-  `content_sha256`, a SHA-256 of the scripture data and every plan's
-  fields, assignments, and facts, the same wherever the catalog is built, so the app and the server can tell
+  `content_sha256`, a SHA-256 of the scripture data, every plan's
+  fields, assignments, and facts, and the goals, the same wherever the
+  catalog is built, so the app and the server can tell
   whether they hold the same catalog.
 - `plans`: one row per plan, a column per front matter key (`reading-days`
   is `reading_days`).
@@ -122,6 +147,8 @@ nothing. The database has these tables (`CatalogBuild.schemaVersion`):
   `reading`, in its shortest plan-file writing, and its `words`.
 - `plan_facts`: what each plan's schedule covers, computed (below).
 - `scripture`: `books.json` and `versification/english.tsv`, as compiled.
+- `goals`: `goal`, `position` (from 1 within the goal) and `plan_id`
+  (schema 4).
 
 The app and the server open it with `Catalog` in `ReadingData`, which reads
 it whole and read-only, with each plan's facts and readings' words (the
@@ -159,15 +186,17 @@ reader's start date and reading days, so the engine computes it (P8.2).
 
 `make catalog-export` writes `build/catalog/catalog-export.json` from the
 release catalog (`catalog export`, `CatalogExport.swift`): the document the
-server's PostgreSQL import reads. It holds the schema-3 data exactly as
+server's PostgreSQL import reads. It holds the schema-4 data exactly as
 compiled, so the same catalog always exports the same bytes:
 
-- `format` (`daybyword-catalog-export`), `formatVersion` (1, raised when the
-  document's meaning changes), `schemaVersion` (3), `buildMode`, and
+- `format` (`daybyword-catalog-export`), `formatVersion` (2 since the
+  goals; raised when the document's meaning changes), `schemaVersion` (4),
+  `buildMode`, and
   `contentSha256`, the catalog's own checksum;
 - `plans`, in the compiler's order (by file name), each with every
   `plans` column in camel case, its `rightsStatus` from `SOURCES.md` at
   export, its `facts`, and its `assignments` by position;
+- `goals`, each goal's id and its plans' ids, in the engine's order;
 - `scripture`, the `scripture` table's resources by name.
 
 The importer (`web/src/lib/server/catalog/export.ts`) recomputes `contentSha256` the
@@ -195,7 +224,8 @@ only read (`web/db/roles.sql`).
   database refuses any update or delete of an imported row.
 - Each import is a `catalog_imports` row with its checksum;
   `catalog_import_plans` says which plan versions it holds and in what order,
-  `scripture_resources` holds its scripture, and `catalog_current` names the
+  `catalog_goals` how its plan list is grouped (each row one of its own
+  plans), `scripture_resources` holds its scripture, and `catalog_current` names the
   import being served.
 - An import is one transaction under a lock: all of it is written and
   served, or nothing changes. Importing the same export again writes

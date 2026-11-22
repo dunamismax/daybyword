@@ -1074,3 +1074,57 @@ struct BibleLinkOutput: Codable, Equatable, Sendable {
     // Alphabetical by name: no translation is put first.
     #expect(BibleTranslation.all.map(\.name) == BibleTranslation.all.map(\.name).sorted())
 }
+
+// MARK: Choosing a plan
+
+struct ChoosingInput: Codable, Sendable {
+    struct Answers: Codable, Sendable {
+        var hope: Goal?
+        var time: Choosing.Time?
+        var days: Int?
+    }
+    struct Candidate: Codable, Sendable {
+        var plan: String
+        var goals: [Goal]
+        var schedule: String
+        var readingDays: Int
+        var readings: Int
+        var typicalWords: Int
+    }
+    var answers: Answers
+    var candidates: [Candidate]
+}
+
+struct ChoosingOutput: Codable, Equatable, Sendable {
+    struct Recommendation: Codable, Equatable, Sendable {
+        var plan: String
+        var goal: Goal?
+        var minutes: [Int]
+        var fitsTime: Bool?
+        var readerDays: Int?
+        var fitsDays: Bool?
+        var perWeek: Int?
+        var weeks: Int?
+    }
+    var recommendations: [Recommendation]
+}
+
+@Test func recommendationsMatchTheirFixture() throws {
+    try checkFixture("recommendations") { (input: ChoosingInput) -> ChoosingOutput in
+        let candidates = try input.candidates.map { candidate in
+            Choosing.Candidate(
+                plan: try #require(PlanID(candidate.plan)), goals: Set(candidate.goals),
+                schedule: try #require(Plan.Schedule(rawValue: candidate.schedule)),
+                readingDays: candidate.readingDays, readings: candidate.readings,
+                typicalWords: candidate.typicalWords)
+        }
+        let answers = Choosing.Answers(hope: input.answers.hope, time: input.answers.time, days: input.answers.days)
+        return ChoosingOutput(
+            recommendations: Choosing.recommend(candidates, for: answers).map {
+                .init(
+                    plan: $0.plan.rawValue, goal: $0.goal, minutes: [$0.minutes.lowerBound, $0.minutes.upperBound],
+                    fitsTime: $0.fitsTime, readerDays: $0.readerDays, fitsDays: $0.fitsDays, perWeek: $0.perWeek,
+                    weeks: $0.weeks)
+            })
+    }
+}

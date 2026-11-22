@@ -631,6 +631,11 @@ remove an entry once it no longer applies.
   come from `$app/env/private` through `src/env.ts`; route parameter
   matchers are `src/params.ts` (`defineParams`); there is no `ORIGIN`
   variable (use `paths.origin` or Caddy's Host header).
+- **A form posts only with the page's origin.** SvelteKit refuses a form
+  POST whose `Origin` is not the site's ("Cross-site POST form submissions
+  are forbidden"). Keep `Referrer-Policy: same-origin` (under
+  `no-referrer` browsers send `Origin: null`) and `server.ts`'s
+  `X-Forwarded-Proto` default for direct HTTP requests (E54).
 - **Page text is checked against the string table and the catalog.** The
   production tests refuse a page that shows words from anywhere else, so
   a new interface word is a `strings.ts` key, and table text and catalog

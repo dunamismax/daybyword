@@ -16,6 +16,15 @@ public struct Catalog: Sendable {
     public let facts: [PlanID: Facts]
     /// Each plan's readings' words, by assignment id.
     private let words: [PlanID: [Int: Int]]
+    /// The goals the plan list is grouped by, in the engine's order, each
+    /// with its plans in the order the list shows them (`catalog/goals.json`).
+    public let goals: [GoalGroup]
+
+    /// A goal and its plans.
+    public struct GoalGroup: Hashable, Sendable {
+        public let goal: Goal
+        public let plans: [PlanID]
+    }
 
     /// What the compiler computed from a plan's schedule. Passages are in
     /// plan-file writing.
@@ -70,6 +79,7 @@ public struct Catalog: Sendable {
             self.plans = plans
             self.words = words
             self.facts = try Self.facts(in: database, versification: versification)
+            self.goals = try Self.goals(in: database)
         } catch let error as CatalogReadError {
             throw error
         } catch {
@@ -90,6 +100,23 @@ public struct Catalog: Sendable {
 
     /// Every plan as the reading rules take it.
     public var versions: [PlanVersion] { plans.map(version(of:)) }
+
+    /// The goals a plan is in.
+    public func goals(of plan: PlanID) -> Set<Goal> {
+        Set(goals.filter { $0.plans.contains(plan) }.map(\.goal))
+    }
+
+    private static func goals(in database: Database) throws -> [GoalGroup] {
+        var grouped: [Goal: [(position: Int, plan: PlanID)]] = [:]
+        for row in try database.query("SELECT goal, position, plan_id FROM goals") {
+            let goal = try Goal(rawValue: text(row, "goal")).orThrow("goal")
+            grouped[goal, default: []].append(
+                (try integer(row, "position"), try PlanID(text(row, "plan_id")).orThrow("plan_id")))
+        }
+        return Goal.allCases.compactMap { goal in
+            grouped[goal].map { GoalGroup(goal: goal, plans: $0.sorted { $0.position < $1.position }.map(\.plan)) }
+        }
+    }
 
     private static func facts(in database: Database, versification: Versification) throws -> [PlanID: Facts] {
         func passages(_ text: String) throws -> [Passage] {

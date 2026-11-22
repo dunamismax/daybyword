@@ -1,19 +1,21 @@
 import Foundation
 import ReadingData
+import ReadingEngine
 
 /// The catalog's transport document for the server's PostgreSQL import
 /// (docs/catalog-format.md, "The export"; BUILD.md PM.14).
 ///
 /// It is read from a compiled catalog, so it carries exactly the normalized
-/// schema-3 data the compiler checked: every column's value as written, the
-/// plans in the compiler's order (which the content checksum follows), and
-/// each plan's rights status from `SOURCES.md`, so the import can refuse what
-/// a release may not serve. The same catalog always exports the same bytes.
+/// schema-4 data the compiler checked: every column's value as written, the
+/// plans in the compiler's order (which the content checksum follows), each
+/// plan's rights status from `SOURCES.md`, so the import can refuse what a
+/// release may not serve, and the goals the plans are grouped by. The same
+/// catalog always exports the same bytes.
 public struct CatalogExport: Codable, Equatable, Sendable {
     /// The document's name, which an importer checks first.
     public static let format = "daybyword-catalog-export"
-    /// Raised whenever the document's meaning changes.
-    public static let formatVersion = 1
+    /// Raised whenever the document's meaning changes: 2 added the goals.
+    public static let formatVersion = 2
 
     public struct Facts: Codable, Equatable, Sendable {
         public var verses: Int
@@ -58,6 +60,12 @@ public struct CatalogExport: Codable, Equatable, Sendable {
         public var assignments: [Assignment]
     }
 
+    /// A goal and its plans' ids, in the order the plan list shows them.
+    public struct GoalGroup: Codable, Equatable, Sendable {
+        public var id: String
+        public var plans: [String]
+    }
+
     public struct Resource: Codable, Equatable, Sendable {
         public var name: String
         public var content: String
@@ -69,6 +77,8 @@ public struct CatalogExport: Codable, Equatable, Sendable {
     public var buildMode: String
     public var contentSha256: String
     public var plans: [Plan]
+    /// In the engine's order of goals.
+    public var goals: [GoalGroup]
     public var scripture: [Resource]
 
     /// Reads the compiled catalog at `catalog` and the rights statuses in
@@ -136,6 +146,19 @@ public struct CatalogExport: Codable, Equatable, Sendable {
                     wordsMinimum: try number(facts, "words_minimum"), wordsMedian: try number(facts, "words_median"),
                     wordsMaximum: try number(facts, "words_maximum")),
                 assignments: assignments)
+        }
+        var grouped: [Goal: [(position: Int, plan: String)]] = [:]
+        for row in try database.query("SELECT goal, position, plan_id FROM goals") {
+            let name = try text(row, "goal")
+            guard let goal = Goal(rawValue: name) else {
+                throw CatalogError(file: catalog, problem: "\(name) is not a goal")
+            }
+            grouped[goal, default: []].append((try number(row, "position"), try text(row, "plan_id")))
+        }
+        goals = Goal.allCases.compactMap { goal in
+            grouped[goal].map {
+                GoalGroup(id: goal.rawValue, plans: $0.sorted { $0.position < $1.position }.map(\.plan))
+            }
         }
         scripture = try database.query("SELECT name, content FROM scripture ORDER BY name").map {
             Resource(name: try text($0, "name"), content: try text($0, "content"))

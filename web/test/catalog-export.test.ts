@@ -10,6 +10,12 @@ describe("the catalog export", () => {
     expect(catalog.plans.map((p) => p.id)).toEqual(["monthly-plan", "test-plan"]);
   });
 
+  it("refuses an export without goals", () => {
+    const document: Record<string, unknown> = { ...fixtureExport() };
+    delete document["goals"];
+    expect(() => checkExport(document)).toThrow(/goals are not a list/);
+  });
+
   it("refuses content that does not match the checksum", () => {
     const document = fixtureExport();
     assignment(document, "test-plan", 0).reading = "MRK 2";
@@ -18,8 +24,8 @@ describe("the catalog export", () => {
 
   const refusals: [string, (c: ReturnType<typeof fixtureExport>) => void, RegExp][] = [
     ["another format", (c) => (c.format = "something-else"), /format is not/],
-    ["a later format version", (c) => (c.formatVersion = 2), /format 2; this build reads format 1/],
-    ["another catalog schema", (c) => (c.schemaVersion = 2), /schema 2; this build reads schema 3/],
+    ["a later format version", (c) => (c.formatVersion = 3), /format 3; this build reads format 2/],
+    ["another catalog schema", (c) => (c.schemaVersion = 3), /schema 3; this build reads schema 4/],
     ["a development build", (c) => (c.buildMode = "development"), /only a release build/],
     [
       "pending rights in a release",
@@ -58,6 +64,22 @@ describe("the catalog export", () => {
       /facts.verses is not a whole number/,
     ],
     ["missing scripture", (c) => c.scripture.pop(), /scripture is books.json, not/],
+    [
+      "a goal the engine does not know",
+      (c) => c.goals.push({ id: "church-year", plans: ["test-plan"] }),
+      /church-year is not a goal/,
+    ],
+    [
+      "goals out of order",
+      (c) => c.goals.unshift({ id: "gospels", plans: ["test-plan"] }),
+      /goal begin is out of order or given twice/,
+    ],
+    [
+      "a goal's plan that is not in the export",
+      (c) => c.goals[0]?.plans.push("no-such-plan"),
+      /goal begin: no-such-plan is not a plan in the export/,
+    ],
+    ["a plan in no goal", (c) => c.goals[0]?.plans.pop(), /plan test-plan is in no goal/],
   ];
   for (const [what, change, message] of refusals) {
     it(`refuses ${what}`, () => {

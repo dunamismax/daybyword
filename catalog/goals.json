@@ -1,0 +1,26 @@
+{
+  "about": "The goals Day by Word's plan list is grouped by (BUILD.md P9.3), in the engine's order (docs/engine.md, \"Choosing a plan\"), each with its plans in the order the list shows them. A plan may be in more than one goal, and every plan is in at least one. The compiler checks each goal's claim: whole-bible plans cover the whole Bible, new-testament plans read only the New Testament, gospels plans only the Gospels, and psalms-proverbs plans only Psalms and Proverbs; begin, a place to begin, is an editorial choice (docs/catalog-format.md, \"Goals\").",
+  "format": 1,
+  "goals": [
+    {
+      "id": "begin",
+      "plans": ["gospels-at-your-pace"]
+    },
+    {
+      "id": "whole-bible",
+      "plans": ["bible-in-a-year", "bible-in-a-year-five-days"]
+    },
+    {
+      "id": "new-testament",
+      "plans": ["new-testament-in-a-year-five-days", "pauls-letters"]
+    },
+    {
+      "id": "gospels",
+      "plans": ["gospels-at-your-pace"]
+    },
+    {
+      "id": "psalms-proverbs",
+      "plans": ["psalm-a-day", "proverbs-through-the-month"]
+    }
+  ]
+}

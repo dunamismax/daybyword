@@ -18,7 +18,7 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 7 of 9, with P10.5 (the Story of Scripture) and P10.13 (the catalog review) open |
-| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done), then Phase 9 (choosing a plan) |
+| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done); Phase 9, choosing a plan: **P9.4** (the plan page in full), then P9.9. Phase 9 is 3 of 5 (P9.1–P9.3 done) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): the plans, their pages and printable weeks, and since 2026-11-22 starting a plan, Today with marking, the welcome back, Progress, Settings and offline, with the reader's record in their own browser (E52, E53). Deployed 2026-11-22 at 33d2573 after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, the other sites answered as before, and a 700 KB request body was accepted (the 1M limit). `https://daybyword.com/healthz` names the serving commit |
@@ -137,7 +137,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 12 |
-| 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
+| 9 | Choosing a plan | M3 Version 1.0 | 5 | 3 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 7 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
@@ -531,9 +531,10 @@ list.
 With a catalog of eight plans (D39), choosing needs a short guided picker
 and good plan pages, not search, filters, or comparison tables (roadmap).
 
-- [ ] **P9.1** A short guided picker: three or four practical questions (what the reader hopes to read, realistic time, reading days), each skippable with "not sure", and a way to see every plan at once for readers who know what they want. *(Rewritten by D39.)*
-- [ ] **P9.2** Recommendations: two or three suitable plans from simple, documented, tested rules (never popularity, and never AI, D23), each with a concrete reason tied to the reader's answers and its workload, with the caveat that estimates are approximate. *(Rewritten by D39.)*
-- [ ] **P9.3** The plan list, grouped by goal (begin reading, the whole Bible, the New Testament, the Gospels, the Psalms and Proverbs). *(Rewritten by D39; filters are P28.5.)*
+- [x] **P9.1** A short guided picker: three or four practical questions (what the reader hopes to read, realistic time, reading days), each skippable with "not sure", and a way to see every plan at once for readers who know what they want. *(Rewritten by D39.)*
+- [x] **P9.2** Recommendations: two or three suitable plans from simple, documented, tested rules (never popularity, and never AI, D23), each with a concrete reason tied to the reader's answers and its workload, with the caveat that estimates are approximate. *(Rewritten by D39.)*
+- [x] **P9.3** The plan list, grouped by goal (begin reading, the whole Bible, the New Testament, the Gospels, the Psalms and Proverbs). *(Rewritten by D39; filters are P28.5.)*
+  - *Result (agent, 2026-11-22), P9.1–P9.3 together (E54):* the engine's rule is docs/engine.md's "Choosing a plan", with `recommendations.json` (8 cases, worked by hand) passing in Swift (`Choosing`) and TypeScript (`choosing.ts`). Goals are `catalog/goals.json`, checked by the compiler (catalog schema 4, export format 2, PostgreSQL `catalog_goals`, migration 0003). Plans, on both platforms: "Help me choose" (what you hope to read, how long a reading can take, how many days a week; each "Not sure" by default), then up to three plans with their reasons in the same words, then every plan by goal. The web posts the answers to a form action (never in the address); `Referrer-Policy` became `same-origin` so a form carries its origin. A goal with one plan (the Gospels, a place to begin) recommends one until P10.5 adds another. Seen in a browser (phone width in dark, desktop) and in the iOS Simulator (iPhone Air); tested in `LibraryTests` and `web/test/db/read.test.ts` with the same expected words, and the production server's POST, including two refusals.
 - [ ] **P9.4** The plan page: exact title and edition, creator or source, a short explanation, whom it suits, a sample week, schedule kind, expected workload, completion or cycle length, coverage (whole Bible, selected books, or a recurring set, with repeats, optional passages, and omissions), the tradition and books included in neutral language, limitations beside advantages, the source note, the review level, and the permissions in plain words.
 - [ ] **P9.9** Public plan pages on the web as Day by Word's front door: clean URLs, honest titles and descriptions, structured data only where accurate, a sharing image from the owner's files (D19), and a sitemap.
 

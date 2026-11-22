@@ -116,6 +116,33 @@ private let gospels = PlanID("gospels-at-your-pace")!
 }
 
 @MainActor
+@Test func plansAreGroupedAndSuggestedAsOnTheWeb() throws {
+    let catalog = try bundledCatalog()
+    #expect(catalog.goals.map(\.goal) == Goal.allCases)
+    #expect(catalog.goals.first?.plans == [gospels])
+    // docs/engine.md's example, in words, as web/test/db/read.test.ts has them.
+    let suggested = catalog.suggestions(for: Choosing.Answers(hope: .wholeBible, time: .medium, days: 5))
+    #expect(suggested.map(\.plan.id.rawValue) == ["bible-in-a-year-five-days", "bible-in-a-year"])
+    #expect(
+        suggested.first?.reasons == [
+            "A plan for reading the whole Bible.",
+            "A typical reading takes about 12 to 16 minutes, longer than you said.",
+            "It's paced for 5 reading days a week, as you said.",
+            "At 5 readings a week it takes about 52 weeks.",
+        ])
+    #expect(
+        suggested.last?.reasons == [
+            "A plan for reading the whole Bible.",
+            "You said about 10 minutes. A typical reading takes about 9 to 11 minutes.",
+            "It's paced for every day, more than you said.",
+            "At 5 readings a week it takes about 73 weeks.",
+        ])
+    let calendar = catalog.suggestions(for: Choosing.Answers(time: .short, days: 7))
+    #expect(calendar.first?.plan.id.rawValue == "proverbs-through-the-month")
+    #expect(calendar.first?.reasons.last == "It has a reading for each date of the month.")
+}
+
+@MainActor
 @Test func referencesAreSpokenAsTheWebSpeaksThem() throws {
     let catalog = try bundledCatalog()
     let formatter = ReferenceFormatter(registry: catalog.registry, versification: catalog.versification)

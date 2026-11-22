@@ -8,6 +8,7 @@ import { checkSchema } from "../db/migrations.ts";
 import {
   assignments,
   catalogCurrent,
+  catalogGoals,
   catalogImportPlans,
   catalogImports,
   planFacts,
@@ -93,6 +94,10 @@ export async function importCatalog(
         position: index + 1,
       });
     }
+    const goalRows = catalog.goals.flatMap((goal) =>
+      goal.plans.map((planId, i) => ({ importId, goal: goal.id, position: i + 1, planId })),
+    );
+    if (goalRows.length > 0) await tx.insert(catalogGoals).values(goalRows);
     await tx
       .insert(scriptureResources)
       .values(catalog.scripture.map((r) => ({ importId, name: r.name, content: r.content })));

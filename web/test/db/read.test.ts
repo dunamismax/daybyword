@@ -6,7 +6,14 @@ import { readFileSync } from "node:fs";
 import { promisify } from "node:util";
 import pg from "pg";
 import { afterAll, describe, expect, it } from "vitest";
-import { dayText, planList, planPage, planWeek } from "#lib/server/catalog/present.ts";
+import {
+  dayText,
+  planGroups,
+  planList,
+  planPage,
+  planSuggestions,
+  planWeek,
+} from "#lib/server/catalog/present.ts";
 import { closeCatalog, servedCatalog } from "#lib/server/catalog/read.ts";
 
 const run = promisify(execFile);
@@ -183,6 +190,40 @@ describe("the served catalog", () => {
       ["Proverbs 3"],
       ["Proverbs 4"],
     ]);
+  });
+
+  it("groups the plans by goal and suggests plans in the app's words", async () => {
+    const catalog = await servedCatalog(url);
+    if (!catalog) throw new Error("no catalog");
+    expect(planGroups(catalog).map((group) => group.label)).toEqual([
+      "A place to begin",
+      "The whole Bible",
+      "The New Testament",
+      "The Gospels",
+      "The Psalms and Proverbs",
+    ]);
+    expect(planGroups(catalog)[0]?.plans.map((plan) => plan.id)).toEqual(["gospels-at-your-pace"]);
+    // docs/engine.md's example, as apple/AppTests/LibraryTests.swift has it.
+    const suggested = planSuggestions(catalog, { hope: "whole-bible", time: "medium", days: 5 });
+    expect(suggested.map((plan) => plan.id)).toEqual([
+      "bible-in-a-year-five-days",
+      "bible-in-a-year",
+    ]);
+    expect(suggested[0]?.reasons).toEqual([
+      "A plan for reading the whole Bible.",
+      "A typical reading takes about 12 to 16 minutes, longer than you said.",
+      "It's paced for 5 reading days a week, as you said.",
+      "At 5 readings a week it takes about 52 weeks.",
+    ]);
+    expect(suggested[1]?.reasons).toEqual([
+      "A plan for reading the whole Bible.",
+      "You said about 10 minutes. A typical reading takes about 9 to 11 minutes.",
+      "It's paced for every day, more than you said.",
+      "At 5 readings a week it takes about 73 weeks.",
+    ]);
+    const calendar = planSuggestions(catalog, { time: "short", days: 7 });
+    expect(calendar[0]?.id).toBe("proverbs-through-the-month");
+    expect(calendar[0]?.reasons.at(-1)).toBe("It has a reading for each date of the month.");
   });
 
   it("follows a new import", async () => {

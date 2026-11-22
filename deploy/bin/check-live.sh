@@ -3,7 +3,8 @@
 # check, every section, a 404, the security headers and strict policy, no
 # third-party loads, and no cookie; /healthz, with the release's commit when
 # one is given. With an https:// base it also checks the certificate and the
-# www redirect. It only reads. deploy/bin/activate.sh runs it on the
+# www redirect. It only reads: its one POST, the plan questions, keeps
+# nothing. deploy/bin/activate.sh runs it on the
 # candidate, the live port and https://daybyword.com.
 #
 #   deploy/bin/check-live.sh https://daybyword.com [COMMIT]
@@ -30,9 +31,15 @@ done
 [ "$(status /dev/components)" = 404 ] || problem "the component gallery is served"
 curl -fsS "$base/robots.txt" | grep -q '^Disallow: /$' || problem "robots.txt does not block crawling (P7.7)"
 
+# The plan questions post from the site's own page (E54): the answer is the
+# page, not SvelteKit's cross-site refusal, so the public scheme reaches it.
+answered=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H "Origin: $base" -H 'Accept: text/html' \
+  --data 'hope=whole-bible&time=medium&days=5' "$base/plans")
+[ "$answered" = 200 ] || problem "the plan questions posted from $base answered $answered"
+
 headers=$(curl -fsS -D - -o /dev/null "$base/today")
 for header in 'content-security-policy: default-src' 'x-content-type-options: nosniff' \
-  'referrer-policy: no-referrer' 'x-frame-options: DENY' 'permissions-policy: ' \
+  'referrer-policy: same-origin' 'x-frame-options: DENY' 'permissions-policy: ' \
   'cross-origin-opener-policy: same-origin' 'cache-control: no-cache'; do
   printf '%s' "$headers" | grep -qi "^$header" || problem "/today lacks $header"
 done

@@ -5,10 +5,11 @@
 // as the compiler does, so the import proves it holds the catalog the
 // compiler checked.
 import { createHash } from "node:crypto";
+import { goals as goalOrder, isGoal } from "#lib/domain/choosing.ts";
 
 export const exportFormat = "daybyword-catalog-export";
-export const exportFormatVersion = 1;
-export const catalogSchemaVersion = 3;
+export const exportFormatVersion = 2;
+export const catalogSchemaVersion = 4;
 
 export interface ExportFacts {
   verses: number;
@@ -52,6 +53,12 @@ export interface ExportPlan {
   assignments: ExportAssignment[];
 }
 
+/** A goal and its plans' ids, in the order the plan list shows them. */
+export interface ExportGoal {
+  id: string;
+  plans: string[];
+}
+
 export interface ExportResource {
   name: string;
   content: string;
@@ -64,6 +71,8 @@ export interface CatalogExport {
   buildMode: string;
   contentSha256: string;
   plans: ExportPlan[];
+  /** In the engine's order of goals (docs/engine.md, "Choosing a plan"). */
+  goals: ExportGoal[];
   scripture: ExportResource[];
 }
 
@@ -129,10 +138,15 @@ const sha256 = (text: string): string => createHash("sha256").update(text, "utf8
 export const planSha256 = (plan: ExportPlan): string => sha256(planBlock(plan));
 
 /** The catalog's content checksum, computed as CatalogBuild.metadata does. */
-export function contentSha256(catalog: Pick<CatalogExport, "plans" | "scripture">): string {
+export function contentSha256(
+  catalog: Pick<CatalogExport, "plans" | "goals" | "scripture">,
+): string {
   const hash = createHash("sha256");
   for (const r of catalog.scripture) hash.update(`${r.name}\n${r.content}\n`, "utf8");
   for (const plan of catalog.plans) hash.update(planBlock(plan), "utf8");
+  for (const goal of catalog.goals) {
+    goal.plans.forEach((plan, i) => hash.update(`goal\t${goal.id}\t${i + 1}\t${plan}\n`, "utf8"));
+  }
   return hash.digest("hex");
 }
 
@@ -215,8 +229,10 @@ export function checkExport(document: unknown, options: CheckOptions = {}): Cata
     throw new ExportError("the export has no content checksum");
   }
   const rawPlans = document["plans"];
+  const rawGoals = document["goals"];
   const rawScripture = document["scripture"];
   if (!Array.isArray(rawPlans)) throw new ExportError("the export's plans are not a list");
+  if (!Array.isArray(rawGoals)) throw new ExportError("the export's goals are not a list");
   if (!Array.isArray(rawScripture)) throw new ExportError("the export's scripture is not a list");
 
   rawScripture.forEach((r, i) =>
@@ -283,6 +299,36 @@ export function checkExport(document: unknown, options: CheckOptions = {}): Cata
       ids.add(a.id);
     });
   });
+
+  // The goals: known, in the engine's order, each with plans of this export,
+  // and every plan in at least one (catalog/goals.json, as the compiler
+  // checks it).
+  let previous = -1;
+  const grouped = new Set<string>();
+  rawGoals.forEach((raw, i) => {
+    if (!isRecord(raw) || typeof raw["id"] !== "string" || !Array.isArray(raw["plans"])) {
+      throw new ExportError(`goals[${i}] is not a goal with an id and plans`);
+    }
+    const id = raw["id"];
+    if (!isGoal(id)) throw new ExportError(`goals[${i}]: ${id} is not a goal`);
+    const at = goalOrder.indexOf(id);
+    if (at <= previous) throw new ExportError(`goal ${id} is out of order or given twice`);
+    previous = at;
+    const listed = raw["plans"] as unknown[];
+    if (listed.length === 0) throw new ExportError(`goal ${id} has no plans`);
+    const own = new Set<string>();
+    for (const plan of listed) {
+      if (typeof plan !== "string" || !seen.has(plan)) {
+        throw new ExportError(`goal ${id}: ${String(plan)} is not a plan in the export`);
+      }
+      if (own.has(plan)) throw new ExportError(`goal ${id}: ${plan} is listed twice`);
+      own.add(plan);
+      grouped.add(plan);
+    }
+  });
+  for (const plan of seen) {
+    if (!grouped.has(plan)) throw new ExportError(`plan ${plan} is in no goal`);
+  }
 
   const catalog = document as unknown as CatalogExport;
   const computed = contentSha256(catalog);

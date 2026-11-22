@@ -54,6 +54,7 @@ const catalog: ServedCatalog = {
   importId: 1,
   registry,
   versification: english,
+  goals: [],
   plans: [
     plan(
       "mark-in-a-week",

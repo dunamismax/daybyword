@@ -2,11 +2,15 @@ import ReadingData
 import ReadingEngine
 import SwiftUI
 
-/// Plans: the reader's own plans, then every plan in the catalog, shortest
-/// first (docs/decisions.md E45), each opening its page. Recommendations
-/// and grouping by goal come with Phase 9.
+/// Plans: the reader's own plans; a few practical questions and the plans
+/// to consider for the answers (BUILD.md P9.1, P9.2); then every plan,
+/// grouped by goal (P9.3), each opening its page. The answers are kept only
+/// while Plans is open.
 struct PlansView: View {
     @Environment(Library.self) private var library
+    @State private var hope: Goal?
+    @State private var time: Choosing.Time?
+    @State private var days: Int?
 
     var body: some View {
         ScrollView {
@@ -16,10 +20,7 @@ struct PlansView: View {
                         catalog.plan(enrollment.plan.id).map { (enrollment.id, $0) }
                     }
                     if !mine.isEmpty {
-                        Text("My plans")
-                            .typeStyle(TypeScale.referenceList)
-                            .foregroundStyle(Palette.text)
-                            .accessibilityAddTraits(.isHeader)
+                        heading("My plans")
                         ForEach(mine, id: \.0) { _, plan in
                             NavigationLink(value: Destination.plan(plan.id)) {
                                 HStack {
@@ -32,21 +33,22 @@ struct PlansView: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        Text("Every plan")
-                            .typeStyle(TypeScale.referenceList)
-                            .foregroundStyle(Palette.text)
-                            .accessibilityAddTraits(.isHeader)
-                            .padding(.top, Spacing.s)
                     }
-                    ForEach(catalog.listed, id: \.id) { plan in
-                        let presented = PlanPresentation(catalog: catalog, plan: plan)
-                        NavigationLink(value: Destination.plan(plan.id)) {
-                            PlanCard(
-                                title: plan.title, kind: presented.kind, summary: plan.summary,
-                                workload: presented.typicalWorkload, readings: presented.readings)
+                    choosing(catalog)
+                    heading("Every plan").padding(.top, Spacing.s)
+                    if catalog.goals.isEmpty {
+                        ForEach(catalog.listed, id: \.id) { card(catalog, $0) }
+                    } else {
+                        ForEach(catalog.goals, id: \.goal) { group in
+                            Text(verbatim: group.goal.label)
+                                .typeStyle(TypeStyle(size: 17, weight: .semibold, relativeTo: .headline))
+                                .foregroundStyle(Palette.textMuted)
+                                .accessibilityAddTraits(.isHeader)
+                                .padding(.top, Spacing.xs)
+                            ForEach(group.plans, id: \.self) { id in
+                                if let plan = catalog.plan(id) { card(catalog, plan) }
+                            }
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityHint(Text("Opens the plan's page."))
                     }
                 } else {
                     StateMessage(
@@ -61,6 +63,110 @@ struct PlansView: View {
         }
         .background(Palette.background)
         .navigationTitle("Plans")
+    }
+
+    /// The questions, and once one is answered, the plans to consider.
+    @ViewBuilder
+    private func choosing(_ catalog: Catalog) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            Text("Help me choose")
+                .typeStyle(TypeScale.referenceList)
+                .foregroundStyle(Palette.text)
+                .accessibilityAddTraits(.isHeader)
+            Text("Answer what you can. Not sure is always an answer.")
+                .typeStyle(TypeScale.body)
+                .foregroundStyle(Palette.textMuted)
+                .fixedSize(horizontal: false, vertical: true)
+            question("What do you hope to read?") {
+                Picker("What do you hope to read?", selection: $hope) {
+                    Text("Not sure").tag(Goal?.none)
+                    ForEach(Goal.allCases, id: \.self) { Text(verbatim: $0.label).tag(Goal?.some($0)) }
+                }
+            }
+            question("How long can a reading take?") {
+                Picker("How long can a reading take?", selection: $time) {
+                    Text("Not sure").tag(Choosing.Time?.none)
+                    ForEach(Choosing.Time.allCases, id: \.self) {
+                        Text(verbatim: $0.label).tag(Choosing.Time?.some($0))
+                    }
+                }
+            }
+            question("How many days a week do you expect to read?") {
+                Picker("How many days a week do you expect to read?", selection: $days) {
+                    Text("Not sure").tag(Int?.none)
+                    ForEach(Catalog.dayChoices, id: \.days) { Text(verbatim: $0.label).tag(Int?.some($0.days)) }
+                }
+            }
+        }
+        .card(padding: Spacing.m)
+
+        if hope != nil || time != nil || days != nil {
+            heading("Plans to consider").padding(.top, Spacing.s)
+            ForEach(catalog.suggestions(for: Choosing.Answers(hope: hope, time: time, days: days))) { suggestion in
+                NavigationLink(value: Destination.plan(suggestion.plan.id)) {
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text(verbatim: PlanPresentation(catalog: catalog, plan: suggestion.plan).kind)
+                            .typeStyle(TypeScale.label)
+                            .foregroundStyle(Palette.textMuted)
+                        Text(verbatim: suggestion.plan.title)
+                            .typeStyle(TypeStyle(size: 22, weight: .bold, relativeTo: .title2))
+                            .foregroundStyle(Palette.text)
+                        ForEach(suggestion.reasons, id: \.self) { reason in
+                            Text(verbatim: reason)
+                                .typeStyle(TypeScale.body)
+                                .foregroundStyle(Palette.text)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .card()
+                    .accessibilityElement(children: .combine)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(Text("Opens the plan's page."))
+            }
+            Text(
+                "Chosen by a few fixed rules from what you said, never by popularity. Estimates vary with the reader and the translation."
+            )
+            .typeStyle(TypeScale.caption)
+            .foregroundStyle(Palette.textMuted)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func question<Control: View>(_ title: LocalizedStringKey, @ViewBuilder control: () -> Control)
+        -> some View
+    {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            Text(title)
+                .typeStyle(TypeScale.body)
+                .fontWeight(.semibold)
+                .foregroundStyle(Palette.text)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityHidden(true)
+            control()
+                .pickerStyle(.menu)
+                .tint(Palette.accent)
+        }
+        .padding(.top, Spacing.xs)
+    }
+
+    private func heading(_ title: LocalizedStringKey) -> some View {
+        Text(title)
+            .typeStyle(TypeScale.referenceList)
+            .foregroundStyle(Palette.text)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    private func card(_ catalog: Catalog, _ plan: Plan) -> some View {
+        let presented = PlanPresentation(catalog: catalog, plan: plan)
+        return NavigationLink(value: Destination.plan(plan.id)) {
+            PlanCard(
+                title: plan.title, kind: presented.kind, summary: plan.summary,
+                workload: presented.typicalWorkload, readings: presented.readings)
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(Text("Opens the plan's page."))
     }
 }
 

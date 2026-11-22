@@ -4,6 +4,9 @@
 // Node tests (domain.test.ts) and the browser page (test/browser/) both use
 // it, each loading the files its own way.
 import {
+  type Answers,
+  type Candidate,
+  recommend,
   addDays,
   assignmentPositions,
   bibleLink,
@@ -119,6 +122,7 @@ export const domainFixtures = [
   "reminders",
   "ahead",
   "bible-links",
+  "recommendations",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -681,6 +685,10 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
         name: translation.name,
       });
     },
+
+    recommendations: (input: { answers: Answers; candidates: Candidate[] }) => ({
+      recommendations: recommend(input.candidates, input.answers),
+    }),
   };
 }
 

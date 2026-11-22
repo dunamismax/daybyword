@@ -6,7 +6,12 @@ import Testing
 
 /// A copy of the repository's catalog sources with these plan files, and
 /// SOURCES.md with these entries added, in a temporary directory.
-func fixtureCatalog(plans: [String: String], sources: String = "") throws -> (root: URL, source: URL) {
+/// A catalog directory with these plan files and the repository's
+/// scripture data and sources. Its goals file is `goals`, or one goal,
+/// `begin`, holding every plan in file-name order.
+func fixtureCatalog(
+    plans: [String: String], sources: String = "", goals: String? = nil
+) throws -> (root: URL, source: URL) {
     let root = temporaryDirectory()
     let source = root.appending(path: "catalog")
     try FileManager.default.createDirectory(at: source.appending(path: "plans"), withIntermediateDirectories: true)
@@ -17,6 +22,10 @@ func fixtureCatalog(plans: [String: String], sources: String = "") throws -> (ro
     for (name, text) in plans {
         try text.write(to: source.appending(path: "plans/\(name)"), atomically: true, encoding: .utf8)
     }
+    let ids = plans.keys.filter { $0.hasSuffix(".plan") }.map { "\"\($0.dropLast(5))\"" }.sorted()
+    let begin = ids.isEmpty ? "" : "{\"id\": \"begin\", \"plans\": [\(ids.joined(separator: ", "))]}"
+    let everyPlan = "{\"format\": 1, \"goals\": [\(begin)]}"
+    try (goals ?? everyPlan).write(to: source.appending(path: "goals.json"), atomically: true, encoding: .utf8)
     return (root, source)
 }
 

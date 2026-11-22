@@ -153,6 +153,29 @@ export const scriptureResources = app.table(
   (t) => [primaryKey({ columns: [t.importId, t.name] })],
 );
 
+// The goals an import's plan list is grouped by (catalog/goals.json, BUILD.md
+// P9.3): each goal's plans in the order the list shows them, every plan one
+// of the import's own. Goals belong to an import, not to a plan version, so
+// regrouping never changes a published plan.
+export const catalogGoals = app.table(
+  "catalog_goals",
+  {
+    importId: integer().notNull(),
+    goal: text().notNull(),
+    position: integer().notNull(),
+    planId: text().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.importId, t.goal, t.planId] }),
+    unique("catalog_goals_position").on(t.importId, t.goal, t.position),
+    foreignKey({
+      columns: [t.importId, t.planId],
+      foreignColumns: [catalogImportPlans.importId, catalogImportPlans.planId],
+    }),
+    check("catalog_goals_position_from_1", sql`${t.position} >= 1`),
+  ],
+);
+
 // One row: the import being served.
 export const catalogCurrent = app.table(
   "catalog_current",

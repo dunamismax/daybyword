@@ -778,3 +778,66 @@ the web has no reminders at 1.0.
 Monday 15 March 07:00, then Tuesday 16 March. With quiet hours 22:00 to
 08:00 each moves to 08:00, and today's, at 08:00, is still to come, so it
 is first.
+
+## Choosing a plan
+
+The engine recommends plans from the reader's answers to a few practical
+questions (BUILD.md P9.1, P9.2), by the fixed rules below: never by
+popularity, never by anything the reader did not say, and never by AI
+(D12, D23). The same answers and catalog always give the same
+recommendations, in the same order.
+
+**Goals.** The catalog groups its plans by goal (`catalog/goals.json`,
+docs/catalog-format.md), in this order: `begin` (a place to begin),
+`whole-bible`, `new-testament`, `gospels`, and `psalms-proverbs`. A plan
+may be in more than one goal.
+
+**The answers**, any of which may be left as "not sure":
+
+- what the reader hopes to read: a goal;
+- how long a reading may take: `short` (about 5 minutes), `medium` (about
+  10), or `long` (15 minutes or more);
+- how many days a week the reader expects to read, 1 to 7 (the picker
+  offers 7, 5 and 3).
+
+**A candidate** is a plan as the catalog gives it: its id, its goals, its
+schedule, the reading days a week it is paced for, how many readings it
+has, and the words of its typical (middle) reading, whose minutes are as
+"Words and workload" gives them.
+
+**The rules:**
+
+1. *Which plans.* With a goal, the plans in that goal; without one, every
+   plan.
+2. *Fitting.* The time fits when the typical reading's lower (silent)
+   minutes are no more than the answer's: 5 for `short`, 10 for `medium`,
+   any for `long`. The days fit when the plan is paced for no more reading
+   days than the reader expects. An unanswered question fits every plan.
+3. *Order.* (a) Plans that fit both come first, then those that fit one,
+   then the rest; (b) without a goal, plans in `begin` come before the
+   others; (c) then the plan whose pace is nearer the reader's days
+   (the difference between the plan's reading days and the reader's;
+   none when unanswered); (d) then the plan whose typical reading's lower
+   minutes are nearer the answer's time (5, 10 or 15; none when
+   unanswered); (e) then the catalog's order.
+4. *How many.* The first three, or all of them when there are fewer.
+
+**Each recommendation** gives the plan; the goal it answers (the reader's
+goal, or `begin` when the reader gave none and the plan is in it); its
+typical reading's minutes, low and high; whether the time fits and
+whether the days fit (each absent when unanswered); the reader's days;
+and, for a `sequence` plan, the readings a week (the fewer of the
+reader's days and the plan's, or the plan's when unanswered) and the
+weeks it takes: its readings divided by the readings a week, rounded up. A
+`day-of-month` plan has no weeks: it has a reading for each date. The
+reader sees each fact as a reason in words ("You said about 10 minutes:
+its readings take about 9–11"), and the caveat that estimates are
+approximate.
+
+*Example:* a reader who hopes to read the whole Bible, has about 10
+minutes, and reads five days a week, with two whole-Bible plans: one
+paced for seven days at 9–11 minutes and 365 readings, one paced for five
+at 12–16 minutes and 260. Each fits one answer; the five-day plan's pace
+is the reader's, so it comes first (52 weeks, its readings longer than
+the reader said), then the seven-day plan (73 weeks at five readings a
+week).

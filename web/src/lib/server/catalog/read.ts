@@ -1,17 +1,20 @@
 // The catalog the web serves, read from PostgreSQL as the read-only web
 // role (docs/catalog-format.md, "The server catalog"): the plans of the
-// import `catalog_current` names, with their facts and assignments, and the
-// scripture it was compiled with. Server-only. Read once per import and
+// import `catalog_current` names, with their facts and assignments, the
+// goals they are grouped by, and the scripture it was compiled with. Server-only. Read once per import and
 // kept in memory; each request asks only which import is current. Without
 // DATABASE_URL (local work with no database) there is no catalog.
 import pg from "pg";
 import {
   BookRegistry,
+  goals as goalOrder,
+  isGoal,
   isPlanID,
   parseReading,
   Versification,
   type Behavior,
   type BookID,
+  type Goal,
   type PlanID,
   type PlanVersion,
   type ScheduleKind,
@@ -54,10 +57,18 @@ export interface CatalogPlan {
   readonly plan: PlanVersion;
 }
 
+/** A goal and its plans, in the order the plan list shows them (catalog/goals.json). */
+export interface CatalogGoal {
+  readonly goal: Goal;
+  readonly plans: readonly PlanID[];
+}
+
 export interface ServedCatalog {
   readonly importId: number;
   /** In the compiler's order. */
   readonly plans: readonly CatalogPlan[];
+  /** In the engine's order; an import from before goals has none. */
+  readonly goals: readonly CatalogGoal[];
   readonly registry: BookRegistry;
   readonly versification: Versification;
 }
@@ -101,7 +112,7 @@ interface AssignmentRow {
 }
 
 async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
-  const [resources, plans, assignments] = await Promise.all([
+  const [resources, plans, assignments, goalRows] = await Promise.all([
     client.query<{ name: string; content: string }>(
       "select name, content from app.scripture_resources where import_id = $1",
       [importId],
@@ -124,6 +135,10 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
         order by a.plan_id, a.position`,
       [importId],
     ),
+    client.query<{ goal: string; plan_id: string }>(
+      "select goal, plan_id from app.catalog_goals where import_id = $1 order by goal, position",
+      [importId],
+    ),
   ]);
   const resource = (name: string) => {
     const found = resources.rows.find((row) => row.name === name);
@@ -133,10 +148,18 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
   const registry = new BookRegistry(resource("books.json"));
   const versification = new Versification("english", resource("versification/english.tsv"));
 
+  const goals: CatalogGoal[] = goalOrder.flatMap((goal) => {
+    const own = goalRows.rows.filter((row) => row.goal === goal).map((row) => row.plan_id);
+    return own.length === 0 ? [] : [{ goal, plans: own.filter(isPlanID) }];
+  });
+  const stray = goalRows.rows.find((row) => !isGoal(row.goal));
+  if (stray) throw new Error(`the catalog has a goal named ${stray.goal}`);
+
   return {
     importId,
     registry,
     versification,
+    goals,
     plans: plans.rows.map((row) => {
       if (!isPlanID(row.id)) throw new Error(`the catalog has a plan with the id ${row.id}`);
       const own = assignments.rows.filter((assignment) => assignment.plan_id === row.id);

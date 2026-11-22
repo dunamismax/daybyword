@@ -1,0 +1,916 @@
+{
+  "about": "Recommending plans from a reader's answers (docs/engine.md, \"Choosing a plan\"; BUILD.md P9.2): the candidates in the catalog's order and the answers (a goal, a time of short, medium or long, and days a week; an absent answer is \"not sure\") give at most three plans, best first, each with the goal it answers, its typical reading's minutes, whether the time and the days fit, the reader's days, and for a sequence the readings a week (the fewer of the reader's days and the plan's) and the weeks it takes at them. The candidates are invented. Worked out by hand.",
+  "cases": [
+    {
+      "input": {
+        "answers": {},
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "nothing answered: every plan fits, plans to begin with come first, then the catalog's order",
+      "output": {
+        "recommendations": [
+          {
+            "goal": "begin",
+            "minutes": [
+              6,
+              8
+            ],
+            "perWeek": 5,
+            "plan": "first-steps",
+            "weeks": 12
+          },
+          {
+            "minutes": [
+              9,
+              11
+            ],
+            "perWeek": 7,
+            "plan": "whole-daily",
+            "weeks": 53
+          },
+          {
+            "minutes": [
+              12,
+              16
+            ],
+            "perWeek": 5,
+            "plan": "whole-weekdays",
+            "weeks": 52
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 5,
+          "hope": "whole-bible",
+          "time": "medium"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "the whole Bible, about 10 minutes, five days: each fits one answer, and the plan paced for the reader's days comes first",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": true,
+            "fitsTime": false,
+            "goal": "whole-bible",
+            "minutes": [
+              12,
+              16
+            ],
+            "perWeek": 5,
+            "plan": "whole-weekdays",
+            "readerDays": 5,
+            "weeks": 52
+          },
+          {
+            "fitsDays": false,
+            "fitsTime": true,
+            "goal": "whole-bible",
+            "minutes": [
+              9,
+              11
+            ],
+            "perWeek": 5,
+            "plan": "whole-daily",
+            "readerDays": 5,
+            "weeks": 73
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 7,
+          "time": "short"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "about 5 minutes every day, not sure what: the four that fit, by pace and then by time nearest 5 minutes; a day-of-month plan has no weeks",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              2,
+              3
+            ],
+            "plan": "month-of-wisdom",
+            "readerDays": 7
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              1,
+              1
+            ],
+            "perWeek": 7,
+            "plan": "song-a-day",
+            "readerDays": 7,
+            "weeks": 23
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              3,
+              3
+            ],
+            "perWeek": 5,
+            "plan": "chapter-a-day",
+            "readerDays": 7,
+            "weeks": 52
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "hope": "gospels"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "a goal with one plan recommends that plan alone",
+      "output": {
+        "recommendations": [
+          {
+            "goal": "gospels",
+            "minutes": [
+              6,
+              8
+            ],
+            "perWeek": 5,
+            "plan": "first-steps",
+            "weeks": 12
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 3,
+          "hope": "new-testament",
+          "time": "long"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "the New Testament, 15 minutes or more, three days: neither is paced for three days, so the one nearer 15 minutes comes first, and the weeks are at three readings a week",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": false,
+            "fitsTime": true,
+            "goal": "new-testament",
+            "minutes": [
+              3,
+              3
+            ],
+            "perWeek": 3,
+            "plan": "chapter-a-day",
+            "readerDays": 3,
+            "weeks": 87
+          },
+          {
+            "fitsDays": false,
+            "fitsTime": true,
+            "goal": "new-testament",
+            "minutes": [
+              2,
+              3
+            ],
+            "perWeek": 3,
+            "plan": "letters-slowly",
+            "readerDays": 3,
+            "weeks": 29
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 3,
+          "hope": "psalms-proverbs",
+          "time": "short"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "the Psalms and Proverbs, about 5 minutes, three days: nothing fits both, so by pace and then time",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": false,
+            "fitsTime": true,
+            "goal": "psalms-proverbs",
+            "minutes": [
+              2,
+              3
+            ],
+            "plan": "month-of-wisdom",
+            "readerDays": 3
+          },
+          {
+            "fitsDays": false,
+            "fitsTime": true,
+            "goal": "psalms-proverbs",
+            "minutes": [
+              1,
+              1
+            ],
+            "perWeek": 3,
+            "plan": "song-a-day",
+            "readerDays": 3,
+            "weeks": 54
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 5,
+          "time": "short"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "not sure what, about 5 minutes, five days: a plan to begin with that fits one answer follows the plans that fit both",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              3,
+              3
+            ],
+            "perWeek": 5,
+            "plan": "chapter-a-day",
+            "readerDays": 5,
+            "weeks": 52
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              2,
+              3
+            ],
+            "perWeek": 5,
+            "plan": "letters-slowly",
+            "readerDays": 5,
+            "weeks": 18
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": false,
+            "goal": "begin",
+            "minutes": [
+              6,
+              8
+            ],
+            "perWeek": 5,
+            "plan": "first-steps",
+            "readerDays": 5,
+            "weeks": 12
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "answers": {
+          "days": 5,
+          "time": "medium"
+        },
+        "candidates": [
+          {
+            "goals": [
+              "begin",
+              "gospels"
+            ],
+            "plan": "first-steps",
+            "readingDays": 5,
+            "readings": 60,
+            "schedule": "sequence",
+            "typicalWords": 1400
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-daily",
+            "readingDays": 7,
+            "readings": 365,
+            "schedule": "sequence",
+            "typicalWords": 2100
+          },
+          {
+            "goals": [
+              "whole-bible"
+            ],
+            "plan": "whole-weekdays",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 2900
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "letters-slowly",
+            "readingDays": 5,
+            "readings": 87,
+            "schedule": "sequence",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "new-testament"
+            ],
+            "plan": "chapter-a-day",
+            "readingDays": 5,
+            "readings": 260,
+            "schedule": "sequence",
+            "typicalWords": 620
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "month-of-wisdom",
+            "readingDays": 7,
+            "readings": 31,
+            "schedule": "day-of-month",
+            "typicalWords": 480
+          },
+          {
+            "goals": [
+              "psalms-proverbs"
+            ],
+            "plan": "song-a-day",
+            "readingDays": 7,
+            "readings": 160,
+            "schedule": "sequence",
+            "typicalWords": 220
+          }
+        ]
+      },
+      "name": "about 10 minutes, five days, not sure what: the plan to begin with first among those that fit both",
+      "output": {
+        "recommendations": [
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "goal": "begin",
+            "minutes": [
+              6,
+              8
+            ],
+            "perWeek": 5,
+            "plan": "first-steps",
+            "readerDays": 5,
+            "weeks": 12
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              3,
+              3
+            ],
+            "perWeek": 5,
+            "plan": "chapter-a-day",
+            "readerDays": 5,
+            "weeks": 52
+          },
+          {
+            "fitsDays": true,
+            "fitsTime": true,
+            "minutes": [
+              2,
+              3
+            ],
+            "perWeek": 5,
+            "plan": "letters-slowly",
+            "readerDays": 5,
+            "weeks": 18
+          }
+        ]
+      }
+    }
+  ],
+  "fixture": "recommendations",
+  "version": 1
+}
