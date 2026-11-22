@@ -353,6 +353,22 @@ describe("the shell every page shares", () => {
       expect(current(await page(production, path)), path).toBe("Plans");
     }
   });
+
+  it("sets a week's checklist in large print only when asked (P13.1)", async () => {
+    const week = "/plans/gospels-at-your-pace/week";
+    for (const [query, large] of [
+      ["", false],
+      ["?size=large", true],
+      ["?start=2027-01-04&size=large", true],
+      ["?size=huge", false],
+    ] as const) {
+      const html = await page(production, week + query);
+      expect(html.includes("checklist-large"), query).toBe(large);
+      expect(/<input type="checkbox" name="size" value="large"[^>]*checked/.test(html), query).toBe(
+        large,
+      );
+    }
+  });
 });
 
 describe("Settings", () => {

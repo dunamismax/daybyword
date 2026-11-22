@@ -51,7 +51,9 @@ files when APIs are needed.
 - **Paper.** `@media print` in `app.css` drops the header, footer,
   forms and buttons, and tokens.css switches to Morning's light colors
   whatever the screen's appearance, so a week's checklist
-  (`/plans/<id>/week`) prints as the page alone.
+  (`/plans/<id>/week`) prints as the page alone. `?size=large` raises the
+  checklist's type sizes (18-point references) on screen and paper
+  (P13.1).
 - `scripts/with-catalog.sh COMMAND` runs a command with a throwaway
   PostgreSQL holding the roles, the migrations and the release catalog,
   as a deploy leaves them. `make serve-web`, the production tests and the

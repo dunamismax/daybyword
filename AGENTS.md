@@ -656,9 +656,15 @@ remove an entry once it no longer applies.
   once a test has made its state, move through the app's own buttons. A
   `Form`'s rows exist only once scrolled into view: swipe until an
   element is hittable before asserting on it.
+- **The browser pane runs the site's service worker on localhost**, which
+  serves `/assets/*.js` from its own cache until every tab closes, so a
+  rebuilt page script does not run there. Before testing one, unregister
+  the worker and clear Cache Storage in the page, then reload.
 - **Web tests run on a fixed clock**, so two plans started in one test
   share a millisecond and their order in the journal is random: find a
-  plan by its id or name, never by its index.
+  plan by its id or name, never by its index. The app's unit tests have
+  the same trap: two plans started on one fixed clock come back in either
+  order.
 
 ## 12. Keeping this file useful
 

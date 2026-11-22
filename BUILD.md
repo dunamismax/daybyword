@@ -17,10 +17,10 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M2 First light is shipped: TestFlight build 126 on the owner's iPhone, and daybyword.com serving 2aead57. Phases M and 0–11 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 1 of 4 (P12.1) |
-| **Next item** | **P12.2b** (the Lock Screen accessories: the owner reported on 2026-11-22 that "the widgets seem to all work", without saying which, so confirm the inline, circular and rectangular ones and the "Name the reading" option on a Lock Screen), **P12.4** (App Intents and Shortcuts), **P12.6** (iPad), then Phase 13 |
+| **Phase** | M2 First light is shipped: TestFlight build 126 on the owner's iPhone, and daybyword.com serving 2aead57. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done) |
+| **Next item** | **Phase 15**: P15.1 (the installable web app), P15.2, P15.4, P15.5, P15.6; then Phase 16. Still open in Phase 12: **P12.2b** (the Lock Screen accessories, to be seen on a device) and **P12.6b** (the app on a Mac, which waits on the owner) |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | Nothing now. Build 126 is on TestFlight; the next build comes with the next milestone or on request |
+| **Waiting on the owner** | **P12.6b**: either allow an agent to register this Mac as a development device in Xcode, or install the next TestFlight build on the Mac with TestFlight for Mac and say whether it runs. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2aead57 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today with quiet celebrations, Progress (books by verse and chapter, the optional reading days in a row, History, and the archive with pause, resume and stop), Settings and offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
@@ -140,8 +140,8 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 5 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 9 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 5 |
-| 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 1 |
-| 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
+| 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 2 |
+| 13 | Paper and calendars | M3 Version 1.0 | 3 | 3 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
 | 15 | The web app: install and offline | M3 Version 1.0 | 5 | 0 |
 | 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 0 |
@@ -485,14 +485,16 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
   - [x] **P12.2a** The Home Screen: small (the next reading) and medium (today's reading in each plan, up to three, each with Mark read).
     - *Result (agent, 2026-11-22):* one provider gives today's readings across plans; the medium widget lists them with Mark read (`MarkReadIntent`). Seen in the iOS Simulator (iPhone 18 Pro): added from the widget gallery, it showed Psalm 1 and Proverbs 22; Mark read recorded each in the shared journal and the widget redrew (once only after the app opened: the Simulator held the first reload).
   - [ ] **P12.2b** The Lock Screen: the rectangular accessory (the next reading, Mark read), an inline line and a circular symbol that opens Today, and with "Name the reading in reminders and on the Lock Screen" off (mirrored into the App Group by `Library` and the setting), the plan and "Reading 12" instead of the passage. Built with P12.2a; *not seen yet*: the Simulator's Lock Screen editor did not open from Customize. See them on a Lock Screen (a device, or a Simulator whose editor opens) and tick.
-- [ ] **P12.4** App Intents and App Shortcuts: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
+- [x] **P12.4** App Intents and App Shortcuts: "What's my reading today?", "Mark today's reading read", and "Open my plan", working with Siri, Spotlight, and the Action button.
+  - *Result (agent, 2026-11-22):* three intents in the app (`apple/App/Intents/`, E58) on the app's own library, with App Shortcut phrases (`AppShortcuts.xcstrings`). Mark read names the reading and asks first. Seen in the iPad simulator's Shortcuts app: all three listed; Mark read asked "Mark Matthew 1–3 read, in Gospels at your pace?" and recorded it (Today then offered Undo); Today's Reading answered "That's today's reading"; Open Plan brought the app forward on Today. Siri's voice and the Action button were not tried (the Simulator has neither); they run the same App Shortcuts.
 - [ ] **P12.6** iPad: a sidebar layout and readable widths. Check that it runs on a Mac with Apple silicon as an iPad app. *(Rewritten by D39: comparison is P9.6.)*
+  - *Note (agent, 2026-11-22):* split: the iPad work is done; running on a Mac waits for a device registration or a TestFlight build.
+  - [x] **P12.6a** The sidebar (`.sidebarAdaptable`, the tab bar on iPhone) and every screen held to a readable 720-point column (`ReadableWidth`, and `readableRows()` for History's Form). Seen on the iPad Air 11-inch simulator in portrait and landscape, light and dark.
+  - [ ] **P12.6b** Run it on a Mac with Apple silicon as an iPad app. Building for "My Mac (Designed for iPad)" stops at signing: this Mac is not a registered device on the owner's account. Either the owner allows registering it (Xcode does it with `-allowProvisioningDeviceRegistration`), or the owner installs the next TestFlight build on the Mac through TestFlight for Mac, which needs no registration. See it run and tick.
 
 ## Phase 13: Paper and calendars
 
-- [ ] **P13.1** The weekly printable checklist: a clean page through the web's print stylesheet and an iOS PDF through the share sheet, with checkboxes, references, the plan label, and the source note. Large print is an option. *(Rewritten by D39: per-use rights rules are P4.5.)*
-- [ ] **P13.4** Calendar export: an `.ics` file of upcoming readings (all-day or at the reminder time). *(Rewritten by D39; the subscription URL is P28.7.)*
-- [ ] **P13.5** Print and export tests: page breaks and large print.
+Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 14: Accounts, backup, and sync
 
@@ -558,28 +560,25 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-22, second session:** P11.2 (quiet celebrations: a new engine
-  rule, E56, `celebrations.json`), P11.3 (reading days in a row, off by
-  default), P11.4 (books by verse and chapter), P11.5 (History and the
-  archive, with pause, resume and stop, E57), so Phase 11 is finished;
-  P10.13 (the catalog review), so Phase 10 is finished; P12.2a (the medium
-  widget). P12.2 is split: P12.2b, the Lock Screen accessories, is built
-  but unseen (the Simulator's Lock Screen editor would not open).
-- **Deployed** 2aead57 after `make check-full` (the app tour failed once
-  on Simulator state left by manual testing: a plan page restored in the
-  Plans tab; it passed on rerun). P7.3 verified, so Phase 7 is finished.
-- **Engine additions** (both runtimes, pinned by fixtures): `celebrations`,
-  `recordSlots` (History's readings, also behind the counts), and
-  `BookCoverage` / `coverageByBook`. Specification version stays 1.
-- **Web:** History is a `<details>` in each plan's card on Progress; the
-  events endpoint gained `pause`, `resume` and `end`; a dated History mark
-  on a calendar plan sends `appointed`. `/assets/*.js` are cached for an
-  hour, so after rebuilding, refetch them with `cache: "reload"`; the
-  browser pane refuses service workers on localhost.
-- **UI tests** (`make test-ui`, not in `make check`): the streak toggle,
-  and History (about four minutes: it scrolls 60 readings). AGENTS.md §11
-  has the two traps they hit.
-- **Next:** P12.2b on a Lock Screen, P12.4 (App Intents and Shortcuts),
-  P12.6 (iPad), then Phase 13. Build 126 is on TestFlight and the owner
-  confirmed it on an iPhone (YouVersion links and widgets too), so P8.5,
-  P8.14 and Phase 8 are done; P12.1 is done.
+- **2026-11-22, third session:** P12.4 (Siri and Shortcuts, E58), P12.6a
+  (the iPad sidebar and readable widths), and Phase 13 (P13.1 the week as a
+  PDF and in large print, P13.4 calendar export, E59, P13.5 print and
+  export tests), so Phase 13 is finished. P12.6 is split: P12.6b, the app
+  on a Mac, waits on the owner (a device registration, or TestFlight for
+  Mac).
+- **Not deployed, no new TestFlight build.** daybyword.com still serves
+  2aead57; the web's large print and calendar download are only in `main`.
+  Deploy after `make check-full` at the next milestone.
+- **Shared code:** `TodaysReading` (apple/Shared) names today's reading
+  for the widget and for Siri; `ReadableWidth` / `readableRows()` hold
+  every screen to 720 points. App Shortcut phrases are their own catalog,
+  `apple/App/AppShortcuts.xcstrings`, kept by `scripts/strings.swift`.
+- **Calendar files** come from two writers held to one fixture,
+  `tests/fixtures/calendar.json`; regenerate it only on purpose.
+- **Tests:** the web tour now prints the week through Firefox and checks
+  the PDF (332 checks). The iPhone UI tests pass with the new tab style.
+- **Surprises:** every iPhone simulator was held by other sessions, so this
+  session made "DbW iPhone 18 Pro"; the browser pane now runs the service
+  worker on localhost (AGENTS.md §11); the Mac's load reached 565.
+- **Next:** Phase 15 (P15.1 the web app manifest), then Phase 16; P12.2b
+  and P12.6b when the owner has tried them.

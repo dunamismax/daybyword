@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "{label}. Read it in your own Bible, then mark it read in Day by Word." : {
+
+    },
     "**Permissions.** %@" : {
 
     },
@@ -8,6 +11,9 @@
 
     },
     "**Source.** %@" : {
+
+    },
+    "%@" : {
 
     },
     "%@ — Day %lld" : {
@@ -43,6 +49,12 @@
     "%@, %@, %@" : {
 
     },
+    "%@, %@: %@." : {
+
+    },
+    "%@, a week" : {
+
+    },
     "%@, chapter %lld" : {
 
     },
@@ -74,6 +86,9 @@
 
     },
     "%@; then %@" : {
+
+    },
+    "%@: %@" : {
 
     },
     "%@: %@." : {
@@ -253,7 +268,16 @@
     "About 10 minutes" : {
 
     },
+    "Add the next four weeks to a calendar" : {
+
+    },
+    "Add the next four weeks to a calendar…" : {
+
+    },
     "All %lld verses" : {
+
+    },
+    "All day" : {
 
     },
     "Another app, with Copy reference" : {
@@ -287,6 +311,9 @@
 
     },
     "At most 1 reading a day" : {
+
+    },
+    "At my reminder time, %@" : {
 
     },
     "At one reading each reading day, you'd finish on %@." : {
@@ -553,6 +580,9 @@
     "Keep the screen awake on Today" : {
 
     },
+    "Large print" : {
+
+    },
     "Larger" : {
 
     },
@@ -571,6 +601,9 @@
     "Log an earlier day…" : {
 
     },
+    "Mark %@ read, in %@?" : {
+
+    },
     "Mark 4:1–20" : {
 
     },
@@ -583,7 +616,13 @@
     "Mark read" : {
 
     },
+    "Mark Read" : {
+
+    },
     "Mark read keeps the reading on this date." : {
+
+    },
+    "Mark Today's Reading Read" : {
 
     },
     "Mark, chapter 4, verses 1 to 20" : {
@@ -601,6 +640,9 @@
     "Marked %@ read." : {
 
     },
+    "Marked %@ read. You can undo it on Today." : {
+
+    },
     "Marks %@ read on the date above." : {
 
     },
@@ -611,6 +653,9 @@
 
     },
     "Marks the reading the widget shows as read today." : {
+
+    },
+    "Marks today's reading in one of your plans as read, after saying which reading it is." : {
 
     },
     "Monday" : {
@@ -634,6 +679,9 @@
     "Next: %@" : {
 
     },
+    "No" : {
+
+    },
     "No limit" : {
 
     },
@@ -641,6 +689,9 @@
 
     },
     "Not chosen" : {
+
+    },
+    "Not now" : {
 
     },
     "Not sure" : {
@@ -679,10 +730,16 @@
     "Open in YouVersion" : {
 
     },
+    "Open Plan" : {
+
+    },
     "Opens %@ in YouVersion or on Bible.com." : {
 
     },
     "Opens at %@, where this reading begins." : {
+
+    },
+    "Opens Day by Word on Today, or on one of your plans." : {
 
     },
     "Opens the plan's page." : {
@@ -841,6 +898,15 @@
     "Settings" : {
 
     },
+    "Share as PDF" : {
+
+    },
+    "Shares a calendar file of this plan's readings for the next four weeks." : {
+
+    },
+    "Shares this week's checklist as a page to print." : {
+
+    },
     "Show reading days in a row on Progress" : {
 
     },
@@ -922,6 +988,12 @@
     "Takes back: %@" : {
 
     },
+    "Tells you today's reading in each plan you follow." : {
+
+    },
+    "That plan isn't one you're following now." : {
+
+    },
     "That wasn't saved: %@" : {
 
     },
@@ -929,6 +1001,9 @@
 
     },
     "The books you've marked a reading in, in any plan. Each verse counts once, and a chapter read in part is not counted as read." : {
+
+    },
+    "The calendar keeps these dates. If your plan moves, add the weeks again." : {
 
     },
     "the finish date" : {
@@ -1018,6 +1093,9 @@
     "Thursday" : {
 
     },
+    "Tick each reading as you read it." : {
+
+    },
     "To finish by %@ you'd read up to %lld readings a day. At %lld a day you'd finish on %@." : {
 
     },
@@ -1025,6 +1103,9 @@
 
     },
     "Today is a rest day in this plan." : {
+
+    },
+    "Today's Reading" : {
 
     },
     "Today's reading is %@. The readings you missed stay in your history." : {
@@ -1084,6 +1165,9 @@
     "When" : {
 
     },
+    "Which plan's reading did you read?" : {
+
+    },
     "Who it suits" : {
 
     },
@@ -1091,6 +1175,9 @@
 
     },
     "Work toward a finish date" : {
+
+    },
+    "Yes" : {
 
     },
     "You said %@. A typical reading takes %@." : {
@@ -1103,6 +1190,9 @@
 
     },
     "You're following this plan. Its readings are on Today." : {
+
+    },
+    "You're not following a plan yet. Choose one in Day by Word." : {
 
     },
     "You're offline" : {

@@ -9,11 +9,16 @@
 //                                          Safari through safaridriver, once "Allow
 //                                          remote automation" is on in Safari's settings
 //
+// It also prints a week's checklist through the browser's own Print
+// (WebDriver's Print Page), in ordinary and large print, and checks the
+// paper with PDFKit (BUILD.md P13.5).
+//
 // The checks are semantic (headings, the nav's current link, the footer, the
 // first focusable element), not tied to the markup's classes. The server must
 // be built first (make tour-web does it). The WebDriver
 // client is this file's own: a few W3C WebDriver commands over URLSession.
 import Foundation
+import PDFKit
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
 let screenshots = root.appendingPathComponent("screenshots/web")
@@ -117,6 +122,18 @@ struct WebDriver {
             let data = Data(base64Encoded: base64)
         else { fail("no screenshot") }
         try? data.write(to: file)
+    }
+
+    /// The page as the browser prints it, on paper of the size given in
+    /// centimetres, without background colours, as a reader's printer would.
+    func printed(width: Double, height: Double) async -> PDFDocument {
+        guard
+            let base64 = await send(
+                "POST", "/session/\(session)/print",
+                ["page": ["width": width, "height": height], "background": false, "shrinkToFit": false]) as? String,
+            let data = Data(base64Encoded: base64), let document = PDFDocument(data: data)
+        else { fail("no printed page") }
+        return document
     }
 
     func end() async { await send("DELETE", "/session/\(session)") }
@@ -231,6 +248,39 @@ expect(kept == ["dark", "largest"], "Settings were not kept: \(kept ?? [])")
 await driver.go("/settings")
 expect(await driver.run("return document.getElementById('appearance-dark').checked") as? Bool == true, "Dark not restored")
 await driver.run("localStorage.clear()")
+
+// Paper (P13.1, P13.5): the week's checklist printed on Letter, in ordinary
+// and large print, and on a short page that forces breaks. The page alone is
+// printed, every reading is on it, and no day is split across pages.
+let week = "/plans/gospels-at-your-pace/week?start=2027-01-04"
+let days = [
+    ("Monday 4 January", "Matthew 1–3"), ("Tuesday 5 January", "Matthew 4–5"),
+    ("Wednesday 6 January", "Matthew 6–7"), ("Thursday 7 January", "Matthew 8–9"),
+    ("Friday 8 January", "Matthew 10–11"),
+]
+var pageCounts: [String: Int] = [:]
+for (name, query, height) in [("ordinary", "", 27.94), ("large", "&size=large", 27.94), ("short", "&size=large", 9.0)] {
+    await driver.go(week + query)
+    let document = await driver.printed(width: 21.59, height: height)
+    // A large label can wrap ("Monday 4 / January"): compare words, not lines.
+    let texts = (0..<document.pageCount).map {
+        (document.page(at: $0)?.string ?? "").split(whereSeparator: \.isWhitespace).joined(separator: " ")
+    }
+    let all = texts.joined(separator: "\n")
+    pageCounts[name] = document.pageCount
+    expect(!all.contains("Skip to content") && !all.contains("Show this week"), "print \(name): the site's own parts are on paper")
+    expect(all.contains("Tick each reading as you read it.") && all.contains("Source."), "print \(name): the note or source is missing")
+    // Each day's row, its date and then its reading, whole on one page. A
+    // PDF's text runs the two together, so spaces are left out.
+    let compact = texts.map { $0.filter { !$0.isWhitespace } }
+    for (day, reference) in days {
+        let row = (day + reference).filter { !$0.isWhitespace }
+        let holding = compact.filter { $0.contains(row) }
+        expect(holding.count == 1, "print \(name): \(day) and \(reference) are together on \(holding.count) pages")
+    }
+}
+expect((pageCounts["large"] ?? 0) >= (pageCounts["ordinary"] ?? 0), "print: large print has fewer pages")
+expect((pageCounts["short"] ?? 0) > 1, "print: a short page did not break")
 
 await driver.end()
 stopAll()

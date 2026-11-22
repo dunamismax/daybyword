@@ -62,7 +62,7 @@ struct TodayView: View {
                     Text(verbatim: failure).typeStyle(TypeScale.body).foregroundStyle(Palette.danger)
                 }
             }
-            .frame(maxWidth: 720, alignment: .leading)
+            .frame(maxWidth: ReadableWidth.column, alignment: .leading)
             .frame(maxWidth: .infinity)
             .padding(Spacing.m)
             .padding(.bottom, lastAction == nil ? 0 : 72)

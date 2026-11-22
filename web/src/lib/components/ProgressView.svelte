@@ -180,6 +180,17 @@
           {#if plan.actions.pause}
             <p class="mb-0 text-caption text-text-muted">{text("history.pause-note")}</p>
           {/if}
+          {#if plan.actions.calendar}
+            <button
+              type="button"
+              class="button button-secondary mt-s"
+              data-calendar={plan.enrollment}
+              data-filename="{plan.plan}.ics"
+            >
+              {text("calendar.add")}
+            </button>
+            <p class="mb-0 text-caption text-text-muted">{text("calendar.note")}</p>
+          {/if}
         </details>
       </section>
     {/each}

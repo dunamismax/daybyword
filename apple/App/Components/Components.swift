@@ -4,6 +4,22 @@ import UIKit
 // The app's shared components (BUILD.md P2.6), in the Morning design
 // (docs/design.md). The web has the same set (web/src/lib/components/).
 
+// MARK: - Width
+
+/// The widest a column of text runs on a wide screen, such as an iPad in
+/// landscape or a Mac (BUILD.md P12.6): about 80 characters of body text.
+enum ReadableWidth {
+    static let column: CGFloat = 720
+}
+
+extension View {
+    /// Keeps a Form's or List's rows within the readable column on a wide
+    /// screen, centered; the screen's own background fills either side.
+    func readableRows() -> some View {
+        frame(maxWidth: ReadableWidth.column).frame(maxWidth: .infinity)
+    }
+}
+
 // MARK: - Cards and buttons
 
 extension View {

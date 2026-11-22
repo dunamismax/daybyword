@@ -1,3 +1,4 @@
+import AppIntents
 import ReadingEngine
 import SwiftUI
 import UIKit
@@ -15,6 +16,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUser
     /// A place a reminder asked the interface to open.
     let routes = PendingRoute()
 
+    override init() {
+        super.init()
+        // Siri and Shortcuts run their actions on the same library (P12.4),
+        // so the interface sees what they record at once.
+        let library = library
+        let routes = routes
+        AppDependencyManager.shared.add(dependency: library)
+        AppDependencyManager.shared.add(dependency: routes)
+    }
+
     func application(
         _ application: UIApplication, didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
@@ -25,6 +36,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @preconcurrency UNUser
             self?.reminders.setNeedsReschedule()
             // The widget shows the same next reading (P8.9).
             WidgetCenter.shared.reloadAllTimelines()
+            // Siri's "Open <plan>" names the plans the reader follows (P12.4).
+            DayByWordShortcuts.updateAppShortcutParameters()
         }
         // Reminders are wall-clock times: after travel or a clock change,
         // today and the reminders are worked out again (E40, E44).

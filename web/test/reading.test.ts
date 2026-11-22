@@ -14,6 +14,7 @@ import {
 } from "#lib/domain/index.ts";
 import type { CatalogPlan, ServedCatalog } from "#lib/server/catalog/read.ts";
 import {
+  calendarFor,
   journalRequest,
   newEvents,
   progressPage,
@@ -617,7 +618,11 @@ describe("Today, marking and undoing", () => {
       const request = journalRequest({ events, today }, catalog);
       return progressPage(catalog, request.journal, request.today).plans[0];
     };
-    expect(plan(started, "2027-03-01")?.actions).toEqual({ pause: true, end: true });
+    expect(plan(started, "2027-03-01")?.actions).toEqual({
+      pause: true,
+      end: true,
+      calendar: true,
+    });
     const paused = act(started, "2027-03-02", { kind: "pause", enrollment });
     expect(plan(paused, "2027-03-02")).toMatchObject({
       group: "paused",
@@ -682,6 +687,66 @@ describe("Today, marking and undoing", () => {
     expect((marked.at(-1) as { id: string }).id).toBe(id);
     expect(act(marked, "2027-03-01", mark)).toHaveLength(marked.length);
     expect(() => act(started, "2027-03-01", { ...mark, id: "not-an-id" })).toThrow(
+      ReadingRequestError,
+    );
+  });
+});
+
+describe("a calendar of the readings ahead (P13.4)", () => {
+  const options = { stamp: "2027-03-02T08:00:00Z" };
+
+  it("makes an all-day event for each day with readings, from the engine's days ahead", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment as string;
+    const read = act(started, "2027-03-01", {
+      kind: "mark",
+      mark: "completed",
+      enrollment,
+      assignment: 1,
+    });
+    const request = journalRequest({ events: read, today: "2027-03-02" }, catalog);
+    const { plan, file } = calendarFor(
+      catalog,
+      request.journal,
+      request.today,
+      enrollment,
+      options,
+    );
+    expect(plan).toBe("Mark in a week");
+    const lines = file.split("\r\n");
+    // Readings 2 and 3 on Tuesday and Wednesday; reading 1 is read.
+    expect(lines.filter((line) => line === "BEGIN:VEVENT")).toHaveLength(2);
+    expect(lines).toContain("DTSTART;VALUE=DATE:20270302");
+    expect(lines).toContain("DTSTART;VALUE=DATE:20270303");
+    expect(lines).toContain("SUMMARY:Mark in a week: Mark 3–4");
+    expect(lines).toContain("SUMMARY:Mark in a week: Mark 5–6");
+    expect(lines).toContain("DTSTAMP:20270302T080000Z");
+    expect(file).not.toContain("Mark 1–2");
+  });
+
+  it("gives a calendar plan its own dates, labelled by the day", () => {
+    const started = act([], "2027-03-30", {
+      kind: "enroll",
+      plan: "proverbs-by-the-date",
+      behavior: "calendar",
+      start: "2027-03-30",
+      readingDays: [1, 2, 3, 4, 5, 6, 7],
+    });
+    const enrollment = cards(started, "2027-03-30")[0]?.enrollment as string;
+    const request = journalRequest({ events: started, today: "2027-03-30" }, catalog);
+    const { file } = calendarFor(catalog, request.journal, request.today, enrollment, options);
+    expect(file.match(/BEGIN:VEVENT/g)).toHaveLength(28);
+    expect(file).toContain(
+      "DTSTART;VALUE=DATE:20270401\r\nDTEND;VALUE=DATE:20270402\r\nSUMMARY:Proverbs by the date: Proverbs 1",
+    );
+    expect(file).toContain(
+      "DESCRIPTION:Day 1. Read it in your own Bible\\, then mark it read in Day by",
+    );
+  });
+
+  it("refuses a plan that is not being followed", () => {
+    const request = journalRequest({ events: [], today: "2027-03-01" }, catalog);
+    expect(() => calendarFor(catalog, request.journal, request.today, "no-such", options)).toThrow(
       ReadingRequestError,
     );
   });

@@ -19,7 +19,7 @@ endpoints and later consented sync, never a direct database connection.
 | `/today` | yes | yes | Today |
 | `/plans` | yes | yes | Plans: recommendations, the catalog, and my plans; on the web a POST of the questions' answers shows the plans to consider (P9.1) |
 | `/plans/<id>` | yes | yes | A plan's page |
-| `/plans/<id>/week?start=YYYY-MM-DD` | yes | yes | A plan's week from a start date, printable (Phase 13) |
+| `/plans/<id>/week?start=YYYY-MM-DD&size=large` | yes | yes | A plan's week from a start date, printable; `size=large` for large print (P13.1) |
 | `/plans/<id>/start` | yes | a sheet on the plan's page | Starting the plan (P8.10c) |
 | `/progress` | yes | yes | Progress |
 | `/settings` | yes | yes | Settings (a sheet in the app) |
@@ -69,7 +69,8 @@ P14).
 - **Queries are for display only**, never for identity or personal data
   (AGENTS.md §5). `start` must be a date written `YYYY-MM-DD` (a civil
   date, docs/engine.md); anything else, including a date the calendar
-  does not have, is ignored and the page shows its default week.
+  does not have, is ignored and the page shows its default week. `size`
+  is `large` or absent; any other value is the ordinary size.
 - **Never put personal data in an address**: no reading history, no
   enrollment, no account. The one exception is the secret, revocable
   calendar-feed token (P13), which is a credential and handled as one.

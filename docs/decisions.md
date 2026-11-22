@@ -1540,3 +1540,67 @@ page.
   new load), Stop following (confirmed; the record is kept) and Follow
   again (an undo of the `ended` event). The web's events endpoint gained
   `pause`, `resume` and `end`, checked like every action against the fold.
+
+### E58. Siri and Shortcuts: three actions on the app's own library, and a mark is confirmed
+
+*2026-11-22, agent (P12.4).* Three App Intents live in the app target
+(`apple/App/Intents/ReadingIntents.swift`) and run in the app's process on
+the same `Library` the interface uses, handed to them through
+`AppDependencyManager`, so a mark from Siri shows on Today at once with its
+Undo. App Shortcuts give them phrases with no setup, which is also how they
+reach Spotlight and the Action button.
+
+- **Today's Reading** says each plan's reading ("Gospels at your pace,
+  Reading 12: Mark, chapter 4, verses 1 to 20") and shows it written; a plan
+  with nothing to read now gets Today's words for its day. It returns the
+  text for a shortcut to use. It names the passage even with "Name the
+  reading" off: the reader asked.
+- **Mark Today's Reading Read** names the reading and plan and asks before
+  marking ("Mark Matthew 1–3 read, in Gospels at your pace?", *Mark read*
+  or *Not now*). A voice or a button press that shows nothing is not yet the
+  reader confirming what they read (AGENTS.md §3); the widget's Mark read
+  needs no question because the button sits beside the passage. With
+  several plans to read, it asks which. It marks only an unread reading, as
+  the widget and the reminder do.
+- **Open Plan** opens the app (`supportedModes = .foreground(.immediate)`)
+  on Today, or on a named plan's page. Its plan is optional: a required
+  entity parameter stalled in Shortcuts before `perform()` ran.
+
+The words come from one place, `TodaysReading` (apple/Shared), which the
+widget now uses too. App Shortcut phrases are their own String Catalog,
+`apple/App/AppShortcuts.xcstrings`; `scripts/strings.swift` keeps both
+catalogs in step and checks each phrase set against the code.
+
+**Why:** the app already owns the journal, the engine and the words; a
+separate intents extension would need its own copy of all three.
+
+### E59. Calendar export: a four-week snapshot, the same bytes from both writers
+
+*2026-11-22, agent (P13.4).* A plan's readings ahead go to the reader's own
+calendar as an iCalendar file: in the app from the plan's History ("Add the
+next four weeks to a calendar…", through the share sheet), on the web from
+the plan's History on Progress (a download made by `/api/v1/calendar`,
+which keeps nothing). The events are the engine's days ahead
+(`comingDays`), one event a day with the day's references, so the file
+never disagrees with Today.
+
+- **Four weeks, not a year.** A plan at the reader's pace moves when a day
+  is missed and a file does not, so the file is short and says so ("If
+  your plan moves, add the weeks again"). A calendar that follows the
+  reader is the subscription URL, P28.7, after accounts.
+- **All day, or at the reminder time** (the app only; the web has no
+  reminders at 1.0). A timed event is *floating* local time with a
+  15-minute block, the wall-clock time wherever the reader is, as the
+  reminders are; no VTIMEZONE is needed.
+- **Stable UIDs** (`<enrollment>-<date>@daybyword.com`), so importing the
+  weeks again updates rather than duplicates in calendars that honor UIDs.
+  Nothing personal beyond the plan's title and references is in the file.
+- **One format, two writers.** `web/src/lib/calendar.ts` and
+  `apple/App/Model/CalendarFile.swift` turn the same events into the same
+  bytes, held to `tests/fixtures/calendar.json` (escaping, CRLF, folding at
+  75 octets without splitting a character, month, year and leap-day ends).
+  It is presentation, not a reading rule, so it is not in the engine.
+
+**Why:** the item asks for a file of upcoming readings; a short snapshot is
+honest about what a file can do, and shared fixtures keep the app and the
+web from drifting.

@@ -110,41 +110,15 @@ struct NextReadingProvider: TimelineProvider {
             NamingConvention(rawValue: SharedJournal.defaults.string(forKey: "bookNames") ?? "") ?? .common
         let formatter = ReferenceFormatter(
             registry: catalog.registry, versification: catalog.versification, convention: convention)
-        var readings: [NextReadingEntry.Reading] = []
-        for enrollment in active {
-            let day = enrollment.today(today)
-            guard day.status == .reading, let slot = day.readings.first, let plan = catalog.plan(enrollment.plan.id),
-                let reading = plan.assignments.first(where: { $0.id == slot.assignment })?.reading
-            else { continue }
-            let label =
-                slot.appointed.map { String(localized: "Day \($0.day)") }
-                ?? String(localized: "Reading \(enrollment.plan.positions[slot.assignment] ?? slot.assignment)")
-            readings.append(
-                .init(
-                    plan: plan.title, label: label, reference: formatter.string(for: reading),
-                    spoken: SpokenReference.text(reading, formatter: formatter),
-                    enrollment: enrollment.id.description,
-                    assignment: slot.assignment, appointed: slot.appointed?.description))
+        let readings = TodaysReading.all(in: active, catalog: catalog, today: today, formatter: formatter).map {
+            NextReadingEntry.Reading(
+                plan: $0.plan, label: $0.label, reference: $0.reference, spoken: $0.spoken,
+                enrollment: $0.enrollment.description, assignment: $0.slot.assignment,
+                appointed: $0.slot.appointed?.description)
         }
         if !readings.isEmpty { return NextReadingEntry(date: now, content: .readings(readings)) }
         return NextReadingEntry(
-            date: now, content: .status(plan: firstPlan.title, text: statusText(first.today(today))))
-    }
-
-    /// The words Today uses for a day with nothing to read now.
-    /// Today's words for a day whose reading is read.
-    static var doneText: String { String(localized: "That's today's reading.") }
-
-    static func statusText(_ day: Today) -> String {
-        switch day.status {
-        case .upcoming: String(localized: "This plan hasn't started yet.")
-        case .done: doneText
-        case .open: String(localized: "Nothing more is scheduled today.")
-        case .rest: String(localized: "Today is a rest day in this plan.")
-        case .paused: String(localized: "This plan is paused.")
-        case .finished: String(localized: "You've reached the end of this plan.")
-        case .ended, .reading: ""
-        }
+            date: now, content: .status(plan: firstPlan.title, text: TodaysReading.statusText(first.today(today))))
     }
 }
 
@@ -281,7 +255,7 @@ struct NextReadingView: View {
                     .font(.title3)
                     .accessibilityLabel(Text("A reading for today"))
             case .status(_, let text):
-                Image(systemName: text == NextReadingProvider.doneText ? "checkmark" : "book.closed")
+                Image(systemName: text == TodaysReading.doneText ? "checkmark" : "book.closed")
                     .font(.title3)
                     .accessibilityLabel(Text(verbatim: text))
             case .noPlan, .unavailable:

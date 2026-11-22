@@ -349,6 +349,10 @@ if (progressView) {
   // again the plan itself. These need a connection.
   progressView.addEventListener("click", async (event) => {
     const button = event.target instanceof Element ? event.target.closest("button") : null;
+    if (button?.dataset.calendar) {
+      await saveCalendar(button);
+      return;
+    }
     if (!button || (!button.dataset.mark && !button.dataset.undo && !button.dataset.action)) {
       return;
     }
@@ -380,6 +384,37 @@ if (progressView) {
       button.disabled = false;
     }
   });
+}
+
+/**
+ * The next four weeks of a plan as a calendar file (P13.4): the engine's
+ * days ahead from the server, saved as a download. Nothing is kept there.
+ */
+async function saveCalendar(button) {
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/v1/calendar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        events: await events(),
+        today: today(),
+        enrollment: button.dataset.calendar,
+        names: setting("dbw.book-names"),
+      }),
+    });
+    if (!response.ok) throw new Error(`/api/v1/calendar answered ${response.status}`);
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = button.dataset.filename || "day-by-word.ics";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch {
+    // Nothing is saved without a connection; the button can be tried again.
+  } finally {
+    button.disabled = false;
+  }
 }
 
 // MARK: Starting a plan

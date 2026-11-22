@@ -1,0 +1,241 @@
+{
+  "about": "The calendar file of the readings ahead (BUILD.md P13.4, docs/decisions.md E59). Both writers, web/src/lib/calendar.ts and apple/App/Model/CalendarFile.swift, turn each case's events into exactly its lines, joined by CRLF with a final CRLF.",
+  "description": "{label}. Read it in your own Bible, then mark it read in Day by Word.",
+  "cases": [
+    {
+      "name": "all-day readings, with rest days left out and a month's end",
+      "stamp": "2027-01-29T14:05:09.123Z",
+      "events": [
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-01-29",
+          "plan": "Gospels at your pace",
+          "label": "Reading 12",
+          "references": [
+            "Mark 4:1–20"
+          ]
+        },
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-02-01",
+          "plan": "Gospels at your pace",
+          "label": "Reading 13",
+          "references": [
+            "Mark 4:21–41"
+          ]
+        }
+      ],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20270129@daybyword.com",
+        "DTSTAMP:20270129T140509Z",
+        "DTSTART;VALUE=DATE:20270129",
+        "DTEND;VALUE=DATE:20270130",
+        "SUMMARY:Gospels at your pace: Mark 4:1–20",
+        "DESCRIPTION:Reading 12. Read it in your own Bible\\, then mark it read in Da",
+        " y by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20270201@daybyword.com",
+        "DTSTAMP:20270129T140509Z",
+        "DTSTART;VALUE=DATE:20270201",
+        "DTEND;VALUE=DATE:20270202",
+        "SUMMARY:Gospels at your pace: Mark 4:21–41",
+        "DESCRIPTION:Reading 13. Read it in your own Bible\\, then mark it read in Da",
+        " y by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ]
+    },
+    {
+      "name": "at a reminder time, as floating local time",
+      "stamp": "2027-12-31T23:59:59Z",
+      "time": "06:30",
+      "events": [
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-12-31",
+          "plan": "Proverbs through the month",
+          "label": "Day 31",
+          "references": [
+            "Proverbs 31"
+          ]
+        },
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2028-01-01",
+          "plan": "Proverbs through the month",
+          "label": "Day 1",
+          "references": [
+            "Proverbs 1"
+          ]
+        }
+      ],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20271231@daybyword.com",
+        "DTSTAMP:20271231T235959Z",
+        "DTSTART:20271231T063000",
+        "DURATION:PT15M",
+        "SUMMARY:Proverbs through the month: Proverbs 31",
+        "DESCRIPTION:Day 31. Read it in your own Bible\\, then mark it read in Day by",
+        "  Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20280101@daybyword.com",
+        "DTSTAMP:20271231T235959Z",
+        "DTSTART:20280101T063000",
+        "DURATION:PT15M",
+        "SUMMARY:Proverbs through the month: Proverbs 1",
+        "DESCRIPTION:Day 1. Read it in your own Bible\\, then mark it read in Day by ",
+        " Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ]
+    },
+    {
+      "name": "a year's end and a leap day, all day",
+      "stamp": "2028-02-28T08:00:00Z",
+      "events": [
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-12-31",
+          "plan": "The Bible in a year",
+          "label": "Reading 365",
+          "references": [
+            "Revelation 19–22"
+          ]
+        },
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2028-02-28",
+          "plan": "The Bible in a year",
+          "label": "Reading 59",
+          "references": [
+            "Numbers 1–2"
+          ]
+        }
+      ],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20271231@daybyword.com",
+        "DTSTAMP:20280228T080000Z",
+        "DTSTART;VALUE=DATE:20271231",
+        "DTEND;VALUE=DATE:20280101",
+        "SUMMARY:The Bible in a year: Revelation 19–22",
+        "DESCRIPTION:Reading 365. Read it in your own Bible\\, then mark it read in D",
+        " ay by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20280228@daybyword.com",
+        "DTSTAMP:20280228T080000Z",
+        "DTSTART;VALUE=DATE:20280228",
+        "DTEND;VALUE=DATE:20280229",
+        "SUMMARY:The Bible in a year: Numbers 1–2",
+        "DESCRIPTION:Reading 59. Read it in your own Bible\\, then mark it read in Da",
+        " y by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ]
+    },
+    {
+      "name": "long lines folded at 75 octets without splitting a character, and text escaped",
+      "stamp": "2027-03-01T07:00:00Z",
+      "events": [
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-03-01",
+          "plan": "Paul's letters; slowly, with notes\\margins",
+          "label": "Reading 3",
+          "references": [
+            "Romans 1:1–17",
+            "Romans 1:18–32",
+            "Romans 2:1–16",
+            "Romans 2:17–29"
+          ]
+        }
+      ],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20270301@daybyword.com",
+        "DTSTAMP:20270301T070000Z",
+        "DTSTART;VALUE=DATE:20270301",
+        "DTEND;VALUE=DATE:20270302",
+        "SUMMARY:Paul's letters\\; slowly\\, with notes\\\\margins: Romans 1:1–17\\; Ro",
+        " mans 1:18–32\\; Romans 2:1–16\\; Romans 2:17–29",
+        "DESCRIPTION:Reading 3. Read it in your own Bible\\, then mark it read in Day",
+        "  by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ]
+    },
+    {
+      "name": "a dash that would cross the fold moves whole to the next line",
+      "stamp": "2027-03-01T07:00:00Z",
+      "events": [
+        {
+          "enrollment": "0194a3b2-7c00-7000-8000-000000000001",
+          "date": "2027-03-01",
+          "plan": "A plan whose title runs just long enough to meet a fold",
+          "label": "Reading 1",
+          "references": [
+            "Mark 4:1–20"
+          ]
+        }
+      ],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        "UID:0194a3b2-7c00-7000-8000-000000000001-20270301@daybyword.com",
+        "DTSTAMP:20270301T070000Z",
+        "DTSTART;VALUE=DATE:20270301",
+        "DTEND;VALUE=DATE:20270302",
+        "SUMMARY:A plan whose title runs just long enough to meet a fold: Mark 4:1",
+        " –20",
+        "DESCRIPTION:Reading 1. Read it in your own Bible\\, then mark it read in Day",
+        "  by Word.",
+        "TRANSP:TRANSPARENT",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ]
+    },
+    {
+      "name": "no readings ahead: an empty calendar",
+      "stamp": "2027-03-01T07:00:00Z",
+      "events": [],
+      "lines": [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Day by Word//Calendar export 1//EN",
+        "CALSCALE:GREGORIAN",
+        "END:VCALENDAR"
+      ]
+    }
+  ]
+}

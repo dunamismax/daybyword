@@ -1,0 +1,46 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Mark today's reading read in ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mark today's reading read in ${applicationName}",
+              "Mark my ${applicationName} reading read"
+            ]
+          }
+        }
+      }
+    },
+    "Open my plan in ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Open my plan in ${applicationName}",
+              "Open ${plan} in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "What's my reading today in ${applicationName}?" : {
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "What's my reading today in ${applicationName}?",
+              "What's today's reading in ${applicationName}?",
+              "${applicationName} today"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

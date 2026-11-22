@@ -4,14 +4,15 @@
   // start date is chosen with a plain form, so it works without JavaScript;
   // the print button appears only when /assets/print.js can run it, and
   // the browser's own Print works either way. The print stylesheet keeps
-  // the checklist and drops the site's navigation (app.css).
+  // the checklist and drops the site's navigation (app.css). Large print
+  // (P13.1) is a box in the same form.
   import SourceNote from "#lib/components/SourceNote.svelte";
   import Unbroken from "#lib/components/Unbroken.svelte";
   import { pageTitle } from "#lib/sections.ts";
   import type { WeekPage } from "#lib/server/catalog/present.ts";
   import { text } from "#lib/strings.ts";
 
-  let { data }: { data: { week: WeekPage } } = $props();
+  let { data }: { data: { week: WeekPage; large: boolean } } = $props();
   let week = $derived(data.week);
 </script>
 
@@ -30,8 +31,11 @@
       type="date"
       name="start"
       value={week.start ?? ""}
-      required
     />
+  </label>
+  <label class="flex min-h-11 items-center gap-xs text-label">
+    <input type="checkbox" name="size" value="large" checked={data.large} />
+    {text("week.large-print")}
   </label>
   <button class="button button-secondary" type="submit">{text("week.show")}</button>
   <button class="button button-primary" type="button" data-print hidden>
@@ -39,7 +43,7 @@
   </button>
 </form>
 
-<section class="card checklist" aria-labelledby="week-plan">
+<section class={["card checklist", data.large && "checklist-large"]} aria-labelledby="week-plan">
   <h2 class="mt-0 mb-xxs text-body" id="week-plan">{week.title}</h2>
   <p class="mt-0 mb-xs text-caption text-text-muted">{week.label}</p>
   <p class="mt-0 mb-m text-label">{week.note}</p>

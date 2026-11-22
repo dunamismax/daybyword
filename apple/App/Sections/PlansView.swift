@@ -57,7 +57,7 @@ struct PlansView: View {
                             message: library.problem ?? String(localized: "The plan catalog cannot be read.")))
                 }
             }
-            .frame(maxWidth: 720, alignment: .leading)
+            .frame(maxWidth: ReadableWidth.column, alignment: .leading)
             .frame(maxWidth: .infinity)
             .padding(Spacing.m)
         }
@@ -285,7 +285,7 @@ struct PlanView: View {
             }
             .card(padding: Spacing.m)
         }
-        .frame(maxWidth: 720, alignment: .leading)
+        .frame(maxWidth: ReadableWidth.column, alignment: .leading)
         .frame(maxWidth: .infinity)
         .padding(Spacing.m)
     }
@@ -325,55 +325,23 @@ struct PlanWeekView: View {
     let id: PlanID
     let start: String?
     @Environment(Library.self) private var library
+    /// Large print, remembered for the next checklist (P13.1).
+    @AppStorage("weekLargePrint") private var large = false
+    @State private var failure: String?
 
     var body: some View {
         ScrollView {
-            if let catalog = library.catalog, let plan = catalog.plan(id) {
-                let presented = PlanPresentation(catalog: catalog, plan: plan)
-                let from = start.flatMap { try? CivilDate($0) } ?? library.today
+            if let checklist {
                 VStack(alignment: .leading, spacing: Spacing.m) {
-                    Text(verbatim: plan.title)
-                        .typeStyle(TypeScale.planTitle)
-                        .foregroundStyle(Palette.text)
-                        .accessibilityAddTraits(.isHeader)
-                    Text(
-                        verbatim: plan.schedule == .sequence
-                            ? String(
-                                localized:
-                                    "The plan's first week, begun on \(PlanPresentation.dayText(from)), on the days it is paced for. Your own days may differ."
-                            )
-                            : String(
-                                localized:
-                                    "The readings appointed for seven days from \(PlanPresentation.dayText(from)).")
-                    )
-                    .typeStyle(TypeScale.body)
-                    .foregroundStyle(Palette.textMuted)
-                    .fixedSize(horizontal: false, vertical: true)
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(presented.week(from: from), id: \.date) { day in
-                            VStack(alignment: .leading, spacing: Spacing.xxs) {
-                                Text(verbatim: PlanPresentation.dayText(day.date))
-                                    .typeStyle(TypeScale.caption)
-                                    .foregroundStyle(Palette.textMuted)
-                                if day.references.isEmpty {
-                                    Text("Rest day").typeStyle(TypeScale.body).foregroundStyle(Palette.textMuted)
-                                }
-                                ForEach(day.references, id: \.display) { reference in
-                                    Text(verbatim: reference.unbroken)
-                                        .typeStyle(TypeScale.referenceList)
-                                        .foregroundStyle(Palette.text)
-                                        .accessibilityLabel(reference.spoken)
-                                }
-                            }
-                            .padding(.vertical, Spacing.xs)
-                            .accessibilityElement(children: .combine)
-                            Divider().overlay(Palette.line)
-                        }
+                    Toggle("Large print", isOn: $large)
+                        .typeStyle(TypeScale.body)
+                        .tint(Palette.accent)
+                    checklist.card(padding: Spacing.m)
+                    if let failure {
+                        Text(verbatim: failure).typeStyle(TypeScale.body).foregroundStyle(Palette.danger)
                     }
-                    .card(padding: Spacing.m)
-                    SourceNote(text: plan.source)
                 }
-                .frame(maxWidth: 720, alignment: .leading)
+                .frame(maxWidth: ReadableWidth.column, alignment: .leading)
                 .frame(maxWidth: .infinity)
                 .padding(Spacing.m)
             } else {
@@ -384,7 +352,42 @@ struct PlanWeekView: View {
             }
         }
         .background(Palette.background)
+        .toolbar {
+            if let checklist {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Share as PDF", systemImage: "square.and.arrow.up") { share(checklist) }
+                        .accessibilityHint(Text("Shares this week's checklist as a page to print."))
+                }
+            }
+        }
         .navigationTitle("Week")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    /// The week from the date asked for, or from today.
+    private var checklist: WeekChecklist? {
+        guard let catalog = library.catalog, let plan = catalog.plan(id) else { return nil }
+        let presented = PlanPresentation(catalog: catalog, plan: plan)
+        let from = start.flatMap { try? CivilDate($0) } ?? library.today
+        let note =
+            plan.schedule == .sequence
+            ? String(
+                localized:
+                    "The plan's first week, begun on \(PlanPresentation.dayText(from)), on the days it is paced for. Your own days may differ."
+            )
+            : String(localized: "The readings appointed for seven days from \(PlanPresentation.dayText(from)).")
+        return WeekChecklist(
+            title: plan.title, label: "\(presented.byline) · \(presented.kind)", note: note,
+            days: presented.week(from: from), source: plan.source, large: large)
+    }
+
+    private func share(_ checklist: WeekChecklist) {
+        do {
+            let name = String(localized: "\(checklist.title), a week")
+            ShareSheet.present(try WeekPDF.file(checklist, named: name))
+            failure = nil
+        } catch {
+            failure = String(describing: error)
+        }
     }
 }

@@ -14,6 +14,8 @@ struct PlanHistoryView: View {
     /// The day a reading marked read here is kept on.
     @State private var readOn = Date.now
     @State private var confirmingEnd = false
+    /// The reminder time to offer for the calendar file, while asking.
+    @State private var calendarTime: WallTime?
     @State private var failure: String?
 
     var body: some View {
@@ -27,6 +29,7 @@ struct PlanHistoryView: View {
                 StateMessage(kind: .empty(title: String(localized: "This plan isn't in your record."), message: ""))
             }
         }
+        .readableRows()
         .background(Palette.background)
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
@@ -91,6 +94,16 @@ struct PlanHistoryView: View {
         .typeStyle(TypeScale.body)
         // Today as the app resolved it (E7), not the clock's instant.
         .onAppear { readOn = today.start(in: .current) }
+        .confirmationDialog(
+            "Add the next four weeks to a calendar", isPresented: calendarAsking, titleVisibility: .visible,
+            presenting: calendarTime
+        ) { time in
+            Button("At my reminder time, \(RemindersSection.timeText(time))") { shareCalendar(enrollment, time: time) }
+            Button("All day") { shareCalendar(enrollment, time: nil) }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("The calendar keeps these dates. If your plan moves, add the weeks again.")
+        }
         .confirmationDialog(
             "Stop following this plan?", isPresented: $confirmingEnd, titleVisibility: .visible
         ) {
@@ -226,9 +239,35 @@ struct PlanHistoryView: View {
                 Button("Resume this plan") { record(.resumed(from: today, basis: nil)) }
             } else if !enrollment.isFinished {
                 Button("Pause this plan") { record(.paused(from: today)) }
+                Button("Add the next four weeks to a calendar…") {
+                    // At the reminder time, or all day, when the plan has one.
+                    if let time = enrollment.arrangement(on: today).reminder {
+                        calendarTime = time
+                    } else {
+                        shareCalendar(enrollment, time: nil)
+                    }
+                }
+                .accessibilityHint(Text("Shares a calendar file of this plan's readings for the next four weeks."))
             }
             Button("Stop following this plan", role: .destructive) { confirmingEnd = true }
         }
+    }
+
+    /// A calendar file of the plan's readings ahead, through the share sheet
+    /// (P13.4): a snapshot, so it says how far it reaches.
+    private func shareCalendar(_ enrollment: Enrollment, time: WallTime?) {
+        guard let plan = library.plan(of: enrollment), let formatter = library.formatter else { return }
+        do {
+            let events = CalendarFile.events(enrollment, plan: plan, from: library.today, formatter: formatter)
+            ShareSheet.present(try CalendarFile.file(events, plan: plan.title, time: time, now: library.now))
+            failure = nil
+        } catch {
+            failure = String(localized: "That wasn't saved: \(String(describing: error))")
+        }
+    }
+
+    private var calendarAsking: Binding<Bool> {
+        Binding(get: { calendarTime != nil }, set: { if !$0 { calendarTime = nil } })
     }
 
     /// The date chosen above, kept between the plan's start and today.

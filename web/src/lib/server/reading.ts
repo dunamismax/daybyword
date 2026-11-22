@@ -4,8 +4,10 @@
 // Today is answered by the domain module, and a new event is made by the
 // same rules the app's are. Nothing here is stored, logged or cached, and
 // nothing here restates a reading rule. Server-only.
+import { calendarFile, type CalendarEvent } from "#lib/calendar.ts";
 import {
   assignmentPositions,
+  comingDays,
   bibleLink,
   bookName,
   celebrations as celebrationsOn,
@@ -501,6 +503,8 @@ export interface PlanRecord {
     readonly end?: true;
     /** The `ended` event to take back, to follow the plan again. */
     readonly restore?: EventID;
+    /** Whether the readings ahead can go to a calendar (P13.4). */
+    readonly calendar?: true;
   };
 }
 
@@ -589,7 +593,7 @@ function planActions(
     return ended ? { restore: ended.id } : {};
   }
   if (enrollment.isPaused(date)) return { resume: true, end: true };
-  return finished ? { end: true } : { pause: true, end: true };
+  return finished ? { end: true } : { pause: true, end: true, calendar: true };
 }
 
 /** A plan's history (P11.5): every reading of the record with its state, and every change, newest first. */
@@ -1055,4 +1059,56 @@ export function newEvents(
   const inert = after.inert.find((entry) => made.some((event) => event.id === entry.event));
   if (inert) throw new ReadingRequestError(`the change means nothing: ${inert.reason}`);
   return made.map(journalEventWire);
+}
+
+/** How far ahead a calendar file reaches: four weeks, since a plan at the
+ * reader's pace moves when a day is missed and the file does not. */
+export const calendarDays = 28;
+
+/**
+ * A calendar file of one plan's readings ahead (BUILD.md P13.4,
+ * docs/decisions.md E59): the engine's days ahead from `date`, each day
+ * with readings an all-day event. Nothing is kept.
+ */
+export function calendarFor(
+  catalog: ServedCatalog,
+  journal: Journal,
+  date: CivilDate,
+  enrollmentID: string,
+  options: ReadingOptions & { readonly stamp: string },
+): { readonly plan: string; readonly file: string } {
+  const enrollment = journal.enrollments.find((candidate) => candidate.id === enrollmentID);
+  if (!enrollment || enrollment.ended !== undefined) {
+    throw new ReadingRequestError("enrollment is not a plan being followed");
+  }
+  const names = formatter(catalog, options.convention ?? "common");
+  const title =
+    catalog.plans.find((plan) => plan.id === enrollment.plan.id)?.title ?? enrollment.plan.id;
+  const positions = assignmentPositions(enrollment.plan);
+  const readingOf = (assignment: number) =>
+    enrollment.plan.assignments.find((candidate) => candidate.id === assignment)?.reading;
+  const events = comingDays(enrollment, date, calendarDays).flatMap((day): CalendarEvent[] => {
+    const [first] = day.readings;
+    if (!first) return [];
+    return [
+      {
+        enrollment: enrollment.id,
+        date: civilDateText(day.date),
+        plan: title,
+        label: first.appointed
+          ? text("plan.sample-day", { day: String(first.appointed.day) })
+          : text("history.reading", {
+              position: String(positions.get(first.assignment) ?? first.assignment),
+            }),
+        references: day.readings.flatMap((slot) => {
+          const reading = readingOf(slot.assignment);
+          return reading ? [names.reading(reading)] : [];
+        }),
+      },
+    ];
+  });
+  return {
+    plan: title,
+    file: calendarFile(events, { stamp: options.stamp, description: text("calendar.description") }),
+  };
 }

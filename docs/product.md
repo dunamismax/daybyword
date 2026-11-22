@@ -223,8 +223,11 @@ Paper Bibles are first-class (D26).
   1–20").
 - An option to keep the screen awake while a reading is open.
 - No "Open in …" link; Copy reference stays.
-- Printable weekly checklists and large print (Phase 13), where the plan's
-  permissions allow.
+- A week's checklist to print (P13.1): the plan and its label, seven days
+  with a box to tick beside each reading, and the source note. The web
+  prints the page itself; the app shares it as a PDF (Letter or A4 by the
+  device's region, a day never split across pages). Large print is a box
+  to tick on either, where the plan's permissions allow.
 
 ## Reminders and notifications
 
@@ -246,6 +249,7 @@ Paper Bibles are first-class (D26).
 |---|---|---|
 | **App** | Everything, offline, without an account | Show Bible text, require sign-in, track |
 | **Widget** (P8.9, P12.2) | Shows the next reading (small) or today's reading in each plan (medium) with **Mark read**; on the Lock Screen, the next reading with Mark read, a line, or a symbol that opens Today; with "Name the reading in reminders and on the Lock Screen" off, the Lock Screen shows the plan and "Reading 12", never the passage | Show a streak, nag, or claim a reading happened that the reader did not confirm |
+| **Siri and Shortcuts** (P12.4) | "What's my reading today?" says and shows each plan's reading; "Mark today's reading read" names the reading and asks before marking it; "Open my plan" opens Today or a plan. Also in Spotlight and on the Action button | Mark a reading without saying which, or say anything about missed days |
 | **Notification** (P8.8) | Says what is next; **Mark read**, **Snooze**, **Open** | Mention missed days, streaks, or urgency |
 | **Web** (daybyword.com) | Public plan pages anyone can read; the same Today, Plans, Progress, and Settings, with progress kept in the reader's own browser at 1.0 and nothing stored on the server (D39); printable weeks | Load anything from another host, set a cookie that is not strictly necessary, or store reading data on the server |
 

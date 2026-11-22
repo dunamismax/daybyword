@@ -48,7 +48,7 @@ struct ProgressSectionView: View {
                             message: String(localized: "It describes what you've read, and nothing more.")))
                 }
             }
-            .frame(maxWidth: 720, alignment: .leading)
+            .frame(maxWidth: ReadableWidth.column, alignment: .leading)
             .frame(maxWidth: .infinity)
             .padding(Spacing.m)
         }

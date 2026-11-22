@@ -1,5 +1,6 @@
-// Keeps the app's String Catalog, apple/Shared/Localizable.xcstrings, in step
-// with the code (docs/decisions.md E15, E25; BUILD.md P2.10). The keys come
+// Keeps the app's String Catalogs in step with the code (docs/decisions.md
+// E15, E25; BUILD.md P2.10, P12.4): apple/Shared/Localizable.xcstrings for the
+// interface, and apple/App/AppShortcuts.xcstrings for the phrases Siri hears. The keys come
 // from the .stringsdata files Xcode writes when it builds the app and the
 // widget (SWIFT_EMIT_LOC_STRINGS), so build first (make build or make test-app).
 //
@@ -9,7 +10,11 @@
 import Foundation
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-let catalogURL = root.appendingPathComponent("apple/Shared/Localizable.xcstrings")
+/// Each table the code may use, and its catalog.
+let catalogs = [
+    "Localizable": root.appendingPathComponent("apple/Shared/Localizable.xcstrings"),
+    "AppShortcuts": root.appendingPathComponent("apple/App/AppShortcuts.xcstrings"),
+]
 let buildDirectory = root.appendingPathComponent(
     "build/DerivedData/Build/Intermediates.noindex/DayByWord.build/Debug-iphonesimulator")
 /// The targets whose strings readers see. Tests are not among them.
@@ -22,11 +27,14 @@ func fail(_ message: String) -> Never {
     exit(1)
 }
 
-/// Every key the code uses, from the build's .stringsdata files, skipping
-/// files whose source no longer exists (a deleted file's data stays behind
-/// in DerivedData).
-func keysInCode() -> Set<String> {
-    var keys: Set<String> = []
+/// Every key the code uses, by table, from the build's .stringsdata files,
+/// skipping files whose source no longer exists (a deleted file's data stays
+/// behind in DerivedData).
+/// Each App Shortcut's phrases, by its key, as the code gives them.
+var phrases: [String: [String]] = [:]
+
+func keysInCode() -> [String: Set<String>] {
+    var keys: [String: Set<String>] = [:]
     var found = false
     for target in targets {
         let directory = buildDirectory.appendingPathComponent("\(target).build")
@@ -43,8 +51,14 @@ func keysInCode() -> Set<String> {
             found = true
             let tables = json["tables"] as? [String: [[String: Any]]] ?? [:]
             for (table, entries) in tables {
-                guard table == "Localizable" else { fail("\(source) uses the table \(table); use Localizable") }
-                keys.formUnion(entries.compactMap { $0["key"] as? String })
+                guard catalogs[table] != nil else { fail("\(source) uses the table \(table); use Localizable") }
+                keys[table, default: []].formUnion(entries.compactMap { $0["key"] as? String })
+                // An App Shortcut's key is its first phrase; the catalog keeps all of them.
+                for entry in entries {
+                    if let key = entry["key"] as? String, let values = entry["values"] as? [String] {
+                        phrases[key] = values
+                    }
+                }
             }
         }
     }
@@ -52,14 +66,14 @@ func keysInCode() -> Set<String> {
     return keys
 }
 
-func readCatalog() -> [String: Any] {
+func readCatalog(_ catalogURL: URL) -> [String: Any] {
     guard let data = try? Data(contentsOf: catalogURL),
         let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
     else { return ["sourceLanguage": "en", "strings": [String: Any](), "version": "1.0"] }
     return json
 }
 
-func writeCatalog(_ catalog: [String: Any]) {
+func writeCatalog(_ catalog: [String: Any], to catalogURL: URL) {
     do {
         var data = try JSONSerialization.data(
             withJSONObject: catalog, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
@@ -95,28 +109,46 @@ func unlocalizedText() -> [String] {
     return problems
 }
 
-let mode = CommandLine.arguments.dropFirst().first ?? ""
-let code = keysInCode()
-var catalog = readCatalog()
-let strings = catalog["strings"] as? [String: Any] ?? [:]
-let missing = code.subtracting(strings.keys).sorted()
-let stale = Set(strings.keys).subtracting(code).sorted()
+/// An App Shortcut's English phrases as the catalog keeps them.
+func phraseEntry(_ values: [String]) -> [String: Any] {
+    ["localizations": ["en": ["stringSet": ["state": "translated", "values": values]]]]
+}
 
-switch mode {
-case "sync":
-    var updated = strings.filter { code.contains($0.key) }
-    for key in missing { updated[key] = [String: Any]() }
-    catalog["strings"] = updated
-    writeCatalog(catalog)
-    print("strings: \(updated.count) keys; added \(missing.count), removed \(stale.count)")
-case "check":
-    var problems = missing.map { "missing from the catalog: \($0)" } + stale.map { "stale in the catalog: \($0)" }
-    problems += unlocalizedText()
-    if catalog["sourceLanguage"] as? String != "en" { problems.append("the catalog's source language is not en") }
-    if !problems.isEmpty {
-        fail(problems.joined(separator: "\n") + "\nrun make strings to update the catalog")
+let mode = CommandLine.arguments.dropFirst().first ?? ""
+guard mode == "sync" || mode == "check" else { fail("usage: swift scripts/strings.swift sync|check") }
+let code = keysInCode()
+var problems: [String] = []
+var total = 0
+for (table, catalogURL) in catalogs.sorted(by: { $0.key < $1.key }) {
+    let keys = code[table] ?? []
+    var catalog = readCatalog(catalogURL)
+    let strings = catalog["strings"] as? [String: Any] ?? [:]
+    let missing = keys.subtracting(strings.keys).sorted()
+    let stale = Set(strings.keys).subtracting(keys).sorted()
+    total += keys.count
+    switch mode {
+    case "sync":
+        var updated = strings.filter { keys.contains($0.key) }
+        for key in missing { updated[key] = [String: Any]() }
+        for (key, values) in phrases where keys.contains(key) { updated[key] = phraseEntry(values) }
+        catalog["strings"] = updated
+        writeCatalog(catalog, to: catalogURL)
+        print("strings: \(table): \(updated.count) keys; added \(missing.count), removed \(stale.count)")
+    default:
+        problems += missing.map { "\(table): missing from the catalog: \($0)" }
+        problems += stale.map { "\(table): stale in the catalog: \($0)" }
+        for (key, values) in phrases where keys.contains(key) {
+            if let entry = strings[key], !NSDictionary(dictionary: phraseEntry(values)).isEqual(entry) {
+                problems.append("\(table): the phrases for \"\(key)\" differ from the code")
+            }
+        }
+        if catalog["sourceLanguage"] as? String != "en" { problems.append("\(table): the source language is not en") }
     }
-    print("strings: \(code.count) keys, all in the catalog")
-default:
-    fail("usage: swift scripts/strings.swift sync|check")
+}
+if mode == "check" {
+    problems += unlocalizedText()
+    if !problems.isEmpty {
+        fail(problems.joined(separator: "\n") + "\nrun make strings to update the catalogs")
+    }
+    print("strings: \(total) keys, all in the catalogs")
 }

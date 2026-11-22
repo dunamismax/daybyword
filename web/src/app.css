@@ -170,6 +170,19 @@
     border-radius: 4px;
   }
 
+  /* Large print: the checklist's own type sizes, raised to 18-point
+     references and 15-point notes, on screen and on paper. */
+  .checklist-large {
+    --text-body: 1.75rem;
+    --text-label: 1.5rem;
+    --text-caption: 1.25rem;
+  }
+
+  .checklist-large .tick {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
   @media print {
     body > .contents > a[href="#content"],
     header,

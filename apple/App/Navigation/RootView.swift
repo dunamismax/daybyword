@@ -27,6 +27,9 @@ struct RootView: View {
                 SectionStack(path: $navigation.progressPath) { ProgressSectionView() }
             }
         }
+        // On iPad the tabs can open into a sidebar; an iPhone keeps the
+        // tab bar (P12.6).
+        .tabViewStyle(.sidebarAdaptable)
         .tint(Palette.accent)
         .sheet(isPresented: $navigation.showingSettings) {
             SettingsView()
