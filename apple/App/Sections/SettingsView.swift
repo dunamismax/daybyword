@@ -1,5 +1,15 @@
 import SwiftUI
 
+/// Whether Progress shows the reading days read in a row (D17, P11.3): off
+/// unless the reader turns it on, counted against their own reading days,
+/// shown small, and never in a reminder.
+enum StreakDisplay: String, CaseIterable, Sendable {
+    case off
+    case on
+
+    static let storageKey = "streak"
+}
+
 /// How the app looks, whatever the device is set to (docs/product.md,
 /// Settings). Kept in user defaults: a display preference, not reading data.
 enum Appearance: String, CaseIterable, Identifiable, Sendable {
@@ -68,6 +78,7 @@ struct SettingsView: View {
     @AppStorage(ReferenceSize.storageKey) private var referenceSize = ReferenceSize.standard
     @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
     @AppStorage(WayToRead.keepAwakeKey) private var keepAwake = false
+    @AppStorage(StreakDisplay.storageKey) private var streak = StreakDisplay.off
     @Environment(Library.self) private var library
     @State private var confirmingDelete = false
     @State private var failure: String?
@@ -116,6 +127,17 @@ struct SettingsView: View {
                         .accessibilityHint(Text("A sample reference at this size."))
                 } footer: {
                     Text("References on Today and in plans use this size, on top of your device's text size.")
+                }
+                .listRowBackground(Palette.surface)
+
+                Section {
+                    Toggle(
+                        "Show reading days in a row on Progress",
+                        isOn: Binding(get: { streak == .on }, set: { streak = $0 ? .on : .off }))
+                } footer: {
+                    Text(
+                        "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder."
+                    )
                 }
                 .listRowBackground(Palette.surface)
 

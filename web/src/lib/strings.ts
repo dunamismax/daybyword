@@ -258,6 +258,8 @@ const english = {
   "progress.books-note":
     "The books you've marked a reading in, in any plan. Reading in a book is not reading all of it.",
   "progress.key": "✓ read · ○ a reading day · – a rest day",
+  "progress.in-a-row-one": "1 reading day in a row",
+  "progress.in-a-row": "{count} reading days in a row",
   "progress.day-read": "{date}, read",
   "progress.day-unread": "{date}, not read",
   "progress.day-rest": "{date}, rest day",
@@ -297,6 +299,11 @@ const english = {
   "settings.book-names-kjv": "King James: Song of Solomon, Ecclesiasticus",
   "settings.book-names-douay": "Douay-Rheims: Canticle of Canticles, Apocalypse",
   "settings.book-names-note": "References on Today use these names.",
+  "settings.streak": "Reading days in a row",
+  "settings.streak-off": "Don't show",
+  "settings.streak-on": "Show on Progress",
+  "settings.streak-note":
+    "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder.",
   "settings.kept-in-this-browser":
     "These choices are kept in this browser only. They are never sent to daybyword.com.",
   "settings.your-data": "Your data",

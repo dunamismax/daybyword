@@ -47,5 +47,10 @@ import Testing
     #expect(names.app.storageKey == Library.conventionKey)
     #expect(names.values == NamingConvention.allCases.map(\.rawValue))
     #expect(names.defaultValue == NamingConvention.common.rawValue)
-    #expect(settings.count == 5)
+    // Whether Progress shows the reading days in a row (D17): off by default.
+    let streak = try #require(settings.first { $0.name == "streak" })
+    #expect(streak.app.storageKey == StreakDisplay.storageKey)
+    #expect(streak.values == StreakDisplay.allCases.map(\.rawValue))
+    #expect(streak.defaultValue == StreakDisplay.off.rawValue)
+    #expect(settings.count == 6)
 }

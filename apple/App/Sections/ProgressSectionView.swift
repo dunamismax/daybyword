@@ -5,10 +5,11 @@ import SwiftUI
 /// Progress (BUILD.md P8.12, P11.1): recent reading days as a plain week
 /// strip, the books explored in any plan, and for each plan the readings by
 /// state and the next reading. It describes activity and nothing more: no score, no streak
-/// unless the reader asks for one (P11.3), and no comparison. (SwiftUI
+/// unless the reader turns it on in Settings (D17, P11.3), and no comparison. (SwiftUI
 /// already has a `ProgressView`.)
 struct ProgressSectionView: View {
     @Environment(Library.self) private var library
+    @AppStorage(StreakDisplay.storageKey) private var streak = StreakDisplay.off
 
     var body: some View {
         ScrollView {
@@ -74,6 +75,8 @@ struct ProgressSectionView: View {
     /// the reader read, and rest days are named as rest days.
     private func weekStrip(_ journal: Journal) -> some View {
         let days = journal.recentDays(ending: library.today)
+        // The streak, only when the reader turned it on (D17).
+        let inARow = streak == .on ? journal.streak(on: library.today) : 0
         return VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Recent days")
                 .typeStyle(TypeStyle(size: 17, weight: .bold, relativeTo: .headline))
@@ -104,6 +107,18 @@ struct ProgressSectionView: View {
             Text("✓ read · ○ a reading day · – a rest day")
                 .typeStyle(TypeScale.caption)
                 .foregroundStyle(Palette.textMuted)
+            // Small, in words, and said only while there is one: never a zero,
+            // never as something lost.
+            if inARow > 0 {
+                Text(
+                    inARow == 1
+                        ? String(localized: "1 reading day in a row")
+                        : String(localized: "\(inARow) reading days in a row")
+                )
+                .typeStyle(TypeScale.caption)
+                .foregroundStyle(Palette.text)
+                .padding(.top, Spacing.xxs)
+            }
         }
         .card(padding: Spacing.m)
     }

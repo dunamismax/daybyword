@@ -103,6 +103,9 @@
     "%lld reading days a week" : {
 
     },
+    "%lld reading days in a row" : {
+
+    },
     "%lld readings" : {
 
     },
@@ -128,6 +131,9 @@
 
     },
     "1 reading day a week" : {
+
+    },
+    "1 reading day in a row" : {
 
     },
     "15 minutes or more" : {
@@ -332,6 +338,9 @@
 
     },
     "Copy reference" : {
+
+    },
+    "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder." : {
 
     },
     "Dark" : {
@@ -740,6 +749,9 @@
 
     },
     "Settings" : {
+
+    },
+    "Show reading days in a row on Progress" : {
 
     },
     "Shows the next reading in your plan, with Mark read." : {

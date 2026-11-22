@@ -1,5 +1,5 @@
 // Progress, worked out from the journal the browser sends (BUILD.md P8.12,
-// docs/decisions.md E52): POST { events, today, names } as JSON, answered
+// docs/decisions.md E52): POST { events, today, names, streak } as JSON, answered
 // with the Progress view as HTML for /assets/reading.js to insert. Nothing
 // is kept.
 import { render } from "svelte/server";
@@ -16,11 +16,14 @@ export const POST = async ({ request }: { request: Request }) => {
   if (body instanceof Response) return body;
   try {
     const { journal, today } = journalRequest(body, catalog);
-    const names = (body as Record<string, unknown>)["names"];
+    const fields = body as Record<string, unknown>;
+    const names = fields["names"];
     const progress = progressPage(catalog, journal, today, {
       convention: namingConventions.includes(names as NamingConvention)
         ? (names as NamingConvention)
         : "common",
+      // The streak only when the reader turned it on (D17).
+      streak: fields["streak"] === "on",
     });
     const html =
       progress.plans.length > 0 ? render(ProgressView, { props: { progress } }).body : "";

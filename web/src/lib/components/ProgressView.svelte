@@ -2,8 +2,9 @@
   // Progress (docs/product.md, Progress; BUILD.md P8.12), rendered on the
   // server from the journal the browser sent and inserted by
   // /assets/reading.js: the seven days ending today, each in words and a
-  // symbol, the books explored in any plan (P11.1), and each plan's readings
-  // by state, never a score.
+  // symbol, with the reading days in a row only when the reader asked (D17),
+  // the books explored in any plan (P11.1), and each plan's readings by
+  // state, never a score.
   import type { ProgressPage } from "#lib/server/reading.ts";
   import { text } from "#lib/strings.ts";
 
@@ -27,6 +28,9 @@
     {/each}
   </ol>
   <p class="mb-0 text-caption text-text-muted">{text("progress.key")}</p>
+  {#if progress.inARow}
+    <p class="mt-xs mb-0 text-caption">{progress.inARow}</p>
+  {/if}
 </section>
 {#if progress.books}
   <section class="card mb-m" aria-labelledby="books-explored">

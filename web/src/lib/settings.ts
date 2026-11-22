@@ -55,4 +55,13 @@ export const settings: readonly Setting[] = [
     fallback: "common",
     applied: false,
   },
+  // Sent with the journal to /api/v1/progress, which shows the reading days
+  // read in a row only when the reader turned it on (D17, P11.3).
+  {
+    name: "streak",
+    key: "dbw.streak",
+    values: ["off", "on"],
+    fallback: "off",
+    applied: false,
+  },
 ];

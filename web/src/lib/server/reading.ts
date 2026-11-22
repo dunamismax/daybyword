@@ -27,6 +27,7 @@ import {
   previewing,
   progressCounts,
   recentDays,
+  streak,
   ReferenceFormatter,
   weekday,
   workload,
@@ -108,6 +109,8 @@ export interface ReadingOptions {
   readonly translation?: number;
   /** The event the reader's last action in this tab made, to offer Undo (or Redo) for. */
   readonly lastAction?: EventID;
+  /** Whether Progress shows the reading days read in a row (D17); off unless the reader turns it on. */
+  readonly streak?: boolean;
 }
 
 /** One reading on a Today card. */
@@ -468,6 +471,8 @@ export interface ProgressPage {
   readonly plans: readonly PlanRecord[];
   /** The books explored in any plan, in the Bible's order, in words; empty when none (P11.1). */
   readonly books: string;
+  /** The reading days read in a row, in words, when the reader asked for them and there are some (D17). */
+  readonly inARow?: string;
 }
 
 const weekdayKeys = [
@@ -546,7 +551,16 @@ export function progressPage(
     const book = catalog.registry.book(id);
     return book ? [bookName(book, options.convention ?? "common").name] : [];
   });
-  return { days, plans, books: listText(explored) };
+  // The streak, only when the reader turned it on (D17): small, in words,
+  // and said only while there is one, never as something lost.
+  const count = options.streak ? streak(journal, date) : 0;
+  const inARow =
+    count === 1
+      ? text("progress.in-a-row-one")
+      : count > 1
+        ? text("progress.in-a-row", { count: String(count) })
+        : undefined;
+  return { days, plans, books: listText(explored), ...(inARow ? { inARow } : {}) };
 }
 
 // MARK: Making events

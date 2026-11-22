@@ -15,6 +15,8 @@ const settings = [
   { name: "way-to-read", key: "dbw.way-to-read", fallback: "physicalBible" },
   { name: "translation", key: "dbw.translation", fallback: "0" },
   { name: "book-names", key: "dbw.book-names", fallback: "common" },
+  // Read by reading.js for Progress (D17): off unless the reader turns it on.
+  { name: "streak", key: "dbw.streak", fallback: "off" },
 ];
 
 function apply(setting, value) {

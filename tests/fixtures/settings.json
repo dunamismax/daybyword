@@ -1,7 +1,7 @@
 {
   "fixture": "settings",
-  "version": 2,
-  "about": "The settings each client keeps only on the reader's device: the values, the default (which is stored as no value), the web form field and localStorage key, and the app's UserDefaults key. The app also keeps its navigation in SceneStorage under \"navigation\". Version 2 adds how the reader reads, the Bible.com translation for links (0 until one is chosen; docs/destinations.md) and the book-name convention (D29).",
+  "version": 3,
+  "about": "The settings each client keeps only on the reader's device: the values, the default (which is stored as no value), the web form field and localStorage key, and the app's UserDefaults key. The app also keeps its navigation in SceneStorage under \"navigation\". Version 2 adds how the reader reads, the Bible.com translation for links (0 until one is chosen; docs/destinations.md) and the book-name convention (D29). Version 3 adds whether Progress shows the reading days read in a row (D17; off unless the reader turns it on).",
   "settings": [
     {
       "name": "appearance",
@@ -101,6 +101,21 @@
       },
       "app": {
         "storageKey": "bookNames"
+      }
+    },
+    {
+      "name": "streak",
+      "values": [
+        "off",
+        "on"
+      ],
+      "defaultValue": "off",
+      "web": {
+        "field": "streak",
+        "storageKey": "dbw.streak"
+      },
+      "app": {
+        "storageKey": "streak"
       }
     }
   ]

@@ -327,6 +327,7 @@ if (progressView) {
         events: journal,
         today: today(),
         names: setting("dbw.book-names"),
+        streak: setting("dbw.streak"),
       });
       if (answer.html) progressView.innerHTML = answer.html;
     })

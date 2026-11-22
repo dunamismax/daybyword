@@ -396,6 +396,28 @@ describe("Today, marking and undoing", () => {
     ).toBe("");
   });
 
+  it("says the reading days in a row only when the reader asks, and never zero (D17)", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const mark = (events: unknown[], today: string, assignment: number) =>
+      act(events, today, { kind: "mark", mark: "completed", enrollment, assignment });
+    const twoDays = mark(mark(started, "2027-03-01", 1), "2027-03-02", 2);
+    const on = (events: unknown[], today: string) => {
+      const request = journalRequest({ events, today }, catalog);
+      return progressPage(catalog, request.journal, request.today, { streak: true }).inARow;
+    };
+    const request = journalRequest({ events: twoDays, today: "2027-03-02" }, catalog);
+    // Off unless turned on.
+    expect(progressPage(catalog, request.journal, request.today).inARow).toBeUndefined();
+    expect(on(twoDays, "2027-03-02")).toBe("2 reading days in a row");
+    // Wednesday morning, not yet read, still counts Monday and Tuesday.
+    expect(on(twoDays, "2027-03-03")).toBe("2 reading days in a row");
+    expect(on(mark(started, "2027-03-01", 1), "2027-03-01")).toBe("1 reading day in a row");
+    // Nothing is said when there is none: never a zero.
+    expect(on(started, "2027-03-01")).toBeUndefined();
+    expect(on(twoDays, "2027-03-05")).toBeUndefined();
+  });
+
   it("previews a finish date's load, and refuses one beyond the reader's limit", () => {
     const finishing = {
       ...enroll,

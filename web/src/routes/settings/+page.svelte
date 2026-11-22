@@ -35,6 +35,11 @@
       legend: "settings.book-names",
       note: "settings.book-names-note",
     },
+    {
+      setting: settings[5] as Setting,
+      legend: "settings.streak",
+      note: "settings.streak-note",
+    },
   ];
 </script>
 

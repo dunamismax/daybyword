@@ -202,7 +202,9 @@ maturity, or understanding, and nothing on it may suggest that it does.
 
 Reminders; the preferred way to read and translation; physical Bible mode;
 book-name convention (D29); appearance (Automatic, Light, Dark) and
-reference text size; backup and sync (optional, after 1.0, D8, D10, D39); export of all
+reference text size; reading days in a row on Progress (the streak, D17: off
+unless the reader turns it on, and then a small line under the week strip,
+"3 reading days in a row", shown only while there is one); backup and sync (optional, after 1.0, D8, D10, D39); export of all
 personal data and deletion of all data; sources and permissions; and about,
 with the independence statement and the running version.
 
