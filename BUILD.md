@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight's latest is build 131. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a, P15.6a done). Phase 16: 6 of 9 (P16.1, P16.2, P16.5, P16.6, P16.8, P16.9; P16.3, P16.4 and P16.7 drafted) |
+| **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888) uploaded, processing. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a, P15.6a done). Phase 16: 6 of 9 (P16.1, P16.2, P16.5, P16.6, P16.8, P16.9; P16.3, P16.4 and P16.7 drafted) |
 | **Next item** | **P16.7**'s screenshots (a UI test on the 6.9-inch iPhone and 13-inch iPad, light and dark, with real readings); then **Phase 17** from P17.1. Waiting on the owner or a device: P12.2b, P12.6b, P15.1b, P15.6b, P16.3 (and P16.4 with it) |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | **P16.3**: read `docs/legal/privacy.md` and `docs/legal/terms.md` and answer the questions at the end of each; then `/privacy` and `/terms` are built. **P15.6b**: turn on Safari's "Allow remote automation" (Settings › Advanced › Show features for web developers, then Developer › Allow remote automation). **Build 131**: try Siri, the iPad sidebar, Share as PDF and the calendar. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install build 131 on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22 after `make check-full`): the home page with the real catalog, Support, Sources and permissions, the criteria, Accessibility, Share this plan, keyboard focus kept on Today, and the plain 500 page. Candidate, live port and https://daybyword.com passed check-live; the other sites answered as before. The app's changes since build 131 (Share on a plan, the About links, the welcome-back wording) are not on TestFlight yet |
+| **Waiting on the owner** | **P16.3**: read `docs/legal/privacy.md` and `docs/legal/terms.md` and answer the questions at the end of each; then `/privacy` and `/terms` are built. **P15.6b**: turn on Safari's "Allow remote automation" (Settings › Advanced › Show features for web developers, then Developer › Allow remote automation). **Build 143**: try Share this plan on a plan's page and the new links in Settings › About, as well as Siri, the iPad sidebar, Share as PDF and the calendar. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install build 143 on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22 after `make check-full`): the home page with the real catalog, Support, Sources and permissions, the criteria, Accessibility, Share this plan, keyboard focus kept on Today, and the plain 500 page. Candidate, live port and https://daybyword.com passed check-live; the other sites answered as before. |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -587,7 +587,8 @@ only when Phase 18 is finished or an item points there.
   (`docs/legal/`), and P16.7 short of screenshots (`docs/app-store/`).
 - **Shipped:** `make check-full` passed (706 engine cases in Firefox, the
   web tour 505 checks in Firefox and 739 in Chrome, the app tour, Linux);
-  daybyword.com serves 4180d56. No TestFlight build this session.
+  daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888, after
+  a second `check-full`) uploaded, processing at the end of the session.
 - **Split:** P15.6b (Safari) waits on the owner's remote automation.
 - **New pages' words** are string-table keys; `/sources` reads
   `catalog/SOURCES.md` at build time and stops if a cleared source has no
