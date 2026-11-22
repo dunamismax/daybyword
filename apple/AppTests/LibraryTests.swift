@@ -98,6 +98,10 @@ private let gospels = PlanID("gospels-at-your-pace")!
     #expect(page.typicalWorkload == "About 6–8 minutes. Estimates vary.")
     #expect(page.workloads.map(\.text) == ["About 6–8 minutes", "About 3–4 minutes", "About 8–10 minutes"])
     #expect(page.covers.first == "Every verse of Matthew, Mark, Luke, and John: 3,779 verses.")
+    #expect(page.length == "60 readings: about 12 weeks at 5 readings a week.")
+    #expect(
+        page.permissions
+            == "Day by Word's own plan: free to follow, to print for your own use, and to share by its link.")
     // A five-day plan's sample week rests at the weekend.
     let week = page.sampleWeek
     #expect(week.map(\.label) == ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
@@ -108,6 +112,7 @@ private let gospels = PlanID("gospels-at-your-pace")!
         catalog: catalog, plan: try #require(catalog.plan(PlanID("proverbs-through-the-month")!)))
     #expect(proverbs.sampleWeek.map(\.label) == (1...7).map { "Day \($0)" })
     #expect(proverbs.sampleWeek[6].reference?.display == "Proverbs 7")
+    #expect(proverbs.length == "A reading for each day of the month, begun again each month.")
     #expect(
         catalog.listed.map(\.id.rawValue) == [
             "proverbs-through-the-month", "gospels-at-your-pace", "pauls-letters", "psalm-a-day",

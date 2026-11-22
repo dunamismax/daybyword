@@ -39,6 +39,7 @@
     </dl>
     <p class="mt-xs mb-0 text-caption text-text-muted">{text("component.estimates-vary")}</p>
     <p class="m-0 text-caption text-text-muted">{plan.paced}</p>
+    <p class="mt-xs mb-0">{plan.length}</p>
   </section>
 
   <SampleWeek readings={plan.sample} note={plan.sampleNote} />
@@ -76,6 +77,10 @@
     <p class="mt-xs mb-0 text-caption text-text-muted">
       <strong class="text-text">{text("plan.review-label")}</strong>
       {plan.review}
+    </p>
+    <p class="mt-xs mb-0 text-caption text-text-muted">
+      <strong class="text-text">{text("plan.permissions-label")}</strong>
+      {plan.permissions}
     </p>
   </section>
 </div>

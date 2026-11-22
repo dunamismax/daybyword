@@ -69,6 +69,17 @@ export interface Recommendation {
   weeks?: number;
 }
 
+/**
+ * The weeks a sequence of `readings` takes at `perWeek` readings a week,
+ * rounded up: the week its last reading falls in (Swift's Choosing.weeks).
+ */
+export function paceWeeks(readings: number, perWeek: number): number {
+  if (!(Number.isInteger(perWeek) && perWeek >= 1 && perWeek <= 7)) {
+    throw new RangeError("a week has 1 to 7 readings");
+  }
+  return Math.ceil(readings / perWeek);
+}
+
 /** The plans to recommend, from the candidates in the catalog's order: at most three, best first. */
 export function recommend(candidates: readonly Candidate[], answers: Answers): Recommendation[] {
   const { hope, time, days } = answers;
@@ -109,7 +120,7 @@ export function recommend(candidates: readonly Candidate[], answers: Answers): R
     if (fitsDays !== undefined) recommendation.fitsDays = fitsDays;
     if (candidate.schedule === "sequence") {
       recommendation.perWeek = perWeek;
-      recommendation.weeks = Math.ceil(candidate.readings / perWeek);
+      recommendation.weeks = paceWeeks(candidate.readings, perWeek);
     }
     return recommendation;
   });

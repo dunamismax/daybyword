@@ -193,6 +193,13 @@ const english = {
     "Reviewed: checked against its own rules and Day by Word's criteria for plans.",
   "plan.review-expert": "Reviewed by a reader who uses its source.",
   "plan.review-label": "Review.",
+  "plan.length-sequence": "{readings}: about {weeks} weeks at {per} a week.",
+  "plan.length-sequence-week": "{readings}: 1 week at {per} a week.",
+  "plan.length-calendar": "A reading for each day of the month, begun again each month.",
+  "plan.permissions-label": "Permissions.",
+  "plan.rights-daybyword-original":
+    "Day by Word's own plan: free to follow, to print for your own use, and to share by its link.",
+  "plan.rights-recorded": "Its permissions are recorded with its source.",
   "list.and": "{first} and {last}",
   "list.comma": "{first}, {rest}",
   "list.comma-and": "{first}, and {last}",

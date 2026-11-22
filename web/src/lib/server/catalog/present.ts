@@ -8,6 +8,7 @@ import {
   comingDays,
   foldJournal,
   makeEventID,
+  paceWeeks,
   parseCivilDate,
   parseReading,
   recommend,
@@ -23,6 +24,7 @@ import {
 } from "#lib/domain/index.ts";
 import { referenceOf, type Reference } from "#lib/reference.ts";
 import {
+  englishStrings,
   listText,
   minutesRangeText,
   text,
@@ -63,6 +65,8 @@ export interface PlanPage extends PlanSummary {
   readonly creator: string;
   readonly suits: string;
   readonly paced: string;
+  /** How long it takes at its own pace, or its cycle (BUILD.md P9.4). */
+  readonly length: string;
   readonly workloads: readonly { readonly label: string; readonly text: string }[];
   readonly sample: readonly SampleDay[];
   readonly sampleNote: string;
@@ -73,6 +77,29 @@ export interface PlanPage extends PlanSummary {
   readonly limitations: string;
   readonly source: string;
   readonly review: string;
+  /** Its permissions in plain words. */
+  readonly permissions: string;
+}
+
+/** "60 readings: about 12 weeks at 5 readings a week", or a month's cycle. */
+function lengthText(entry: CatalogPlan): string {
+  const { plan } = entry;
+  if (plan.schedule !== "sequence") return text("plan.length-calendar");
+  const readings = readingsText(plan.assignments.length);
+  const per =
+    plan.readingDays === 1
+      ? text("choose.per-one")
+      : text("choose.per-other", { count: String(plan.readingDays) });
+  const weeks = paceWeeks(plan.assignments.length, plan.readingDays);
+  return weeks === 1
+    ? text("plan.length-sequence-week", { readings, per })
+    : text("plan.length-sequence", { readings, per, weeks: count(weeks) });
+}
+
+/** A plan's permissions, by its rights entry. */
+function permissionsText(entry: CatalogPlan): string {
+  const key = `plan.rights-${entry.rights}`;
+  return key in englishStrings ? text(key as StringKey) : text("plan.rights-recorded");
 }
 
 const count = (value: number) => new Intl.NumberFormat("en").format(value);
@@ -429,5 +456,7 @@ export function planPage(catalog: ServedCatalog, entry: CatalogPlan): PlanPage {
     limitations: entry.limitations,
     source: entry.source,
     review: text(`plan.review-${entry.review}` as StringKey),
+    length: lengthText(entry),
+    permissions: permissionsText(entry),
   };
 }

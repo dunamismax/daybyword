@@ -94,6 +94,13 @@ describe("the served catalog", () => {
 
     const gospels = page("gospels-at-your-pace");
     expect(gospels.readings).toBe("60 readings");
+    expect(gospels.length).toBe("60 readings: about 12 weeks at 5 readings a week.");
+    expect(gospels.permissions).toBe(
+      "Day by Word's own plan: free to follow, to print for your own use, and to share by its link.",
+    );
+    expect(page("proverbs-through-the-month").length).toBe(
+      "A reading for each day of the month, begun again each month.",
+    );
     expect(gospels.sample.map((day) => day.label)).toEqual([
       "Monday",
       "Tuesday",

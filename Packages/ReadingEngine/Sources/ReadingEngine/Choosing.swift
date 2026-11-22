@@ -102,6 +102,14 @@ public enum Choosing {
         public let weeks: Int?
     }
 
+    /// The weeks a sequence of `readings` takes at `perWeek` readings a week,
+    /// rounded up: the week its last reading falls in. A plan's page says it
+    /// at the plan's own pace (BUILD.md P9.4).
+    public static func weeks(readings: Int, perWeek: Int) -> Int {
+        precondition(readings >= 0 && (1...7).contains(perWeek), "a week has 1 to 7 readings")
+        return (readings + perWeek - 1) / perWeek
+    }
+
     /// The plans to recommend for `answers`, from `candidates` in the
     /// catalog's order: at most three, best first.
     public static func recommend(_ candidates: [Candidate], for answers: Answers) -> [Recommendation] {
@@ -137,7 +145,7 @@ public enum Choosing {
                 goal: answers.hope ?? (candidate.goals.contains(.begin) ? .begin : nil),
                 minutes: plan.minutes, fitsTime: plan.fitsTime, readerDays: answers.days,
                 fitsDays: plan.fitsDays, perWeek: sequence ? perWeek : nil,
-                weeks: sequence ? (candidate.readings + perWeek - 1) / perWeek : nil)
+                weeks: sequence ? weeks(readings: candidate.readings, perWeek: perWeek) : nil)
         }
     }
 }

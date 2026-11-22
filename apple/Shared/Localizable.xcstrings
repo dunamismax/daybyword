@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "**Permissions.** %@" : {
+
+    },
     "**Review.** %@" : {
 
     },
@@ -76,6 +79,12 @@
     "%@: %@." : {
 
     },
+    "%@: 1 week at %@ a week." : {
+
+    },
+    "%@: about %lld weeks at %@ a week." : {
+
+    },
     "%@: from %@ to %@" : {
 
     },
@@ -146,6 +155,9 @@
 
     },
     "A plan for reading the whole Bible." : {
+
+    },
+    "A reading for each day of the month, begun again each month." : {
 
     },
     "A reading in your plan" : {
@@ -340,6 +352,9 @@
     "Day by Word never shows Bible text. Read in your own Bible, and mark what you read here." : {
 
     },
+    "Day by Word's own plan: free to follow, to print for your own use, and to share by its link." : {
+
+    },
     "Delete everything" : {
 
     },
@@ -470,6 +485,9 @@
 
     },
     "Its first week, begun on a Monday. Your own week depends on the day you start and the days you choose." : {
+
+    },
+    "Its permissions are recorded with its source." : {
 
     },
     "Its readings are numbered and read in order." : {

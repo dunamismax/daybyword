@@ -828,7 +828,9 @@ typical reading's minutes, low and high; whether the time fits and
 whether the days fit (each absent when unanswered); the reader's days;
 and, for a `sequence` plan, the readings a week (the fewer of the
 reader's days and the plan's, or the plan's when unanswered) and the
-weeks it takes: its readings divided by the readings a week, rounded up. A
+weeks it takes: its readings divided by the readings a week, rounded up
+(the week its last reading falls in; a plan's page gives the same at the
+plan's own pace). A
 `day-of-month` plan has no weeks: it has a reading for each date. The
 reader sees each fact as a reason in words ("You said about 10 minutes:
 its readings take about 9–11"), and the caveat that estimates are

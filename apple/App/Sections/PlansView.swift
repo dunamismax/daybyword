@@ -243,6 +243,7 @@ struct PlanView: View {
                 }
                 caption(String(localized: "Estimates vary with the reader and the translation."))
                 caption(presented.paced)
+                paragraph(presented.length).padding(.top, Spacing.xxs)
             }
 
             SampleWeek(readings: presented.sampleWeek, note: presented.sampleNote)
@@ -274,6 +275,10 @@ struct PlanView: View {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 SourceNote(text: plan.source)
                 Text("**Review.** \(presented.review)")
+                    .typeStyle(TypeScale.caption)
+                    .foregroundStyle(Palette.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("**Permissions.** \(presented.permissions)")
                     .typeStyle(TypeScale.caption)
                     .foregroundStyle(Palette.textMuted)
                     .fixedSize(horizontal: false, vertical: true)

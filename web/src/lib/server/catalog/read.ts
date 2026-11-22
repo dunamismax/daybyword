@@ -51,6 +51,8 @@ export interface CatalogPlan {
   readonly limitations: string;
   readonly instructions: string;
   readonly source: string;
+  /** Its entry in catalog/SOURCES.md. */
+  readonly rights: string;
   readonly review: ReviewLevel;
   readonly facts: CatalogFacts;
   /** The plan as the reading rules take it. */
@@ -92,6 +94,7 @@ interface PlanRow {
   limitations: string;
   instructions: string;
   source: string;
+  rights: string;
   review: string;
   verses: number;
   unique_verses: number;
@@ -176,6 +179,7 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
         limitations: row.limitations,
         instructions: row.instructions,
         source: row.source,
+        rights: row.rights,
         review: row.review as ReviewLevel,
         facts: {
           verses: row.verses,

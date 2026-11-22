@@ -71,6 +71,32 @@ struct PlanPresentation {
         }
     }
 
+    /// How long it takes at its own pace, or its cycle (BUILD.md P9.4):
+    /// "60 readings: about 12 weeks at 5 readings a week."
+    var length: String {
+        guard plan.schedule == .sequence else {
+            return String(localized: "A reading for each day of the month, begun again each month.")
+        }
+        let per =
+            plan.readingDays == 1
+            ? String(localized: "1 reading") : String(localized: "\(plan.readingDays) readings")
+        let weeks = Choosing.weeks(readings: plan.assignments.count, perWeek: plan.readingDays)
+        return weeks == 1
+            ? String(localized: "\(readings): 1 week at \(per) a week.")
+            : String(localized: "\(readings): about \(weeks) weeks at \(per) a week.")
+    }
+
+    /// Its permissions in plain words, by its rights entry.
+    var permissions: String {
+        switch plan.rights {
+        case "daybyword-original":
+            String(
+                localized:
+                    "Day by Word's own plan: free to follow, to print for your own use, and to share by its link.")
+        default: String(localized: "Its permissions are recorded with its source.")
+        }
+    }
+
     // A Monday that is also the first of a month, so one start serves both
     // kinds of sample: a week from a Monday, and a month's first seven days.
     static let sampleStart = try! CivilDate("2001-01-01")
