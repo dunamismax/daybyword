@@ -118,6 +118,8 @@
                         class="button button-secondary"
                         data-undo={reading.undo}
                         data-enrollment={plan.enrollment}
+                        data-assignment={reading.assignment}
+                        data-appointed={reading.appointed}
                       >
                         {text("component.undo")}
                       </button>

@@ -24,15 +24,20 @@ files when APIs are needed.
   SvelteKit's client runtime yet (`csr = false` in the root layout, E38):
   its route announcer writes an inline style the strict CSP refuses. The
   little interaction there is (Settings, copy buttons, the print button,
-  the old-browser notice, and since P8.10c Today, starting a plan, and
-  export and deletion) is small same-origin modules in `static/assets/`;
+  a plan's share button (`share.js`, P15.4: the Web Share API, or the link
+  copied, or shown selected), the old-browser notice, and since P8.10c
+  Today, starting a plan, and export and deletion) is small same-origin
+  modules in `static/assets/`;
   E38 lists the ways to bring Svelte interaction back without weakening
   the policy. `reading.js` keeps the reader's journal in IndexedDB and
   sends it to `/api/v1/today` and `/api/v1/events`, which fold it with the
   served catalog through the domain module, answer (Today's cards as
   HTML rendered by a Svelte component, or new events in their wire form)
   and keep nothing (E52). The script holds no reading rule and no
-  interface words: it reads its messages from the page's data attributes. No component kit is
+  interface words: it reads its messages from the page's data attributes.
+  When an action replaces Today's or Progress's HTML, it puts keyboard
+  focus back in the reader's place (`keepFocus`, P15.4): on the plan's
+  Undo after Mark read, on Mark read after Undo, never back at the top. No component kit is
   required; no new imagery or generic palette; preserve Morning.
 - TypeScript domain logic lives in `src/lib/domain/`, follows
   docs/engine.md and the same JSON cases as native Swift. Do not

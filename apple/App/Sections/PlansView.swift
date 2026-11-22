@@ -172,7 +172,8 @@ struct PlansView: View {
 
 /// A plan's page: what it is, whom it suits, its workload, a sample week,
 /// what it covers, how it works, what it does not do, and where it comes
-/// from (BUILD.md P8.2, P9.4), with the way to start it.
+/// from (BUILD.md P8.2, P9.4), with the way to start it and to share its
+/// link (P15.4).
 struct PlanView: View {
     let id: PlanID
     @Environment(Library.self) private var library
@@ -191,6 +192,17 @@ struct PlanView: View {
             }
         }
         .background(Palette.background)
+        .toolbar {
+            // The plan's page on daybyword.com, the same page the web's
+            // Share button sends (P15.4).
+            if let plan = library.catalog?.plan(id) {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: AppRoute.plan(id).webURL, subject: Text(verbatim: plan.title)) {
+                        Label("Share this plan", systemImage: "square.and.arrow.up")
+                    }
+                }
+            }
+        }
         .navigationTitle("Plan")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $starting) {

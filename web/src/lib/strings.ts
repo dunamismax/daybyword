@@ -194,6 +194,7 @@ const english = {
   "plan.behavior-calendar-about":
     "Read the readings appointed for each date. Today's readings stay on today, as the calendar sets them. Readings from earlier dates stay in your history, and you can read them whenever you like.",
   "plan.limitations": "What it does not do",
+  "plan.share": "Share this plan",
   "plan.review-checked": "Checked automatically: every reference and claim.",
   "plan.review-reviewed":
     "Reviewed: checked against its own rules and Day by Word's criteria for plans.",
@@ -372,6 +373,8 @@ const english = {
   "component.copy-reference": "Copy reference",
   "component.copied": "Copied",
   "component.copy-failed": "Selected; copy it with your keyboard",
+  "component.link-copied": "Link copied",
+  "component.share-link-label": "Link to share",
   "component.workload-one": "About 1 minute. Estimates vary.",
   "component.workload-other": "About {minutes} minutes. Estimates vary.",
   "component.workload-range": "About {low}–{high} minutes. Estimates vary.",

@@ -123,10 +123,14 @@
     {/if}
     {#if card.lastMark}
       <div class="mt-s flex items-center justify-between gap-s">
-        <span class="text-text-muted">{card.lastMark.message}</span>
+        <span class="text-text-muted" id="last-mark-{card.enrollment}">
+          {card.lastMark.message}
+        </span>
+        <!-- Focus lands here after Mark read (reading.js), so it names what it takes back. -->
         <button
           type="button"
           class="min-h-11 cursor-pointer border-0 bg-transparent px-xs font-semibold text-accent"
+          aria-describedby="last-mark-{card.enrollment}"
           data-undo={card.lastMark.event}
           data-enrollment={card.enrollment}
         >

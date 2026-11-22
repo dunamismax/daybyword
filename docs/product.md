@@ -115,7 +115,12 @@ plans (principle 1).
   source, whom it suits, a sample week, the workload, what it covers
   (including repeats, optional passages, and omissions), the tradition and
   books in neutral words, limitations beside advantages, the source note,
-  the review level, and the permissions in plain words.
+  the review level, and the permissions in plain words. **Share this
+  plan** sends its daybyword.com address (P15.4): the system's share sheet
+  in the app and wherever the browser has one (the Web Share API), and
+  elsewhere the link is copied, or shown selected if the clipboard is
+  refused. Only the plan's public page is shared, never the reader's
+  record.
 - **My plans**: active, paused, and finished, each with its history.
 
 Plan descriptions say what a plan is, whom it suits, its workload, what it

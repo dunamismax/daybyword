@@ -117,6 +117,26 @@ struct WebDriver {
         await send("POST", "/session/\(session)/element/\(id)/click", [:])
     }
 
+    /// The WebDriver codes for the keys the tour presses.
+    static let tab = "\u{E004}", enter = "\u{E007}"
+
+    /// Presses a key on whatever has focus, as a reader at a keyboard would.
+    func press(_ key: String) async {
+        let keys: [[String: Any]] = [["type": "keyDown", "value": key], ["type": "keyUp", "value": key]]
+        await send(
+            "POST", "/session/\(session)/actions",
+            ["actions": [["type": "key", "id": "keyboard", "actions": keys]]])
+    }
+
+    /// Waits up to ten seconds for a script to return true.
+    func waitUntil(_ script: String, _ what: String) async {
+        for _ in 0..<100 {
+            if await run(script) as? Bool == true { return }
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+        fail("waited for \(what)")
+    }
+
     func screenshot(to file: URL) async {
         guard let base64 = await send("GET", "/session/\(session)/screenshot") as? String,
             let data = Data(base64Encoded: base64)
@@ -281,6 +301,67 @@ for (name, query, height) in [("ordinary", "", 27.94), ("large", "&size=large", 
 }
 expect((pageCounts["large"] ?? 0) >= (pageCounts["ordinary"] ?? 0), "print: large print has fewer pages")
 expect((pageCounts["short"] ?? 0) > 1, "print: a short page did not break")
+
+// Keyboard (P15.4). A plan's Share button is the next stop after Start, and
+// Enter copies the link, or shows it selected if the clipboard is refused.
+// The share sheet itself (the Web Share API) is the system's, seen on a
+// phone, so it is taken away here to test the fallback.
+await driver.go("/plans/gospels-at-your-pace")
+await driver.run(
+    "delete Navigator.prototype.share; delete Navigator.prototype.canShare; document.querySelector('a[href$=\"/start\"]').focus()")
+await driver.press(WebDriver.tab)
+expect(
+    await driver.run("return document.activeElement.dataset.share ?? ''") as? String == "/plans/gospels-at-your-pace",
+    "keyboard: Tab from Start does not reach Share")
+await driver.press(WebDriver.enter)
+await driver.waitUntil(
+    "return document.querySelector('button[data-share]').textContent.trim() !== 'Share this plan'", "Share")
+let shared = await driver.run(
+    "return [document.querySelector('button[data-share]').textContent.trim(), document.activeElement.value ?? '']")
+    as? [String] ?? []
+expect(
+    shared.first == "Link copied"
+        || (shared.first == "Selected; copy it with your keyboard"
+            && shared.last == "\(base)/plans/gospels-at-your-pace"),
+    "keyboard: Share gave \(shared)")
+
+// Today and History: after Mark read from the keyboard, focus is on its
+// Undo, and after Undo on Mark read again, in the same plan, rather than
+// back at the top of the page with the buttons it pressed gone.
+let monday = "today=2027-01-04"
+await driver.run("localStorage.clear(); indexedDB.deleteDatabase('day-by-word')")
+await driver.go("/plans/gospels-at-your-pace/start?\(monday)")
+await driver.click("#start-plan button[type=submit]")
+await driver.waitUntil("return location.pathname === '/today'", "the plan to start")
+await driver.go("/today?\(monday)")
+let markRead = "#today button[data-mark=completed]:not([data-earlier-for])"
+await driver.waitUntil("return document.querySelector('\(markRead)') !== null", "Today's card")
+await driver.run("document.querySelector('\(markRead)').focus()")
+await driver.press(WebDriver.enter)
+await driver.waitUntil("return document.activeElement.matches('#today button[data-undo]')", "focus on Undo after Mark read")
+expect(
+    await driver.run(
+        "return document.getElementById(document.activeElement.getAttribute('aria-describedby'))?.textContent ?? ''")
+        as? String == "Marked Matthew 1–3 read.",
+    "keyboard: Undo does not name the reading it takes back")
+await driver.press(WebDriver.enter)
+await driver.waitUntil("return document.activeElement.matches('\(markRead)')", "focus on Mark read after Undo")
+// History marks a calendar plan's days (a sequence plan's next reading is
+// marked on Today), so this part follows Proverbs through the month.
+await driver.go("/plans/proverbs-through-the-month/start?\(monday)")
+await driver.click("#start-plan button[type=submit]")
+await driver.waitUntil("return location.pathname === '/today'", "the second plan to start")
+await driver.go("/progress?\(monday)")
+let rowMark = "#progress details[data-history] button[data-mark][data-appointed='2027-01-04']"
+await driver.waitUntil("return document.querySelector(\"\(rowMark)\") !== null", "History's rows")
+await driver.run("const m = document.querySelector(\"\(rowMark)\"); m.closest('details').open = true; m.focus()")
+await driver.press(WebDriver.enter)
+await driver.waitUntil(
+    "return document.activeElement.matches(\"#progress button[data-undo][data-appointed='2027-01-04']\")",
+    "focus on the row's Undo in History")
+await driver.press(WebDriver.enter)
+await driver.waitUntil("return document.activeElement.matches(\"\(rowMark)\")", "focus on the row's Mark read after Undo")
+await driver.run("localStorage.clear(); indexedDB.deleteDatabase('day-by-word')")
 
 await driver.end()
 stopAll()

@@ -1,8 +1,10 @@
 <script lang="ts">
   // A plan's page: what it is, whom it suits, its workload, a sample week,
   // what it covers, how it works, what it does not do, and where it comes
-  // from (BUILD.md P8.2, P9.4). Its facts are the compiler's.
+  // from (BUILD.md P8.2, P9.4), with a way to share its link (P15.4). Its
+  // facts are the compiler's.
   import SampleWeek from "#lib/components/SampleWeek.svelte";
+  import ShareButton from "#lib/components/ShareButton.svelte";
   import SourceNote from "#lib/components/SourceNote.svelte";
   import { pageTitle } from "#lib/sections.ts";
   import type { PlanPage } from "#lib/server/catalog/present.ts";
@@ -43,8 +45,9 @@
   </section>
 
   <SampleWeek readings={plan.sample} note={plan.sampleNote} />
-  <p class="mb-0">
+  <p class="mb-0 flex flex-wrap items-center gap-s">
     <a class="button button-primary" href="/plans/{plan.id}/start">{text("start.title")}</a>
+    <ShareButton path="/plans/{plan.id}" title={plan.title} label={text("plan.share")} />
   </p>
   <p class="mb-0"><a href="/plans/{plan.id}/week">{text("week.link")}</a></p>
 

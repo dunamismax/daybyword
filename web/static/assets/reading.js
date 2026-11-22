@@ -174,6 +174,37 @@ function show(element, message) {
   element.hidden = !message;
 }
 
+/**
+ * Keeps keyboard focus in the reader's place when a view's buttons are
+ * replaced (BUILD.md P15.4). The view's HTML is new after every action, so
+ * the button pressed is gone and focus would fall back to the top of the
+ * page. If that button had focus, the first of `wanted` (selectors, tried
+ * in order) for the same plan and reading takes it instead: Undo after Mark
+ * read, Mark read after Undo; failing those, the plan's first button.
+ */
+function keepFocus(view, pressed, wanted) {
+  if (!pressed.focused || pressed.button.isConnected) return;
+  const plan = `[data-enrollment="${CSS.escape(pressed.button.dataset.enrollment ?? "")}"]`;
+  const { assignment, appointed } = pressed.button.dataset;
+  const reading = assignment
+    ? `[data-assignment="${CSS.escape(assignment)}"]` +
+      (appointed ? `[data-appointed="${CSS.escape(appointed)}"]` : "")
+    : "";
+  const tries = [...wanted.flatMap((selector) => [selector + plan + reading, selector + plan])];
+  for (const selector of [...tries, "button" + plan]) {
+    const found = view.querySelector(selector);
+    if (found instanceof HTMLElement && !found.hidden && !found.disabled) {
+      found.focus();
+      return;
+    }
+  }
+}
+
+/** Where focus belongs after an action from `button` (keepFocus). */
+function pressedNow(button) {
+  return { button, focused: document.activeElement === button };
+}
+
 // MARK: Today
 
 const todayView = document.getElementById("today");
@@ -240,6 +271,7 @@ if (todayView) {
       return;
     }
     if (button.dataset.confirm && !window.confirm(button.dataset.confirm)) return;
+    const pressed = pressedNow(button);
     button.disabled = true;
     try {
       if (button.dataset.return) {
@@ -275,6 +307,13 @@ if (todayView) {
       }
       show(todayProblem, "");
       await showToday();
+      keepFocus(
+        todayView,
+        pressed,
+        button.dataset.mark && !button.hasAttribute("data-earlier-for")
+          ? ["button[data-undo]"]
+          : ['button[data-mark="completed"]:not([data-earlier-for])'],
+      );
     } catch (error) {
       // Without a connection, a mark is kept here with the id and date it
       // was made with, and sent when the browser is back online; the card
@@ -357,6 +396,7 @@ if (progressView) {
       return;
     }
     if (button.dataset.confirm && !window.confirm(button.dataset.confirm)) return;
+    const pressed = pressedNow(button);
     button.disabled = true;
     try {
       if (button.dataset.action) {
@@ -380,6 +420,15 @@ if (progressView) {
         });
       }
       await showProgress();
+      keepFocus(
+        progressView,
+        pressed,
+        button.dataset.action
+          ? ["button[data-action]", "button[data-undo]"]
+          : button.dataset.mark
+            ? ["button[data-undo]"]
+            : ["button[data-mark]", "button[data-action]"],
+      );
     } catch {
       button.disabled = false;
     }

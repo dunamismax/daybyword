@@ -95,7 +95,7 @@ function current(html: string): string | undefined {
 
 /**
  * The words a page shows: the text between tags, and the attributes a reader
- * meets (labels, titles, and the copy button's messages).
+ * meets (labels, titles, and the copy and share buttons' messages).
  */
 function readerText(html: string): string[] {
   const plain = html
@@ -105,9 +105,11 @@ function readerText(html: string): string[] {
     .replace(/<span class="whitespace-nowrap">([^<]*)<\/span>/g, "$1");
   const found = [
     ...[...plain.matchAll(/>([^<]+)</g)].map((match) => match[1] ?? ""),
-    ...[...plain.matchAll(/(?:aria-label|title|alt|data-copied|data-failed)="([^"]*)"/g)].map(
-      (match) => match[1] ?? "",
-    ),
+    ...[
+      ...plain.matchAll(
+        /(?:aria-label|title|alt|data-copied|data-failed|data-link-label)="([^"]*)"/g,
+      ),
+    ].map((match) => match[1] ?? ""),
   ];
   return found
     .flatMap((piece) => piece.split(" · "))
@@ -521,6 +523,23 @@ describe("the interface text", () => {
       // A plan's page shows references and never passages of Scripture (D13).
       expect(html).not.toMatch(/<blockquote|<q[ >]/);
     }
+  });
+
+  it("offers each plan's link to share, shown only when the script can run it (P15.4)", async () => {
+    expect(await page(production, "/")).toContain('<script type="module" src="/assets/share.js">');
+    for (const plan of releaseCatalog().plans) {
+      const html = await page(production, `/plans/${plan.id}`);
+      const button = /<button[^>]*data-share=[^>]*>([^<]*)<\/button>/.exec(html);
+      expect(button?.[0], plan.id).toContain(`data-share="/plans/${plan.id}"`);
+      expect(button?.[0], plan.id).toMatch(/\shidden(=""|\s|>)/);
+      expect(button?.[1]?.trim(), plan.id).toBe(englishStrings["plan.share"]);
+      expect(button?.[0], plan.id).toContain(
+        `data-copied="${englishStrings["component.link-copied"]}"`,
+      );
+    }
+    // The script names no interface words of its own (docs/web.md).
+    const script = await (await fetch(`${production.base}/assets/share.js`)).text();
+    expect(script.replace(/^\s*\/\/.*$/gm, "")).not.toMatch(/"[A-Z][a-z]+ [a-z]+/);
   });
 });
 

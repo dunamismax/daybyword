@@ -65,6 +65,12 @@ func refusesOtherLinks(link: String) throws {
 func routesRoundTrip(route: AppRoute) throws {
     #expect(AppRoute(url: route.url) == route)
     #expect(AppRoute(url: try #require(URL(string: "https://daybyword.com" + route.address))) == route)
+    #expect(AppRoute(url: route.webURL) == route)
+}
+
+/// A plan's shared link is its page on the web (P15.4).
+@Test func aPlanSharesItsWebPage() {
+    #expect(AppRoute.plan(plan("psalm-a-day")).webURL.absoluteString == "https://daybyword.com/plans/psalm-a-day")
 }
 
 @MainActor

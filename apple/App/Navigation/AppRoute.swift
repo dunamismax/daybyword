@@ -74,6 +74,11 @@ enum AppRoute: Hashable, Sendable {
         URL(string: "\(Self.scheme)://\(address.dropFirst())")!
     }
 
+    /// The route's page on daybyword.com, the link a reader shares (P15.4).
+    var webURL: URL {
+        URL(string: "https://\(Self.webHost)\(address)")!
+    }
+
     /// The route's address, the same in the app and on the web.
     var address: String {
         switch self {
