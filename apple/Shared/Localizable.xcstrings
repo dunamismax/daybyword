@@ -73,7 +73,13 @@
     "%@; then %@" : {
 
     },
+    "%@: %@." : {
+
+    },
     "%@: from %@ to %@" : {
+
+    },
+    "%@." : {
 
     },
     "%lld of %lld readings read" : {
@@ -110,6 +116,15 @@
 
     },
     "A physical Bible" : {
+
+    },
+    "A reading in your plan" : {
+
+    },
+    "A reminder says only the plan's name, so no passage shows on the Lock Screen." : {
+
+    },
+    "A reminder says the plan and its reading, and nothing more. Inside quiet hours it waits until they end, or is left out if they last past midnight." : {
 
     },
     "A sample reference at this size." : {
@@ -154,7 +169,13 @@
     "At" : {
 
     },
+    "At most %lld" : {
+
+    },
     "At most %lld readings a day" : {
+
+    },
+    "At most 1" : {
 
     },
     "At most 1 reading a day" : {
@@ -301,6 +322,12 @@
     "Friday" : {
 
     },
+    "From" : {
+
+    },
+    "From today on. A reminder says what's next and nothing more." : {
+
+    },
     "How it works" : {
 
     },
@@ -397,10 +424,16 @@
     "My plans" : {
 
     },
+    "Name the reading in reminders" : {
+
+    },
     "Next reading" : {
 
     },
     "Next: %@" : {
+
+    },
+    "No limit" : {
 
     },
     "No verse is read twice." : {
@@ -421,7 +454,16 @@
     "Nothing was deleted: %@" : {
 
     },
+    "Notifications are turned off for Day by Word in the Settings app, so no reminders arrive. Everything else works without them." : {
+
+    },
     "Notifications are turned off for Day by Word in the Settings app. The plan works without them." : {
+
+    },
+    "Off" : {
+
+    },
+    "Open" : {
 
     },
     "Open in YouVersion" : {
@@ -472,6 +514,9 @@
     "Psalms %lld to %lld" : {
 
     },
+    "Quiet hours" : {
+
+    },
     "Read" : {
 
     },
@@ -517,6 +562,12 @@
     "Reminder" : {
 
     },
+    "Reminders" : {
+
+    },
+    "Reminders a day" : {
+
+    },
     "Rest day" : {
 
     },
@@ -527,6 +578,9 @@
 
     },
     "Saturday" : {
+
+    },
+    "Save" : {
 
     },
     "Schedule" : {
@@ -557,6 +611,9 @@
 
     },
     "Skipped %@. It won't count as read." : {
+
+    },
+    "Snooze for an hour" : {
 
     },
     "Something went wrong" : {
@@ -665,6 +722,9 @@
 
     },
     "Undone." : {
+
+    },
+    "Until" : {
 
     },
     "Up to %lld readings a day until %@." : {

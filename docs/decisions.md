@@ -1314,3 +1314,29 @@ Today offers Copy reference and a way to choose.
 **Why:** one address is one thing to test and to record; universal links
 are Apple's own mechanism for exactly this; and a choice the reader makes
 once is better than a default that is wrong for most of them.
+
+### E50. Reminders on the phone: one scheduler, refilled whenever the app runs
+
+*2026-11-21, agent (P8.8).* `ReminderScheduler` (apple/App/Model) turns the
+engine's reminders into local notification requests and replaces every
+pending one each time it runs: after every write to the journal
+(`Library.onChange`), when a reminder setting changes, when the app becomes
+active, and when the time zone or the clock changes. The app delegate owns
+the one `Library`, so a reminder's Mark read, which runs in the
+background, writes the same journal the interface reads. Choices:
+
+- **No background refresh task.** Sixty pending reminders cover about two
+  months of a daily plan, and every launch, foreground and notification
+  action refills them. A `BGAppRefreshTask` would add a capability and a
+  schedule the system may ignore, for a reader who has not opened the app
+  in two months and whom a quiet app should not keep pinging.
+- **Mark read marks the reading the reminder named**, read today, and only
+  while it is still unread; a stale reminder records nothing. Tapping a
+  reminder opens Today and marks nothing (docs/product.md).
+- **Snooze is one hour**, kept as a device setting (E44), and dropped by
+  the engine once that day's reading is no longer to read.
+- **Hiding passages** leaves only the plan's name in the text, and the
+  category's hidden-preview placeholder says "A reading in your plan".
+
+**Why:** one place that asks the engine and replaces everything is easy to
+reason about and cannot drift from what Today shows.

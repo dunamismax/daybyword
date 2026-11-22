@@ -96,6 +96,8 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Palette.surface)
 
+                RemindersSection()
+
                 Section {
                     Picker("Appearance", selection: $appearance) {
                         ForEach(Appearance.allCases) { Text($0.label).tag($0) }
@@ -174,6 +176,8 @@ struct SettingsView: View {
             .task(id: library.journal?.events.count) { exportFile = try? library.export().file() }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            // A sheet sits outside the tab view's tint.
+            .tint(Palette.accent)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -195,5 +199,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView().environment(Library.live())
+    let library = Library.live()
+    SettingsView().environment(library).environment(ReminderScheduler(library: library))
 }

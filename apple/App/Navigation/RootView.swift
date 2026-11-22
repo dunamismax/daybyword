@@ -5,7 +5,9 @@ import SwiftUI
 /// (docs/product.md, Navigation).
 struct RootView: View {
     @State private var navigation = AppNavigation()
-    @State private var library = Library.live()
+    @Environment(Library.self) private var library
+    @Environment(ReminderScheduler.self) private var reminders
+    @Environment(PendingRoute.self) private var routes
     @Environment(\.scenePhase) private var scenePhase
     @SceneStorage("navigation") private var savedNavigation = Data()
     @State private var restored = false
@@ -30,19 +32,35 @@ struct RootView: View {
             SettingsView()
                 .preferredColorScheme(appearance.colorScheme)
                 .environment(library)
+                .environment(reminders)
+                .environment(navigation)
         }
         .environment(\.referenceScale, referenceSize.scale)
         .preferredColorScheme(appearance.colorScheme)
         .environment(navigation)
         .environment(library)
         .onChange(of: scenePhase) { _, phase in
-            // Today is resolved again whenever the app comes back (E7).
-            if phase == .active { library.refreshToday() }
+            // Today, and the reminders, are worked out again whenever the
+            // app comes back (E7, P8.8).
+            if phase == .active {
+                library.refreshToday()
+                reminders.setNeedsReschedule()
+            }
+        }
+        .onChange(of: routes.route) { _, route in
+            // A reminder's Open (P8.8).
+            guard let route else { return }
+            navigation.open(route)
+            routes.route = nil
         }
         .onAppear {
             guard !restored else { return }
             restored = true
             navigation.restore(from: savedNavigation)
+            if let route = routes.route {
+                navigation.open(route)
+                routes.route = nil
+            }
         }
         .onChange(of: navigation.saved) {
             savedNavigation = navigation.encoded

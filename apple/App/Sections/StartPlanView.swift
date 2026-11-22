@@ -1,7 +1,6 @@
 import ReadingData
 import ReadingEngine
 import SwiftUI
-import UserNotifications
 
 /// How the reader reads: the preference that decides whether Today offers
 /// a link (P8.5) or the desk-glance layout for paper (P8.6). Kept in user
@@ -36,6 +35,7 @@ struct StartPlanView: View {
     let onStarted: () -> Void
 
     @Environment(Library.self) private var library
+    @Environment(ReminderScheduler.self) private var reminders
     @Environment(\.dismiss) private var dismiss
     @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
 
@@ -277,11 +277,7 @@ struct StartPlanView: View {
     }
 
     private func askForNotifications() {
-        Task {
-            let granted =
-                (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
-            notificationsRefused = !granted
-        }
+        Task { notificationsRefused = !(await reminders.askForPermission()) }
     }
 
     private func startPlan() {

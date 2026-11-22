@@ -26,6 +26,10 @@ final class Library {
     }
     static let conventionKey = "bookNames"
 
+    /// Called after the journal is read again, as after every write, so the
+    /// reminders can follow (P8.8).
+    var onChange: (@MainActor () -> Void)?
+
     private let store: JournalStore?
     private let clock: () -> Date
 
@@ -91,6 +95,16 @@ final class Library {
         if now != today { today = now }
     }
 
+    /// The instant now, by the library's clock.
+    var now: Date { clock() }
+
+    /// The local date and wall-clock time now, in the device's zone, which the
+    /// engine's reminders work in (docs/engine.md, "Reminders").
+    var localNow: LocalDateTime {
+        (try? LocalDateTime(clock(), in: .current))
+            ?? LocalDateTime(date: today, time: WallTime(hour: 0, minute: 0)!)
+    }
+
     /// Reads the journal again and folds it.
     private func reload() {
         guard let catalog, let store else { return }
@@ -99,6 +113,7 @@ final class Library {
         } catch {
             problem = String(describing: error)
         }
+        onChange?()
     }
 
     /// The reference formatter for the catalog, under the reader's names.
