@@ -448,6 +448,9 @@
     "Each day of the month has its own reading." : {
 
     },
+    "Earlier readings stay in your history." : {
+
+    },
     "Estimates vary with the reader and the translation." : {
 
     },
@@ -1066,9 +1069,6 @@
     "The readings are spread over the days ahead." : {
 
     },
-    "The readings you missed stay in your history." : {
-
-    },
     "the reminder" : {
 
     },
@@ -1123,7 +1123,7 @@
     "Today's Reading" : {
 
     },
-    "Today's reading is %@. The readings you missed stay in your history." : {
+    "Today's reading is %@. Earlier readings stay in your history." : {
 
     },
     "Took back: %@" : {

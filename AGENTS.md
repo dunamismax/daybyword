@@ -640,12 +640,18 @@ remove an entry once it no longer applies.
   production tests refuse a page that shows words from anywhere else, so
   a new interface word is a `strings.ts` key, and table text and catalog
   text go in separate elements. The table's voice test refuses "missed",
-  "behind", "streak", "failed" and "faithful" in any string.
+  "behind", "streak", "failed" and "faithful" in any string, and
+  `scripts/strings.swift check` refuses the same words in the app's catalog.
 - **Our own plans' schedules are computed** (`scripts/plans.swift`,
   docs/plans.md). Never edit a schedule by hand: `make check` compares
   each with what its rule gives.
 - **PostgreSQL 17 comes first on the owner's PATH.** `scripts/with-postgres.sh`
   finds Homebrew's postgresql@18 itself; do not "fix" the PATH.
+- **An old Node can come first too.** `/usr/local/bin/node` is Node 24;
+  Homebrew's `/opt/homebrew/bin/node` is the pinned 26.13.1. A fresh shell
+  (after a restart) may find Node 24 first, and `make check` stops at the
+  toolchain check. Run make with `PATH=/opt/homebrew/bin:$PATH`; never
+  remove either install or edit the owner's profile.
 - **xcodebuild hides warnings** in files it does not recompile, so a clean
   build log is not proof of zero warnings (§7).
 - **Pinned versions are enforced.** `make check` refuses any Swift, Node,

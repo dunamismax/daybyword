@@ -6,7 +6,8 @@
 //
 //   swift scripts/strings.swift sync    add new keys to the catalog and drop stale ones
 //   swift scripts/strings.swift check   fail on a key missing from the catalog, a stale
-//                                       key, or interface text that skips localization
+//                                       key, interface text that skips localization, or a
+//                                       word outside the voice (AGENTS.md §3)
 import Foundation
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
@@ -114,6 +115,15 @@ func phraseEntry(_ values: [String]) -> [String: Any] {
     ["localizations": ["en": ["stringSet": ["state": "translated", "values": values]]]]
 }
 
+/// Words a reader never meets (AGENTS.md §3), as the web's voice test refuses
+/// them (web/test/strings.test.ts): no exclamation marks, and nothing a
+/// record cannot say or that makes a missed day a failure.
+func breaksTheVoice(_ text: String) -> Bool {
+    text.contains("!")
+        || text.range(of: #"\b(streak|behind|missed|failed|faithful)"#, options: [.regularExpression, .caseInsensitive])
+            != nil
+}
+
 let mode = CommandLine.arguments.dropFirst().first ?? ""
 guard mode == "sync" || mode == "check" else { fail("usage: swift scripts/strings.swift sync|check") }
 let code = keysInCode()
@@ -143,6 +153,7 @@ for (table, catalogURL) in catalogs.sorted(by: { $0.key < $1.key }) {
             }
         }
         if catalog["sourceLanguage"] as? String != "en" { problems.append("\(table): the source language is not en") }
+        problems += keys.filter(breaksTheVoice).sorted().map { "\(table): not in Day by Word's voice: \($0)" }
     }
 }
 if mode == "check" {

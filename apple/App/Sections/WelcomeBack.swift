@@ -110,8 +110,8 @@ struct WelcomeBack: View {
                 return Choice(
                     offer: offer, title: String(localized: "Rejoin today's readings"),
                     effect: reading.map {
-                        String(localized: "Today's reading is \($0). The readings you missed stay in your history.")
-                    } ?? String(localized: "The readings you missed stay in your history."))
+                        String(localized: "Today's reading is \($0). Earlier readings stay in your history.")
+                    } ?? String(localized: "Earlier readings stay in your history."))
             }
         }
     }
