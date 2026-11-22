@@ -18,7 +18,7 @@ What is still open is listed at the end.
 | Price | Free; no in-app purchases (D11) | |
 | Support URL | https://daybyword.com/support | |
 | Marketing URL | https://daybyword.com | |
-| Privacy Policy URL | https://daybyword.com/privacy (once P16.3 is approved and published) | |
+| Privacy Policy URL | https://daybyword.com/privacy | approved by the owner 2026-11-22 (P16.3) |
 | Copyright | 2026, the owner's name as the App Store shows the seller (D33) | |
 | Sign-in required | No | |
 
@@ -140,15 +140,20 @@ third-party content?".
 
 ## Screenshots
 
-App Store Connect needs the 6.9-inch iPhone and the 13-inch iPad sizes.
-They are to be made by a UI test in light and dark, with a plan started so
-Today, a plan's page, Progress and a week show real readings, never empty
-states (P16.7, still open).
+`make app-store-screenshots` makes them: the `AppStoreScreenshots` UI test
+(`apple/AppUITests/AppStoreScreenshots.swift`) on the newest 6.9-inch
+iPhone (a Pro Max, 1320 × 2868) and 13-inch iPad (an iPad Pro 13-inch,
+2064 × 2752) simulators, in light and dark. Through the app's own buttons
+it starts Gospels at your pace and Proverbs through the month on Monday
+1 March 2027 and marks four days read, then shows Friday 5 March: Today
+with two readings to read, a plan's page, Progress, Plans and a week. The
+status bar reads 9:41 on that day with full bars. The PNGs land in
+`screenshots/app-store/iphone/` and `ipad/` (gitignored), numbered in the
+order to upload; make them again after any change a screen shows. (The
+iPad's status bar takes its weekday from the Mac's clock, whatever date
+simctl is given.)
 
 ## Still open
 
-- **Screenshots**: the UI test that makes them (above).
-- **The privacy policy URL**: daybyword.com/privacy exists once the owner
-  approves `docs/legal/privacy.md` (P16.3).
 - **The copyright line** and the seller's name are the owner's, entered in
   App Store Connect.

@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.modules.yaml
 .PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
 	test-linux run screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
-	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web check check-full check-signing archive testflight deploy clean
+	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web app-store-screenshots check check-full check-signing archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -53,6 +53,9 @@ test-app: generate ## Run the app's unit tests in the simulator
 
 test-ui: generate ## Run the app's UI tests in the simulator
 	@scripts/xcodebuild.sh test-ui -destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests test
+
+app-store-screenshots: generate ## Make the App Store's screenshots on the 6.9-inch iPhone and 13-inch iPad, light and dark; they go to screenshots/app-store/
+	@scripts/app-store-screenshots.sh
 
 test-linux: ## Test the Swift packages on Linux, in a container
 	@scripts/test-linux.sh

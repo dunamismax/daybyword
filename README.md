@@ -142,6 +142,7 @@ make check-full  # check, the engine cases in Firefox, both tours in light and d
 `make help` lists every target. Others worth knowing: `make check-web` (the
 web gate alone), `make test-db` (migrations, catalog import, and roles on a
 throwaway PostgreSQL 18), `make tour-web` and `make tour-app`, `make
+app-store-screenshots` ([docs/app-store/](docs/app-store/README.md)), `make
 test-linux`, `make format`, and `make archive` and
 `make testflight` ([docs/release.md](docs/release.md)). Set `SIM_DEVICE` to
 choose a simulator and `PORT` to serve elsewhere.
@@ -158,9 +159,10 @@ one. Confirmed on the owner's Mac (macOS 27.2, Apple silicon):
 | Node | 26.13.1 (`.node-version`), the version the server runs | the web workspace; install from nodejs.org or a version manager that reads `.node-version` |
 | pnpm | 12.18.0 (`packageManager` in `web/package.json`), a native executable; no Corepack | `make web-install` runs `pnpm install --frozen-lockfile` |
 | PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, `make serve-web`, the production tests and the web tour, each of which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
-| python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh` |
+| python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh`, `scripts/app-store-screenshots.sh` |
 | curl | any | `scripts/web-smoke.sh` |
-| Firefox and geckodriver | Firefox 160, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari swift scripts/webtour.swift`) |
+| Firefox and geckodriver | Firefox 160, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full` |
+| Safari | Safari 27.2 with Developer › "Allow remote automation" on (the owner's setting); its `safaridriver` is part of macOS | `make tour-web` in `check-full`, in a visible window |
 | Google Chrome | Chrome 157, in /Applications (no chromedriver: the tour speaks its DevTools protocol, E60) | `make tour-web` in `check-full`, with phone widths |
 | Docker with Compose v2 | Docker Desktop, or Colima (`brew install colima docker docker-compose`, then `colima start`) | `make test-linux`; the first run downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB) |
 
