@@ -17,10 +17,10 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phases 9, 10 and 11 are finished (in BUILD-HISTORY.md). Phase 12: 0 of 4 |
+| **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phases 9, 10 and 11 are finished (in BUILD-HISTORY.md). Phase 12: 1 of 4 (P12.1) |
 | **Next item** | **P12.2b** (seeing the Lock Screen accessories where they run), **P12.4** (App Intents and Shortcuts), P12.6; **P8.14** once the owner's steps below are done |
-| **Also open** | **P12.1** waits on the Xcode sign-in below. Phase 7 is finished (P7.3's off-server backup verified 2026-11-22) |
-| **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
+| **Also open** | **P8.14**: tick it once build 126 has processed and reached the Owner group in TestFlight |
+| **Waiting on the owner** | **Say when build 126 appears in TestFlight** (App Store Connect emails when it has processed), so P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested") |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2aead57 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today with quiet celebrations, Progress (books by verse and chapter, the optional reading days in a row, History, and the archive with pause, resume and stop), Settings and offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
@@ -140,7 +140,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 5 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 9 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 5 |
-| 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
+| 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 1 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
 | 15 | The web app: install and offline | M3 Version 1.0 | 5 | 0 |
@@ -506,6 +506,7 @@ list.
 - [x] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
   - *Result (agent, 2026-11-22):* in the app: how you read (and the screen kept awake for paper), the translation (P8.5), reminders (P8.8), book names (D29), appearance and reference size, Export (the journal as JSON, `Library.export`; tested), delete everything with a confirmation, about and version; the web's Settings is P8.10c and P8.10d (no reminders on the web at 1.0). SwiftUI's `ShareLink` closed the Settings sheet instead of sharing, so `ShareSheet` presents the system's share sheet through UIKit; `LaunchTests.testExportOpensTheShareSheet` sees it open over Settings with the file "Day by Word reading record" (JSON) in the iOS Simulator (iPhone Air). The Simulator tool's injected taps never reach Settings' rows; XCUITest's taps do.
 - [ ] **P8.14** Ship first light: an internal TestFlight build, and daybyword.com deployed with the three plans. Run `make check-full` first. This opens [GATE DEMO].
+  - *Note (agent, 2026-11-22, later):* build 126 (0.1.0, commit 5233716, after `make check-full`) was archived and uploaded to App Store Connect with no warnings; it carries everything through P11.5 and P12.2a, and both privacy manifests now declare UserDefaults. daybyword.com serves 2aead57. To tick: App Store Connect finishes processing it and it reaches the Owner group (automatic distribution); P8.5's device test is its own item.
   - *Note (agent, 2026-11-22):* daybyword.com serves ce22517 with all eight plans and first light's web (deployed after `make check-full`). Build 96 (8872016) is the latest TestFlight upload; the next build, with P8.3–P8.13 and Phase 9, stopped at `make archive` with "No Accounts": Xcode needs the owner's sign-in so automatic signing can register the App Group (P12.1). Not ticked: that build, and P8.5's device test.
 
 ## Phase 9: Choosing a plan
@@ -522,7 +523,8 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 
 ## Phase 12: Widgets and Apple integration
 
-- [ ] **P12.1** The App Group and the capabilities the extensions need, registered through Xcode's automatic signing on the owner's account (D33).
+- [x] **P12.1** The App Group and the capabilities the extensions need, registered through Xcode's automatic signing on the owner's account (D33).
+  - *Result (agent, 2026-11-22):* with Xcode signed in again, `make check-signing` was ready and `make archive` (with `-allowProvisioningUpdates`) registered the App Group: in build 126's archive both `com.daybyword.app` and `com.daybyword.app.widgets` are signed for team D9QMP3LP8H with `group.com.daybyword.app`, and the App Store export and upload succeeded.
   - *Note (agent, 2026-11-22):* the app and widget carry `group.com.daybyword.app` (P8.9). `make archive` (with `-allowProvisioningUpdates`) failed: Xcode has no account signed in ("No Accounts"), so the wildcard profile lacks the App Groups capability. Waits on the owner's Xcode sign-in.
 - [ ] **P12.2** Widgets: small (the next reading), medium (today's readings), and Lock Screen accessories, each with interactive **Mark read** and the hide-passage option honored. *(Rewritten by D39; the large widget is P28.6.)*
   - *Note (agent, 2026-11-22):* split in two: the Home Screen widgets were seen working in the iOS Simulator; the Lock Screen's new accessories were not, since its editor would not open there. Mark read stays only where the reading is named: an inline accessory cannot hold a button, and the circular one names no reading, so it opens Today.
@@ -624,4 +626,5 @@ only when Phase 18 is finished or an item points there.
   and History (about four minutes: it scrolls 60 readings). AGENTS.md §11
   has the two traps they hit.
 - **Next:** P12.2b on a Lock Screen, P12.4 (App Intents and Shortcuts),
-  P12.6 (iPad), then Phase 13. TestFlight still waits on the Xcode sign-in.
+  P12.6 (iPad), then Phase 13. Build 126 is uploaded to TestFlight (P12.1
+  done; P8.14 ticks once it has processed).
