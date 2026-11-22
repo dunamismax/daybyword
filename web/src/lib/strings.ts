@@ -22,6 +22,7 @@ const english = {
   "site.support": "Support",
   "site.sources": "Sources and permissions",
   "site.criteria": "How plans are chosen",
+  "site.accessibility": "Accessibility",
   "site.about-label": "About Day by Word",
 
   "home.about":
@@ -413,6 +414,38 @@ const english = {
   "sources.books-intro":
     "Book names, abbreviations and orders were checked against these works, which are cited, not copied:",
   "sources.more": "Every source is recorded, with its evidence, in Day by Word's catalog.",
+
+  "accessibility.title": "Accessibility",
+  "accessibility.description":
+    "Day by Word aims to meet WCAG 2.2 at level AA: what has been tested, what has not yet, and how to report a barrier.",
+  "accessibility.aim":
+    "Day by Word aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA, on the web and in the app, for every reader, whatever their sight, hearing, movement or way of reading.",
+  "accessibility.tested": "What has been tested",
+  "accessibility.tested-keyboard":
+    "Every page can be used with a keyboard alone: each control is reached with Tab, with a visible outline, a link to skip to the content comes first, and after you mark a reading, focus stays with that plan.",
+  "accessibility.tested-widths":
+    "Every page is checked at phone widths down to 320 pixels without scrolling sideways, in light and dark.",
+  "accessibility.tested-contrast":
+    "Every pairing of text and background meets WCAG AA contrast, in light and dark, checked each time the colors change.",
+  "accessibility.tested-words":
+    'A reading\'s state is always in words or a symbol, never color alone, and references are written out for screen readers ("Mark, chapter 4, verses 1 to 20").',
+  "accessibility.tested-app":
+    "In the app, Today, Plans, Progress, a plan's page, its week and Settings are checked at the largest accessibility text size.",
+  "accessibility.gaps": "Not yet tested",
+  "accessibility.gap-screen-readers":
+    "A full pass with screen readers: VoiceOver on every screen of the app, and VoiceOver and NVDA on the web.",
+  "accessibility.gap-text":
+    "The app's other screens (starting a plan, History, and Today with readings) at the largest text size.",
+  "accessibility.gap-zoom":
+    "The web at 400% zoom, and with forced colors (such as Windows contrast themes).",
+  "accessibility.gap-settings":
+    "The app with Bold Text, Reduce Transparency and Increase Contrast turned on.",
+  "accessibility.gaps-note":
+    "These checks are planned before version 1.0, and this page will say when they are done.",
+  "accessibility.report": "Report a barrier",
+  "accessibility.report-about":
+    "If something in Day by Word is hard or impossible for you to use, please write to support@daybyword.com: say what you were trying to do, on which page or screen, and with what device, browser, or assistive technology.",
+  "accessibility.report-write": "Report a barrier",
 
   "criteria.title": "How Day by Word chooses its plans",
   "criteria.description":

@@ -461,6 +461,7 @@ describe("the interface text", () => {
     "/support",
     "/sources",
     "/criteria",
+    "/accessibility",
     "/no-such-page",
   ]) {
     it(`on ${path} comes only from the string table and the catalog`, async () => {
@@ -532,6 +533,7 @@ describe("the interface text", () => {
       "https://daybyword.com/support",
       "https://daybyword.com/sources",
       "https://daybyword.com/criteria",
+      "https://daybyword.com/accessibility",
       ...releaseCatalog().plans.map((plan) => `https://daybyword.com/plans/${plan.id}`),
     ]);
   });
@@ -645,9 +647,24 @@ describe("sources, permissions and criteria (P16.5)", () => {
       expect(readerText(html), key).toContain(englishStrings[key]);
     }
     const footer = (await page(production, "/today")).split("<footer")[1] ?? "";
-    for (const path of ["/support", "/sources", "/criteria"]) {
+    for (const path of ["/support", "/sources", "/criteria", "/accessibility"]) {
       expect(footer, path).toContain(`href="${path}"`);
     }
+  });
+});
+
+describe("the accessibility statement (P16.6)", () => {
+  it("states the aim, what was tested, the gaps, and how to report a barrier", async () => {
+    const html = await page(deployed, "/accessibility");
+    for (const key of [
+      "accessibility.aim",
+      "accessibility.tested-keyboard",
+      "accessibility.gap-screen-readers",
+      "accessibility.report-about",
+    ] as const) {
+      expect(readerText(html), key).toContain(englishStrings[key]);
+    }
+    expect(html).toContain("mailto:support@daybyword.com?subject=Report%20a%20barrier");
   });
 });
 

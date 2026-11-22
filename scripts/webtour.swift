@@ -151,6 +151,9 @@ struct WebDriver: TourBrowser {
                 "moz:firefoxOptions": [
                     "args": ["-headless"],
                     "prefs": [
+                        // Tab reaches links and every control, as a keyboard
+                        // reader's settings make it (macOS's default skips links).
+                        "accessibility.tabfocus": 7,
                         "browser.download.folderList": 2, "browser.download.dir": downloads.path,
                         "browser.download.useDownloadDir": true,
                         "browser.download.always_ask_before_handling_new_types": false,
@@ -361,6 +364,9 @@ let pages: [(name: String, path: String, heading: String, section: String?)] = [
     ("progress", "/progress", "Progress", "Progress"),
     ("settings", "/settings", "Settings", "Settings"),
     ("support", "/support", "Support", nil),
+    ("sources", "/sources", "Sources and permissions", nil),
+    ("criteria", "/criteria", "How Day by Word chooses its plans", nil),
+    ("accessibility", "/accessibility", "Accessibility", nil),
     ("not-found", "/no-such-page", "Page not found", nil),
 ]
 
@@ -486,6 +492,56 @@ for size in widths {
                 to: screenshots.appendingPathComponent("\(browser)-\(size.name)-\(theme)-\(page.name).png"))
         }
     }
+}
+
+// Keyboard alone (P15.4, P16.6): on every page, Tab reaches every control a
+// reader can see (one stop for each group of radio buttons), and each shows
+// its focus outline. A date field's parts take Tabs of their own, so the
+// tour presses three times as many as there are controls; focus wraps.
+await driver.resize(width: 1280, height: 900)
+for page in pages {
+    await driver.go(page.path)
+    let controls = """
+        const seen = new Set();
+        const controls = [...document.querySelectorAll('a[href], button, input, select, textarea, summary')]
+          .filter((e) => e.getClientRects().length > 0 && !e.disabled && e.type !== 'hidden')
+          .filter((e) => {
+            if (e.type !== 'radio') return true;
+            if (seen.has(e.name)) return false;
+            seen.add(e.name);
+            return true;
+          });
+        """
+    let count =
+        await driver.run(
+            controls
+                + """
+                window.__reached = new Set();
+                window.__unmarked = [];
+                document.addEventListener('focusin', (event) => {
+                  const target = event.target;
+                  window.__reached.add(target.type === 'radio' ? 'radio:' + target.name : target);
+                  if (getComputedStyle(target).outlineStyle === 'none' || !target.matches(':focus-visible')) {
+                    window.__unmarked.push(target.outerHTML.slice(0, 80));
+                  }
+                });
+                document.activeElement?.blur();
+                return controls.length;
+                """) as? Int ?? 0
+    for _ in 0..<(count * 3 + 2) { await driver.press(.tab) }
+    let result =
+        await driver.run(
+            controls
+                + """
+                const missed = controls
+                  .filter((e) => !window.__reached.has(e.type === 'radio' ? 'radio:' + e.name : e))
+                  .map((e) => e.outerHTML.slice(0, 80));
+                return { missed, unmarked: window.__unmarked };
+                """) as? [String: Any] ?? [:]
+    let missed = result["missed"] as? [String] ?? ["?"]
+    let unmarked = result["unmarked"] as? [String] ?? ["?"]
+    expect(count > 0 && missed.isEmpty, "\(browser) \(page.path): Tab never reaches \(missed)")
+    expect(unmarked.isEmpty, "\(browser) \(page.path): no focus outline on \(unmarked)")
 }
 
 // Settings: a choice applies at once and is kept across a reload.

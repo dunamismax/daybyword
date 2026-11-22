@@ -64,6 +64,7 @@
         <li><a href="/support">{text("site.support")}</a></li>
         <li><a href="/sources">{text("site.sources")}</a></li>
         <li><a href="/criteria">{text("site.criteria")}</a></li>
+        <li><a href="/accessibility">{text("site.accessibility")}</a></li>
       </ul>
     </nav>
   </div>
