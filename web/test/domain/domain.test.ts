@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   addDays,
+  bibleTranslations,
   BookRegistry,
   civilDate,
   civilDateFromOrdinal,
@@ -208,5 +209,17 @@ describe("civil dates", () => {
       "outOfRange",
     );
     expect(civilDateText(civilDate(33, 4, 5))).toBe("0033-04-05");
+  });
+});
+
+describe("the Bible.com translations", () => {
+  it("are each pinned by a bible-links case, once, in alphabetical order of name", () => {
+    const pinned = new Set(
+      fixtures["bible-links"].cases.map((c) => (c.input as { translation: number }).translation),
+    );
+    for (const t of bibleTranslations) expect(pinned.has(t.id), t.name).toBe(true);
+    expect(new Set(bibleTranslations.map((t) => t.id)).size).toBe(bibleTranslations.length);
+    const names = bibleTranslations.map((t) => t.name);
+    expect(names).toEqual([...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
   });
 });

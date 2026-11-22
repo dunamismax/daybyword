@@ -270,6 +270,9 @@ struct TodayCard: View {
                 .accessibilityHidden(true)
             }
             ActionRow {
+                if wayToRead == .youVersion, let reading = reading(of: slot) {
+                    OpenInYouVersion(reading: reading, formatter: formatter, spoken: reference.spoken)
+                }
                 CopyReferenceButton(reference: reference)
                 Menu {
                     Button("Mark part read") { mark(.partlyCompleted, slot, on: today) }
@@ -280,6 +283,9 @@ struct TodayCard: View {
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 .accessibilityHint(Text("Mark part read, skip, or log an earlier day."))
+            }
+            if wayToRead == .youVersion, let reading = reading(of: slot) {
+                OpenInYouVersionNote(reading: reading, formatter: formatter)
             }
             Button("Mark read") { mark(.completed, slot, on: today) }
                 .buttonStyle(PrimaryButtonStyle())

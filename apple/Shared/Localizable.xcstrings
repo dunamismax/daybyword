@@ -190,6 +190,9 @@
     "Choose a plan" : {
 
     },
+    "Choose a translation to open readings in YouVersion" : {
+
+    },
     "Choose at least one day." : {
 
     },
@@ -403,6 +406,9 @@
     "No verse is read twice." : {
 
     },
+    "Not chosen" : {
+
+    },
     "Not yet read" : {
 
     },
@@ -419,6 +425,12 @@
 
     },
     "Open in YouVersion" : {
+
+    },
+    "Opens %@ in YouVersion or on Bible.com." : {
+
+    },
+    "Opens at %@, where this reading begins." : {
 
     },
     "Opens the plan's page." : {
@@ -476,6 +488,9 @@
 
     },
     "Reading days" : {
+
+    },
+    "Readings open in the YouVersion app if it's installed, and on Bible.com if not. Links use the common English verse numbers, and a few translations number some chapters differently." : {
 
     },
     "Readings today" : {
@@ -635,6 +650,9 @@
 
     },
     "Today's reading is %@. The readings you missed stay in your history." : {
+
+    },
+    "Translation" : {
 
     },
     "Try again" : {

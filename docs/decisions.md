@@ -1292,3 +1292,25 @@ Mac failed `make archive` until someone recreated a one-line file.
 Certificates, profiles and the Apple ID stay out of the repository:
 automatic signing (`-allowProvisioningUpdates`) fetches them through the
 account Xcode is signed in with.
+
+### E49. Opening a reading: one Bible.com address, and no default translation
+
+*2026-11-21, agent (P8.5).* "Open in YouVersion" opens a Bible.com
+address (`https://www.bible.com/bible/{version}/{BOOK}.{chapter}[.{verses}]`),
+not the app's `youversion://` scheme. Apple's association file for
+bible.com gives every path to the YouVersion app, so the one address opens
+the app where it is installed and the website where it is not, on the
+phone and on the web alike, with no check for the app (which would need a
+`LSApplicationQueriesSchemes` entry and says nothing to a web page). The
+rule (docs/destinations.md) is in ReadingEngine and the TypeScript domain
+module with shared cases, because both clients build the same links.
+
+**No default translation.** Bible.com needs a version in the address, and
+picking one for the reader would put one translation forward as the norm
+(AGENTS.md §3). The reader chooses from 22 English translations, listed by
+name in alphabetical order and each checked on Bible.com; until then
+Today offers Copy reference and a way to choose.
+
+**Why:** one address is one thing to test and to record; universal links
+are Apple's own mechanism for exactly this; and a choice the reader makes
+once is better than a default that is wrong for most of them.

@@ -6,6 +6,8 @@
 import {
   addDays,
   assignmentPositions,
+  bibleLink,
+  bibleTranslation,
   BookRegistry,
   BookRegistryError,
   bookName,
@@ -116,6 +118,7 @@ export const domainFixtures = [
   "progress",
   "reminders",
   "ahead",
+  "bible-links",
 ] as const;
 export type DomainFixture = (typeof domainFixtures)[number];
 
@@ -664,6 +667,19 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
           };
         }),
       };
+    },
+
+    "bible-links": (input: { reading: string; translation: number }) => {
+      const translation = bibleTranslation(input.translation);
+      if (!translation) return { error: "unknownTranslation" };
+      const link = bibleLink(parseReading(input.reading, english), translation, english);
+      return present({
+        url: link.address,
+        whole: link.isWholeReading,
+        opensAt: link.isWholeReading ? undefined : `${link.book} ${link.chapter}`,
+        abbreviation: translation.abbreviation,
+        name: translation.name,
+      });
     },
   };
 }

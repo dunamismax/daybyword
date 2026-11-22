@@ -84,11 +84,15 @@ struct SettingsView: View {
                     if wayToRead == .physicalBible {
                         Toggle("Keep the screen awake on Today", isOn: $keepAwake)
                     }
+                    if wayToRead == .youVersion {
+                        TranslationPicker()
+                    }
                 } footer: {
-                    Text(
-                        wayToRead == .physicalBible
-                            ? "With a physical Bible, Today says where each reading is in print."
-                            : "Day by Word never shows Bible text. Copy reference works with any app.")
+                    switch wayToRead {
+                    case .physicalBible: Text("With a physical Bible, Today says where each reading is in print.")
+                    case .youVersion: TranslationFooter()
+                    case .otherApp: Text("Day by Word never shows Bible text. Copy reference works with any app.")
+                    }
                 }
                 .listRowBackground(Palette.surface)
 

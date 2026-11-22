@@ -1,0 +1,428 @@
+{
+  "about" : "Where a reading opens in YouVersion and on Bible.com (docs/destinations.md): for a reading in the plan-file format and a Bible.com version number, the address, whether it holds the whole reading or opens at the reading's first chapter (opensAt), and the translation's abbreviation and name; or unknownTranslation for a number Day by Word does not link to. Every translation Day by Word links to appears in a case.",
+  "cases" : [
+    {
+      "input" : {
+        "reading" : "JHN 3:16",
+        "translation" : 1
+      },
+      "name" : "one verse",
+      "output" : {
+        "abbreviation" : "KJV",
+        "name" : "King James Version",
+        "url" : "https://www.bible.com/bible/1/JHN.3.16.KJV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4",
+        "translation" : 111
+      },
+      "name" : "a whole chapter is the chapter alone",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:1-20",
+        "translation" : 111
+      },
+      "name" : "verses in one chapter",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "url" : "https://www.bible.com/bible/111/MRK.4.1-20.NIV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:1-20; MRK 4:26-29",
+        "translation" : 111
+      },
+      "name" : "passages in one chapter, in order, join with commas",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "url" : "https://www.bible.com/bible/111/MRK.4.1-20,26-29.NIV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:9; MRK 4:26-29",
+        "translation" : 59
+      },
+      "name" : "a verse and a range in one chapter",
+      "output" : {
+        "abbreviation" : "ESV",
+        "name" : "English Standard Version 2025",
+        "url" : "https://www.bible.com/bible/59/MRK.4.9,26-29.ESV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:26-29; MRK 4:1-20",
+        "translation" : 111
+      },
+      "name" : "passages in one chapter out of order open at the chapter",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "opensAt" : "MRK 4",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:1-20; MRK 4:10-25",
+        "translation" : 111
+      },
+      "name" : "overlapping passages open at the chapter",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "opensAt" : "MRK 4",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4; MRK 4",
+        "translation" : 111
+      },
+      "name" : "the same chapter twice opens at the chapter",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "opensAt" : "MRK 4",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4:35-5:20",
+        "translation" : 111
+      },
+      "name" : "verses across chapters open at the first chapter",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "opensAt" : "MRK 4",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MAT 1-3",
+        "translation" : 116
+      },
+      "name" : "whole chapters open at the first",
+      "output" : {
+        "abbreviation" : "NLT",
+        "name" : "New Living Translation",
+        "opensAt" : "MAT 1",
+        "url" : "https://www.bible.com/bible/116/MAT.1.NLT",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "GEN 50; EXO 1",
+        "translation" : 1713
+      },
+      "name" : "across books opens at the first book's chapter",
+      "output" : {
+        "abbreviation" : "CSB",
+        "name" : "Christian Standard Bible",
+        "opensAt" : "GEN 50",
+        "url" : "https://www.bible.com/bible/1713/GEN.50.CSB",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "OBA 1",
+        "translation" : 111
+      },
+      "name" : "a one-chapter book",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "url" : "https://www.bible.com/bible/111/OBA.1.NIV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JUD 1:1-16",
+        "translation" : 111
+      },
+      "name" : "verses of a one-chapter book",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "url" : "https://www.bible.com/bible/111/JUD.1.1-16.NIV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "PSA 119:1-32",
+        "translation" : 2692
+      },
+      "name" : "a part of the longest psalm",
+      "output" : {
+        "abbreviation" : "NASB2020",
+        "name" : "New American Standard Bible (2020)",
+        "url" : "https://www.bible.com/bible/2692/PSA.119.1-32.NASB2020",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "PRO 31; ECC 1:1-11",
+        "translation" : 3523
+      },
+      "name" : "a reading that ends in another chapter",
+      "output" : {
+        "abbreviation" : "NRSVUE",
+        "name" : "New Revised Standard Version, Updated Edition",
+        "opensAt" : "PRO 31",
+        "url" : "https://www.bible.com/bible/3523/PRO.31.NRSVUE",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "MRK 4; MRK 5:1-20",
+        "translation" : 111
+      },
+      "name" : "a chapter and then verses in another",
+      "output" : {
+        "abbreviation" : "NIV",
+        "name" : "New International Version",
+        "opensAt" : "MRK 4",
+        "url" : "https://www.bible.com/bible/111/MRK.4.NIV",
+        "whole" : false
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 12
+      },
+      "name" : "translation 12",
+      "output" : {
+        "abbreviation" : "ASV",
+        "name" : "American Standard Version",
+        "url" : "https://www.bible.com/bible/12/JHN.1.ASV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 1588
+      },
+      "name" : "translation 1588",
+      "output" : {
+        "abbreviation" : "AMP",
+        "name" : "Amplified Bible",
+        "url" : "https://www.bible.com/bible/1588/JHN.1.AMP",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 3034
+      },
+      "name" : "translation 3034",
+      "output" : {
+        "abbreviation" : "BSB",
+        "name" : "Berean Standard Bible",
+        "url" : "https://www.bible.com/bible/3034/JHN.1.BSB",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 37
+      },
+      "name" : "translation 37",
+      "output" : {
+        "abbreviation" : "CEB",
+        "name" : "Common English Bible",
+        "url" : "https://www.bible.com/bible/37/JHN.1.CEB",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 392
+      },
+      "name" : "translation 392",
+      "output" : {
+        "abbreviation" : "CEV",
+        "name" : "Contemporary English Version",
+        "url" : "https://www.bible.com/bible/392/JHN.1.CEV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 55
+      },
+      "name" : "translation 55",
+      "output" : {
+        "abbreviation" : "DRC1752",
+        "name" : "Douay-Rheims Challoner Revision 1752",
+        "url" : "https://www.bible.com/bible/55/JHN.1.DRC1752",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 68
+      },
+      "name" : "translation 68",
+      "output" : {
+        "abbreviation" : "GNT",
+        "name" : "Good News Translation",
+        "url" : "https://www.bible.com/bible/68/JHN.1.GNT",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 3345
+      },
+      "name" : "translation 3345",
+      "output" : {
+        "abbreviation" : "LSB",
+        "name" : "Legacy Standard Bible",
+        "url" : "https://www.bible.com/bible/3345/JHN.1.LSB",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 463
+      },
+      "name" : "translation 463",
+      "output" : {
+        "abbreviation" : "NABRE",
+        "name" : "New American Bible, revised edition",
+        "url" : "https://www.bible.com/bible/463/JHN.1.NABRE",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 100
+      },
+      "name" : "translation 100",
+      "output" : {
+        "abbreviation" : "NASB1995",
+        "name" : "New American Standard Bible (1995)",
+        "url" : "https://www.bible.com/bible/100/JHN.1.NASB1995",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 107
+      },
+      "name" : "translation 107",
+      "output" : {
+        "abbreviation" : "NET",
+        "name" : "New English Translation",
+        "url" : "https://www.bible.com/bible/107/JHN.1.NET",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 114
+      },
+      "name" : "translation 114",
+      "output" : {
+        "abbreviation" : "NKJV",
+        "name" : "New King James Version",
+        "url" : "https://www.bible.com/bible/114/JHN.1.NKJV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 2020
+      },
+      "name" : "translation 2020",
+      "output" : {
+        "abbreviation" : "RSV",
+        "name" : "Revised Standard Version",
+        "url" : "https://www.bible.com/bible/2020/JHN.1.RSV",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 97
+      },
+      "name" : "translation 97",
+      "output" : {
+        "abbreviation" : "MSG",
+        "name" : "The Message",
+        "url" : "https://www.bible.com/bible/97/JHN.1.MSG",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 206
+      },
+      "name" : "translation 206",
+      "output" : {
+        "abbreviation" : "WEBUS",
+        "name" : "World English Bible, American English Edition",
+        "url" : "https://www.bible.com/bible/206/JHN.1.WEBUS",
+        "whole" : true
+      }
+    },
+    {
+      "input" : {
+        "reading" : "JHN 1",
+        "translation" : 9999
+      },
+      "name" : "a number Day by Word does not link to",
+      "output" : {
+        "error" : "unknownTranslation"
+      }
+    }
+  ],
+  "fixture" : "bible-links",
+  "version" : 1
+}

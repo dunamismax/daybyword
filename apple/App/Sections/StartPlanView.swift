@@ -117,8 +117,15 @@ struct StartPlanView: View {
                     Picker("How you read", selection: $wayToRead) {
                         ForEach(WayToRead.allCases) { Text($0.label).tag($0) }
                     }
+                    if wayToRead == .youVersion {
+                        TranslationPicker()
+                    }
                 } footer: {
-                    Text("Day by Word never shows Bible text. Read in your own Bible, and mark what you read here.")
+                    if wayToRead == .youVersion {
+                        TranslationFooter()
+                    } else {
+                        Text("Day by Word never shows Bible text. Read in your own Bible, and mark what you read here.")
+                    }
                 }
                 .listRowBackground(Palette.surface)
                 reminderSection

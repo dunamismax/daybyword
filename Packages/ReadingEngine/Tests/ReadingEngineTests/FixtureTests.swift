@@ -1029,3 +1029,48 @@ struct AheadOutput: Codable, Equatable, Sendable {
         }
     }
 }
+
+// MARK: Bible links
+
+struct BibleLinkInput: Codable, Sendable {
+    var reading: String
+    var translation: Int
+}
+
+struct BibleLinkOutput: Codable, Equatable, Sendable {
+    var url: String?
+    var whole: Bool?
+    /// Where an address that does not hold the whole reading opens.
+    var opensAt: String?
+    var abbreviation: String?
+    var name: String?
+    var error: String?
+}
+
+@Test func bibleLinksMatchTheirFixture() throws {
+    let english = try loadEnglish()
+    try checkFixture("bible-links") { (input: BibleLinkInput) -> BibleLinkOutput in
+        guard let translation = BibleTranslation.withID(input.translation) else {
+            return BibleLinkOutput(error: "unknownTranslation")
+        }
+        let link = BibleLink(
+            try ReferenceFormat.reading(input.reading, in: english), translation: translation, in: english)
+        return BibleLinkOutput(
+            url: link.address, whole: link.isWholeReading,
+            opensAt: link.isWholeReading ? nil : "\(link.book) \(link.chapter)",
+            abbreviation: translation.abbreviation, name: translation.name)
+    }
+}
+
+/// Every translation Day by Word links to is pinned by a case, so the web's
+/// list cannot leave one out or name one differently.
+@Test func everyTranslationIsInTheBibleLinksFixture() throws {
+    let file = try JSONDecoder().decode(
+        FixtureFile<BibleLinkInput, BibleLinkOutput>.self,
+        from: Data(contentsOf: fixturesURL.appending(path: "bible-links.json")))
+    let pinned = Set(file.cases.map(\.input.translation))
+    #expect(Set(BibleTranslation.all.map(\.id)).isSubset(of: pinned))
+    #expect(Set(BibleTranslation.all.map(\.id)).count == BibleTranslation.all.count)
+    // Alphabetical by name: no translation is put first.
+    #expect(BibleTranslation.all.map(\.name) == BibleTranslation.all.map(\.name).sorted())
+}
