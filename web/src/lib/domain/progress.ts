@@ -14,7 +14,7 @@ import type { Reading } from "./passage.ts";
 import { assignmentPositions } from "./plan.ts";
 import { parseReading, ReferenceFormatError } from "./reference-format.ts";
 import { isReadingDay } from "./today.ts";
-import { VerseSet, type ChapterCoverage } from "./verse-set.ts";
+import { isWholeChapter, VerseSet, type ChapterCoverage } from "./verse-set.ts";
 import type { Versification } from "./versification.ts";
 
 /** An enrollment's readings by state. "62 of 89 readings read." */
@@ -33,6 +33,21 @@ export interface ProgressDay {
   readonly isRead: boolean;
   /** Whether it was a reading day of any enrollment. */
   readonly isReadingDay: boolean;
+}
+
+/**
+ * A book explored: its verses read of the verses it has, and its chapters
+ * read whole and in part (P11.4). A partly read chapter is never counted as
+ * read.
+ */
+export interface BookCoverage {
+  readonly book: BookID;
+  /** The verses read, each once. */
+  readonly verses: number;
+  /** The verses the book has. */
+  readonly of: number;
+  readonly wholeChapters: number;
+  readonly partialChapters: number;
 }
 
 /** The verses the reader has read across every enrollment, each once. */
@@ -246,4 +261,26 @@ export function enrollmentCoverage(
     else verses = verses.union(stated);
   }
   return { verses, touched };
+}
+
+/**
+ * Each book explored, in the scheme's book order, with its verses read of the
+ * verses it has and its chapters read whole and in part (P11.4). Repeats add
+ * nothing: each verse counts once.
+ */
+export function coverageByBook(
+  covered: ProgressCoverage,
+  versification: Versification,
+): BookCoverage[] {
+  return covered.books.map((book) => {
+    const touched = covered.chapters.filter((chapter) => chapter.book === book);
+    const whole = touched.filter(isWholeChapter).length;
+    return {
+      book,
+      verses: covered.verses.countIn(book),
+      of: versification.verseCount(book),
+      wholeChapters: whole,
+      partialChapters: touched.length - whole,
+    };
+  });
 }

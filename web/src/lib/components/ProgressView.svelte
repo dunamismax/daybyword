@@ -3,8 +3,8 @@
   // server from the journal the browser sent and inserted by
   // /assets/reading.js: the seven days ending today, each in words and a
   // symbol, with the reading days in a row only when the reader asked (D17),
-  // the books explored in any plan (P11.1), and each plan's readings by
-  // state, never a score.
+  // the books explored in any plan with their verses and chapters read
+  // (P11.1, P11.4), and each plan's readings by state, never a score.
   import type { ProgressPage } from "#lib/server/reading.ts";
   import { text } from "#lib/strings.ts";
 
@@ -32,10 +32,17 @@
     <p class="mt-xs mb-0 text-caption">{progress.inARow}</p>
   {/if}
 </section>
-{#if progress.books}
+{#if progress.books.length > 0}
   <section class="card mb-m" aria-labelledby="books-explored">
     <h2 class="mt-0 mb-s text-reference-list" id="books-explored">{text("progress.books")}</h2>
-    <p class="my-xxs">{progress.books}</p>
+    <ul class="m-0 list-none p-0">
+      {#each progress.books as book (book.name)}
+        <li class="mb-xs">
+          <span class="font-semibold">{book.name}</span>
+          <span class="block text-text-muted">{book.detail}</span>
+        </li>
+      {/each}
+    </ul>
     <p class="mb-0 text-caption text-text-muted">{text("progress.books-note")}</p>
   </section>
 {/if}

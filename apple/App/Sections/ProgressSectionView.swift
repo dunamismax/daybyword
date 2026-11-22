@@ -43,32 +43,63 @@ struct ProgressSectionView: View {
         .navigationTitle("Progress")
     }
 
-    /// The books read in, in any plan, in the Bible's order (P11.1), kept
-    /// apart from each plan's record: reading in a book is not finishing a
-    /// plan, and finishing a plan is not reading these books whole.
+    /// The books read in, in any plan, in the Bible's order (P11.1), each
+    /// with its verses read, each once, and its chapters read in full and in
+    /// part (P11.4). Kept apart from each plan's record: reading in a book is
+    /// not finishing a plan, and finishing a plan is not reading these books
+    /// whole.
     @ViewBuilder
     private func booksExplored(_ journal: Journal, catalog: Catalog) -> some View {
-        let books = journal.coverage(in: catalog.versification).books.compactMap {
-            catalog.registry.book($0)?.name(in: library.convention).name
-        }
+        let books = journal.coverage(in: catalog.versification).byBook(in: catalog.versification)
         if !books.isEmpty {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text("Books explored")
                     .typeStyle(TypeScale.referenceList)
                     .foregroundStyle(Palette.text)
                     .accessibilityAddTraits(.isHeader)
-                Text(verbatim: books.formatted(.list(type: .and)))
-                    .typeStyle(TypeScale.body)
-                    .foregroundStyle(Palette.text)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text("The books you've marked a reading in, in any plan. Reading in a book is not reading all of it.")
-                    .typeStyle(TypeScale.caption)
-                    .foregroundStyle(Palette.textMuted)
-                    .fixedSize(horizontal: false, vertical: true)
+                ForEach(books, id: \.book) { book in
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(
+                            verbatim: catalog.registry.book(book.book)?.name(in: library.convention).name
+                                ?? book.book.rawValue
+                        )
+                        .typeStyle(TypeStyle(size: 17, weight: .semibold, relativeTo: .body))
+                        .foregroundStyle(Palette.text)
+                        Text(verbatim: Self.explored(book))
+                            .typeStyle(TypeScale.body)
+                            .foregroundStyle(Palette.textMuted)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                Text(
+                    "The books you've marked a reading in, in any plan. Each verse counts once, and a chapter read in part is not counted as read."
+                )
+                .typeStyle(TypeScale.caption)
+                .foregroundStyle(Palette.textMuted)
+                .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .card(padding: Spacing.m)
         }
+    }
+
+    /// What of a book was read, in words: "98 of 1,533 verses · 3 chapters
+    /// read in full · 1 chapter in part", or "All 85 verses".
+    static func explored(_ book: BookCoverage) -> String {
+        if book.isWhole { return String(localized: "All \(book.of) verses") }
+        var parts = [String(localized: "\(book.verses) of \(book.of) verses")]
+        if book.wholeChapters == 1 {
+            parts.append(String(localized: "1 chapter read in full"))
+        } else if book.wholeChapters > 1 {
+            parts.append(String(localized: "\(book.wholeChapters) chapters read in full"))
+        }
+        if book.partialChapters == 1 {
+            parts.append(String(localized: "1 chapter in part"))
+        } else if book.partialChapters > 1 {
+            parts.append(String(localized: "\(book.partialChapters) chapters in part"))
+        }
+        return parts.joined(separator: " · ")
     }
 
     /// The seven days ending today: each says in words and a symbol whether

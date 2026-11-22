@@ -18,6 +18,7 @@ import {
   canonBooks,
   changeOf,
   coverage,
+  coverageByBook,
   CivilDateError,
   civilDateText,
   comingDays,
@@ -586,16 +587,7 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
             .map((passage) => readingText({ passages: [passage] }, english)),
           wholeChapters: whole(covered.chapters),
           partialChapters: covered.chapters.length - whole(covered.chapters),
-          books: covered.books.map((book) => {
-            const chapters = covered.chapters.filter((chapter) => chapter.book === book);
-            return {
-              book,
-              verses: covered.verses.countIn(book),
-              of: english.verseCount(book),
-              wholeChapters: whole(chapters),
-              partialChapters: chapters.length - whole(chapters),
-            };
-          }),
+          books: coverageByBook(covered, english),
         },
         streak: streak(journal, date),
       };

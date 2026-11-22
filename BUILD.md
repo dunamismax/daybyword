@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phase 9 is finished (in BUILD-HISTORY.md). Phase 10, the launch catalog: 8 of 9, all eight plans in the catalog, P10.13 (the catalog review) open. Phase 11: 3 of 5 |
-| **Next item** | **P11.4** (coverage by book, partly read chapters partial), then P11.5; **P10.13** (the catalog review and criteria page); **P8.14** once the owner's steps below are done |
+| **Phase** | Phase 8, first light (M2): 12 of 14 (P8.5 waits on its device test, P8.14 on a TestFlight build). Phase 9 is finished (in BUILD-HISTORY.md). Phase 10, the launch catalog: 8 of 9, all eight plans in the catalog, P10.13 (the catalog review) open. Phase 11: 4 of 5 |
+| **Next item** | **P11.5** (history: every reading's state and every change, and an archive of finished and paused plans); **P10.13** (the catalog review and criteria page); **P8.14** once the owner's steps below are done |
 | **Also open** | **P7.3**: tick it once ubuntu-vm-backup's first daily snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P12.1** waits on the Xcode sign-in below |
 | **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked): eight plans with their pages, the plan questions and grouped list, starting a plan, Today, Progress (with books explored), Settings and offline, with the reader's record in their own browser. Deployed 2026-11-22 at ce22517 after `make check-full` passed; candidate, live port and https://daybyword.com passed check-live (which now posts the plan questions), and the other sites answered as before |
@@ -139,7 +139,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 8 | First light | M2 First light | 14 | 12 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 5 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 8 |
-| 11 | Progress and history | M3 Version 1.0 | 5 | 3 |
+| 11 | Progress and history | M3 Version 1.0 | 5 | 4 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
@@ -564,7 +564,8 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
   - *Result (agent, 2026-11-22):* the engine's rule (docs/engine.md, "Quiet celebrations"; E56): on a date, each plan's return after a gap, the books it finished (its own coverage) and its finishing, then the week's reading days each read, on the week's last; `celebrations.json` (41 cases, checked by hand) passes in Swift and Node. Today shows them in the plan's card on the accent tint, and the week's once after the cards, in the app and on the web; nothing stored, nothing in reminders. Seen in the iOS Simulator (the week kept, a return, "You've read all of Ruth.", light and dark) and in a browser against the production build (the week kept, a return). Two web tests in `reading.test.ts`.
 - [x] **P11.3** The optional streak (D17): off by default, measured against the reader's reading days, small, and never mentioned in notifications.
   - *Result (agent, 2026-11-22):* the engine's streak (P5.11) behind a setting off by default, "Show reading days in a row on Progress" in the app and "Reading days in a row" on the web (settings.json version 3, checked by both); when on, Progress says "3 reading days in a row" in a caption under the week strip, only while there is one (never a zero), and reminders never mention it (P5.12). Seen in the iOS Simulator and in a browser against the production build; `LaunchTests.testTheStreakShowsOnlyWhenTurnedOn` turns it on and off in Settings, and a web test in `reading.test.ts`. The string table's voice test still refuses the word "streak", so readers never see it.
-- [ ] **P11.4** Coverage: unique verses read, by book, with partly read chapters shown as partial. Repeats never inflate it, and it is kept apart from plan completion.
+- [x] **P11.4** Coverage: unique verses read, by book, with partly read chapters shown as partial. Repeats never inflate it, and it is kept apart from plan completion.
+  - *Result (agent, 2026-11-22):* the engine gives each book explored with its verses read of its verses and its chapters read whole and in part (`Coverage.byBook`, `coverageByBook`; docs/engine.md "Progress"), pinned by `progress.json` in both runtimes. Progress's "Books explored" card, apart from each plan's record, lists each book: "98 of 1,533 verses · 3 chapters read in full · 1 chapter in part", or "All 85 verses". Seen in the iOS Simulator and in a browser against the production build; a web test checks a partly read chapter, a second plan through the same book adding nothing, and a whole book.
 - [ ] **P11.5** History: every assignment's state and every change, late logging, undo, and an archive of finished and paused plans.
 
 ## Phase 12: Widgets and Apple integration

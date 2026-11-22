@@ -696,7 +696,10 @@ understanding, and no wording may suggest they do (AGENTS.md §3).
   partly read chapter is never counted as read. Repeats add nothing, and
   a skipped reading covers nothing.
 - **Books explored** are the books coverage touches, in the scheme's
-  order, each with its verses read of the verses it has.
+  order, each with its verses read of the verses it has and its chapters
+  read whole and in part (P11.4). "Genesis: 98 of 1,533 verses · 3
+  chapters read in full · 1 chapter in part"; a book with every verse read
+  is "All 85 verses".
 - **Plan completion is not coverage.** Each is reported on its own;
   finishing a plan says nothing about the whole Bible unless its verses
   do.

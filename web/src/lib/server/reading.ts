@@ -10,6 +10,7 @@ import {
   bookName,
   celebrations as celebrationsOn,
   coverage,
+  coverageByBook,
   bibleTranslation,
   chaptersPassage,
   CivilDateError,
@@ -35,6 +36,7 @@ import {
   welcome as welcomeOf,
   welcomeAnswer,
   type Behavior,
+  type BookCoverage,
   type CivilDate,
   type EventID,
   type JournalEvent,
@@ -466,11 +468,37 @@ export interface PlanRecord {
   readonly finish?: string;
 }
 
+/** A book explored, named as the reader names books, with what of it was read (P11.4). */
+export interface ExploredBook {
+  readonly name: string;
+  /** "98 of 1,533 verses · 3 chapters read in full · 1 chapter in part", or "All 85 verses". */
+  readonly detail: string;
+}
+
+const grouped = (value: number) => new Intl.NumberFormat("en").format(value);
+
+/** What of a book was read, in words: its verses, then its chapters whole and in part. */
+function exploredText(book: BookCoverage): string {
+  if (book.verses === book.of) return text("progress.verses-all", { total: grouped(book.of) });
+  const parts = [
+    text("progress.verses-of", { read: grouped(book.verses), total: grouped(book.of) }),
+  ];
+  if (book.wholeChapters === 1) parts.push(text("progress.chapters-whole-one"));
+  else if (book.wholeChapters > 1) {
+    parts.push(text("progress.chapters-whole", { count: String(book.wholeChapters) }));
+  }
+  if (book.partialChapters === 1) parts.push(text("progress.chapters-part-one"));
+  else if (book.partialChapters > 1) {
+    parts.push(text("progress.chapters-part", { count: String(book.partialChapters) }));
+  }
+  return parts.join(" · ");
+}
+
 export interface ProgressPage {
   readonly days: readonly ProgressStripDay[];
   readonly plans: readonly PlanRecord[];
-  /** The books explored in any plan, in the Bible's order, in words; empty when none (P11.1). */
-  readonly books: string;
+  /** The books explored in any plan, in the Bible's order, each with its verses and chapters read in words (P11.1, P11.4). */
+  readonly books: readonly ExploredBook[];
   /** The reading days read in a row, in words, when the reader asked for them and there are some (D17). */
   readonly inARow?: string;
 }
@@ -547,9 +575,20 @@ export function progressPage(
   });
   // Kept apart from each plan's record: reading in a book is not finishing a
   // plan, and finishing a plan is not reading these books whole.
-  const explored = coverage(journal, catalog.versification).books.flatMap((id) => {
-    const book = catalog.registry.book(id);
-    return book ? [bookName(book, options.convention ?? "common").name] : [];
+  // Each verse once, however many plans or times it was read (P11.4).
+  const explored = coverageByBook(
+    coverage(journal, catalog.versification),
+    catalog.versification,
+  ).flatMap((covered) => {
+    const book = catalog.registry.book(covered.book);
+    return book
+      ? [
+          {
+            name: bookName(book, options.convention ?? "common").name,
+            detail: exploredText(covered),
+          },
+        ]
+      : [];
   });
   // The streak, only when the reader turned it on (D17): small, in words,
   // and said only while there is one, never as something lost.
@@ -560,7 +599,7 @@ export function progressPage(
       : count > 1
         ? text("progress.in-a-row", { count: String(count) })
         : undefined;
-  return { days, plans, books: listText(explored), ...(inARow ? { inARow } : {}) };
+  return { days, plans, books: explored, ...(inARow ? { inARow } : {}) };
 }
 
 // MARK: Making events

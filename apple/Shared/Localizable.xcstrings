@@ -91,7 +91,16 @@
     "%@." : {
 
     },
+    "%lld chapters in part" : {
+
+    },
+    "%lld chapters read in full" : {
+
+    },
     "%lld of %lld readings read" : {
+
+    },
+    "%lld of %lld verses" : {
 
     },
     "%lld of 1 reading read" : {
@@ -119,6 +128,12 @@
 
     },
     "✓ read · ○ a reading day · – a rest day" : {
+
+    },
+    "1 chapter in part" : {
+
+    },
+    "1 chapter read in full" : {
 
     },
     "1 reading" : {
@@ -233,6 +248,9 @@
 
     },
     "About 10 minutes" : {
+
+    },
+    "All %lld verses" : {
 
     },
     "Another app, with Copy reference" : {
@@ -817,7 +835,7 @@
     "That's today's reading." : {
 
     },
-    "The books you've marked a reading in, in any plan. Reading in a book is not reading all of it." : {
+    "The books you've marked a reading in, in any plan. Each verse counts once, and a chapter read in part is not counted as read." : {
 
     },
     "The first seven days of a month. Each date has its own reading." : {

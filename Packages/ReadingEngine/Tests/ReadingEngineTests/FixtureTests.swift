@@ -872,12 +872,10 @@ struct ProgressOutput: Codable, Equatable, Sendable {
                 passages: coverage.verses.passages(in: english).map { ReferenceFormat.text(of: $0, in: english) },
                 wholeChapters: coverage.chapters.count(where: \.isWhole),
                 partialChapters: coverage.chapters.count(where: { !$0.isWhole }),
-                books: coverage.books.map { book in
-                    let chapters = coverage.chapters.filter { $0.book == book }
-                    return .init(
-                        book: book.rawValue, verses: coverage.verses.count(in: book), of: english.verseCount(of: book),
-                        wholeChapters: chapters.count(where: \.isWhole),
-                        partialChapters: chapters.count(where: { !$0.isWhole }))
+                books: coverage.byBook(in: english).map {
+                    .init(
+                        book: $0.book.rawValue, verses: $0.verses, of: $0.of, wholeChapters: $0.wholeChapters,
+                        partialChapters: $0.partialChapters)
                 }),
             streak: journal.streak(on: date))
     }

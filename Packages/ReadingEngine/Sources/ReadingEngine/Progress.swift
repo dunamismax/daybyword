@@ -29,7 +29,35 @@ public enum Progress {
         public let chapters: [VerseSet.ChapterCoverage]
         /// The books explored, in the scheme's book order.
         public let books: [BookID]
+
+        /// Each book explored, in the scheme's book order, with its verses
+        /// read of the verses it has and its chapters read whole and in part
+        /// (P11.4). Repeats add nothing: each verse counts once.
+        public func byBook(in versification: Versification) -> [BookCoverage] {
+            books.map { book in
+                let touched = chapters.filter { $0.book == book }
+                return BookCoverage(
+                    book: book, verses: verses.count(in: book), of: versification.verseCount(of: book),
+                    wholeChapters: touched.count(where: \.isWhole), partialChapters: touched.count { !$0.isWhole })
+            }
+        }
     }
+
+}
+
+/// A book explored: its verses read of the verses it has, and its
+/// chapters read whole and in part. A partly read chapter is never
+/// counted as read.
+public struct BookCoverage: Hashable, Sendable {
+    public let book: BookID
+    /// The verses read, each once.
+    public let verses: Int
+    /// The verses the book has.
+    public let of: Int
+    public let wholeChapters: Int
+    public let partialChapters: Int
+    /// Whether every verse of the book is read.
+    public var isWhole: Bool { verses == of }
 }
 
 extension Enrollment {

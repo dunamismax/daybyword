@@ -385,15 +385,57 @@ describe("Today, marking and undoing", () => {
         next: "Next: Mark 3–4",
       }),
     ]);
-    // The books read in, apart from any plan's record (P11.1).
-    expect(progress.books).toBe("Mark");
+    // The books read in, apart from any plan's record (P11.1), with what of
+    // each was read (P11.4).
+    expect(progress.books).toEqual([
+      { name: "Mark", detail: "73 of 678 verses · 2 chapters read in full" },
+    ]);
     expect(
       progressPage(
         catalog,
         journalRequest({ events: started, today: "2027-03-02" }, catalog).journal,
         request.today,
       ).books,
-    ).toBe("");
+    ).toEqual([]);
+  });
+
+  it("counts each verse of a book once, and a chapter read in part as partial (P11.4)", () => {
+    const started = act([], "2027-03-01", { ...enroll, plan: "ruth-in-a-week" });
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const mark = (events: unknown[], assignment: number, kind = "completed", verses?: string) =>
+      act(events, "2027-03-01", {
+        kind: "mark",
+        mark: kind,
+        enrollment,
+        assignment,
+        ...(verses ? { verses } : {}),
+      });
+    const books = (events: unknown[]) => {
+      const request = journalRequest({ events, today: "2027-03-01" }, catalog);
+      return progressPage(catalog, request.journal, request.today).books;
+    };
+    // Ruth 1 read, and Ruth 2 marked part read with no verses said.
+    const partly = mark(mark(started, 1), 2, "partlyCompleted");
+    expect(books(partly)).toEqual([
+      { name: "Ruth", detail: "22 of 85 verses · 1 chapter read in full · 1 chapter in part" },
+    ]);
+    // A second plan through Ruth adds nothing it already has.
+    const again = act(partly, "2027-03-01", {
+      ...enroll,
+      plan: "ruth-in-a-week",
+      start: "2027-03-01",
+    });
+    const second = journalRequest({ events: again, today: "2027-03-01" }, catalog).journal
+      .enrollments[1]?.id;
+    const repeated = act(again, "2027-03-01", {
+      kind: "mark",
+      mark: "completed",
+      enrollment: second,
+      assignment: 1,
+    });
+    expect(books(repeated)).toEqual(books(partly));
+    // Every verse read: the book is whole.
+    expect(books(mark(mark(partly, 2), 3))).toEqual([{ name: "Ruth", detail: "All 85 verses" }]);
   });
 
   it("says the reading days in a row only when the reader asks, and never zero (D17)", () => {
