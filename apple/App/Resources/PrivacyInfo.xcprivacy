@@ -2,9 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
   The app's privacy manifest (BUILD.md P1.12, P16.7). Day by Word does not
-  track readers, collects no data while used without an account (D10, D12),
-  and uses no required-reason API yet. Update this file in the same commit as
-  any code that starts using one (for example UserDefaults: CA92.1).
+  track readers and collects no data while used without an account (D10,
+  D12). Its one required-reason API is UserDefaults: the reader's settings,
+  read only by the app (CA92.1), and the App Group it shares with its own
+  widget (1C8F.1). The widget has its own manifest
+  (apple/Widgets/PrivacyInfo.xcprivacy). Update both in the same commit as
+  code that starts using another required-reason API.
 -->
 <plist version="1.0">
 <dict>
@@ -15,6 +18,16 @@
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array/>
 	<key>NSPrivacyAccessedAPITypes</key>
-	<array/>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+				<string>1C8F.1</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
