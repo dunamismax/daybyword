@@ -185,7 +185,13 @@ maturity, or understanding, and nothing on it may suggest that it does.
   lectionary year is not reading the whole Bible, and repeated passages
   never inflate coverage.
 - **History** lists every reading's state and every change, with late
-  logging and undo.
+  logging and undo. Progress groups the plans as *Reading now*, *Paused*,
+  *Finished* and *Stopped*; each plan's History lists its readings with
+  their state ("Read on Monday 1 March", "Not yet read"), Mark read on a
+  chosen date for a calendar day or a reading part read or skipped, Undo for
+  a reading's last mark, every change newest first ("Took back: …"), and
+  the plan's own Pause, Resume, Stop following (confirmed; its record is
+  kept) and Follow again. Nothing is deleted (P11.5).
 - **Quiet celebrations**, in words and never confetti: returning after a
   gap, finishing a book, finishing a plan, and keeping a rhythm the reader
   chose. Never a comparison with anyone else. They appear on Today on the

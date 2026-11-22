@@ -93,6 +93,7 @@ private struct SectionStack<Root: View>: View {
                     switch destination {
                     case .plan(let id): PlanView(id: id)
                     case .planWeek(let id, let start): PlanWeekView(id: id, start: start)
+                    case .history(let enrollment): PlanHistoryView(enrollmentID: enrollment)
                     }
                 }
         }

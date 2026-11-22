@@ -9,7 +9,7 @@ import {
   type CivilDate,
 } from "./civil-date.ts";
 import type { BookID } from "./ids.ts";
-import type { Enrollment, Journal } from "./journal.ts";
+import type { Enrollment, Journal, Slot } from "./journal.ts";
 import type { Reading } from "./passage.ts";
 import { assignmentPositions } from "./plan.ts";
 import { parseReading, ReferenceFormatError } from "./reference-format.ts";
@@ -91,21 +91,11 @@ export function isFinished(enrollment: Enrollment): boolean {
  * total.
  */
 export function progressCounts(enrollment: Enrollment, date: CivilDate): ProgressCounts {
-  const { plan, settled, start, ended } = enrollment;
-  const positions = assignmentPositions(plan);
-  let total = positions.size;
-  if (plan.schedule === "day-of-month") {
-    const last = ended && before(ended, date) ? ended : date;
-    total = 0;
-    for (let day: CivilDate | undefined = start; day && !before(last, day); day = shifted(day, 1)) {
-      if (!enrollment.isPaused(day) && positions.has(day.day)) total += 1;
-    }
-    total += settled.filter(
-      ({ appointed }) =>
-        appointed &&
-        (before(appointed, start) || before(last, appointed) || enrollment.isPaused(appointed)),
-    ).length;
-  }
+  const { plan, settled } = enrollment;
+  const total =
+    plan.schedule === "day-of-month"
+      ? recordSlots(enrollment, date).length
+      : assignmentPositions(plan).size;
   const count = (state: string) => settled.filter((mark) => mark.state === state).length;
   return {
     read: count("read"),
@@ -114,6 +104,40 @@ export function progressCounts(enrollment: Enrollment, date: CivilDate): Progres
     unread: total - settled.length,
     total,
   };
+}
+
+/**
+ * The slots the record holds on `date` (P11.5): a sequence's every assignment
+ * in reading order; a calendar enrollment's slots appointed from the start to
+ * that date (or to the day it ended), paused days excluded, with any slot the
+ * reader settled outside those days, in date order. The readings by state
+ * count these.
+ */
+export function recordSlots(enrollment: Enrollment, date: CivilDate): Slot[] {
+  const { plan, settled, start, ended } = enrollment;
+  if (plan.schedule !== "day-of-month") {
+    return plan.assignments.map((assignment) => ({ assignment: assignment.id }));
+  }
+  const positions = assignmentPositions(plan);
+  const last = ended && before(ended, date) ? ended : date;
+  const slots: Slot[] = [];
+  for (let day: CivilDate | undefined = start; day && !before(last, day); day = shifted(day, 1)) {
+    if (!enrollment.isPaused(day) && positions.has(day.day)) {
+      slots.push({ assignment: day.day, appointed: day });
+    }
+  }
+  for (const mark of settled) {
+    const { appointed } = mark;
+    if (
+      appointed &&
+      (before(appointed, start) || before(last, appointed) || enrollment.isPaused(appointed))
+    ) {
+      slots.push({ assignment: mark.assignment, appointed });
+    }
+  }
+  return slots.sort((a, b) =>
+    a.appointed && b.appointed ? compareCivilDates(a.appointed, b.appointed) : 0,
+  );
 }
 
 /**

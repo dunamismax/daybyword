@@ -860,6 +860,12 @@ struct ProgressOutput: Codable, Equatable, Sendable {
             enrollments: journal.enrollments.map {
                 let counts = $0.counts(on: date)
                 #expect(counts.read + counts.partlyRead + counts.skipped + counts.unread == counts.total)
+                // History lists the slots the counts count, in order (P11.5).
+                let slots = $0.recordSlots(on: date)
+                #expect(slots.count == counts.total)
+                #expect(Set(slots).count == slots.count)
+                #expect(slots.map { $0.appointed ?? .earliest } == slots.map { $0.appointed ?? .earliest }.sorted())
+                #expect($0.settled.allSatisfy { slots.contains($0.slot) })
                 return .init(
                     id: $0.id.rawValue, read: counts.read, partlyRead: counts.partlyRead, skipped: counts.skipped,
                     unread: counts.unread, total: counts.total)

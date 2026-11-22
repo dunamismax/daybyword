@@ -13,6 +13,8 @@ enum AppTab: String, Codable, CaseIterable, Sendable {
 enum Destination: Hashable, Codable, Sendable {
     case plan(PlanID)
     case planWeek(PlanID, start: String?)
+    /// A plan's history, from Progress (P11.5).
+    case history(EventID)
 }
 
 /// Every place the app can be sent, by a `daybyword://` link or (later) a

@@ -28,6 +28,7 @@ import {
   previewing,
   progressCounts,
   recentDays,
+  recordSlots,
   streak,
   ReferenceFormatter,
   weekday,
@@ -38,6 +39,7 @@ import {
   type Behavior,
   type BookCoverage,
   type CivilDate,
+  type Enrollment,
   type EventID,
   type JournalEvent,
   type MarkKind,
@@ -457,15 +459,194 @@ export interface ProgressStripDay {
 }
 
 /** One plan's record: readings by state, the next reading, and its finish. */
+/** One reading in a plan's history (P11.5): its state in words, and what can be done with it. */
+export interface HistoryReading {
+  /** "Reading 12", or the date a calendar reading is appointed to. */
+  readonly label: string;
+  readonly reference: string;
+  /** "Read on Monday 1 March", "Part read on …", "Skipped on …", or "Not yet read". */
+  readonly state: string;
+  readonly assignment: number;
+  readonly appointed?: string;
+  /** The mark to take back, when the reading is settled. */
+  readonly undo?: EventID;
+  /** Whether it can be marked read here: a calendar slot, or a sequence's reading part read or skipped. */
+  readonly markable: boolean;
+}
+
+/** Where a plan stands, for grouping Progress (P11.5): the archive keeps finished, paused and stopped plans apart. */
+export type PlanGroup = "reading" | "paused" | "finished" | "stopped";
+
 export interface PlanRecord {
   readonly enrollment: EventID;
   readonly plan: string;
+  readonly group: PlanGroup;
   readonly ended: boolean;
   readonly counts: string;
   readonly others?: string;
   readonly finished: boolean;
   readonly next?: string;
   readonly finish?: string;
+  /** Every reading of the record, with its state (P11.5). */
+  readonly readings: readonly HistoryReading[];
+  /** Every change, newest first, in words (P11.5). */
+  readonly changes: readonly string[];
+  /** The dates a reading can be marked on: from the plan's start to today. */
+  readonly start: string;
+  readonly today: string;
+  /** What the reader can do with the plan itself (P11.5). */
+  readonly actions: {
+    readonly pause?: true;
+    readonly resume?: true;
+    readonly end?: true;
+    /** The `ended` event to take back, to follow the plan again. */
+    readonly restore?: EventID;
+  };
+}
+
+const changedFields = [
+  ["readingDays", "history.what-reading-days"],
+  ["behavior", "history.what-behavior"],
+  ["finish", "history.what-finish"],
+  ["limit", "history.what-limit"],
+  ["reminder", "history.what-reminder"],
+  ["start", "history.what-start"],
+] as const;
+
+const returnTitles = {
+  continue: "welcome.continue",
+  spread: "welcome.spread",
+  moveFinish: "welcome.move-finish",
+  rejoin: "welcome.rejoin",
+} as const;
+
+/** One event of a plan in words, as History lists it; undefined for an event that means nothing. */
+function changeText(
+  event: JournalEvent,
+  journal: Journal,
+  readingOf: (assignment: number) => Reading | undefined,
+  names: ReferenceFormatter,
+): string | undefined {
+  const reference = (assignment: number) => {
+    const reading = readingOf(assignment);
+    return reading ? names.reading(reading) : String(assignment);
+  };
+  switch (event.kind) {
+    case "enrolled":
+      return text("history.started", { date: dayText(event.start) });
+    case "completed":
+      return text("today.marked-read-on", {
+        reference: reference(event.assignment),
+        date: dayText(event.date),
+      });
+    case "partlyCompleted":
+      return text("history.marked-part", {
+        reference: reference(event.assignment),
+        date: dayText(event.date),
+      });
+    case "skipped":
+      return text("history.marked-skipped", {
+        reference: reference(event.assignment),
+        date: dayText(event.date),
+      });
+    case "undone": {
+      const target = journal.events.find((candidate) => candidate.id === event.target);
+      const change = target ? changeText(target, journal, readingOf, names) : undefined;
+      return change ? text("history.took-back", { change }) : undefined;
+    }
+    case "changed": {
+      const what = changedFields
+        .filter(([field]) => event[field] !== undefined)
+        .map(([, key]) => text(key));
+      return text("history.changed", { what: listText(what), date: dayText(event.from) });
+    }
+    case "paused":
+      return text("history.paused", { date: dayText(event.from) });
+    case "resumed":
+      return text("history.resumed", { date: dayText(event.from) });
+    case "returned":
+      return text("history.returned", {
+        date: dayText(event.date),
+        choice: text(returnTitles[event.choice]),
+      });
+    case "ended":
+      return text("history.ended", { date: dayText(event.date) });
+  }
+}
+
+/** What the reader can do with a plan from its History (P11.5). */
+function planActions(
+  journal: Journal,
+  enrollment: Enrollment,
+  date: CivilDate,
+  finished: boolean,
+): PlanRecord["actions"] {
+  if (enrollment.ended !== undefined) {
+    const ended = journal.events.findLast(
+      (event) =>
+        event.enrollment === enrollment.id && event.kind === "ended" && journal.isActive(event.id),
+    );
+    return ended ? { restore: ended.id } : {};
+  }
+  if (enrollment.isPaused(date)) return { resume: true, end: true };
+  return finished ? { end: true } : { pause: true, end: true };
+}
+
+/** A plan's history (P11.5): every reading of the record with its state, and every change, newest first. */
+function planHistory(
+  journal: Journal,
+  enrollment: Enrollment,
+  date: CivilDate,
+  names: ReferenceFormatter,
+): Pick<PlanRecord, "readings" | "changes"> {
+  const readingOf = (assignment: number) =>
+    enrollment.plan.assignments.find((candidate) => candidate.id === assignment)?.reading;
+  const positions = assignmentPositions(enrollment.plan);
+  const calendar = enrollment.plan.schedule === "day-of-month";
+  const marks = new Map(
+    enrollment.settled.map((mark) => [
+      `${mark.assignment}@${mark.appointed ? civilDateText(mark.appointed) : ""}`,
+      mark,
+    ]),
+  );
+  const readings = recordSlots(enrollment, date).map((slot): HistoryReading => {
+    const mark = marks.get(
+      `${slot.assignment}@${slot.appointed ? civilDateText(slot.appointed) : ""}`,
+    );
+    const reading = readingOf(slot.assignment);
+    const state = !mark
+      ? text("history.unread")
+      : text(
+          mark.state === "read"
+            ? "history.read-on"
+            : mark.state === "partlyRead"
+              ? "history.part-on"
+              : "history.skipped-on",
+          { date: dayText(mark.date) },
+        );
+    return {
+      label: slot.appointed
+        ? dayText(slot.appointed)
+        : text("history.reading", {
+            position: String(positions.get(slot.assignment) ?? slot.assignment),
+          }),
+      reference: reading ? names.reading(reading) : String(slot.assignment),
+      state,
+      assignment: slot.assignment,
+      ...(slot.appointed ? { appointed: civilDateText(slot.appointed) } : {}),
+      ...(mark ? { undo: mark.event } : {}),
+      markable: mark?.state !== "read" && (calendar || mark !== undefined),
+    };
+  });
+  const inert = new Set(journal.inert.map((entry) => entry.event));
+  const changes = journal.events
+    .filter((event) => event.enrollment === enrollment.id && !inert.has(event.id))
+    .flatMap((event) => {
+      const change = changeText(event, journal, readingOf, names);
+      return change ? [change] : [];
+    })
+    .reverse();
+  return { readings, changes };
 }
 
 /** A book explored, named as the reader names books, with what of it was read (P11.4). */
@@ -551,9 +732,22 @@ export function progressPage(
           ?.reading
       : undefined;
     const finish = day.schedule?.finish ?? day.projection?.plan;
+    const finished = isFinished(enrollment);
     return {
       enrollment: enrollment.id,
       plan: entry?.title ?? enrollment.plan.id,
+      group:
+        enrollment.ended !== undefined
+          ? "stopped"
+          : finished
+            ? "finished"
+            : enrollment.isPaused(date)
+              ? "paused"
+              : "reading",
+      ...planHistory(journal, enrollment, date, names),
+      start: civilDateText(enrollment.start),
+      today: civilDateText(date),
+      actions: planActions(journal, enrollment, date, finished),
       ended: enrollment.ended !== undefined,
       counts:
         total === 1
@@ -774,7 +968,10 @@ export function newEvents(
     }
     case "mark":
     case "undo":
-    case "return": {
+    case "return":
+    case "pause":
+    case "resume":
+    case "end": {
       const enrollment = journal.enrollments.find(
         (candidate) => candidate.id === action["enrollment"],
       );
@@ -795,7 +992,14 @@ export function newEvents(
       }
       const id =
         typeof proposed === "string" ? proposed : newID(Math.max(now.getTime(), latest + 1));
-      if (action["kind"] === "return") {
+      if (action["kind"] === "pause" || action["kind"] === "resume") {
+        // Paused from today, or resumed today (P11.5); the engine refuses
+        // pausing what is paused and resuming what is not.
+        made = [{ ...record, id, kind: `${action["kind"]}d`, from: today } as JournalEvent];
+      } else if (action["kind"] === "end") {
+        // The reader stops following the plan today; its record is kept.
+        made = [{ ...record, id, kind: "ended", date: today } as JournalEvent];
+      } else if (action["kind"] === "return") {
         // The answer to the welcome the engine offers today, and no other.
         const offer = welcomeOf(enrollment, today)?.offers.find(
           (candidate) => candidate.choice === action["choice"],
@@ -820,9 +1024,12 @@ export function newEvents(
         ) {
           throw new ReadingRequestError("date is not between the start and today");
         }
-        // On a calendar plan, an earlier day's reading is that date's own.
+        // On a calendar plan, an earlier day's reading is that date's own,
+        // unless the slot is named (History marks a slot on the date chosen).
         const calendar =
-          enrollment.plan.schedule === "day-of-month" && action["date"] !== undefined;
+          enrollment.plan.schedule === "day-of-month" &&
+          action["date"] !== undefined &&
+          action["appointed"] === undefined;
         const appointed = calendar ? civilDateText(on) : action["appointed"];
         made = [
           {

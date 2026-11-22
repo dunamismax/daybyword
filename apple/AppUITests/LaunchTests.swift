@@ -130,4 +130,100 @@ final class LaunchTests: XCTestCase {
         try flipTheSetting()
         XCTAssertFalse(inARow.waitForExistence(timeout: 2))
     }
+
+    /// A plan's history (P11.5): a reading's state, Undo, and the plan
+    /// paused, resumed, stopped and followed again, each moving it between
+    /// Progress's groups.
+    @MainActor
+    func testHistoryUndoesAndPausesAndStops() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-freshJournal", "YES", "-today", "2027-03-01"]
+        app.launch()
+        XCTAssertTrue(app.navigationBars["Today"].waitForExistence(timeout: 10))
+
+        app.open(try XCTUnwrap(URL(string: "daybyword://plans/gospels-at-your-pace")))
+        let start = app.buttons["Start this plan"]
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        start.tap()
+        let confirm = app.buttons["Start"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 10))
+        confirm.tap()
+        app.tabBars.buttons["Today"].tap()
+        let markRead = app.buttons["Mark read"]
+        XCTAssertTrue(markRead.waitForExistence(timeout: 10))
+        markRead.tap()
+
+        app.tabBars.buttons["Progress"].tap()
+        XCTAssertTrue(app.staticTexts["Reading now"].waitForExistence(timeout: 10))
+        func openHistory() {
+            let history = app.buttons["History"]
+            var swipes = 0
+            while !history.isHittable, swipes < 6 {
+                app.swipeUp()
+                swipes += 1
+            }
+            history.tap()
+            XCTAssertTrue(app.navigationBars["History"].waitForExistence(timeout: 10))
+        }
+        func tapInHistory(_ label: String) {
+            let button = app.buttons[label].firstMatch
+            var swipes = 0
+            while !button.isHittable, swipes < 10 {
+                app.swipeUp()
+                swipes += 1
+            }
+            button.tap()
+        }
+
+        // History's rows are made as they scroll into view.
+        func reveal(_ element: XCUIElement) -> Bool {
+            var swipes = 0
+            while !(element.exists && element.isHittable), swipes < 10 {
+                app.swipeUp()
+                swipes += 1
+            }
+            return element.exists
+        }
+        func backToTop() {
+            let first = app.staticTexts["Reading 1"]
+            var swipes = 0
+            while !(first.exists && first.isHittable), swipes < 15 {
+                app.swipeDown()
+                swipes += 1
+            }
+        }
+
+        openHistory()
+        let reading = app.staticTexts["Read on Monday, March 1"]
+        XCTAssertTrue(reading.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(reveal(app.staticTexts["Marked Matthew 1–3 read on Monday, March 1."]))
+        backToTop()
+        app.buttons["Undo"].firstMatch.tap()
+        XCTAssertTrue(reveal(app.staticTexts["Took back: Marked Matthew 1–3 read on Monday, March 1."]))
+        XCTAssertFalse(reading.exists)
+        backToTop()
+
+        tapInHistory("Pause this plan")
+        XCTAssertTrue(app.buttons["Resume this plan"].waitForExistence(timeout: 10))
+        app.navigationBars["History"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Paused"].waitForExistence(timeout: 10))
+
+        openHistory()
+        tapInHistory("Resume this plan")
+        tapInHistory("Stop following this plan")
+        // The confirmation's own button: the list's is covered by it.
+        let stops = app.buttons.matching(NSPredicate(format: "label == %@", "Stop following this plan"))
+        let asked = expectation(for: NSPredicate(format: "count >= 2"), evaluatedWith: stops)
+        wait(for: [asked], timeout: 10)
+        let confirmStop = (0..<stops.count).map { stops.element(boundBy: $0) }.first { $0.isHittable }
+        try XCTUnwrap(confirmStop).tap()
+        XCTAssertTrue(reveal(app.buttons["Follow this plan again"]))
+        app.navigationBars["History"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Stopped"].waitForExistence(timeout: 10))
+
+        openHistory()
+        tapInHistory("Follow this plan again")
+        app.navigationBars["History"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Reading now"].waitForExistence(timeout: 10))
+    }
 }

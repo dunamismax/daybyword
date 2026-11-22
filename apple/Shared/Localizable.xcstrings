@@ -259,6 +259,9 @@
     "Answer what you can. Not sure is always an answer." : {
 
     },
+    "Answered the welcome back on %@: %@." : {
+
+    },
     "Appearance" : {
 
     },
@@ -308,6 +311,12 @@
 
     },
     "Catholic" : {
+
+    },
+    "Changed %@ from %@." : {
+
+    },
+    "Changes" : {
 
     },
     "Checked automatically: every reference and claim." : {
@@ -418,6 +427,9 @@
     "Every plan" : {
 
     },
+    "Every reading of %@, and every change." : {
+
+    },
     "Every verse of %@: %@ verses." : {
 
     },
@@ -442,6 +454,9 @@
     "Finish on %@ instead" : {
 
     },
+    "Finished" : {
+
+    },
     "Finishing a plan is not the same as reading the whole Bible, unless its readings cover it." : {
 
     },
@@ -449,6 +464,9 @@
 
     },
     "Follow the calendar" : {
+
+    },
+    "Follow this plan again" : {
 
     },
     "Friday" : {
@@ -464,6 +482,9 @@
 
     },
     "Help me choose" : {
+
+    },
+    "History" : {
 
     },
     "How it works" : {
@@ -523,6 +544,9 @@
     "Its readings are numbered and read in order." : {
 
     },
+    "Its record is kept, and you can follow it again from Progress." : {
+
+    },
     "Keep the screen awake on Today" : {
 
     },
@@ -556,7 +580,13 @@
     "Mark read" : {
 
     },
+    "Mark read keeps the reading on this date." : {
+
+    },
     "Mark, chapter 4, verses 1 to 20" : {
+
+    },
+    "Marked %@ part read on %@." : {
 
     },
     "Marked %@ part read." : {
@@ -566,6 +596,9 @@
 
     },
     "Marked %@ read." : {
+
+    },
+    "Marks %@ read on the date above." : {
 
     },
     "Marks %@ read today." : {
@@ -655,7 +688,22 @@
     "Part read" : {
 
     },
+    "Part read on %@" : {
+
+    },
     "Passages from %@: %@ verses. It does not read these books whole." : {
+
+    },
+    "Pause this plan" : {
+
+    },
+    "Paused" : {
+
+    },
+    "Paused from %@." : {
+
+    },
+    "Pausing stops its reminders and keeps your place; nothing is moved or marked." : {
 
     },
     "Plan" : {
@@ -697,6 +745,9 @@
     "Read on" : {
 
     },
+    "Read on %@" : {
+
+    },
     "Read the next reading whenever you read. If you miss a day, nothing is lost: your next reading waits for you, and your finish date moves." : {
 
     },
@@ -713,6 +764,12 @@
 
     },
     "Reading days" : {
+
+    },
+    "Reading now" : {
+
+    },
+    "Readings" : {
 
     },
     "Readings open in the YouVersion app if it's installed, and on Bible.com if not. Links use the common English verse numbers, and a few translations number some chapters differently." : {
@@ -749,6 +806,12 @@
 
     },
     "Rest day" : {
+
+    },
+    "Resume this plan" : {
+
+    },
+    "Resumed on %@." : {
 
     },
     "Reviewed by a reader who uses its source." : {
@@ -793,7 +856,13 @@
     "Skipped" : {
 
     },
+    "Skipped %@ on %@." : {
+
+    },
     "Skipped %@. It won't count as read." : {
+
+    },
+    "Skipped on %@" : {
 
     },
     "Snooze for an hour" : {
@@ -823,6 +892,21 @@
     "Start this plan" : {
 
     },
+    "Started the plan from %@." : {
+
+    },
+    "Stop following this plan" : {
+
+    },
+    "Stop following this plan?" : {
+
+    },
+    "Stopped" : {
+
+    },
+    "Stopped following the plan on %@." : {
+
+    },
     "Sunday" : {
 
     },
@@ -838,6 +922,9 @@
     "The books you've marked a reading in, in any plan. Each verse counts once, and a chapter read in part is not counted as read." : {
 
     },
+    "the finish date" : {
+
+    },
     "The first seven days of a month. Each date has its own reading." : {
 
     },
@@ -848,6 +935,9 @@
 
     },
     "The lightest reading" : {
+
+    },
+    "the most readings a day" : {
 
     },
     "The New Testament" : {
@@ -865,6 +955,9 @@
     "The Psalms and Proverbs" : {
 
     },
+    "the reading days" : {
+
+    },
     "The reading is kept on the day you read it, not today." : {
 
     },
@@ -877,10 +970,22 @@
     "The readings you missed stay in your history." : {
 
     },
+    "the reminder" : {
+
+    },
+    "the schedule" : {
+
+    },
+    "the start date" : {
+
+    },
     "The whole Bible" : {
 
     },
     "This describes what you've marked, and nothing more." : {
+
+    },
+    "This plan" : {
 
     },
     "This plan hasn't started yet." : {
@@ -890,6 +995,9 @@
 
     },
     "This plan isn't in the catalog." : {
+
+    },
+    "This plan isn't in your record." : {
 
     },
     "This plan starts on %@." : {
@@ -911,6 +1019,9 @@
 
     },
     "Today's reading is %@. The readings you missed stay in your history." : {
+
+    },
+    "Took back: %@" : {
 
     },
     "Translation" : {

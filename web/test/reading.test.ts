@@ -425,8 +425,11 @@ describe("Today, marking and undoing", () => {
       plan: "ruth-in-a-week",
       start: "2027-03-01",
     });
-    const second = journalRequest({ events: again, today: "2027-03-01" }, catalog).journal
-      .enrollments[1]?.id;
+    // The new plan, whichever order the same millisecond put them in.
+    const second = journalRequest(
+      { events: again, today: "2027-03-01" },
+      catalog,
+    ).journal.enrollments.find((candidate) => candidate.id !== enrollment)?.id;
     const repeated = act(again, "2027-03-01", {
       kind: "mark",
       mark: "completed",
@@ -458,6 +461,189 @@ describe("Today, marking and undoing", () => {
     // Nothing is said when there is none: never a zero.
     expect(on(started, "2027-03-01")).toBeUndefined();
     expect(on(twoDays, "2027-03-05")).toBeUndefined();
+  });
+
+  it("keeps each plan's history: every reading's state and every change, newest first (P11.5)", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const read = act(started, "2027-03-01", {
+      kind: "mark",
+      mark: "completed",
+      enrollment,
+      assignment: 1,
+    });
+    const skipped = act(read, "2027-03-02", {
+      kind: "mark",
+      mark: "skipped",
+      enrollment,
+      assignment: 2,
+    });
+    const page = (events: unknown[], today: string) => {
+      const request = journalRequest({ events, today }, catalog);
+      return progressPage(catalog, request.journal, request.today).plans[0];
+    };
+    const plan = page(skipped, "2027-03-02");
+    expect(plan?.group).toBe("reading");
+    expect(plan?.readings).toEqual([
+      expect.objectContaining({
+        label: "Reading 1",
+        reference: "Mark 1–2",
+        state: "Read on Monday 1 March",
+        markable: false,
+      }),
+      expect.objectContaining({
+        label: "Reading 2",
+        reference: "Mark 3–4",
+        state: "Skipped on Tuesday 2 March",
+        markable: true,
+      }),
+      expect.objectContaining({
+        label: "Reading 3",
+        reference: "Mark 5–6",
+        state: "Not yet read",
+        markable: false,
+      }),
+    ]);
+    expect(plan?.readings[0]?.undo).toBeDefined();
+    expect(plan?.changes).toEqual([
+      "Skipped Mark 3–4 on Tuesday 2 March.",
+      "Marked Mark 1–2 read on Monday 1 March.",
+      "Started the plan from Monday 1 March.",
+    ]);
+
+    // From History: the skipped reading marked read on an earlier date, and
+    // the first reading's mark taken back.
+    const later = act(skipped, "2027-03-03", {
+      kind: "mark",
+      mark: "completed",
+      enrollment,
+      assignment: 2,
+      date: "2027-03-02",
+    });
+    const undone = act(later, "2027-03-03", {
+      kind: "undo",
+      enrollment,
+      target: plan?.readings[0]?.undo,
+    });
+    const after = page(undone, "2027-03-03");
+    expect(after?.readings.map((reading) => reading.state)).toEqual([
+      "Not yet read",
+      "Read on Tuesday 2 March",
+      "Not yet read",
+    ]);
+    expect(after?.changes.slice(0, 2)).toEqual([
+      "Took back: Marked Mark 1–2 read on Monday 1 March.",
+      "Marked Mark 3–4 read on Tuesday 2 March.",
+    ]);
+  });
+
+  it("groups plans: reading, finished and stopped, and lists a calendar plan's days (P11.5)", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    let finished = started;
+    for (const assignment of [1, 2, 3]) {
+      finished = act(finished, "2027-03-01", {
+        kind: "mark",
+        mark: "completed",
+        enrollment,
+        assignment,
+      });
+    }
+    const proverbs = act(finished, "2027-03-01", {
+      kind: "enroll",
+      plan: "proverbs-by-the-date",
+      behavior: "calendar",
+      start: "2027-03-01",
+      readingDays: [1, 2, 3, 4, 5, 6, 7],
+    });
+    const request = journalRequest({ events: proverbs, today: "2027-03-03" }, catalog);
+    // Both were started in the test's same millisecond, so find each by name.
+    const plans = progressPage(catalog, request.journal, request.today).plans;
+    const byName = (name: string) => plans.find((plan) => plan.plan === name);
+    expect(byName("Mark in a week")?.group).toBe("finished");
+    expect(byName("Proverbs by the date")?.group).toBe("reading");
+    // A calendar plan's history is its appointed days to today, each one markable.
+    expect(byName("Proverbs by the date")?.readings).toEqual([
+      expect.objectContaining({
+        label: "Monday 1 March",
+        reference: "Proverbs 1",
+        appointed: "2027-03-01",
+        markable: true,
+      }),
+      expect.objectContaining({
+        label: "Tuesday 2 March",
+        reference: "Proverbs 2",
+        markable: true,
+      }),
+      expect.objectContaining({
+        label: "Wednesday 3 March",
+        reference: "Proverbs 3",
+        markable: true,
+      }),
+    ]);
+    // Marked from History on Wednesday, Monday's reading keeps its own slot.
+    const second = byName("Proverbs by the date")?.enrollment;
+    const [made] = newEvents(
+      {
+        events: proverbs,
+        today: "2027-03-03",
+        zone: "Europe/London",
+        action: {
+          kind: "mark",
+          mark: "completed",
+          enrollment: second,
+          assignment: 1,
+          appointed: "2027-03-01",
+          date: "2027-03-03",
+        },
+      },
+      catalog,
+      now,
+    ) as [Record<string, unknown>];
+    expect(made).toMatchObject({ assignment: 1, appointed: "2027-03-01", date: "2027-03-03" });
+    const stopped = act(proverbs, "2027-03-03", { kind: "end", enrollment: second });
+    const again = journalRequest({ events: stopped, today: "2027-03-03" }, catalog);
+    expect(
+      progressPage(catalog, again.journal, again.today).plans.find(
+        (plan) => plan.enrollment === second,
+      )?.group,
+    ).toBe("stopped");
+  });
+
+  it("pauses, resumes, stops following and follows a plan again, keeping its record (P11.5)", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const plan = (events: unknown[], today: string) => {
+      const request = journalRequest({ events, today }, catalog);
+      return progressPage(catalog, request.journal, request.today).plans[0];
+    };
+    expect(plan(started, "2027-03-01")?.actions).toEqual({ pause: true, end: true });
+    const paused = act(started, "2027-03-02", { kind: "pause", enrollment });
+    expect(plan(paused, "2027-03-02")).toMatchObject({
+      group: "paused",
+      actions: { resume: true, end: true },
+    });
+    expect(cards(paused, "2027-03-02")[0]?.status).toBe("paused");
+    // Pausing twice means nothing, and is refused.
+    expect(() => act(paused, "2027-03-02", { kind: "pause", enrollment })).toThrow(
+      ReadingRequestError,
+    );
+    const resumed = act(paused, "2027-03-04", { kind: "resume", enrollment });
+    expect(plan(resumed, "2027-03-04")?.group).toBe("reading");
+    expect(plan(resumed, "2027-03-04")?.changes.slice(0, 2)).toEqual([
+      "Resumed on Thursday 4 March.",
+      "Paused from Tuesday 2 March.",
+    ]);
+    const ended = act(resumed, "2027-03-04", { kind: "end", enrollment });
+    const stopped = plan(ended, "2027-03-04");
+    expect(stopped?.group).toBe("stopped");
+    expect(cards(ended, "2027-03-04")).toEqual([]);
+    const again = act(ended, "2027-03-04", {
+      kind: "undo",
+      enrollment,
+      target: stopped?.actions.restore,
+    });
+    expect(plan(again, "2027-03-04")?.group).toBe("reading");
   });
 
   it("previews a finish date's load, and refuses one beyond the reader's limit", () => {

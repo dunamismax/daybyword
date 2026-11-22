@@ -1513,3 +1513,30 @@ and both runtimes answer `celebrations.json`.
   card, on the accent tint `docs/design.md` sets aside for them, and the
   week's rhythm once, after the cards. Progress stays a record. Not in
   reminders, the widget or notifications.
+
+### E57. History lives on Progress, and a plan can be paused or stopped there
+
+*2026-11-22, agent (P11.5).* Each plan's History is reached from its card
+on Progress (a pushed view in the app; a closed `<details>` in the card on
+the web, rendered by `/api/v1/progress` like the rest of Progress), not
+from a page of its own: no new address, and nothing about a reader's
+record in a URL. Progress groups plans by where they stand (reading,
+paused, finished, stopped), so the archive the item asks for is the same
+page.
+
+- **The readings** are the engine's record slots (`recordSlots`,
+  docs/engine.md "Progress"): a sequence's every reading, a calendar plan's
+  days from its start to today. Mark read is offered where reading it now
+  is a record of the past, not reading ahead: a calendar day, or a
+  sequence's reading part read or skipped. It keeps the reading on the
+  date chosen above the list (late logging). A dated mark on a calendar
+  plan names its slot, so the web's events endpoint takes an explicit
+  `appointed` over "that date's own reading".
+- **Changes** are the plan's events that mean something, newest first, in
+  words; an undo reads "Took back: …".
+- **The plan itself**: until now no screen could pause, resume or stop a
+  plan, so an archive of paused plans could never fill. History adds Pause
+  (from today), Resume (today, with no new basis: the engine reports the
+  new load), Stop following (confirmed; the record is kept) and Follow
+  again (an undo of the `ended` event). The web's events endpoint gained
+  `pause`, `resume` and `end`, checked like every action against the fold.

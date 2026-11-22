@@ -319,21 +319,67 @@ if (todayView) {
 
 const progressView = document.getElementById("progress");
 
+/** Shows Progress for the record in this browser, keeping open any History the reader opened. */
+async function showProgress() {
+  const journal = await events();
+  if (journal.length === 0) return;
+  const open = [...progressView.querySelectorAll("details[data-history][open]")].map(
+    (details) => details.dataset.history,
+  );
+  const answer = await post("/api/v1/progress", {
+    events: journal,
+    today: today(),
+    names: setting("dbw.book-names"),
+    streak: setting("dbw.streak"),
+  });
+  if (!answer.html) return;
+  progressView.innerHTML = answer.html;
+  for (const details of progressView.querySelectorAll("details[data-history]")) {
+    if (open.includes(details.dataset.history)) details.open = true;
+  }
+}
+
 if (progressView) {
-  events()
-    .then(async (journal) => {
-      if (journal.length === 0) return;
-      const answer = await post("/api/v1/progress", {
-        events: journal,
-        today: today(),
-        names: setting("dbw.book-names"),
-        streak: setting("dbw.streak"),
-      });
-      if (answer.html) progressView.innerHTML = answer.html;
-    })
-    .catch(() => {
-      // Progress stays as sent; Today says when something cannot be reached.
-    });
+  showProgress().catch(() => {
+    // Progress stays as sent; Today says when something cannot be reached.
+  });
+
+  // History (P11.5): mark a reading read on the date chosen above it, take
+  // back a reading's last mark, or pause, resume, stop following or follow
+  // again the plan itself. These need a connection.
+  progressView.addEventListener("click", async (event) => {
+    const button = event.target instanceof Element ? event.target.closest("button") : null;
+    if (!button || (!button.dataset.mark && !button.dataset.undo && !button.dataset.action)) {
+      return;
+    }
+    if (button.dataset.confirm && !window.confirm(button.dataset.confirm)) return;
+    button.disabled = true;
+    try {
+      if (button.dataset.action) {
+        // Pause, resume or stop following the plan, from today.
+        await act({ kind: button.dataset.action, enrollment: button.dataset.enrollment });
+      } else if (button.dataset.undo) {
+        await act({
+          kind: "undo",
+          enrollment: button.dataset.enrollment,
+          target: button.dataset.undo,
+        });
+      } else {
+        const date = button.closest("details")?.querySelector("input[data-history-date]")?.value;
+        await act({
+          kind: "mark",
+          mark: button.dataset.mark,
+          enrollment: button.dataset.enrollment,
+          assignment: Number(button.dataset.assignment),
+          ...(button.dataset.appointed ? { appointed: button.dataset.appointed } : {}),
+          ...(date ? { date } : {}),
+        });
+      }
+      await showProgress();
+    } catch {
+      button.disabled = false;
+    }
+  });
 }
 
 // MARK: Starting a plan

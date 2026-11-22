@@ -72,26 +72,38 @@ extension Enrollment {
     /// any slot the reader settled outside those days, so the states always
     /// add up to the total.
     public func counts(on date: CivilDate) -> Progress.Counts {
-        var total = plan.positions.count
-        if plan.schedule == .dayOfMonth {
-            let last = min(date, ended ?? date)
-            total = 0
-            var day = start
-            while day <= last {
-                if !isPaused(day), plan.positions[day.day] != nil { total += 1 }
-                guard let next = try? day.adding(days: 1) else { break }
-                day = next
-            }
-            total += settled.count {
-                guard let appointed = $0.slot.appointed else { return false }
-                return appointed < start || appointed > last || isPaused(appointed)
-            }
-        }
+        let total = plan.schedule == .dayOfMonth ? recordSlots(on: date).count : plan.positions.count
         let read = settled.count { $0.state == .read }
         let partlyRead = settled.count { $0.state == .partlyRead }
         let skipped = settled.count { $0.state == .skipped }
         return Progress.Counts(
             read: read, partlyRead: partlyRead, skipped: skipped, unread: total - settled.count, total: total)
+    }
+
+    /// The slots the record holds on `date` (P11.5): a sequence's every
+    /// assignment in reading order; a calendar enrollment's slots appointed
+    /// from the start to that date (or to the day it ended), paused days
+    /// excluded, with any slot the reader settled outside those days, in
+    /// date order. The readings by state count these.
+    public func recordSlots(on date: CivilDate) -> [Slot] {
+        guard plan.schedule == .dayOfMonth else {
+            return plan.assignments.map { Slot(assignment: $0.id) }
+        }
+        let last = min(date, ended ?? date)
+        var slots: [Slot] = []
+        var day = start
+        while day <= last {
+            if !isPaused(day), plan.positions[day.day] != nil {
+                slots.append(Slot(assignment: day.day, appointed: day))
+            }
+            guard let next = try? day.adding(days: 1) else { break }
+            day = next
+        }
+        for mark in settled {
+            guard let appointed = mark.slot.appointed else { continue }
+            if appointed < start || appointed > last || isPaused(appointed) { slots.append(mark.slot) }
+        }
+        return slots.sorted { ($0.appointed ?? .earliest) < ($1.appointed ?? .earliest) }
     }
 
     /// Whether `date` is a reading day on which this enrollment still had

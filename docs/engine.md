@@ -678,7 +678,9 @@ understanding, and no wording may suggest they do (AGENTS.md §3).
   appointed from the start to today (or to the day it ended), paused days
   excluded, together with any slot the reader settled outside those days
   (on a paused day, or read ahead), so the four states always add up to
-  the total. "62 of 89 readings read."
+  the total. "62 of 89 readings read." **The record's slots** are those
+  same slots, in reading order for a sequence and in date order for a
+  calendar enrollment; History lists each with its state (P11.5).
 - **Recent reading days:** the seven dates ending today, each with
   whether the reader read on it (any active `completed` or
   `partlyCompleted` with that date, in any enrollment) and whether it was

@@ -19,10 +19,23 @@ struct ProgressSectionView: View {
                     if let catalog = library.catalog {
                         booksExplored(journal, catalog: catalog)
                     }
-                    ForEach(journal.enrollments, id: \.id) { enrollment in
-                        if let plan = library.plan(of: enrollment) {
-                            PlanProgress(
-                                enrollment: enrollment, plan: plan, today: library.today, formatter: formatter)
+                    // The archive (P11.5): plans being read first, then
+                    // paused, finished and stopped ones, each under its heading.
+                    ForEach(PlanGroup.allCases, id: \.self) { group in
+                        let members = journal.enrollments.filter { PlanGroup($0, on: library.today) == group }
+                        if !members.isEmpty {
+                            Text(group.title)
+                                .typeStyle(TypeScale.referenceList)
+                                .foregroundStyle(Palette.text)
+                                .accessibilityAddTraits(.isHeader)
+                                .padding(.top, Spacing.s)
+                            ForEach(members, id: \.id) { enrollment in
+                                if let plan = library.plan(of: enrollment) {
+                                    PlanProgress(
+                                        enrollment: enrollment, plan: plan, today: library.today,
+                                        formatter: formatter)
+                                }
+                            }
                         }
                     }
                     Text("This describes what you've marked, and nothing more.")
@@ -155,6 +168,35 @@ struct ProgressSectionView: View {
     }
 }
 
+/// Where a plan stands, for the archive on Progress (P11.5).
+enum PlanGroup: CaseIterable {
+    case reading
+    case paused
+    case finished
+    case stopped
+
+    init(_ enrollment: Enrollment, on date: CivilDate) {
+        if enrollment.ended != nil {
+            self = .stopped
+        } else if enrollment.isFinished {
+            self = .finished
+        } else if enrollment.isPaused(date) {
+            self = .paused
+        } else {
+            self = .reading
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .reading: String(localized: "Reading now")
+        case .paused: String(localized: "Paused")
+        case .finished: String(localized: "Finished")
+        case .stopped: String(localized: "Stopped")
+        }
+    }
+}
+
 /// One plan's record: readings by state, and the next reading.
 private struct PlanProgress: View {
     let enrollment: Enrollment
@@ -163,9 +205,26 @@ private struct PlanProgress: View {
     let formatter: ReferenceFormatter
 
     var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            record
+            // Every reading's state and every change (P11.5).
+            NavigationLink(value: Destination.history(enrollment.id)) {
+                Text("History")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Palette.accent)
+                    .frame(minHeight: 44)
+            }
+            .accessibilityHint(Text("Every reading of \(plan.title), and every change."))
+        }
+        .typeStyle(TypeScale.body)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card(padding: Spacing.m)
+    }
+
+    private var record: some View {
         let counts = enrollment.counts(on: today)
         let day = enrollment.today(today)
-        VStack(alignment: .leading, spacing: Spacing.xs) {
+        return VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(verbatim: plan.title)
                 .typeStyle(TypeStyle(size: 17, weight: .bold, relativeTo: .headline))
                 .foregroundStyle(Palette.text)
@@ -202,8 +261,6 @@ private struct PlanProgress: View {
                     .foregroundStyle(Palette.textMuted)
             }
         }
-        .typeStyle(TypeScale.body)
-        .card(padding: Spacing.m)
         .accessibilityElement(children: .combine)
     }
 }

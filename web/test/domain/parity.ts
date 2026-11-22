@@ -43,6 +43,7 @@ import {
   previewing,
   progressCounts,
   recentDays,
+  recordSlots,
   reminders,
   streak,
   today,
@@ -571,10 +572,14 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
       const whole = (chapters: readonly ChapterCoverage[]) =>
         chapters.filter(isWholeChapter).length;
       return {
-        enrollments: journal.enrollments.map((enrollment) => ({
-          id: enrollment.id,
-          ...progressCounts(enrollment, date),
-        })),
+        enrollments: journal.enrollments.map((enrollment) => {
+          const counts = progressCounts(enrollment, date);
+          // History lists the slots the counts count (P11.5), as Swift's test checks.
+          if (recordSlots(enrollment, date).length !== counts.total) {
+            throw new Error(`recordSlots disagrees with the total for ${enrollment.id}`);
+          }
+          return { id: enrollment.id, ...counts };
+        }),
         recent: recentDays(journal, date).map((day) => ({
           date: civilDateText(day.date),
           read: day.isRead,
