@@ -12,7 +12,14 @@ import {
   type PlanVersion,
 } from "#lib/domain/index.ts";
 import type { CatalogPlan, ServedCatalog } from "#lib/server/catalog/read.ts";
-import { journalRequest, newEvents, ReadingRequestError, todayCards } from "#lib/server/reading.ts";
+import {
+  journalRequest,
+  newEvents,
+  progressPage,
+  startPreview,
+  ReadingRequestError,
+  todayCards,
+} from "#lib/server/reading.ts";
 
 const repository = new URL("../../", import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, repository), "utf8");
@@ -214,5 +221,142 @@ describe("Today, marking and undoing", () => {
     const other = reading({ way: "otherApp", convention: "kjv" });
     expect(other?.print).toBeUndefined();
     expect(other?.open).toBeUndefined();
+  });
+
+  it("welcomes the reader back after a gap, with each choice's effect, and records the answer", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const read = act(started, "2027-03-01", {
+      kind: "mark",
+      mark: "completed",
+      enrollment,
+      assignment: 1,
+    });
+    // Tuesday to Thursday pass unread; on Friday the reader is welcomed back.
+    const [back] = cards(read, "2027-03-05");
+    expect(back?.welcome?.map((choice) => choice.choice)).toEqual(["continue"]);
+    expect(back?.welcome?.[0]?.effect).toMatch(/^Your next reading will be Mark 3–4\. /);
+    // Only a choice the engine offers today is recorded.
+    expect(() => act(read, "2027-03-05", { kind: "return", enrollment, choice: "rejoin" })).toThrow(
+      ReadingRequestError,
+    );
+    const answered = act(read, "2027-03-05", { kind: "return", enrollment, choice: "continue" });
+    expect(cards(answered, "2027-03-05")[0]?.welcome).toBeUndefined();
+  });
+
+  it("offers a calendar plan's reader today's reading again, keeping the earlier ones", () => {
+    const started = act([], "2027-11-01", {
+      kind: "enroll",
+      plan: "proverbs-by-the-date",
+      behavior: "calendar",
+      start: "2027-11-01",
+      readingDays: [1, 2, 3, 4, 5, 6, 7],
+    });
+    const [back] = cards(started, "2027-11-10");
+    expect(back?.welcome).toEqual([
+      {
+        choice: "rejoin",
+        title: "Rejoin today's readings",
+        effect: "Today's reading is Proverbs 10. Earlier readings stay in your history.",
+      },
+    ]);
+  });
+
+  it("logs an earlier day on that date, and offers Undo, then Redo, for the last action", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const mark = { kind: "mark", mark: "completed", enrollment, assignment: 1 };
+    expect(() => act(started, "2027-03-03", { ...mark, date: "2027-03-04" })).toThrow(
+      ReadingRequestError,
+    );
+    expect(() => act(started, "2027-03-03", { ...mark, date: "2027-02-28" })).toThrow(
+      ReadingRequestError,
+    );
+    const logged = act(started, "2027-03-03", { ...mark, date: "2027-03-01" });
+    const lastAction = (logged.at(-1) as { id: string }).id;
+    const request = journalRequest({ events: logged, today: "2027-03-03" }, catalog);
+    const [card] = todayCards(catalog, request.journal, request.today, { lastAction });
+    expect(card?.lastMark?.message).toBe("Marked Mark 1–2 read on Monday 1 March.");
+    expect(card?.lastMark?.redo).toBeUndefined();
+    // Without the tab's last action, a mark dated earlier is history, not Undo.
+    expect(cards(logged, "2027-03-03")[0]?.lastMark).toBeUndefined();
+
+    const undone = act(logged, "2027-03-03", { kind: "undo", enrollment, target: lastAction });
+    const undo = (undone.at(-1) as { id: string }).id;
+    const again = journalRequest({ events: undone, today: "2027-03-03" }, catalog);
+    const [redo] = todayCards(catalog, again.journal, again.today, { lastAction: undo });
+    expect(redo?.lastMark).toEqual({ event: undo, message: "Undone.", redo: true });
+  });
+
+  it("logs a calendar plan's earlier day as that date's own reading", () => {
+    const started = act([], "2027-11-01", {
+      kind: "enroll",
+      plan: "proverbs-by-the-date",
+      behavior: "calendar",
+      start: "2027-11-01",
+      readingDays: [1, 2, 3, 4, 5, 6, 7],
+    });
+    const enrollment = cards(started, "2027-11-03")[0]?.enrollment;
+    const [logged] = newEvents(
+      {
+        events: started,
+        today: "2027-11-03",
+        action: { kind: "mark", mark: "completed", enrollment, assignment: 3, date: "2027-11-02" },
+      },
+      catalog,
+      now,
+    ) as [Record<string, unknown>];
+    expect(logged).toMatchObject({ assignment: 2, date: "2027-11-02", appointed: "2027-11-02" });
+  });
+
+  it("keeps Progress: the week in words and symbols, and each plan's readings by state", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const read = act(started, "2027-03-01", {
+      kind: "mark",
+      mark: "completed",
+      enrollment,
+      assignment: 1,
+    });
+    const request = journalRequest({ events: read, today: "2027-03-02" }, catalog);
+    const progress = progressPage(catalog, request.journal, request.today);
+    expect(progress.days.map((day) => day.symbol)).toEqual(["–", "–", "–", "–", "–", "✓", "○"]);
+    expect(progress.days[5]?.label).toBe("Monday 1 March, read");
+    expect(progress.days[6]?.label).toBe("Tuesday 2 March, not read");
+    expect(progress.plans).toEqual([
+      expect.objectContaining({
+        plan: "Mark in a week",
+        counts: "1 of 3 readings read",
+        finished: false,
+        next: "Next: Mark 3–4",
+      }),
+    ]);
+  });
+
+  it("previews a finish date's load, and refuses one beyond the reader's limit", () => {
+    const finishing = {
+      ...enroll,
+      behavior: "finish-date",
+      finish: "2027-03-03",
+      readingDays: [1, 2, 3, 4, 5, 6, 7],
+      limit: 1,
+    };
+    // Three readings over Monday to Wednesday: one a day fits a limit of one.
+    expect(
+      startPreview({ events: [], today: "2027-03-01", action: finishing }, catalog, now),
+    ).toEqual({ text: "1 reading a day, on 3 reading days.", fits: true });
+    // By Tuesday it would take two a day; at one a day it ends on Wednesday.
+    const tooSoon = { ...finishing, finish: "2027-03-02" };
+    expect(
+      startPreview({ events: [], today: "2027-03-01", action: tooSoon }, catalog, now),
+    ).toEqual({
+      text: "To finish by Tuesday 2 March you'd read up to 2 readings a day. At 1 a day you'd finish on Wednesday 3 March.",
+      fits: false,
+      later: "2027-03-03",
+    });
+    expect(() => act([], "2027-03-01", tooSoon)).toThrow(ReadingRequestError);
+    expect(startPreview({ events: [], today: "2027-03-01", action: enroll }, catalog, now)).toBe(
+      undefined,
+    );
   });
 });

@@ -19,8 +19,16 @@ import {
   journalEventWire,
   makeEventID,
   parseCivilDate,
+  isFinished,
+  previewing,
+  progressCounts,
+  recentDays,
   ReferenceFormatter,
+  weekday,
+  workload,
   today as todayOf,
+  welcome as welcomeOf,
+  welcomeAnswer,
   type Behavior,
   type CivilDate,
   type EventID,
@@ -28,10 +36,11 @@ import {
   type MarkKind,
   type NamingConvention,
   type Reading,
+  type ReturnChoice,
   type TodayStatus,
 } from "#lib/domain/index.ts";
 import { placeInPrint, referenceOf, type Reference } from "#lib/reference.ts";
-import { listText, text } from "#lib/strings.ts";
+import { listText, minutesRangeText, text } from "#lib/strings.ts";
 import { dayText } from "./catalog/present.ts";
 import type { ServedCatalog } from "./catalog/read.ts";
 
@@ -93,6 +102,8 @@ export interface ReadingOptions {
   readonly way?: "physicalBible" | "youVersion" | "otherApp";
   /** Bible.com's number for the reader's translation; absent until chosen. */
   readonly translation?: number;
+  /** The event the reader's last action in this tab made, to offer Undo (or Redo) for. */
+  readonly lastAction?: EventID;
 }
 
 /** One reading on a Today card. */
@@ -141,8 +152,17 @@ function wayIn(
   }
 }
 
+/** A choice after a gap, with what it would change, worked out before anything does (P8.7). */
+export interface WelcomeChoice {
+  readonly choice: ReturnChoice;
+  readonly title: string;
+  readonly effect: string;
+}
+
 /** One plan's day on Today (docs/product.md, Today). */
 export interface TodayCard {
+  /** After a gap: the welcome and its choices, first on the card. */
+  readonly welcome?: readonly WelcomeChoice[];
   readonly enrollment: EventID;
   readonly plan: string;
   readonly status: TodayStatus;
@@ -151,8 +171,17 @@ export interface TodayCard {
   readonly readings: readonly TodayReading[];
   /** On a short month's last day, the days it does not appoint. */
   readonly note?: string;
-  /** The last mark made today, to offer Undo for. */
-  readonly lastMark?: { readonly event: EventID; readonly message: string };
+  /** The reader's last action, or else the last mark made today, to take back. */
+  readonly lastMark?: {
+    readonly event: EventID;
+    readonly message: string;
+    /** Whether taking it back is a Redo: the last action was itself an undo. */
+    readonly redo?: true;
+  };
+  /** The earliest date an earlier day can be logged for: the plan's start. */
+  readonly start: string;
+  /** Today, the latest date an earlier day can be logged for. */
+  readonly today: string;
 }
 
 function formatter(catalog: ServedCatalog, convention: NamingConvention): ReferenceFormatter {
@@ -178,10 +207,12 @@ function statusText(status: TodayStatus, start: CivilDate): string | undefined {
   }
 }
 
-function markMessage(kind: MarkKind, reference: string): string {
+function markMessage(kind: MarkKind, reference: string, on?: CivilDate): string {
   switch (kind) {
     case "completed":
-      return text("today.marked-read", { reference });
+      return on
+        ? text("today.marked-read-on", { reference, date: dayText(on) })
+        : text("today.marked-read", { reference });
     case "partlyCompleted":
       return text("today.marked-part", { reference });
     case "skipped":
@@ -229,19 +260,51 @@ export function todayCards(
             })
           : [];
       const notAppointed = day.calendar?.notAppointed ?? [];
-      const last = journal.events.findLast(
+      const isMark = (event: JournalEvent) =>
+        event.kind === "completed" || event.kind === "partlyCompleted" || event.kind === "skipped";
+      // The reader's last action in this tab, when it is this plan's and
+      // still stands; else the last mark made today (as the app offers).
+      const action = journal.events.find(
         (event) =>
+          event.id === options.lastAction &&
           event.enrollment === enrollment.id &&
-          (event.kind === "completed" ||
-            event.kind === "partlyCompleted" ||
-            event.kind === "skipped") &&
-          civilDateText(event.date) === civilDateText(date) &&
           journal.isActive(event.id),
       );
+      const last =
+        action && (isMark(action) || action.kind === "undone")
+          ? action
+          : journal.events.findLast(
+              (event) =>
+                event.enrollment === enrollment.id &&
+                isMark(event) &&
+                "date" in event &&
+                civilDateText(event.date as CivilDate) === civilDateText(date) &&
+                journal.isActive(event.id),
+            );
       const lastReading =
         last && "assignment" in last ? readingOf(last.assignment as number) : undefined;
+      const lastMark =
+        last?.kind === "undone"
+          ? { event: last.id, message: text("today.undone"), redo: true as const }
+          : last && lastReading && "date" in last
+            ? {
+                event: last.id,
+                message: markMessage(
+                  last.kind as MarkKind,
+                  referenceOf(lastReading, names).display,
+                  civilDateText(last.date as CivilDate) === civilDateText(date)
+                    ? undefined
+                    : (last.date as CivilDate),
+                ),
+              }
+            : undefined;
       const message = statusText(day.status, enrollment.start);
+      const welcome = welcomeChoices(journal, enrollment.id, date, (slot) => {
+        const reading = readingOf(slot.assignment);
+        return reading ? names.reading(reading) : undefined;
+      });
       return {
+        ...(welcome && welcome.length > 0 ? { welcome } : {}),
         enrollment: enrollment.id,
         plan: title,
         status: day.status,
@@ -255,19 +318,182 @@ export function todayCards(
               }),
             }
           : {}),
-        ...(last && lastReading
-          ? {
-              lastMark: {
-                event: last.id,
-                message: markMessage(
-                  last.kind as MarkKind,
-                  referenceOf(lastReading, names).display,
-                ),
-              },
-            }
-          : {}),
+        ...(lastMark ? { lastMark } : {}),
+        start: civilDateText(enrollment.start),
+        today: civilDateText(date),
       };
     });
+}
+
+/**
+ * The welcome's choices for an enrollment on `date`, each with its effect
+ * found by folding the journal with that answer added (docs/engine.md,
+ * "Returning after a break"): the same words the app's WelcomeBack uses.
+ */
+function welcomeChoices(
+  journal: Journal,
+  id: EventID,
+  date: CivilDate,
+  reference: (slot: { assignment: number }) => string | undefined,
+): WelcomeChoice[] | undefined {
+  const enrollment = journal.enrollments.find((candidate) => candidate.id === id);
+  const offered = enrollment ? welcomeOf(enrollment, date) : undefined;
+  if (!offered) return undefined;
+  return offered.offers.flatMap((offer): WelcomeChoice[] => {
+    const after = previewing(journal, welcomeAnswer(offer, date), id)?.enrollments.find(
+      (candidate) => candidate.id === id,
+    );
+    if (!after) return [];
+    const answered = todayOf(after, date);
+    switch (offer.choice) {
+      case "continue": {
+        const next = answered.readings[0] ?? answered.next;
+        const named = next ? reference(next) : undefined;
+        const finish = answered.projection?.plan;
+        const effect = [
+          named ? text("welcome.next", { reference: named }) : text("welcome.nothing"),
+          ...(finish ? [text("welcome.finish-at-pace", { date: dayText(finish) })] : []),
+        ].join(" ");
+        return [{ choice: offer.choice, title: text("welcome.continue"), effect }];
+      }
+      case "spread":
+        if (!offer.finish || offer.most === undefined) return [];
+        return [
+          {
+            choice: offer.choice,
+            title: text("welcome.spread"),
+            effect:
+              offer.most === 1
+                ? text("welcome.spread-one", { date: dayText(offer.finish) })
+                : text("welcome.spread-other", {
+                    most: String(offer.most),
+                    date: dayText(offer.finish),
+                  }),
+          },
+        ];
+      case "moveFinish":
+        if (!offer.finish) return [];
+        return [
+          {
+            choice: offer.choice,
+            title: text("welcome.move-finish"),
+            effect: text("welcome.finish-moves", { date: dayText(offer.finish) }),
+          },
+        ];
+      case "rejoin": {
+        const appointment = answered.calendar?.appointment;
+        const named = appointment ? reference(appointment) : undefined;
+        return [
+          {
+            choice: offer.choice,
+            title: text("welcome.rejoin"),
+            effect: named
+              ? text("welcome.rejoin-today", { reference: named })
+              : text("welcome.rejoin-plain"),
+          },
+        ];
+      }
+    }
+  });
+}
+
+// MARK: Progress
+
+/** One of the seven days ending today, in words as well as a symbol (P8.12). */
+export interface ProgressStripDay {
+  readonly initial: string;
+  readonly symbol: "✓" | "○" | "–";
+  readonly label: string;
+}
+
+/** One plan's record: readings by state, the next reading, and its finish. */
+export interface PlanRecord {
+  readonly enrollment: EventID;
+  readonly plan: string;
+  readonly ended: boolean;
+  readonly counts: string;
+  readonly others?: string;
+  readonly finished: boolean;
+  readonly next?: string;
+  readonly finish?: string;
+}
+
+export interface ProgressPage {
+  readonly days: readonly ProgressStripDay[];
+  readonly plans: readonly PlanRecord[];
+}
+
+const weekdayKeys = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
+
+/** Progress as the app shows it (P8.12): the week's strip and each plan's record. */
+export function progressPage(
+  catalog: ServedCatalog,
+  journal: Journal,
+  date: CivilDate,
+  options: ReadingOptions = {},
+): ProgressPage {
+  const names = formatter(catalog, options.convention ?? "common");
+  const days = recentDays(journal, date).map((day): ProgressStripDay => {
+    const name = text(`weekday.${weekdayKeys[weekday(day.date) - 1] ?? "monday"}`);
+    const when = dayText(day.date);
+    return {
+      initial: name.slice(0, 1),
+      symbol: day.isRead ? "✓" : day.isReadingDay ? "○" : "–",
+      label: day.isRead
+        ? text("progress.day-read", { date: when })
+        : day.isReadingDay
+          ? text("progress.day-unread", { date: when })
+          : text("progress.day-rest", { date: when }),
+    };
+  });
+  const plans = journal.enrollments.map((enrollment): PlanRecord => {
+    const entry = catalog.plans.find((plan) => plan.id === enrollment.plan.id);
+    const counts = progressCounts(enrollment, date);
+    const total = counts.read + counts.partlyRead + counts.skipped + counts.unread;
+    const others = [
+      ...(counts.partlyRead > 0
+        ? [text("progress.part-read", { count: String(counts.partlyRead) })]
+        : []),
+      ...(counts.skipped > 0 ? [text("progress.skipped", { count: String(counts.skipped) })] : []),
+    ];
+    const day = todayOf(enrollment, date);
+    const nextSlot = day.next ?? day.readings[0];
+    const nextReading = nextSlot
+      ? enrollment.plan.assignments.find((candidate) => candidate.id === nextSlot.assignment)
+          ?.reading
+      : undefined;
+    const finish = day.schedule?.finish ?? day.projection?.plan;
+    return {
+      enrollment: enrollment.id,
+      plan: entry?.title ?? enrollment.plan.id,
+      ended: enrollment.ended !== undefined,
+      counts:
+        total === 1
+          ? text("progress.read-of-one", { read: String(counts.read) })
+          : text("progress.read-of", { read: String(counts.read), total: String(total) }),
+      ...(others.length > 0 ? { others: others.join(" · ") } : {}),
+      finished: isFinished(enrollment),
+      ...(nextReading && !isFinished(enrollment)
+        ? { next: text("progress.next", { reference: names.reading(nextReading) }) }
+        : {}),
+      ...(finish && !isFinished(enrollment) && enrollment.ended === undefined
+        ? {
+            finish: day.schedule
+              ? text("progress.finish-date", { date: dayText(finish) })
+              : text("welcome.finish-at-pace", { date: dayText(finish) }),
+          }
+        : {}),
+    };
+  });
+  return { days, plans };
 }
 
 // MARK: Making events
@@ -295,6 +521,120 @@ function integer(value: unknown, field: string, low: number, high: number): numb
   return value;
 }
 
+/** The `enrolled` event for a start action, checked against the catalog. */
+function enrolledEvent(
+  action: Record<string, unknown>,
+  catalog: ServedCatalog,
+  now: Date,
+  zone: string,
+): JournalEvent {
+  const entry = catalog.plans.find((plan) => plan.id === action["plan"]);
+  if (!entry) throw new ReadingRequestError("there is no such plan");
+  const behavior = action["behavior"] as Behavior;
+  if (!entry.plan.behaviors.includes(behavior)) {
+    throw new ReadingRequestError("the plan does not permit that behavior");
+  }
+  const readingDays = action["readingDays"];
+  if (
+    !Array.isArray(readingDays) ||
+    readingDays.length === 0 ||
+    readingDays.some(
+      (day, index) =>
+        typeof day !== "number" ||
+        !Number.isInteger(day) ||
+        day < 1 ||
+        day > 7 ||
+        (index > 0 && day <= (readingDays[index - 1] as number)),
+    )
+  ) {
+    throw new ReadingRequestError("readingDays are not weekdays in order");
+  }
+  const start = date(action["start"], "start");
+  const enrollment = newID(now.getTime());
+  return {
+    id: newID(eventIDMilliseconds(enrollment) + 1),
+    enrollment,
+    at: instantText(now),
+    zone,
+    device: "Web",
+    kind: "enrolled",
+    plan: entry.id,
+    version: entry.version,
+    behavior,
+    start,
+    readingDays: readingDays as number[],
+    ...(behavior === "finish-date"
+      ? {
+          finish: date(action["finish"], "finish"),
+          limit: integer(action["limit"], "limit", 1, 10),
+        }
+      : {}),
+  } as JournalEvent;
+}
+
+/** A candidate enrollment's schedule on its first day: the finish date's load. */
+function scheduleOf(journal: Journal, enrolled: JournalEvent & { start: CivilDate }) {
+  const after = new Journal([...journal.events, enrolled], journal.plans);
+  const enrollment = after.enrollments.find((candidate) => candidate.id === enrolled.enrollment);
+  return enrollment ? todayOf(enrollment, enrolled.start).schedule : undefined;
+}
+
+/**
+ * What a finish date asks, before the reader starts (docs/product.md,
+ * "Starting a plan"; P8.2b): readings a day, the heaviest day's time, or,
+ * when that is beyond the reader's limit, the later date that fits.
+ */
+export function startPreview(
+  body: unknown,
+  catalog: ServedCatalog,
+  now: Date,
+): { readonly text: string; readonly fits: boolean; readonly later?: string } | undefined {
+  const fields = record(body);
+  const { journal } = journalRequest(body, catalog);
+  const action = record(fields["action"]);
+  if (action["behavior"] !== "finish-date") return undefined;
+  const enrolled = enrolledEvent(action, catalog, now, "UTC") as JournalEvent & {
+    start: CivilDate;
+    finish: CivilDate;
+    limit: number;
+  };
+  if (civilDateText(enrolled.finish) < civilDateText(enrolled.start)) {
+    throw new ReadingRequestError("the finish is before the start");
+  }
+  const schedule = scheduleOf(journal, enrolled);
+  if (!schedule) return undefined;
+  if (schedule.most > enrolled.limit && schedule.finishWithinLimit) {
+    return {
+      text: text("start.too-many", {
+        finish: dayText(enrolled.finish),
+        most: String(schedule.most),
+        limit: String(enrolled.limit),
+        later: dayText(schedule.finishWithinLimit),
+      }),
+      fits: false,
+      later: civilDateText(schedule.finishWithinLimit),
+    };
+  }
+  const days = String(schedule.scheduledDays);
+  const load =
+    schedule.least !== schedule.most
+      ? text("start.load-range", {
+          least: String(schedule.least),
+          most: String(schedule.most),
+          days,
+        })
+      : schedule.most === 1
+        ? text("start.load-one", { days })
+        : text("start.load-same", { most: String(schedule.most), days });
+  const heaviest =
+    schedule.heaviestWords === undefined
+      ? undefined
+      : text("start.heaviest", {
+          minutes: minutesRangeText(workload(schedule.heaviestWords).minutes),
+        });
+  return { text: heaviest ? `${load} ${heaviest}` : load, fits: schedule.most <= enrolled.limit };
+}
+
 /**
  * The events a reader's action makes (docs/engine.md, "The journal"), each
  * checked by folding the journal with it: starting a plan, marking a
@@ -316,53 +656,19 @@ export function newEvents(
 
   switch (action["kind"]) {
     case "enroll": {
-      const entry = catalog.plans.find((plan) => plan.id === action["plan"]);
-      if (!entry) throw new ReadingRequestError("there is no such plan");
-      const behavior = action["behavior"] as Behavior;
-      if (!entry.plan.behaviors.includes(behavior)) {
-        throw new ReadingRequestError("the plan does not permit that behavior");
+      made = [enrolledEvent(action, catalog, now, zone)];
+      const enrolled = made[0] as JournalEvent & { kind: "enrolled"; start: CivilDate };
+      // A finish date that needs more readings a day than the reader allows
+      // is refused; the start page shows why, and the later date that fits.
+      const schedule = scheduleOf(journal, enrolled);
+      if (schedule && schedule.most > (schedule.limit ?? Infinity)) {
+        throw new ReadingRequestError("the finish date needs more readings a day than the limit");
       }
-      const readingDays = action["readingDays"];
-      if (
-        !Array.isArray(readingDays) ||
-        readingDays.length === 0 ||
-        readingDays.some(
-          (day, index) =>
-            typeof day !== "number" ||
-            !Number.isInteger(day) ||
-            day < 1 ||
-            day > 7 ||
-            (index > 0 && day <= (readingDays[index - 1] as number)),
-        )
-      ) {
-        throw new ReadingRequestError("readingDays are not weekdays in order");
-      }
-      const start = date(action["start"], "start");
-      const enrollment = newID(now.getTime());
-      const event = {
-        id: newID(eventIDMilliseconds(enrollment) + 1),
-        enrollment,
-        at,
-        zone,
-        device,
-        kind: "enrolled",
-        plan: entry.id,
-        version: entry.version,
-        behavior,
-        start,
-        readingDays: readingDays as number[],
-        ...(behavior === "finish-date"
-          ? {
-              finish: date(action["finish"], "finish"),
-              limit: integer(action["limit"], "limit", 1, 10),
-            }
-          : {}),
-      } as JournalEvent;
-      made = [event];
       break;
     }
     case "mark":
-    case "undo": {
+    case "undo":
+    case "return": {
       const enrollment = journal.enrollments.find(
         (candidate) => candidate.id === action["enrollment"],
       );
@@ -373,7 +679,14 @@ export function newEvents(
         .reduce((a, b) => Math.max(a, b), eventIDMilliseconds(enrollment.id));
       const record = { enrollment: enrollment.id, at, zone, device };
       const id = newID(Math.max(now.getTime(), latest + 1));
-      if (action["kind"] === "undo") {
+      if (action["kind"] === "return") {
+        // The answer to the welcome the engine offers today, and no other.
+        const offer = welcomeOf(enrollment, today)?.offers.find(
+          (candidate) => candidate.choice === action["choice"],
+        );
+        if (!offer) throw new ReadingRequestError("that choice is not offered today");
+        made = [{ ...record, id, ...welcomeAnswer(offer, today) } as JournalEvent];
+      } else if (action["kind"] === "undo") {
         const target = action["target"];
         if (typeof target !== "string") throw new ReadingRequestError("target is not an event");
         made = [{ ...record, id, kind: "undone", target } as JournalEvent];
@@ -382,14 +695,26 @@ export function newEvents(
         if (kind !== "completed" && kind !== "partlyCompleted" && kind !== "skipped") {
           throw new ReadingRequestError("mark is not a kind of mark");
         }
-        const appointed = action["appointed"];
+        // An earlier day is logged on the date it happened, never as today
+        // (docs/product.md, "Marking honestly"): from the start to today.
+        const on = action["date"] === undefined ? today : date(action["date"], "date");
+        if (
+          civilDateText(on) > civilDateText(today) ||
+          civilDateText(on) < civilDateText(enrollment.start)
+        ) {
+          throw new ReadingRequestError("date is not between the start and today");
+        }
+        // On a calendar plan, an earlier day's reading is that date's own.
+        const calendar =
+          enrollment.plan.schedule === "day-of-month" && action["date"] !== undefined;
+        const appointed = calendar ? civilDateText(on) : action["appointed"];
         made = [
           {
             ...record,
             id,
             kind,
-            assignment: integer(action["assignment"], "assignment", 1, 100_000),
-            date: today,
+            assignment: calendar ? on.day : integer(action["assignment"], "assignment", 1, 100_000),
+            date: on,
             ...(appointed === undefined ? {} : { appointed: date(appointed, "appointed") }),
           } as JournalEvent,
         ];

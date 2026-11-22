@@ -83,6 +83,10 @@
           <span class="font-semibold">{text("start.limit")}</span>
           <input class="min-h-11 w-24" type="number" name="limit" min="1" max="10" value="2" />
         </label>
+        <p class="m-0" aria-live="polite" data-finish-preview hidden></p>
+        <button type="button" class="button button-secondary" data-use-later hidden>
+          {text("start.use-later")}
+        </button>
       </div>
     </fieldset>
   {:else}

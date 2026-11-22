@@ -27,6 +27,7 @@ export const POST = async ({ request }: { request: Request }) => {
         : "common",
       way: way === "youVersion" || way === "otherApp" ? way : "physicalBible",
       ...(Number.isInteger(translation) && translation > 0 ? { translation } : {}),
+      ...(typeof fields["lastAction"] === "string" ? { lastAction: fields["lastAction"] } : {}),
     });
     const html = cards.length > 0 ? render(TodayCards, { props: { cards } }).body : "";
     return new Response(JSON.stringify({ html, plans: cards.length }), {

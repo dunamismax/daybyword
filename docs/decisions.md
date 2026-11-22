@@ -1382,8 +1382,11 @@ browser, E7; `?today=` pins it for tests, E14) to two endpoints:
   wire form, checks that each would mean something in that journal, and
   answers with them; the script adds them to IndexedDB.
 
-Both accept JSON only (so a cross-site form cannot reach them), keep
-nothing, and log only the route and status (E38's wrapper). Undo is a
+P8.10d adds `POST /api/v1/progress` (Progress, rendered by
+`ProgressView.svelte`) and `POST /api/v1/preview` (a finish date's load
+before starting). All of them accept JSON only (so a cross-site form
+cannot reach them), keep nothing, and log only the route and status
+(E38's wrapper). Undo is a
 card's own button for the last mark made today, as in the app, rather
 than client state. The production body limit rises from 64K to 1M: the
 journal is sent whole, and a year of one daily plan is about 90 KB.

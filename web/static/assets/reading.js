@@ -75,6 +75,13 @@ async function act(action) {
     action,
   });
   await keep(answer.events);
+  // The last thing done in this tab, so Today can offer to take it back
+  // (the app's Undo banner); it lasts only as long as the tab.
+  try {
+    sessionStorage.setItem("dbw.last-action", answer.events.at(-1)?.id ?? "");
+  } catch {
+    // Without session storage, Undo is offered for today's marks only.
+  }
 }
 
 function show(element, message) {
@@ -106,6 +113,13 @@ async function showToday() {
     names: setting("dbw.book-names"),
     way: setting("dbw.way-to-read"),
     translation: setting("dbw.translation"),
+    lastAction: (() => {
+      try {
+        return sessionStorage.getItem("dbw.last-action") || undefined;
+      } catch {
+        return undefined;
+      }
+    })(),
   });
   if (answer.html) todayView.innerHTML = answer.html;
 }
@@ -115,23 +129,41 @@ if (todayView) {
 
   todayView.addEventListener("click", async (event) => {
     const button = event.target instanceof Element ? event.target.closest("button") : null;
-    if (!button || (!button.dataset.mark && !button.dataset.undo)) return;
+    if (!button || (!button.dataset.mark && !button.dataset.undo && !button.dataset.return)) {
+      return;
+    }
     if (button.dataset.confirm && !window.confirm(button.dataset.confirm)) return;
     button.disabled = true;
     try {
-      if (button.dataset.undo) {
+      if (button.dataset.return) {
+        // A welcome's choice, previewed on the card and confirmed here.
+        await act({
+          kind: "return",
+          enrollment: button.dataset.enrollment,
+          choice: button.dataset.return,
+        });
+      } else if (button.dataset.undo) {
         await act({
           kind: "undo",
           enrollment: button.dataset.enrollment,
           target: button.dataset.undo,
         });
       } else {
+        // "Log an earlier day" sends the date the reader chose beside it.
+        const earlier = button.hasAttribute("data-earlier-for")
+          ? button.parentElement?.querySelector("input[data-earlier]")?.value
+          : undefined;
+        if (button.hasAttribute("data-earlier-for") && !earlier) {
+          button.disabled = false;
+          return;
+        }
         await act({
           kind: "mark",
           mark: button.dataset.mark,
           enrollment: button.dataset.enrollment,
           assignment: Number(button.dataset.assignment),
           ...(button.dataset.appointed ? { appointed: button.dataset.appointed } : {}),
+          ...(earlier ? { date: earlier } : {}),
         });
       }
       show(todayProblem, "");
@@ -141,6 +173,26 @@ if (todayView) {
       show(todayProblem, todayView.dataset.notSaved);
     }
   });
+}
+
+// MARK: Progress
+
+const progressView = document.getElementById("progress");
+
+if (progressView) {
+  events()
+    .then(async (journal) => {
+      if (journal.length === 0) return;
+      const answer = await post("/api/v1/progress", {
+        events: journal,
+        today: today(),
+        names: setting("dbw.book-names"),
+      });
+      if (answer.html) progressView.innerHTML = answer.html;
+    })
+    .catch(() => {
+      // Progress stays as sent; Today says when something cannot be reached.
+    });
 }
 
 // MARK: Starting a plan
@@ -158,28 +210,65 @@ if (startForm) {
     if (finishDate) finishDate.hidden = behaviorChosen() !== "finish-date";
   };
   showFinish();
-  startForm.addEventListener("change", showFinish);
 
-  startForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const problem = startForm.querySelector("[data-start-problem]");
+  /** The start action the form describes now. */
+  const startAction = () => {
     const behavior = behaviorChosen();
-    const readingDays = [...startForm.querySelectorAll('input[name="day"]:checked')].map((day) =>
-      Number(day.value),
-    );
     const action = {
       kind: "enroll",
       plan: startForm.dataset.plan,
       behavior,
       start: start?.value || today(),
-      readingDays,
+      readingDays: [...startForm.querySelectorAll('input[name="day"]:checked')].map((day) =>
+        Number(day.value),
+      ),
     };
     if (behavior === "finish-date") {
       action.finish = startForm.querySelector('input[name="finish"]').value;
       action.limit = Number(startForm.querySelector('input[name="limit"]').value);
     }
+    return action;
+  };
+
+  // A finish date's load, from the engine on the server, before starting.
+  const preview = startForm.querySelector("[data-finish-preview]");
+  const useLater = startForm.querySelector("[data-use-later]");
+  let later;
+  const showPreview = async () => {
+    const action = startAction();
+    if (action.behavior !== "finish-date" || !action.finish || action.readingDays.length === 0) {
+      show(preview, "");
+      if (useLater) useLater.hidden = true;
+      return;
+    }
     try {
-      await act(action);
+      const answer = await post("/api/v1/preview", {
+        events: await events(),
+        today: today(),
+        action,
+      });
+      show(preview, answer.text ?? "");
+      later = answer.later;
+      if (useLater) useLater.hidden = !later;
+    } catch {
+      show(preview, "");
+      if (useLater) useLater.hidden = true;
+    }
+  };
+  useLater?.addEventListener("click", () => {
+    if (later) startForm.querySelector('input[name="finish"]').value = later;
+    showPreview();
+  });
+  startForm.addEventListener("change", () => {
+    showFinish();
+    showPreview();
+  });
+
+  startForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const problem = startForm.querySelector("[data-start-problem]");
+    try {
+      await act(startAction());
       location.href = "/today";
     } catch {
       show(problem, startForm.dataset.notStarted);

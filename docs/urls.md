@@ -39,7 +39,9 @@ release's commit and the database, as JSON), `/assets/…` (the site's own files
 
 The browser's compute endpoints, which take the journal this browser
 keeps as JSON and store nothing (E52): `POST /api/v1/today` (Today's
-cards) and `POST /api/v1/events` (the events an action makes).
+cards), `POST /api/v1/events` (the events an action makes),
+`POST /api/v1/progress` (Progress) and `POST /api/v1/preview` (a finish
+date's load, before starting).
 
 Reserved for later phases, so nothing else takes them: the rest of
 `/api/v1/…` (sync, P14; a JSON 404 until an endpoint claims an address), `/about`, `/privacy`, `/sources`, `/criteria`, and `/support` (public

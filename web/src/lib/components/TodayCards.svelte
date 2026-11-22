@@ -13,6 +13,26 @@
 
 {#each cards as card (card.enrollment)}
   <article class="card mb-m">
+    {#if card.welcome}
+      <section class="mb-m rounded-control bg-accent-tint p-m" aria-label={text("welcome.title")}>
+        <p class="mt-0 font-semibold">{text("welcome.title")}</p>
+        {#each card.welcome as choice (choice.choice)}
+          <div class="mb-s">
+            <button
+              type="button"
+              class="button button-secondary"
+              data-return={choice.choice}
+              data-enrollment={card.enrollment}
+              data-confirm={`${choice.title}. ${choice.effect}`}
+            >
+              {choice.title}
+            </button>
+            <p class="my-xxs text-caption text-text-muted">{choice.effect}</p>
+          </div>
+        {/each}
+        <p class="mb-0 text-caption text-text-muted">{text("welcome.nothing-changes-yet")}</p>
+      </section>
+    {/if}
     {#if card.readings.length > 0}
       {#each card.readings as reading (reading.assignment)}
         <p class="mb-0 text-label text-text-muted">{reading.label}</p>
@@ -59,6 +79,28 @@
             {text("today.skip")}
           </button>
         </div>
+        <details class="mt-s">
+          <summary class="min-h-11 cursor-pointer py-xxs text-accent">
+            {text("today.earlier")}
+          </summary>
+          <div class="flex flex-wrap items-end gap-xs">
+            <label class="flex flex-col gap-xxs">
+              <span>{text("today.earlier-date")}</span>
+              <input class="min-h-11" type="date" min={card.start} max={card.today} data-earlier />
+            </label>
+            <button
+              type="button"
+              class="button button-secondary"
+              data-mark="completed"
+              data-earlier-for
+              data-enrollment={card.enrollment}
+              data-assignment={reading.assignment}
+            >
+              {text("today.earlier-log")}
+            </button>
+          </div>
+          <p class="mb-0 text-caption text-text-muted">{text("today.earlier-note")}</p>
+        </details>
         {#if reading.open?.note}
           <p class="mb-0 text-caption text-text-muted">{reading.open.note}</p>
         {/if}
@@ -81,7 +123,7 @@
           data-undo={card.lastMark.event}
           data-enrollment={card.enrollment}
         >
-          {text("component.undo")}
+          {card.lastMark.redo ? text("today.redo") : text("component.undo")}
         </button>
       </div>
     {/if}
