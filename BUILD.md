@@ -20,9 +20,9 @@ sessions build Day by Word step by step, working under
 | **Phase** | Phase 8, first light (M2): 11 of 14 items done (P8.1–P8.4, P8.6–P8.12), with P8.5 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
 | **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done), **P8.13**'s last check (the app's Export share sheet), then Phase 9 (choosing a plan) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
-| **Waiting on the owner** | **The deploy of this session's web work**: `make check-full` passed at 8ca3610 (2026-11-21), but `make deploy` stopped at SSH because Tailscale asked for an extra sign-in check on the owner's account. Once the owner approves it, `make deploy` runs as usual; nothing on the host changed. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18. Starting a plan, Today, marking, the welcome back, Progress, the new Settings and offline (P8.10c, P8.10d, P8.11) on the web are committed; their deploy waits on the Tailscale check above. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
-| **Last updated** | 2026-11-21 |
+| **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): the plans, their pages and printable weeks, and since 2026-11-22 starting a plan, Today with marking, the welcome back, Progress, Settings and offline, with the reader's record in their own browser (E52, E53). Deployed 2026-11-22 at 33d2573 after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, the other sites answered as before, and a 700 KB request body was accepted (the 1M limit). `https://daybyword.com/healthz` names the serving commit |
+| **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
 **daybyword.com**, registered by the owner at Cloudflare on 2026-10-30. The
@@ -661,10 +661,9 @@ only when Phase 18 is finished or an item points there.
 - **Offline (P8.11, E53):** a service worker keeps the site's files and
   pages; Today keeps seven days of cards; marks made offline wait in
   IndexedDB with their own ids. Undo and the welcome need a connection.
-- **Deploy:** `make check-full` passed at 8ca3610 (P8.11 came after; run it
-  again first); `make deploy` stopped at
-  Tailscale SSH's extra check (the owner's sign-in). Nothing changed on
-  the host; deploy once the owner has approved it.
+- **Deployed 33d2573** on 2026-11-22 after `make check-full` passed (the
+  owner approved Tailscale's SSH check first); the unit's 1M body limit
+  is live.
 - **Open:** P8.13 waits only on seeing the app's Export share sheet open
   (it never has under the Simulator's taps). P7.3 waits for the daily
   snapshot (2026-11-22 07:30 UTC). P8.14 needs a TestFlight build with
