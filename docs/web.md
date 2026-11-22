@@ -93,7 +93,8 @@ files when APIs are needed.
 - Keep metadata-only app/proxy logs and use no-store for private
   responses. SvelteKit, Vite and Tailwind send no telemetry; add no tool
   that does. No AI/model/analytics SDKs.
-- D30 browsers, keyboard/focus/Reduce Motion, light/dark, 320px reflow,
+- D30 browsers (the matrix and what was tested in each: docs/browsers.md),
+  keyboard/focus/Reduce Motion, light/dark, 320px reflow,
   200% text and 400% zoom remain required. Public server-rendered content
   and plain unsupported/noscript notices remain usable without hydration.
 - Test the production server (`node server.ts` around the adapter-node

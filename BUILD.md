@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 2 of 5 (P15.2, P15.4; P15.1a done) |
-| **Next item** | **Phase 15**: P15.5 (docs/browsers.md), P15.6 (browser tests in Safari and Chrome); then Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac) and **P15.1b** (installing on Android), each waiting on the owner or a device |
+| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a done) |
+| **Next item** | **Phase 15**: P15.6 (browser tests in Safari and Chrome); then Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac) and **P15.1b** (installing on Android), each waiting on the owner or a device |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
 | **Waiting on the owner** | **Build 131**: try Siri ("What's my reading today in Day by Word?"), the iPad sidebar, Share as PDF on a plan's week, and Add the next four weeks to a calendar. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P12.6b**: install build 131 on the Mac with TestFlight for Mac and say whether it runs (or allow an agent to register this Mac in Xcode). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an agent to download an Android emulator image |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2b906ec (deployed 2026-11-22 after `make check-full`): everything before, plus large print on a plan's week, the calendar download on Progress, the installable web app (manifest and icons), and the offline page with Plans kept offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
@@ -143,7 +143,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 2 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 3 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
-| 15 | The web app: install and offline | M3 Version 1.0 | 5 | 2 |
+| 15 | The web app: install and offline | M3 Version 1.0 | 5 | 3 |
 | 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 0 |
 | 17 | Quality hardening | M3 Version 1.0 | 9 | 0 |
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
@@ -514,7 +514,8 @@ SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
   - *Result (agent, 2026-11-22):* P8.11's worker (E53: a week of Today, marks queued offline, nothing from `/api/` kept) now also keeps the home page, Plans and a new `/offline` page with each release, shows `/offline` for a page never kept instead of the browser's error, and keeps the `/_app/` files the pages link to (the build listed none, so a kept page opened unstyled after an update until one more online visit); asset paths are absolute (`paths.relative: false`). Seen in the browser pane with the server stopped: Plans and Today (with "You're offline" and its kept cards) opened styled, and an unopened week showed the offline page. Production tests; routes.json version 5.
 - [x] **P15.4** Keyboard use throughout, and sharing through the Web Share API with a copy-link fallback. *(Rewritten by D39.)*
   - *Result (agent, 2026-11-22):* **Share this plan** on each plan's page (`ShareButton.svelte`, `share.js`): the Web Share API where the browser has it, else the link copied, else shown selected in a labelled field; hidden without JavaScript. The app's plan page has a ShareLink to the same daybyword.com address (`AppRoute.webURL`). Keyboard: a Tab walk of every page in the browser pane found every control reachable with a visible ring; the gap was Today and History, whose buttons vanish when their HTML is replaced, so `reading.js` now puts focus on the plan's Undo after Mark read and on Mark read after Undo (Undo is described by its "Marked … read"). The web tour presses Tab and Enter for Share, Today and History in Firefox (335 checks); the fallback was seen at 375 px in the browser pane and the share sheet in the iOS Simulator. A real phone's Web Share sheet is not seen yet (P15.6).
-- [ ] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
+- [x] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
+  - *Result (agent, 2026-11-22):* docs/browsers.md: the matrix, what the web app needs (the features `support.js` checks, IndexedDB, the service worker, the CSP), features that depend on the browser (Share, Copy, install, offline, print), a table of every browser test run with its version and date, what is not tested yet, and the by-hand pass at each release. Linked from README.md and docs/web.md.
 - [ ] **P15.6** Browser tests for every web flow at phone and desktop widths in Safari and Chrome, with Firefox and Edge checked by hand at each release.
 
 ## Phase 16: Public pages, legal, and App Store readiness

@@ -125,7 +125,7 @@ scripts/                  helpers behind the Makefile
 | Reading rules | [docs/engine.md](docs/engine.md), then [tests/fixtures/](tests/fixtures/) |
 | The engine in Swift and in TypeScript | [Packages/ReadingEngine/](Packages/ReadingEngine/), [web/src/lib/domain/](web/src/lib/domain/) |
 | Plans, sources, and rights | [docs/catalog-format.md](docs/catalog-format.md), [docs/plans.md](docs/plans.md), [docs/editorial.md](docs/editorial.md), [catalog/SOURCES.md](catalog/SOURCES.md) |
-| Web pages and the app API | [web/src/routes/](web/src/routes/), [docs/urls.md](docs/urls.md), [docs/web.md](docs/web.md) |
+| Web pages and the app API | [web/src/routes/](web/src/routes/), [docs/urls.md](docs/urls.md), [docs/web.md](docs/web.md), [docs/browsers.md](docs/browsers.md) |
 | The server database | [web/src/lib/server/db/](web/src/lib/server/db/), [web/drizzle/](web/drizzle/) |
 | The native app | [apple/](apple/), [docs/release.md](docs/release.md) |
 | The live host | [docs/deploy.md](docs/deploy.md), [deploy/](deploy/) |
