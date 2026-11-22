@@ -23,6 +23,8 @@ endpoints and later consented sync, never a direct database connection.
 | `/plans/<id>/start` | yes | a sheet on the plan's page | Starting the plan (P8.10c) |
 | `/progress` | yes | yes | Progress |
 | `/settings` | yes | yes | Settings (a sheet in the app) |
+| `/offline` | yes | no | What the service worker shows for a page not kept, with no connection (P15.2) |
+| `/manifest.webmanifest` | yes | no | The installable web app's manifest (P15.1) |
 
 On the web, Plans and each plan's page show the catalog (BUILD.md
 P8.10a), and a plan's week is a checklist to print (P8.10b): the seven

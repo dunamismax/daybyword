@@ -1,5 +1,5 @@
 {
-  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's. Edited by hand.",
+  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's; version 5 adds the offline page (P15.2) and the web app's manifest (P15.1). Edited by hand.",
   "cases": [
     {
       "input": {
@@ -58,6 +58,17 @@
         "heading": "Settings",
         "status": 200,
         "title": "Settings · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/offline"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "You're offline",
+        "status": 200,
+        "title": "You're offline · Day by Word"
       }
     },
     {
@@ -208,6 +219,16 @@
       "output": {
         "cacheControl": "no-cache",
         "contentType": "application/xml; charset=utf-8",
+        "status": 200
+      }
+    },
+    {
+      "input": {
+        "path": "/manifest.webmanifest"
+      },
+      "output": {
+        "cacheControl": "no-cache",
+        "contentType": "application/manifest+json; charset=utf-8",
         "status": 200
       }
     },
@@ -464,5 +485,5 @@
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY"
   },
-  "version": 4
+  "version": 5
 }

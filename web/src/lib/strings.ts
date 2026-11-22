@@ -392,6 +392,8 @@ const english = {
   "component.loading": "Loading…",
   "component.offline-title": "You're offline",
   "component.offline-message": "Marks you make here are kept and sent when you're back online.",
+  "offline.message":
+    "This page isn't kept on this device yet. Today, Plans, Progress and Settings open without a connection, and so do the plan pages you've opened before.",
   "component.error-title": "Something went wrong",
   "component.try-again": "Try again",
 } as const;

@@ -565,3 +565,20 @@ describe("the installable web app (P15.1)", () => {
     }
   });
 });
+
+describe("the web offline (P15.2)", () => {
+  it("keeps the pages a reader opens offline and the build's files they link to, never the compute endpoints", async () => {
+    const worker = await (await fetch(`${production.base}/service-worker.js`)).text();
+    for (const path of ["/", "/today", "/plans", "/progress", "/settings", "/offline"]) {
+      expect(worker, path).toContain(`\`${path}\``);
+    }
+    expect(worker).toContain("/_app");
+    expect(worker).toContain("/api/");
+  });
+
+  it("serves the offline page in the site's own words, with its stylesheet at an absolute path", async () => {
+    const html = await page(production, "/offline");
+    expect(html).toMatch(/<h1[^>]*>You(?:'|&#39;|&#x27;)re offline<\/h1>/);
+    expect(html).toMatch(/<link href="\/_app\/immutable\/assets\/[^"]+\.css" rel="stylesheet">/);
+  });
+});

@@ -1,11 +1,14 @@
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
-// Day by Word offline (BUILD.md P8.11; docs/decisions.md E53): the site's
-// own files are kept for each release, and pages are fetched from the
-// network first and kept for when there is none, so Today, Progress and
-// Settings open offline. The reader's record is never here: it is in
-// IndexedDB, and the compute endpoints (POST) pass straight through.
+// Day by Word offline (BUILD.md P8.11, P15.2; docs/decisions.md E53): the
+// site's own files are kept for each release, and pages are fetched from
+// the network first and kept for when there is none, so the home page,
+// Today, Plans, Progress and Settings open offline, and every plan page the
+// reader has opened. A page not kept shows the offline page instead of the
+// browser's error. The reader's record is never here: it is in IndexedDB,
+// and the compute endpoints (POST, /api/) pass straight through, so nothing
+// one reader did is kept where another could be shown it.
 import { self } from "$app/service-worker";
 import { version } from "$app/env";
 import { immutable, assets } from "$app/manifest";
@@ -13,11 +16,31 @@ import { immutable, assets } from "$app/manifest";
 const cache = `day-by-word-${version}`;
 // The site has no base path, so a file's address is its path from the root.
 const files: string[] = [...immutable, ...assets].map((asset) => `/${asset.path}`);
-/** The pages a reader opens offline. */
-const pages = ["/today", "/progress", "/settings"];
+/** The pages a reader opens offline, kept with each release. */
+const pages = ["/", "/today", "/plans", "/progress", "/settings", "/offline"];
+
+/**
+ * Keeps the release's files and pages, and the build's own files those
+ * pages link to (/_app/…, such as the stylesheet). With no page loading
+ * SvelteKit's client (E38) the build lists none of them, so they are read
+ * from the pages themselves: without this, a page kept for offline would
+ * open unstyled until the reader had visited once more online (P15.2).
+ */
+async function keepRelease(): Promise<void> {
+  const open = await caches.open(cache);
+  await open.addAll([...files, ...pages]);
+  const linked = new Set<string>();
+  for (const page of pages) {
+    const html = await (await open.match(page))?.text();
+    for (const match of html?.matchAll(/(?:href|src)="(\/_app\/[^"]+)"/g) ?? []) {
+      if (match[1]) linked.add(match[1]);
+    }
+  }
+  await open.addAll([...linked]);
+}
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(cache).then((open) => open.addAll([...files, ...pages])));
+  event.waitUntil(keepRelease());
 });
 
 self.addEventListener("activate", (event) => {
@@ -58,6 +81,11 @@ self.addEventListener("fetch", (event) => {
       } catch (error) {
         const kept = (await open.match(request)) ?? (await open.match(url.pathname));
         if (kept) return kept;
+        // A page this browser never kept: say so, rather than the browser's error.
+        if (request.mode === "navigate") {
+          const offline = await open.match("/offline");
+          if (offline) return offline;
+        }
         throw error;
       }
     })(),

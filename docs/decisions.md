@@ -1427,6 +1427,11 @@ the packages found no other). On the web:
   sending twice is harmless. Undo and a welcome's answer wait for a
   connection. Today says it is offline in the table's words.
 - Deleting everything also clears the pending marks and the kept days.
+- *P15.2 (2026-11-22):* each release also keeps the home page, Plans and
+  `/offline`, and a page this browser never kept shows `/offline` ("This
+  page isn't kept on this device yet") instead of the browser's error.
+  Plan pages are kept as they are opened, not all in advance: a reader
+  needs the ones they follow, and their Today and week are kept already.
 
 **Why:** the smallest change that keeps the reader's place offline without
 moving the rules into the browser; the cost is that marks made offline

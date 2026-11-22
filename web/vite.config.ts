@@ -19,6 +19,11 @@ export default defineConfig({
       // /assets/reading.js registers src/service-worker.ts itself (P8.11),
       // as no page loads SvelteKit's client runtime (E38).
       serviceWorker: { register: false },
+      // Absolute asset paths (/_app/…): the service worker shows the kept
+      // offline page in place of any page it never kept (P15.2), and a
+      // relative path would then point below that page's address. The site
+      // has no base path, so nothing is lost.
+      paths: { relative: false },
       // The strict policy (docs/decisions.md E11, E36): nothing from another
       // host, no inline script or style. SvelteKit adds a nonce (or, on a
       // prerendered page, a hash) for the scripts it writes itself; server.ts
