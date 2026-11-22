@@ -44,8 +44,10 @@ from the first word in backticks on its Status line, refuses a plan whose
 - **Edition:** each plan's own version, recorded in its plan file.
 - **Creator or owner:** Day by Word (the owner); all rights reserved (D4).
 - **Used for:** the plans Day by Word makes itself, labeled as original:
-  Gospels at your pace, the Bible in a year, Proverbs through the month, and
-  the rest of the launch catalog (BUILD.md D14, D39).
+  Gospels at your pace, the Bible in a year, Proverbs through the month,
+  the Bible in a year five days a week, the New Testament in a year five
+  days a week, A psalm a day, Paul's letters, and the rest of the launch
+  catalog (BUILD.md D14, D39).
 - **Obtained:** written in this repository, from the English versification
   (`kjv-1769-ebible`) and the word counts (`web-ebible`) under the rules
   in `docs/plans.md`, which `scripts/plans.swift` carries out. No contemporary publisher's version of a familiar plan

@@ -1,0 +1,296 @@
+id: bible-in-a-year-five-days
+title: The Bible in a year, five days a week
+version: 1
+creator: Day by Word
+summary: The 66 books of the Protestant canon, Genesis to Revelation, in
+  the order they are printed, in 260 readings of whole chapters balanced by
+  reading time: five readings a week for 52 weeks, with two rest days in
+  each week.
+suits: Readers who want to read every book in a year without reading every
+  day, and can give about a quarter of an hour on five days a week, and up
+  to twenty minutes for the longest readings.
+schedule: sequence
+behaviors: pace, finish-date
+reading-days: 5
+coverage: whole-bible
+canon: protestant
+books: all
+limitations: It reads the 66 books only; the deuterocanonical books (also
+  called the Apocrypha), which Catholic and Orthodox Bibles include, are
+  not in it. It reads in printed order, not the order of events, and the
+  New Testament begins at reading 200. With fewer reading days, its
+  readings are longer than those of the Bible in a year, which reads every
+  day.
+instructions: Read the next reading on each of your five reading days, in
+  any Bible; the other two days of the week are rest days. If you miss a
+  day, your next reading waits for you. To finish by a date, choose a
+  finish date and Day by Word will show what each reading day asks.
+source: An original plan by Day by Word. The Old Testament and the New are
+  each divided into readings of whole chapters, as even in reading time as
+  whole chapters allow; some readings run from the end of one book into the
+  next. Reading times are estimated from word counts of the World English
+  Bible, a public-domain translation; the plan can be read in any
+  translation.
+rights: daybyword-original
+review: reviewed
+---
+1	GEN 1-5
+2	GEN 6-11
+3	GEN 12-17
+4	GEN 18-21
+5	GEN 22-24
+6	GEN 25-28
+7	GEN 29-31
+8	GEN 32-35
+9	GEN 36-39
+10	GEN 40-42
+11	GEN 43-46
+12	GEN 47-50
+13	EXO 1-5
+14	EXO 6-9
+15	EXO 10-13
+16	EXO 14-17
+17	EXO 18-21
+18	EXO 22-25
+19	EXO 26-28
+20	EXO 29-31
+21	EXO 32-34
+22	EXO 35-38
+23	EXO 39-40; LEV 1-2
+24	LEV 3-6
+25	LEV 7-10
+26	LEV 11-13
+27	LEV 14-15
+28	LEV 16-19
+29	LEV 20-23
+30	LEV 24-26
+31	LEV 27; NUM 1-2
+32	NUM 3-5
+33	NUM 6-8
+34	NUM 9-12
+35	NUM 13-15
+36	NUM 16-19
+37	NUM 20-22
+38	NUM 23-26
+39	NUM 27-30
+40	NUM 31-33
+41	NUM 34-36; DEU 1
+42	DEU 2-4
+43	DEU 5-8
+44	DEU 9-12
+45	DEU 13-16
+46	DEU 17-21
+47	DEU 22-25
+48	DEU 26-28
+49	DEU 29-31
+50	DEU 32-34; JOS 1
+51	JOS 2-5
+52	JOS 6-8
+53	JOS 9-12
+54	JOS 13-17
+55	JOS 18-21
+56	JOS 22-24
+57	JDG 1-4
+58	JDG 5-7
+59	JDG 8-10
+60	JDG 11-14
+61	JDG 15-18
+62	JDG 19-21
+63	RUT 1-4; 1SA 1
+64	1SA 2-5
+65	1SA 6-9
+66	1SA 10-13
+67	1SA 14-16
+68	1SA 17-19
+69	1SA 20-23
+70	1SA 24-27
+71	1SA 28-31; 2SA 1
+72	2SA 2-5
+73	2SA 6-10
+74	2SA 11-13
+75	2SA 14-16
+76	2SA 17-19
+77	2SA 20-22
+78	2SA 23-24; 1KI 1
+79	1KI 2-4
+80	1KI 5-7
+81	1KI 8-9
+82	1KI 10-12
+83	1KI 13-15
+84	1KI 16-18
+85	1KI 19-21
+86	1KI 22; 2KI 1-2
+87	2KI 3-5
+88	2KI 6-8
+89	2KI 9-11
+90	2KI 12-15
+91	2KI 16-18
+92	2KI 19-22
+93	2KI 23-25
+94	1CH 1-4
+95	1CH 5-8
+96	1CH 9-12
+97	1CH 13-17
+98	1CH 18-22
+99	1CH 23-27
+100	1CH 28-29; 2CH 1-2
+101	2CH 3-6
+102	2CH 7-11
+103	2CH 12-17
+104	2CH 18-21
+105	2CH 22-25
+106	2CH 26-29
+107	2CH 30-33
+108	2CH 34-36; EZR 1
+109	EZR 2-5
+110	EZR 6-9
+111	EZR 10; NEH 1-3
+112	NEH 4-7
+113	NEH 8-10
+114	NEH 11-13
+115	EST 1-5
+116	EST 6-10; JOB 1
+117	JOB 2-8
+118	JOB 9-15
+119	JOB 16-22
+120	JOB 23-30
+121	JOB 31-36
+122	JOB 37-42
+123	PSA 1-15
+124	PSA 16-24
+125	PSA 25-34
+126	PSA 35-42
+127	PSA 43-52
+128	PSA 53-64
+129	PSA 65-72
+130	PSA 73-79
+131	PSA 80-89
+132	PSA 90-102
+133	PSA 103-107
+134	PSA 108-118
+135	PSA 119-123
+136	PSA 124-140
+137	PSA 141-150; PRO 1-2
+138	PRO 3-8
+139	PRO 9-14
+140	PRO 15-20
+141	PRO 21-26
+142	PRO 27-31; ECC 1
+143	ECC 2-7
+144	ECC 8-12; SNG 1-3
+145	SNG 4-8; ISA 1-2
+146	ISA 3-8
+147	ISA 9-13
+148	ISA 14-20
+149	ISA 21-26
+150	ISA 27-30
+151	ISA 31-36
+152	ISA 37-40
+153	ISA 41-44
+154	ISA 45-49
+155	ISA 50-56
+156	ISA 57-62
+157	ISA 63-66; JER 1
+158	JER 2-4
+159	JER 5-7
+160	JER 8-11
+161	JER 12-15
+162	JER 16-20
+163	JER 21-24
+164	JER 25-28
+165	JER 29-31
+166	JER 32-34
+167	JER 35-38
+168	JER 39-43
+169	JER 44-48
+170	JER 49-50
+171	JER 51-52
+172	LAM 1-4
+173	LAM 5; EZK 1-5
+174	EZK 6-10
+175	EZK 11-14
+176	EZK 15-17
+177	EZK 18-20
+178	EZK 21-23
+179	EZK 24-27
+180	EZK 28-31
+181	EZK 32-34
+182	EZK 35-38
+183	EZK 39-41
+184	EZK 42-45
+185	EZK 46-48
+186	DAN 1-3
+187	DAN 4-6
+188	DAN 7-9
+189	DAN 10-12; HOS 1
+190	HOS 2-9
+191	HOS 10-14; JOL 1-2
+192	JOL 3; AMO 1-5
+193	AMO 6-9; OBA 1; JON 1
+194	JON 2-4; MIC 1-5
+195	MIC 6-7; NAM 1-3; HAB 1
+196	HAB 2-3; ZEP 1-3; HAG 1
+197	HAG 2; ZEC 1-6
+198	ZEC 7-12
+199	ZEC 13-14; MAL 1-4
+200	MAT 1-5
+201	MAT 6-9
+202	MAT 10-12
+203	MAT 13-15
+204	MAT 16-19
+205	MAT 20-22
+206	MAT 23-25
+207	MAT 26-27
+208	MAT 28; MRK 1-3
+209	MRK 4-6
+210	MRK 7-9
+211	MRK 10-12
+212	MRK 13-14
+213	MRK 15-16; LUK 1
+214	LUK 2-4
+215	LUK 5-7
+216	LUK 8-9
+217	LUK 10-12
+218	LUK 13-16
+219	LUK 17-19
+220	LUK 20-22
+221	LUK 23-24; JHN 1
+222	JHN 2-5
+223	JHN 6-7
+224	JHN 8-10
+225	JHN 11-13
+226	JHN 14-17
+227	JHN 18-21
+228	ACT 1-4
+229	ACT 5-7
+230	ACT 8-10
+231	ACT 11-14
+232	ACT 15-17
+233	ACT 18-20
+234	ACT 21-23
+235	ACT 24-27
+236	ACT 28; ROM 1-3
+237	ROM 4-8
+238	ROM 9-13
+239	ROM 14-16; 1CO 1-2
+240	1CO 3-8
+241	1CO 9-13
+242	1CO 14-16; 2CO 1
+243	2CO 2-8
+244	2CO 9-13; GAL 1
+245	GAL 2-6
+246	EPH 1-6
+247	PHP 1-4; COL 1
+248	COL 2-4; 1TH 1-4
+249	1TH 5; 2TH 1-3; 1TI 1-4
+250	1TI 5-6; 2TI 1-4; TIT 1
+251	TIT 2-3; PHM 1; HEB 1-5
+252	HEB 6-10
+253	HEB 11-13; JAS 1
+254	JAS 2-5; 1PE 1-2
+255	1PE 3-5; 2PE 1-3; 1JN 1
+256	1JN 2-5; 2JN 1; 3JN 1
+257	JUD 1; REV 1-4
+258	REV 5-11
+259	REV 12-17
+260	REV 18-22

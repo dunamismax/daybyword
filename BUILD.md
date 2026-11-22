@@ -17,7 +17,7 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 7 of 9, with P10.5 (the Story of Scripture) and P10.13 (the catalog review) open |
 | **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done), then Phase 9 (choosing a plan) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
@@ -138,7 +138,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 12 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
-| 10 | The launch catalog | M3 Version 1.0 | 9 | 3 |
+| 10 | The launch catalog | M3 Version 1.0 | 9 | 7 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
@@ -549,13 +549,17 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
   - *Result (agent, 2026-11-21):* done with P8.1: 60 readings of one to three whole chapters, each Gospel on its own, about 3 to 10 minutes (docs/plans.md).
 - [x] **P10.2 [REVIEW]** **The Bible in a year**, canonical order, balanced by reading time without splitting chapters unless the plan says so; permits pace and finish-date behaviors.
   - *Result (agent, 2026-11-21):* done with P8.1: 365 readings of whole chapters, the testaments balanced apart (280 and 85), about 6 to 15 minutes; `whole-bible` over the Protestant canon, which the compiler verifies.
-- [ ] **P10.3 [REVIEW]** **The Bible in a year, five days a week**, with rest days intentional.
-- [ ] **P10.4 [REVIEW]** **The New Testament in a year, five days a week**: its 260 chapters, one a day.
+- [x] **P10.3 [REVIEW]** **The Bible in a year, five days a week**, with rest days intentional.
+  - *Result (agent, 2026-11-22):* `bible-in-a-year-five-days.plan`: the Bible in a year's rule in 260 readings (199 and 61 by the testaments' words), paced for five days with two rest days; about 12–16 minutes, 10 to 20. `whole-bible`, verified by the compiler; reviewed under docs/editorial.md (rules, facts against the wording, §3, rights).
+- [x] **P10.4 [REVIEW]** **The New Testament in a year, five days a week**: its 260 chapters, one a day.
+  - *Result (agent, 2026-11-22):* `new-testament-in-a-year-five-days.plan`: 260 readings of one chapter, five a week; about 3 minutes, 1 to 9. Every verse of the 27 books (7,957), verified; reviewed.
 - [ ] **P10.5 [REVIEW]** **The Story of Scripture**: a short introduction to the biblical narrative in about 50 readings. Its selection involves editorial judgment, which the plan page explains.
-- [ ] **P10.6 [REVIEW]** **A psalm a day**: 150 readings, with Psalm 119 in sections if workload calls for it, in English (Hebrew) numbering, which the plan page states. *(Rewritten by D39; other numberings are P3.8.)*
+- [x] **P10.6 [REVIEW]** **A psalm a day**: 150 readings, with Psalm 119 in sections if workload calls for it, in English (Hebrew) numbering, which the plan page states. *(Rewritten by D39; other numberings are P3.8.)*
+  - *Result (agent, 2026-11-22):* `psalm-a-day.plan`: each psalm a reading and Psalm 119 in 11 runs of two 8-verse stanzas (its words are ten times the middle psalm's), so 160 readings; about 1 minute, up to 5–6. Its limitations state the Hebrew numbering and the Greek and Latin one (Psalm 23 is their 22). Every verse of Psalms (2,461), verified; reviewed.
 - [x] **P10.7 [REVIEW]** **Proverbs through the month**: 31 readings by day of the month, with the 31st handled honestly in shorter months.
   - *Result (agent, 2026-11-21):* done with P8.1: Proverbs *n* on day *n*; the plan's limitations say which months lack which chapters, and the engine lists them on a short month's last day (P5.7).
-- [ ] **P10.11 [REVIEW]** **Paul's letters**, in canonical order, with an optional arrangement in an order the plan page explains and labels as one view among several.
+- [x] **P10.11 [REVIEW]** **Paul's letters**, in canonical order, with an optional arrangement in an order the plan page explains and labels as one view among several. *(Rewritten 2026-11-22: the optional arrangement is P28.9.)*
+  - *Result (agent, 2026-11-22):* `pauls-letters.plan`: the thirteen letters that open with Paul's name, in printed order, one chapter a reading (87), five days a week; about 2–3 minutes. Hebrews, which names no author, is left out and the plan says so, taking no side on authorship or the order of writing. Every verse of the 13 letters (2,033), verified; reviewed.
 - [ ] **P10.13** The catalog review: every launch plan at `reviewed`, every claim verified, every rights entry `cleared`, and the criteria page current. Plans that are not ready wait; the catalog launches with what is ready.
 
 ## Phase 11: Progress and history

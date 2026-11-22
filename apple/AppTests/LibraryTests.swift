@@ -109,7 +109,10 @@ private let gospels = PlanID("gospels-at-your-pace")!
     #expect(proverbs.sampleWeek.map(\.label) == (1...7).map { "Day \($0)" })
     #expect(proverbs.sampleWeek[6].reference?.display == "Proverbs 7")
     #expect(
-        catalog.listed.map(\.id.rawValue) == ["proverbs-through-the-month", "gospels-at-your-pace", "bible-in-a-year"])
+        catalog.listed.map(\.id.rawValue) == [
+            "proverbs-through-the-month", "gospels-at-your-pace", "pauls-letters", "psalm-a-day",
+            "bible-in-a-year-five-days", "new-testament-in-a-year-five-days", "bible-in-a-year",
+        ])
 }
 
 @MainActor

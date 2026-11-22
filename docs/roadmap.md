@@ -92,6 +92,7 @@ were left for later.
   - *Note (agent, 2026-11-01):* word counts cover the 66 books only (P3.6). This plan needs counts for the deuterocanonical books too; the WEB numbers Greek Esther, Daniel, and Sirach 33 differently from the English scheme, so map them as `scripts/wordcounts.swift` maps Romans.
 - [ ] **P11.6** After finishing a plan: a few next plans chosen for the books the reader wants to explore, each with its reason.
 - [ ] **P28.5** Catalog filters (pace, length, reading days, sessions, books included), once the catalog is large enough to need them. *(The part of P9.3 moved by D39.)*
+- [ ] **P28.9 [REVIEW]** Paul's letters in another arrangement: an optional order (for example, one proposed order of writing) that the plan page explains and labels as one view among several, never as the correct order, with its source named. *(The part of P10.11 moved on 2026-11-22: 1.0 reads the letters in printed order.)*
 
 ### Apple integration, print, and the web
 

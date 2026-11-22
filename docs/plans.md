@@ -45,11 +45,26 @@ heaviest reading.
 | `gospels-at-your-pace` | Matthew, Mark, Luke and John, each divided on its own by the balance rule into the whole number of readings nearest to its words ÷ 1,350 (17, 11, 18 and 14: 60 readings). No reading runs from one Gospel into the next. Paced for five days a week: twelve weeks. |
 | `bible-in-a-year` | The 66 books of the Protestant canon in its printed order, in 365 readings. The readings are shared between the testaments by their words (280 and 85), and each testament is divided on its own by the balance rule, so no reading runs from Malachi into Matthew; within a testament a reading may run from one book into the next. |
 | `proverbs-through-the-month` | A day-of-month plan: the reading for day *n* is Proverbs *n*. What a short month does is the engine's rule (docs/engine.md, "Follow the calendar"). |
+| `bible-in-a-year-five-days` | The Bible in a year's rule in 260 readings, five a week for 52 weeks: shared between the testaments by their words (199 and 61), each testament balanced on its own. |
+| `new-testament-in-a-year-five-days` | The New Testament's 260 chapters in printed order, one a reading: five a week for 52 weeks. |
+| `psalm-a-day` | The psalms in order, one a reading, except Psalm 119, read in runs of 16 verses (two of its 8-verse stanzas): 11 readings, so 160 in all. |
+| `pauls-letters` | The chapters of the thirteen letters that open with Paul's name (Romans to Philemon), in printed order, one a reading: 87 readings. |
 
 **Why 1,350 words** (agent, 2026-11-21): it gives 60 readings of about 6
 to 7 minutes, which is twelve weeks at five readings a week; one chapter
 a reading (89 readings of 2 to 9 minutes) is less even, and longer
 readings suit a first plan less.
+
+**Why two stanzas of Psalm 119** (agent, 2026-11-22): the psalm has
+2,334 words, ten times the middle psalm (231); two stanzas are 199 to 241
+words, about as long as a typical psalm, and the stanzas are the psalm's
+own divisions, which many English Bibles mark.
+
+**Why one chapter a reading** for the New Testament and Paul's letters
+(agent, 2026-11-22): the New Testament has exactly 260 chapters, five a
+week for a year; Paul's chapters run from 1 to 6 minutes, short enough to
+read slowly, and a reader with a paper Bible finds a chapter at once.
+Paul's letters leave out Hebrews, which names no author; the plan says so.
 
 ## Changing a plan
 

@@ -1,0 +1,117 @@
+id: pauls-letters
+title: Paul's letters
+version: 1
+creator: Day by Word
+summary: The thirteen letters that bear Paul's name, Romans to Philemon, in
+  the order they are printed, one chapter a reading: 87 readings.
+suits: Readers who want to read Paul's letters slowly, a chapter at a
+  sitting of two or three minutes, on five days a week.
+schedule: sequence
+behaviors: pace, finish-date
+reading-days: 5
+coverage: books
+canon: protestant
+books: ROM, 1CO, 2CO, GAL, EPH, PHP, COL, 1TH, 2TH, 1TI, 2TI, TIT, PHM
+limitations: It reads these thirteen letters only. Hebrews, which does not
+  name its author and which some have counted among Paul's letters, is not
+  in it. The letters are read in the order they are printed, not the order
+  in which they were written, which is debated; the plan takes no side on
+  it. Chapters differ in length, from about a minute to about six.
+instructions: Read one chapter on each of your five reading days, in any
+  Bible; the other two days of the week are rest days. If you miss a day,
+  your next reading waits for you. At five readings a week the plan takes
+  about four months.
+source: An original plan by Day by Word: the chapters of the thirteen
+  letters that open with Paul's name, in printed order, one a reading.
+  Reading times are estimated from word counts of the World English Bible,
+  a public-domain translation; the plan can be read in any translation.
+rights: daybyword-original
+review: reviewed
+---
+1	ROM 1
+2	ROM 2
+3	ROM 3
+4	ROM 4
+5	ROM 5
+6	ROM 6
+7	ROM 7
+8	ROM 8
+9	ROM 9
+10	ROM 10
+11	ROM 11
+12	ROM 12
+13	ROM 13
+14	ROM 14
+15	ROM 15
+16	ROM 16
+17	1CO 1
+18	1CO 2
+19	1CO 3
+20	1CO 4
+21	1CO 5
+22	1CO 6
+23	1CO 7
+24	1CO 8
+25	1CO 9
+26	1CO 10
+27	1CO 11
+28	1CO 12
+29	1CO 13
+30	1CO 14
+31	1CO 15
+32	1CO 16
+33	2CO 1
+34	2CO 2
+35	2CO 3
+36	2CO 4
+37	2CO 5
+38	2CO 6
+39	2CO 7
+40	2CO 8
+41	2CO 9
+42	2CO 10
+43	2CO 11
+44	2CO 12
+45	2CO 13
+46	GAL 1
+47	GAL 2
+48	GAL 3
+49	GAL 4
+50	GAL 5
+51	GAL 6
+52	EPH 1
+53	EPH 2
+54	EPH 3
+55	EPH 4
+56	EPH 5
+57	EPH 6
+58	PHP 1
+59	PHP 2
+60	PHP 3
+61	PHP 4
+62	COL 1
+63	COL 2
+64	COL 3
+65	COL 4
+66	1TH 1
+67	1TH 2
+68	1TH 3
+69	1TH 4
+70	1TH 5
+71	2TH 1
+72	2TH 2
+73	2TH 3
+74	1TI 1
+75	1TI 2
+76	1TI 3
+77	1TI 4
+78	1TI 5
+79	1TI 6
+80	2TI 1
+81	2TI 2
+82	2TI 3
+83	2TI 4
+84	TIT 1
+85	TIT 2
+86	TIT 3
+87	PHM 1

@@ -1,0 +1,192 @@
+id: psalm-a-day
+title: A psalm a day
+version: 1
+creator: Day by Word
+summary: The 150 psalms in order, one a reading, with the longest, Psalm
+  119, read in 11 parts of 16 verses: 160 readings in all.
+suits: Readers who want a short reading each day, most of them a minute or
+  two, on its own or beside another plan.
+schedule: sequence
+behaviors: pace, finish-date
+reading-days: 7
+coverage: books
+canon: protestant
+books: PSA
+limitations: It reads the Psalms only. Psalms differ greatly in length,
+  from Psalm 117's two verses to Psalm 78's seventy-two, so the longest
+  readings take five or six minutes. The psalms are numbered as in most English
+  Bibles, which follow the Hebrew numbering; Bibles that follow the Greek
+  and Latin numbering, as some Catholic and Orthodox Bibles do, number most
+  of the psalms from 10 to 147 one lower (Psalm 23 is their Psalm 22).
+instructions: Read the next reading whenever you read, in any Bible. If you
+  miss a day, your next reading waits for you. At one reading a day, the
+  plan takes about five months.
+source: An original plan by Day by Word: the psalms in order, one a
+  reading. Psalm 119 is written in 22 stanzas of 8 verses, one for each
+  letter of the Hebrew alphabet; the plan reads two stanzas at a time, so
+  that each part is about as long as a typical psalm. Reading times are
+  estimated from word counts of the World English Bible, a public-domain
+  translation; the plan can be read in any translation.
+rights: daybyword-original
+review: reviewed
+---
+1	PSA 1
+2	PSA 2
+3	PSA 3
+4	PSA 4
+5	PSA 5
+6	PSA 6
+7	PSA 7
+8	PSA 8
+9	PSA 9
+10	PSA 10
+11	PSA 11
+12	PSA 12
+13	PSA 13
+14	PSA 14
+15	PSA 15
+16	PSA 16
+17	PSA 17
+18	PSA 18
+19	PSA 19
+20	PSA 20
+21	PSA 21
+22	PSA 22
+23	PSA 23
+24	PSA 24
+25	PSA 25
+26	PSA 26
+27	PSA 27
+28	PSA 28
+29	PSA 29
+30	PSA 30
+31	PSA 31
+32	PSA 32
+33	PSA 33
+34	PSA 34
+35	PSA 35
+36	PSA 36
+37	PSA 37
+38	PSA 38
+39	PSA 39
+40	PSA 40
+41	PSA 41
+42	PSA 42
+43	PSA 43
+44	PSA 44
+45	PSA 45
+46	PSA 46
+47	PSA 47
+48	PSA 48
+49	PSA 49
+50	PSA 50
+51	PSA 51
+52	PSA 52
+53	PSA 53
+54	PSA 54
+55	PSA 55
+56	PSA 56
+57	PSA 57
+58	PSA 58
+59	PSA 59
+60	PSA 60
+61	PSA 61
+62	PSA 62
+63	PSA 63
+64	PSA 64
+65	PSA 65
+66	PSA 66
+67	PSA 67
+68	PSA 68
+69	PSA 69
+70	PSA 70
+71	PSA 71
+72	PSA 72
+73	PSA 73
+74	PSA 74
+75	PSA 75
+76	PSA 76
+77	PSA 77
+78	PSA 78
+79	PSA 79
+80	PSA 80
+81	PSA 81
+82	PSA 82
+83	PSA 83
+84	PSA 84
+85	PSA 85
+86	PSA 86
+87	PSA 87
+88	PSA 88
+89	PSA 89
+90	PSA 90
+91	PSA 91
+92	PSA 92
+93	PSA 93
+94	PSA 94
+95	PSA 95
+96	PSA 96
+97	PSA 97
+98	PSA 98
+99	PSA 99
+100	PSA 100
+101	PSA 101
+102	PSA 102
+103	PSA 103
+104	PSA 104
+105	PSA 105
+106	PSA 106
+107	PSA 107
+108	PSA 108
+109	PSA 109
+110	PSA 110
+111	PSA 111
+112	PSA 112
+113	PSA 113
+114	PSA 114
+115	PSA 115
+116	PSA 116
+117	PSA 117
+118	PSA 118
+119	PSA 119:1-16
+120	PSA 119:17-32
+121	PSA 119:33-48
+122	PSA 119:49-64
+123	PSA 119:65-80
+124	PSA 119:81-96
+125	PSA 119:97-112
+126	PSA 119:113-128
+127	PSA 119:129-144
+128	PSA 119:145-160
+129	PSA 119:161-176
+130	PSA 120
+131	PSA 121
+132	PSA 122
+133	PSA 123
+134	PSA 124
+135	PSA 125
+136	PSA 126
+137	PSA 127
+138	PSA 128
+139	PSA 129
+140	PSA 130
+141	PSA 131
+142	PSA 132
+143	PSA 133
+144	PSA 134
+145	PSA 135
+146	PSA 136
+147	PSA 137
+148	PSA 138
+149	PSA 139
+150	PSA 140
+151	PSA 141
+152	PSA 142
+153	PSA 143
+154	PSA 144
+155	PSA 145
+156	PSA 146
+157	PSA 147
+158	PSA 148
+159	PSA 149
+160	PSA 150

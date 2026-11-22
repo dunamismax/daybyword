@@ -73,6 +73,10 @@ describe("the served catalog", () => {
     expect(planList(catalog).map((plan) => plan.id)).toEqual([
       "proverbs-through-the-month",
       "gospels-at-your-pace",
+      "pauls-letters",
+      "psalm-a-day",
+      "bible-in-a-year-five-days",
+      "new-testament-in-a-year-five-days",
       "bible-in-a-year",
     ]);
     const page = (id: string) => {

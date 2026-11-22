@@ -24,10 +24,25 @@ func fail(_ message: String) -> Never {
     exit(1)
 }
 
+/// A chapter, or a run of its verses where a rule divides one.
 struct Chapter {
     let book: String
     let number: Int
-    let words: Int
+    /// The verses' words, in verse order.
+    let verses: [Int]
+    /// The first verse given, and whether every verse of the chapter is.
+    var first = 1
+    var whole = true
+    var words: Int { verses.reduce(0, +) }
+
+    /// The chapter in runs of `size` verses: "PSA 119:1-16", "PSA 119:17-32".
+    func sections(of size: Int) -> [Chapter] {
+        stride(from: 0, to: verses.count, by: size).map { start in
+            Chapter(
+                book: book, number: number, verses: Array(verses[start..<min(start + size, verses.count)]),
+                first: start + 1, whole: false)
+        }
+    }
 }
 
 /// Every chapter of the 66 books with its words, in the word-count file's
@@ -39,7 +54,7 @@ func loadChapters() -> [Chapter] {
         let cells = line.split(separator: "\t")
         guard cells.count == 3, let number = Int(cells[1]) else { fail("web.tsv: malformed line \(line)") }
         return Chapter(
-            book: String(cells[0]), number: number, words: cells[2].split(separator: " ").reduce(0) { $0 + Int($1)! })
+            book: String(cells[0]), number: number, verses: cells[2].split(separator: " ").map { Int($0)! })
     }
 }
 
@@ -120,9 +135,15 @@ func text(of reading: [Chapter]) -> String {
             last += 1
         }
         let (first, final) = (reading[index], reading[last])
-        parts.append(
-            first.number == final.number
-                ? "\(first.book) \(first.number)" : "\(first.book) \(first.number)-\(final.number)")
+        if !first.whole {
+            // A run of one chapter's verses stands alone.
+            guard reading.count == 1 else { fail("a reading mixes part of a chapter with others") }
+            parts.append("\(first.book) \(first.number):\(first.first)-\(first.first + first.verses.count - 1)")
+        } else {
+            parts.append(
+                first.number == final.number
+                    ? "\(first.book) \(first.number)" : "\(first.book) \(first.number)-\(final.number)")
+        }
         index = last + 1
     }
     return parts.joined(separator: "; ")
@@ -137,6 +158,13 @@ struct Schedule {
 let gospelReadingWords = 1350
 /// The readings in the Bible in a year.
 let yearReadings = 365
+/// The readings in the five-day plans: five a week for 52 weeks.
+let fiveDayYearReadings = 260
+/// Psalm 119's stanzas are 8 verses each, one for each letter of the
+/// Hebrew alphabet; A psalm a day reads two at a time.
+let psalm119Section = 16
+/// The letters that bear Paul's name, in printed order.
+let paulsLetters = ["ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM"]
 
 func schedules() -> [Schedule] {
     let all = loadChapters()
@@ -157,17 +185,36 @@ func schedules() -> [Schedule] {
     let testaments = loadTestaments()
     let (old, new) = (chapters(of: testaments.old), chapters(of: testaments.new))
     guard old.count + new.count == all.count else { fail("the word counts and the canon disagree") }
-    let newReadings = rounded(yearReadings * words(new), over: words(old) + words(new))
-    let year = balanced(old, into: yearReadings - newReadings) + balanced(new, into: newReadings)
+    func year(in count: Int) -> [[Chapter]] {
+        let newReadings = rounded(count * words(new), over: words(old) + words(new))
+        return balanced(old, into: count - newReadings) + balanced(new, into: newReadings)
+    }
 
     // Proverbs through the month: the chapter whose number is the day's.
     let proverbs = chapters(of: ["PRO"]).map { [$0] }
     guard proverbs.count == 31 else { fail("Proverbs does not have 31 chapters") }
 
+    // The New Testament in a year, five days a week: its 260 chapters, one
+    // a reading.
+    guard new.count == fiveDayYearReadings else { fail("the New Testament does not have 260 chapters") }
+
+    // A psalm a day: each psalm a reading, and Psalm 119 two stanzas at a
+    // time.
+    let psalms = chapters(of: ["PSA"]).flatMap { psalm -> [[Chapter]] in
+        psalm.number == 119 ? psalm.sections(of: psalm119Section).map { [$0] } : [[psalm]]
+    }
+    guard chapters(of: ["PSA"]).first(where: { $0.number == 119 })?.verses.count == 176 else {
+        fail("Psalm 119 does not have 176 verses")
+    }
+
     return [
         Schedule(plan: "gospels-at-your-pace", readings: gospels),
-        Schedule(plan: "bible-in-a-year", readings: year),
+        Schedule(plan: "bible-in-a-year", readings: year(in: yearReadings)),
         Schedule(plan: "proverbs-through-the-month", readings: proverbs),
+        Schedule(plan: "bible-in-a-year-five-days", readings: year(in: fiveDayYearReadings)),
+        Schedule(plan: "new-testament-in-a-year-five-days", readings: new.map { [$0] }),
+        Schedule(plan: "psalm-a-day", readings: psalms),
+        Schedule(plan: "pauls-letters", readings: chapters(of: paulsLetters).map { [$0] }),
     ]
 }
 

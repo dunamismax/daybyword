@@ -102,6 +102,18 @@
       },
       "output": {
         "contentType": "text/html; charset=utf-8",
+        "current": "Plans",
+        "heading": "A psalm a day",
+        "status": 200,
+        "title": "A psalm a day · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/plans/mcheyne-1842"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
         "heading": "Page not found",
         "status": 404,
         "title": "Page not found · Day by Word"
@@ -121,7 +133,7 @@
     },
     {
       "input": {
-        "path": "/plans/psalm-a-day/start"
+        "path": "/plans/mcheyne-1842/start"
       },
       "output": {
         "contentType": "text/html; charset=utf-8",
@@ -144,7 +156,7 @@
     },
     {
       "input": {
-        "path": "/plans/psalm-a-day/week"
+        "path": "/plans/mcheyne-1842/week"
       },
       "output": {
         "contentType": "text/html; charset=utf-8",
