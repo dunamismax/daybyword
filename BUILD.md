@@ -18,9 +18,9 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888), which the owner tested and found working. Phases M, 0–11, 13 and 16 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 4 of 5 (P15.2, P15.4, P15.5, P15.6; P15.1a done). |
-| **Next item** | **Phase 17** from P17.1. Waiting on a device: P12.2b, P12.6b, P15.1b |
+| **Next item** | **P17.2** (Bold Text, Reduce Motion, Reduce Transparency, Increase Contrast), then on through Phase 17. Waiting on a device or the owner: P12.2b, P12.6b, P15.1b, P17.1b |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
+| **Waiting on the owner** | **P17.1b**: listen to the app with VoiceOver on the iPhone and iPad (TestFlight), and to daybyword.com with VoiceOver in Safari, and say what reads badly; or allow an agent to drive the Mac's VoiceOver. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22 after `make check-full`). `/privacy` and `/terms` are committed, not deployed yet. |
 | **Last updated** | 2026-11-22 |
 
@@ -534,6 +534,9 @@ Finished; its items and notes are in [BUILD-HISTORY.md](BUILD-HISTORY.md).
 ## Phase 17: Quality hardening
 
 - [ ] **P17.1** VoiceOver on every screen (labels, traits, reading order, references read naturally) and screen readers on the web (VoiceOver, and NVDA where available).
+  - *Note (agent, 2026-11-22):* split: what can be checked by machine is done; a person listening with a screen reader is not, since the Simulator has no VoiceOver and letting an agent drive the Mac's VoiceOver is the owner's setting.
+  - [x] **P17.1a** Apple's accessibility audit on every app screen, and the web's structure for screen readers. `AccessibilityAuditTests` (in `make tour-app`) audits Today (empty, a reading, marked), Plans, a plan's page, starting a plan, Progress, History, Settings and a week in light, dark and AX5, with a real record; its six narrow exemptions are argued in docs/accessibility.md. It found and the app fixes: Form headers and footers and a reminder's time in the system's 3.4:1 grey (now `textMuted`, 6.1:1), Settings' menu pickers cut short at AX5 (now a row that opens the choices), the start sheet's title cut short (now "Start this plan", the plan named in the form), and Progress's days with 8-point focus frames (now full columns). The web tour now checks every page's landmarks, one first-level heading, no skipped levels and `lang` in Firefox, Chrome and Safari, and in Chrome a name for every control in the browser's accessibility tree (637 and 937 checks). The accessibility statement says so.
+  - [ ] **P17.1b** A person listening: VoiceOver on an iPhone and an iPad (TestFlight) through every screen, VoiceOver with Safari on a Mac, and NVDA on Windows where available. Needs the owner (or a beta reader) with the devices, or the owner's leave to drive the Mac's VoiceOver.
 - [ ] **P17.2** Dynamic Type at AX5 on every screen; Bold Text, Reduce Motion, Reduce Transparency, and Increase Contrast; contrast in both appearances.
 - [ ] **P17.3** The web at 200% text and 400% zoom (320 CSS pixels) without loss; forced colors; keyboard alone with visible focus and a skip link.
 - [ ] **P17.4** Time: daylight saving changes, travel across zones and the date line, midnight, leap days, and a device clock set wrong, all tested end to end for Today and reminders.

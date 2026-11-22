@@ -92,6 +92,7 @@ struct SettingsView: View {
                     Picker("How you read", selection: $wayToRead) {
                         ForEach(WayToRead.allCases) { Text($0.label).tag($0) }
                     }
+                    .formPicker()
                     if wayToRead == .physicalBible {
                         Toggle("Keep the screen awake on Today", isOn: $keepAwake)
                     }
@@ -99,11 +100,14 @@ struct SettingsView: View {
                         TranslationPicker()
                     }
                 } footer: {
-                    switch wayToRead {
-                    case .physicalBible: Text("With a physical Bible, Today says where each reading is in print.")
-                    case .youVersion: TranslationFooter()
-                    case .otherApp: Text("Day by Word never shows Bible text. Copy reference works with any app.")
+                    Group {
+                        switch wayToRead {
+                        case .physicalBible: Text("With a physical Bible, Today says where each reading is in print.")
+                        case .youVersion: TranslationFooter()
+                        case .otherApp: Text("Day by Word never shows Bible text. Copy reference works with any app.")
+                        }
                     }
+                    .sectionNote()
                 }
                 .listRowBackground(Palette.surface)
 
@@ -113,8 +117,9 @@ struct SettingsView: View {
                     Picker("Appearance", selection: $appearance) {
                         ForEach(Appearance.allCases) { Text($0.label).tag($0) }
                     }
+                    .formPicker()
                 } footer: {
-                    Text("Automatic follows your device.")
+                    Text("Automatic follows your device.").sectionNote()
                 }
                 .listRowBackground(Palette.surface)
 
@@ -122,11 +127,13 @@ struct SettingsView: View {
                     Picker("Reference text size", selection: $referenceSize) {
                         ForEach(ReferenceSize.allCases) { Text($0.label).tag($0) }
                     }
+                    .formPicker()
                     ReferenceBlock(reference: Self.sample)
                         .environment(\.referenceScale, referenceSize.scale)
                         .accessibilityHint(Text("A sample reference at this size."))
                 } footer: {
                     Text("References on Today and in plans use this size, on top of your device's text size.")
+                        .sectionNote()
                 }
                 .listRowBackground(Palette.surface)
 
@@ -135,9 +142,12 @@ struct SettingsView: View {
                         "Show reading days in a row on Progress",
                         isOn: Binding(get: { streak == .on }, set: { streak = $0 ? .on : .off }))
                 } footer: {
-                    Text(
-                        "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder."
-                    )
+                    Group {
+                        Text(
+                            "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder."
+                        )
+                    }
+                    .sectionNote()
                 }
                 .listRowBackground(Palette.surface)
 
@@ -148,12 +158,16 @@ struct SettingsView: View {
                                 Text(verbatim: convention.label).tag(convention.id)
                             }
                         }
+                        .formPicker()
                     } footer: {
-                        if let example = catalog.registry.conventions.first(where: { $0.id == library.convention })?
-                            .example
-                        {
-                            Text(verbatim: example)
+                        Group {
+                            if let example = catalog.registry.conventions.first(where: { $0.id == library.convention })?
+                                .example
+                            {
+                                Text(verbatim: example)
+                            }
                         }
+                        .sectionNote()
                     }
                     .listRowBackground(Palette.surface)
                 }
@@ -167,11 +181,14 @@ struct SettingsView: View {
                         Text(verbatim: failure).foregroundStyle(Palette.danger)
                     }
                 } header: {
-                    Text("Your data")
+                    Text("Your data").sectionNote()
                 } footer: {
-                    Text(
-                        "Your plans and reading record are kept only on this device. The export is a JSON file of everything you've done."
-                    )
+                    Group {
+                        Text(
+                            "Your plans and reading record are kept only on this device. The export is a JSON file of everything you've done."
+                        )
+                    }
+                    .sectionNote()
                 }
                 .listRowBackground(Palette.surface)
                 .confirmationDialog(
@@ -187,7 +204,7 @@ struct SettingsView: View {
                     Text("This removes your plans and reading record from this device. It can't be undone.")
                 }
 
-                Section("About") {
+                Section {
                     Text("Day by Word is independent and not affiliated with any church or denomination.")
                     // The web's support page: the address, reporting a
                     // reading that looks wrong, and what is kept (P16.2).
@@ -200,6 +217,8 @@ struct SettingsView: View {
                     Link("Privacy policy", destination: Self.web("/privacy"))
                     Link("Terms of use", destination: Self.web("/terms"))
                     LabeledContent("Version", value: Self.version)
+                } header: {
+                    Text("About").sectionNote()
                 }
                 .listRowBackground(Palette.surface)
             }

@@ -109,6 +109,15 @@ struct StartPlanView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Text(verbatim: plan.title)
+                        .typeStyle(TypeScale.body)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Palette.text)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
+                .listRowBackground(Palette.surface)
                 whenSection
                 if plan.behaviors.count > 1 { behaviorSection }
                 if behavior == .finishDate { finishSection }
@@ -117,15 +126,21 @@ struct StartPlanView: View {
                     Picker("How you read", selection: $wayToRead) {
                         ForEach(WayToRead.allCases) { Text($0.label).tag($0) }
                     }
+                    .formPicker()
                     if wayToRead == .youVersion {
                         TranslationPicker()
                     }
                 } footer: {
-                    if wayToRead == .youVersion {
-                        TranslationFooter()
-                    } else {
-                        Text("Day by Word never shows Bible text. Read in your own Bible, and mark what you read here.")
+                    Group {
+                        if wayToRead == .youVersion {
+                            TranslationFooter()
+                        } else {
+                            Text(
+                                "Day by Word never shows Bible text. Read in your own Bible, and mark what you read here."
+                            )
+                        }
                     }
+                    .sectionNote()
                 }
                 .listRowBackground(Palette.surface)
                 reminderSection
@@ -136,7 +151,9 @@ struct StartPlanView: View {
             }
             .scrollContentBackground(.hidden)
             .background(Palette.background)
-            .navigationTitle(Text(verbatim: plan.title))
+            // The plan's title can be long, so the bar says what the sheet
+            // does and the form names the plan (a long title was cut short).
+            .navigationTitle("Start this plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -160,11 +177,14 @@ struct StartPlanView: View {
                     displayedComponents: .date)
             }
         } header: {
-            Text("When")
+            Text("When").sectionNote()
         } footer: {
-            if isCalendar {
-                Text("Each date has its own reading. Earlier dates' readings are not added to today.")
+            Group {
+                if isCalendar {
+                    Text("Each date has its own reading. Earlier dates' readings are not added to today.")
+                }
             }
+            .sectionNote()
         }
         .listRowBackground(Palette.surface)
     }
@@ -177,9 +197,9 @@ struct StartPlanView: View {
             .pickerStyle(.inline)
             .labelsHidden()
         } header: {
-            Text("Schedule")
+            Text("Schedule").sectionNote()
         } footer: {
-            Text(verbatim: behavior.about)
+            Text(verbatim: behavior.about).sectionNote()
         }
         .listRowBackground(Palette.surface)
     }
@@ -216,9 +236,10 @@ struct StartPlanView: View {
                 }
             }
         } header: {
-            Text("Finish date")
+            Text("Finish date").sectionNote()
         } footer: {
             Text("If you miss days, you'll be offered a choice, and you'll see it before anything changes.")
+                .sectionNote()
         }
         .listRowBackground(Palette.surface)
     }
@@ -233,15 +254,18 @@ struct StartPlanView: View {
                         set: { on in if on { readingDays.insert(day) } else { readingDays.remove(day) } }))
             }
         } header: {
-            Text("Reading days")
+            Text("Reading days").sectionNote()
         } footer: {
-            if readingDays.isEmpty {
-                Text("Choose at least one day.").foregroundStyle(Palette.danger)
-            } else if isCalendar {
-                Text("Each date still has its reading. Your reading days decide reminders and nothing else.")
-            } else {
-                Text(verbatim: presentation.paced + " " + String(localized: "Other days are rest days."))
+            Group {
+                if readingDays.isEmpty {
+                    Text("Choose at least one day.").foregroundStyle(Palette.danger)
+                } else if isCalendar {
+                    Text("Each date still has its reading. Your reading days decide reminders and nothing else.")
+                } else {
+                    Text(verbatim: presentation.paced + " " + String(localized: "Other days are rest days."))
+                }
             }
+            .sectionNote()
         }
         .listRowBackground(Palette.surface)
     }
@@ -256,13 +280,18 @@ struct StartPlanView: View {
                 DatePicker("At", selection: $reminderTime, displayedComponents: .hourAndMinute)
             }
         } header: {
-            Text("Reminder")
+            Text("Reminder").sectionNote()
         } footer: {
-            if notificationsRefused {
-                Text("Notifications are turned off for Day by Word in the Settings app. The plan works without them.")
-            } else {
-                Text("Optional. A reminder says what's next and nothing more.")
+            Group {
+                if notificationsRefused {
+                    Text(
+                        "Notifications are turned off for Day by Word in the Settings app. The plan works without them."
+                    )
+                } else {
+                    Text("Optional. A reminder says what's next and nothing more.")
+                }
             }
+            .sectionNote()
         }
         .listRowBackground(Palette.surface)
     }

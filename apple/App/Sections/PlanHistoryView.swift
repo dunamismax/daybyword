@@ -53,26 +53,33 @@ struct PlanHistoryView: View {
                         displayedComponents: .date)
                 }
             } footer: {
-                if enrollment.ended == nil {
-                    Text("Mark read keeps the reading on this date.")
+                Group {
+                    if enrollment.ended == nil {
+                        Text("Mark read keeps the reading on this date.")
+                    }
                 }
+                .sectionNote()
             }
             .listRowBackground(Palette.surface)
 
-            Section("Readings") {
+            Section {
                 ForEach(enrollment.recordSlots(on: today), id: \.self) { slot in
                     let mark = enrollment.settled.first { $0.slot == slot }
                     reading(
                         slot, mark: mark, enrollment: enrollment, plan: plan, formatter: formatter,
                         markable: mark?.state != .read && (isCalendar || mark != nil))
                 }
+            } header: {
+                Text("Readings").sectionNote()
             }
             .listRowBackground(Palette.surface)
 
-            Section("Changes") {
+            Section {
                 ForEach(changes(journal, enrollment: enrollment, plan: plan, formatter: formatter), id: \.self) {
                     Text(verbatim: $0).fixedSize(horizontal: false, vertical: true)
                 }
+            } header: {
+                Text("Changes").sectionNote()
             }
             .listRowBackground(Palette.surface)
 
@@ -82,11 +89,14 @@ struct PlanHistoryView: View {
                     Text(verbatim: failure).foregroundStyle(Palette.danger)
                 }
             } header: {
-                Text("This plan")
+                Text("This plan").sectionNote()
             } footer: {
-                if enrollment.ended == nil, !enrollment.isPaused(today), !enrollment.isFinished {
-                    Text("Pausing stops its reminders and keeps your place; nothing is moved or marked.")
+                Group {
+                    if enrollment.ended == nil, !enrollment.isPaused(today), !enrollment.isFinished {
+                        Text("Pausing stops its reminders and keeps your place; nothing is moved or marked.")
+                    }
                 }
+                .sectionNote()
             }
             .listRowBackground(Palette.surface)
         }

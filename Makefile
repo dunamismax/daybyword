@@ -141,10 +141,11 @@ check-strings: ## Check the String Catalog against the last build's strings (aft
 
 tour: tour-app tour-web ## Visit every section in light and dark in the app and on the web, saving screenshots
 
-tour-app: generate ## Tour the app in the simulator; screenshots go to screenshots/app/
+tour-app: generate ## Tour the app in the simulator and run Apple's accessibility audit on every screen (docs/accessibility.md); screenshots go to screenshots/app/
 	@mkdir -p screenshots/app
 	@TEST_RUNNER_DBW_SCREENSHOTS="$(CURDIR)/screenshots/app" scripts/xcodebuild.sh tour-app \
-		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests test
+		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests \
+		-only-testing:AppUITests/AccessibilityAuditTests test
 
 tour-web: build-web catalog-export ## Tour the SvelteKit site and every web flow in Firefox (WebDriver), Chrome (DevTools, phone widths too) and Safari (safaridriver, a visible window), with the release catalog; screenshots go to screenshots/web/
 	@scripts/with-catalog.sh sh -c 'swift scripts/webtour.swift && DBW_WEBDRIVER=chrome swift scripts/webtour.swift && DBW_WEBDRIVER=safari swift scripts/webtour.swift'

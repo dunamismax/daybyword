@@ -434,12 +434,12 @@ const english = {
   "accessibility.tested-words":
     'A reading\'s state is always in words or a symbol, never color alone, and references are written out for screen readers ("Mark, chapter 4, verses 1 to 20").',
   "accessibility.tested-app":
-    "In the app, Today, Plans, Progress, a plan's page, its week and Settings are checked at the largest accessibility text size.",
+    "In the app, every screen (Today, Plans, a plan's page, starting a plan, Progress, History, a week and Settings) passes Apple's accessibility audit in light, in dark and at the largest accessibility text size: a description for every element, contrast, touch targets, and text that grows without being cut short.",
+  "accessibility.tested-structure":
+    "On the web, every page has landmarks to jump between, one main heading with no skipped levels, and a name for every link, button and field, checked in each browser's view of the page.",
   "accessibility.gaps": "Not yet tested",
   "accessibility.gap-screen-readers":
-    "A full pass with screen readers: VoiceOver on every screen of the app, and VoiceOver and NVDA on the web.",
-  "accessibility.gap-text":
-    "The app's other screens (starting a plan, History, and Today with readings) at the largest text size.",
+    "A person listening with a screen reader: VoiceOver on every screen of the app, and VoiceOver and NVDA on the web.",
   "accessibility.gap-zoom":
     "The web at 400% zoom, and with forced colors (such as Windows contrast themes).",
   "accessibility.gap-settings":

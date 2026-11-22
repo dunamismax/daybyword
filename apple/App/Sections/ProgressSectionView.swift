@@ -137,7 +137,10 @@ struct ProgressSectionView: View {
                             .typeStyle(TypeScale.label)
                             .foregroundStyle(day.isRead ? Palette.accent : Palette.textMuted)
                     }
-                    .frame(maxWidth: .infinity)
+                    // The whole column is the day, for VoiceOver's focus
+                    // and a hit region of at least 44 points (P17.1).
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .contentShape(Rectangle())
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(
                         Text(

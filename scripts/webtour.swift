@@ -100,6 +100,13 @@ protocol TourBrowser {
     /// reader's printer would.
     func printed(width: Double, height: Double) async -> PDFDocument
     func end() async
+    /// The page as assistive technology receives it: the browser's own
+    /// accessibility tree, where the browser can give it (Chrome).
+    func accessibilityTree() async -> [[String: Any]]?
+}
+
+extension WebDriver {
+    func accessibilityTree() async -> [[String: Any]]? { nil }
 }
 
 extension TourBrowser {
@@ -364,6 +371,11 @@ final class DevTools: TourBrowser {
     }
 
     func end() async { socket.cancel(with: .goingAway, reason: nil) }
+
+    func accessibilityTree() async -> [[String: Any]]? {
+        await send("Accessibility.enable")
+        return await send("Accessibility.getFullAXTree")?["nodes"] as? [[String: Any]]
+    }
 }
 
 // MARK: - The tour
@@ -509,6 +521,53 @@ for size in widths {
             await driver.screenshot(
                 to: screenshots.appendingPathComponent("\(browser)-\(size.name)-\(theme)-\(page.name).png"))
         }
+    }
+}
+
+// Screen readers (P17.1): on every page, in every browser, the landmarks a
+// screen reader jumps between (banner, navigation, main, contentinfo), one
+// first-level heading and no skipped heading levels; and in Chrome, from the
+// browser's own accessibility tree, a name for every link, button and field,
+// and every image either named or hidden.
+await driver.resize(width: 1280, height: 900)
+for page in pages {
+    await driver.go(page.path)
+    let structure =
+        await driver.run(
+            """
+            const levels = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+              .filter((h) => h.getClientRects().length > 0)
+              .map((h) => Number(h.tagName[1]));
+            const skipped = levels.filter((level, i) => i > 0 && level > levels[i - 1] + 1);
+            return {
+              landmarks: [
+                // A header or footer outside sectioning content is the
+                // banner or contentinfo landmark (HTML-AAM).
+                [...document.querySelectorAll('header')].some((e) => !e.closest('main, article, aside, nav, section')),
+                document.querySelector('nav') !== null,
+                document.querySelectorAll('main').length === 1,
+                [...document.querySelectorAll('footer')].some((e) => !e.closest('main, article, aside, nav, section')),
+              ],
+              ones: levels.filter((level) => level === 1).length,
+              skipped: skipped.length,
+              lang: document.documentElement.lang,
+            };
+            """) as? [String: Any] ?? [:]
+    let label = "\(browser) \(page.path)"
+    expect((structure["landmarks"] as? [Bool] ?? []) == [true, true, true, true], "\(label): landmarks \(structure["landmarks"] ?? "?")")
+    expect(structure["ones"] as? Int == 1, "\(label): \(structure["ones"] ?? "?") first-level headings")
+    expect(structure["skipped"] as? Int == 0, "\(label): a heading level is skipped")
+    expect(structure["lang"] as? String == "en", "\(label): the page's language is \(structure["lang"] ?? "unset")")
+    if let nodes = await driver.accessibilityTree() {
+        let named: Set = ["link", "button", "textbox", "checkbox", "radio", "combobox", "spinbutton", "searchbox", "image", "img"]
+        var unnamed: [String] = []
+        for node in nodes where node["ignored"] as? Bool != true {
+            let role = (node["role"] as? [String: Any])?["value"] as? String ?? ""
+            let name = ((node["name"] as? [String: Any])?["value"] as? String ?? "").trimmingCharacters(in: .whitespaces)
+            if named.contains(role) && name.isEmpty { unnamed.append(role) }
+        }
+        expect(nodes.count > 10, "\(label): Chrome gave no accessibility tree")
+        expect(unnamed.isEmpty, "\(label): unnamed in the accessibility tree: \(unnamed)")
     }
 }
 

@@ -55,7 +55,10 @@ struct TranslationList: View {
                     .accessibilityAddTraits(selection == translation.id ? .isSelected : [])
                 }
             } footer: {
-                TranslationFooter()
+                Group {
+                    TranslationFooter()
+                }
+                .sectionNote()
             }
             .listRowBackground(Palette.surface)
         }

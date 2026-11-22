@@ -25,6 +25,7 @@ struct RemindersSection: View {
                     } label: {
                         LabeledContent {
                             Text(verbatim: Self.timeText(enrollment.arrangement(on: library.today).reminder))
+                                .foregroundStyle(Palette.textMuted)
                         } label: {
                             Text(verbatim: plan.title)
                         }
@@ -43,10 +44,14 @@ struct RemindersSection: View {
                     Text(count == 1 ? "At most 1" : "At most \(count)").tag(count)
                 }
             }
+            .formPicker()
         } header: {
-            Text("Reminders")
+            Text("Reminders").sectionNote()
         } footer: {
-            footer
+            Group {
+                footer
+            }
+            .sectionNote()
         }
         .listRowBackground(Palette.surface)
         .onChange(of: showsReading) {
@@ -134,11 +139,14 @@ struct ReminderEditor: View {
                     DatePicker("At", selection: $time, displayedComponents: .hourAndMinute)
                 }
             } footer: {
-                if let failure {
-                    Text(verbatim: failure).foregroundStyle(Palette.danger)
-                } else {
-                    Text("From today on. A reminder says what's next and nothing more.")
+                Group {
+                    if let failure {
+                        Text(verbatim: failure).foregroundStyle(Palette.danger)
+                    } else {
+                        Text("From today on. A reminder says what's next and nothing more.")
+                    }
                 }
+                .sectionNote()
             }
             .listRowBackground(Palette.surface)
         }

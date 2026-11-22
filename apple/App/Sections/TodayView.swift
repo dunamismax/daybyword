@@ -432,7 +432,7 @@ struct LogEarlierDaySheet: View {
                         in: earliest.start(in: .current)...latest.start(in: .current),
                         displayedComponents: .date)
                 } footer: {
-                    Text("The reading is kept on the day you read it, not today.")
+                    Text("The reading is kept on the day you read it, not today.").sectionNote()
                 }
                 .listRowBackground(Palette.surface)
             }

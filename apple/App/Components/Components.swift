@@ -91,6 +91,31 @@ struct ActionRow<Content: View>: View {
     }
 }
 
+/// A Form's menu picker, which at the accessibility text sizes becomes a
+/// row that opens its choices on their own screen: a menu shows its value on
+/// one line and cut it short ("A ph…l Bible") at the largest sizes (P17.2).
+struct FormPickerStyle: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    func body(content: Content) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            content.pickerStyle(.navigationLink)
+        } else {
+            content.pickerStyle(.menu)
+        }
+    }
+}
+
+extension View {
+    /// A Form's picker, as `FormPickerStyle` sets it.
+    func formPicker() -> some View { modifier(FormPickerStyle()) }
+
+    /// A Form section's header or footer in Morning's muted text. The system's
+    /// secondary label is about 3.4:1 on Morning's background, below WCAG AA's
+    /// 4.5:1; Morning's textMuted is 6.1:1 (BUILD.md P17.1).
+    func sectionNote() -> some View { foregroundStyle(Palette.textMuted) }
+}
+
 // MARK: - References
 
 /// A reference as it is shown ("Mark 4:1–20") and as VoiceOver reads it
