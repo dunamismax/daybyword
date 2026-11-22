@@ -51,27 +51,30 @@ notice says that the web app needs it.
 
 | Browser | Version | How | What | Date |
 |---|---|---|---|---|
-| Firefox (macOS) | 160.0.1 | the web tour, headless, through geckodriver (`make tour-web`) | every address in docs/urls.md at 1280 and 500 px in light and dark (headings, the current section, theme, no sideways scroll, the footer, the skip link first); Settings applied and kept; a week printed on Letter in ordinary and large print, every day whole on a page; Share, Mark read and Undo on Today, and History, pressed with Tab and Enter, with focus kept (335 checks) | 2026-11-22 |
+| Firefox (macOS) | 160.0.1 | the web tour, headless, through geckodriver (`make tour-web`) | every address in docs/urls.md at 1280 and 500 px in light and dark (headings, the current section, theme, no sideways scroll, the footer, the skip link first); Settings applied and kept; a week printed on Letter in ordinary and large print, every day whole on a page; Share, Mark read and Undo on Today, and History, pressed with Tab and Enter, with focus kept; every web flow at 1280 and 500 px (343 checks) | 2026-11-22 |
+| Chrome (macOS) | 157.0.8103.39 | the same tour, headless, through Chrome's DevTools protocol (`make tour-web`, E60) | everything the Firefox tour checks, at 1280 px and as a phone at 375 and 320 px, and every web flow at 1280 and 320 px (505 checks) | 2026-11-22 |
 | Firefox (macOS) | 160 | the engine cases in the browser (`make test-domain-browser`) | every shared case in tests/fixtures/ through the TypeScript domain module | 2026-11-20 |
 | Chromium (the Claude desktop app's browser pane) | the pane's | by hand | offline with the server stopped (P15.2); a Tab walk of every page, each control reached with a visible focus ring; Share's fallback at 375 px; Mark read and Undo by keyboard (P15.4) | 2026-11-22 |
 | Safari (iOS 27, iPhone 18 Pro simulator) | iOS 27 | by hand | Add to Home Screen, the owner's icon, opening standalone on Today (P15.1a) | 2026-11-22 |
 
 Not tested yet:
 
-- **Chrome and Safari through the tour** (P15.6). Safari's driver
-  (`safaridriver`, part of macOS) starts a session only once "Allow remote
-  automation" is on in Safari's Developer settings, which needs the owner.
+- **Safari through the tour** (P15.6b). Safari's driver (`safaridriver`,
+  part of macOS) starts a session only once "Allow remote automation" is on
+  in Safari's Developer settings, which needs the owner.
 - **Edge**, which is not installed on the development Mac; it is checked
   by hand at each release (P15.6).
 - **A phone's own share sheet** from the web (the Web Share API), and
   **Android** (installing, P15.1b).
-- **Phone widths in the tour.** Firefox will not make a window narrower
-  than 500 px, so 375 and 320 px are checked by hand (AGENTS.md §7).
+- **A real phone's browser.** The tour's phone widths are Chrome's
+  emulation of a phone's viewport, not a phone; Safari on iOS was seen only
+  for installing (P15.1a).
 
 ## At each release
 
-Run `make check-full` (the Firefox tour and the engine cases in Firefox),
-then check by hand in the browsers the tour does not reach, at a phone
-width and at the desktop: the home page, Plans and a plan's page, starting
+Run `make check-full` (the tour in Firefox and Chrome, and the engine
+cases in Firefox), then check by hand in the browsers the tour does not
+reach (Safari until P15.6b, Edge, and a phone), at a phone width and at the
+desktop: the home page, Plans and a plan's page, starting
 a plan, Today (Mark read, Undo, Copy reference), Progress, Settings, a
 week printed, and the site offline. Record each in the table above.

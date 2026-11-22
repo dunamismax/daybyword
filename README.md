@@ -136,7 +136,7 @@ scripts/                  helpers behind the Makefile
 make check       # the gate before every commit: lint, web, catalog, packages, app tests, String Catalog
 make serve-web   # the SvelteKit production build at http://localhost:8080
 make run         # build, boot the newest iPhone simulator, install, and launch the app
-make check-full  # check, the engine cases in Firefox, both tours in light and dark, and Linux
+make check-full  # check, the engine cases in Firefox, both tours in light and dark (the web in Firefox and Chrome), and Linux
 ```
 
 `make help` lists every target. Others worth knowing: `make check-web` (the
@@ -160,7 +160,8 @@ one. Confirmed on the owner's Mac (macOS 27.2, Apple silicon):
 | PostgreSQL | 18, server binaries on the PATH (`brew install postgresql@18`) | `make test-db`, `make serve-web`, the production tests and the web tour, each of which starts and deletes its own throwaway cluster; `scripts/with-postgres.sh` finds Homebrew's 18 when another major comes first |
 | python3 | any Python 3 (the Command Line Tools include one) | `scripts/sim-destination.sh` |
 | curl | any | `scripts/web-smoke.sh` |
-| Firefox and geckodriver | Firefox 159, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari make tour-web`) |
+| Firefox and geckodriver | Firefox 160, geckodriver 0.37.1 (`brew install geckodriver`) | `make tour-web` and `make test-domain-browser` in `check-full`; Safari works with "Allow remote automation" on (`DBW_WEBDRIVER=safari swift scripts/webtour.swift`) |
+| Google Chrome | Chrome 157, in /Applications (no chromedriver: the tour speaks its DevTools protocol, E60) | `make tour-web` in `check-full`, with phone widths |
 | Docker with Compose v2 | Docker Desktop, or Colima (`brew install colima docker docker-compose`, then `colima start`) | `make test-linux`; the first run downloads Ubuntu 24.04 and the pinned Swift toolchain (about 1 GB) |
 
 For device builds and TestFlight only: Xcode signed in to the owner's Apple

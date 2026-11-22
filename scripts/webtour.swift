@@ -1,27 +1,35 @@
-// The web tour (BUILD.md P2.12, PM.19, docs/decisions.md E26): starts the
-// server on a spare port, drives a real browser through WebDriver, visits every
-// section at a desktop and a narrow width in light and dark, checks each page,
+// The web tour (BUILD.md P2.12, PM.19, P15.6; docs/decisions.md E26, E60):
+// starts the server on a spare port, drives a real browser, visits every
+// section at a desktop and narrow widths in light and dark, checks each page,
 // and saves a screenshot of each to screenshots/web/ (gitignored).
 //
 //   swift scripts/webtour.swift            the SvelteKit production server, in
 //                                          Firefox through geckodriver (the default)
+//   DBW_WEBDRIVER=chrome swift scripts/webtour.swift
+//                                          Chrome through its DevTools protocol,
+//                                          with phone widths (375 and 320 px)
 //   DBW_WEBDRIVER=safari swift scripts/webtour.swift
 //                                          Safari through safaridriver, once "Allow
 //                                          remote automation" is on in Safari's settings
 //
-// It also prints a week's checklist through the browser's own Print
-// (WebDriver's Print Page), in ordinary and large print, and checks the
-// paper with PDFKit (BUILD.md P13.5).
+// It also prints a week's checklist through the browser's own Print, in
+// ordinary and large print, and checks the paper with PDFKit (BUILD.md
+// P13.5); presses keys for Share, Today and History (P15.4); and runs every
+// web flow at the desktop and the narrowest width (P15.6).
 //
 // The checks are semantic (headings, the nav's current link, the footer, the
 // first focusable element), not tied to the markup's classes. The server must
-// be built first (make tour-web does it). The WebDriver
-// client is this file's own: a few W3C WebDriver commands over URLSession.
+// be built first (make tour-web does it). The clients are this file's own:
+// a few W3C WebDriver commands over URLSession, and a few DevTools commands
+// over a WebSocket.
 import Foundation
 import PDFKit
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
 let screenshots = root.appendingPathComponent("screenshots/web")
+/// Where the browser saves the files the tour asks for (a calendar, the
+/// export), in the gitignored build folder, never the owner's Downloads.
+let downloads = root.appendingPathComponent("build/webtour-downloads")
 let serverPort = 8197
 let driverPort = 4497
 let base = "http://127.0.0.1:\(serverPort)"
@@ -64,9 +72,52 @@ func waitUntilAnswering(_ url: String, what: String) async {
     fail("\(what) did not answer at \(url)")
 }
 
-// MARK: - A small WebDriver client
+// MARK: - The browsers
 
-struct WebDriver {
+/// A key the tour presses.
+enum Key { case tab, enter }
+
+/// What the tour asks of a browser. Firefox and Safari answer W3C WebDriver
+/// (geckodriver, safaridriver); Chrome answers its own DevTools protocol,
+/// which needs nothing but Chrome itself (Homebrew no longer installs
+/// chromedriver, which fails Gatekeeper; P15.6).
+@MainActor
+protocol TourBrowser {
+    func go(_ path: String) async
+    /// Runs a script as a function's body and returns what it returns.
+    @discardableResult func run(_ script: String) async -> Any?
+    /// The viewport in CSS pixels. Chrome emulates a phone below 600 px.
+    func resize(width: Int, height: Int) async
+    /// Clicks the first element the selector finds, as a mouse would.
+    func click(_ selector: String) async
+    /// Presses a key on whatever has focus, as a reader at a keyboard would.
+    func press(_ key: Key) async
+    func screenshot(to file: URL) async
+    /// The page as the browser prints it, on paper of the size given in
+    /// centimetres, with 1 cm margins and without background colours, as a
+    /// reader's printer would.
+    func printed(width: Double, height: Double) async -> PDFDocument
+    func end() async
+}
+
+extension TourBrowser {
+    /// Waits up to ten seconds for a script to return true.
+    func waitUntil(_ script: String, _ what: String) async {
+        for _ in 0..<100 {
+            if await run(script) as? Bool == true { return }
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+        fail("waited for \(what)")
+    }
+}
+
+/// A JavaScript string literal.
+func literal(_ text: String) -> String {
+    String(decoding: try! JSONSerialization.data(withJSONObject: text, options: .fragmentsAllowed), as: UTF8.self)
+}
+
+/// A few W3C WebDriver commands over URLSession (E26).
+struct WebDriver: TourBrowser {
     let endpoint: String
     var session = ""
 
@@ -90,10 +141,22 @@ struct WebDriver {
     }
 
     mutating func startSession(browser: String) async {
+        // A confirm() the page asks (Skip, Delete everything) is accepted, as
+        // a reader would.
         let capabilities: [String: Any] =
             browser == "safari"
-            ? ["browserName": "safari"]
-            : ["browserName": "firefox", "moz:firefoxOptions": ["args": ["-headless"]]]
+            ? ["browserName": "safari", "unhandledPromptBehavior": "accept"]
+            : [
+                "browserName": "firefox", "unhandledPromptBehavior": "accept",
+                "moz:firefoxOptions": [
+                    "args": ["-headless"],
+                    "prefs": [
+                        "browser.download.folderList": 2, "browser.download.dir": downloads.path,
+                        "browser.download.useDownloadDir": true,
+                        "browser.download.always_ask_before_handling_new_types": false,
+                    ],
+                ],
+            ]
         let value = await send("POST", "/session", ["capabilities": ["alwaysMatch": capabilities]])
         guard let id = (value as? [String: Any])?["sessionId"] as? String else { fail("no session") }
         session = id
@@ -117,24 +180,12 @@ struct WebDriver {
         await send("POST", "/session/\(session)/element/\(id)/click", [:])
     }
 
-    /// The WebDriver codes for the keys the tour presses.
-    static let tab = "\u{E004}", enter = "\u{E007}"
-
-    /// Presses a key on whatever has focus, as a reader at a keyboard would.
-    func press(_ key: String) async {
-        let keys: [[String: Any]] = [["type": "keyDown", "value": key], ["type": "keyUp", "value": key]]
+    func press(_ key: Key) async {
+        let code = key == .tab ? "\u{E004}" : "\u{E007}"
+        let keys: [[String: Any]] = [["type": "keyDown", "value": code], ["type": "keyUp", "value": code]]
         await send(
             "POST", "/session/\(session)/actions",
             ["actions": [["type": "key", "id": "keyboard", "actions": keys]]])
-    }
-
-    /// Waits up to ten seconds for a script to return true.
-    func waitUntil(_ script: String, _ what: String) async {
-        for _ in 0..<100 {
-            if await run(script) as? Bool == true { return }
-            try? await Task.sleep(for: .milliseconds(100))
-        }
-        fail("waited for \(what)")
     }
 
     func screenshot(to file: URL) async {
@@ -144,8 +195,6 @@ struct WebDriver {
         try? data.write(to: file)
     }
 
-    /// The page as the browser prints it, on paper of the size given in
-    /// centimetres, without background colours, as a reader's printer would.
     func printed(width: Double, height: Double) async -> PDFDocument {
         guard
             let base64 = await send(
@@ -157,6 +206,145 @@ struct WebDriver {
     }
 
     func end() async { await send("DELETE", "/session/\(session)") }
+}
+
+/// Chrome through its DevTools protocol, over the page's WebSocket.
+@MainActor
+final class DevTools: TourBrowser {
+    private let socket: URLSessionWebSocketTask
+    private var lastID = 0
+    /// The events Chrome sent while the tour waited for answers.
+    private var events: [String] = []
+
+    init(page: URL) {
+        socket = URLSession.shared.webSocketTask(with: page)
+        socket.maximumMessageSize = 64 << 20  // screenshots and printed pages
+        socket.resume()
+    }
+
+    private func post(_ method: String, _ params: [String: Any]) async -> Int {
+        lastID += 1
+        let message = try! JSONSerialization.data(withJSONObject: ["id": lastID, "method": method, "params": params])
+        do { try await socket.send(.string(String(decoding: message, as: UTF8.self))) } catch {
+            fail("Chrome closed the connection: \(error)")
+        }
+        return lastID
+    }
+
+    /// Sends a command and returns its result, or nil when Chrome refuses
+    /// it, as it does while a page is being replaced.
+    @discardableResult
+    func send(_ method: String, _ params: [String: Any] = [:]) async -> [String: Any]? {
+        let id = await post(method, params)
+        let watchdog = Task {
+            try await Task.sleep(for: .seconds(90))
+            fail("Chrome did not answer \(method)")
+        }
+        defer { watchdog.cancel() }
+        while true {
+            guard let message = try? await socket.receive() else { fail("no answer from Chrome for \(method)") }
+            let text: String
+            switch message {
+            case .string(let string): text = string
+            case .data(let data): text = String(decoding: data, as: UTF8.self)
+            @unknown default: continue
+            }
+            guard let json = try? JSONSerialization.jsonObject(with: Data(text.utf8)) as? [String: Any] else { continue }
+            if let event = json["method"] as? String {
+                events.append(event)
+                // A confirm() the page asks (Skip, Delete everything) is
+                // accepted, as a reader would.
+                if event == "Page.javascriptDialogOpening" {
+                    _ = await post("Page.handleJavaScriptDialog", ["accept": true])
+                }
+                continue
+            }
+            guard json["id"] as? Int == id else { continue }
+            if json["error"] != nil { return nil }
+            return json["result"] as? [String: Any] ?? [:]
+        }
+    }
+
+    func go(_ path: String) async {
+        events.removeAll()
+        await send("Page.navigate", ["url": base + path])
+        for _ in 0..<300 {
+            if events.contains("Page.loadEventFired") { return }
+            try? await Task.sleep(for: .milliseconds(50))
+            await send("Runtime.evaluate", ["expression": "0"])  // gathers the events sent meanwhile
+        }
+        fail("\(path) did not load in Chrome")
+    }
+
+    @discardableResult
+    func run(_ script: String) async -> Any? {
+        guard
+            let result = await send(
+                "Runtime.evaluate",
+                ["expression": "(function () {\n\(script)\n})()", "returnByValue": true, "awaitPromise": true])
+        else { return nil }
+        if let exception = result["exceptionDetails"] as? [String: Any] {
+            let thrown = (exception["exception"] as? [String: Any])?["description"] ?? exception["text"] ?? ""
+            fail("a script failed in Chrome: \(thrown)\n\(script)")
+        }
+        return (result["result"] as? [String: Any])?["value"]
+    }
+
+    func resize(width: Int, height: Int) async {
+        let phone = width < 600
+        await send(
+            "Emulation.setDeviceMetricsOverride",
+            ["width": width, "height": height, "deviceScaleFactor": phone ? 2 : 1, "mobile": phone])
+    }
+
+    func click(_ selector: String) async {
+        guard
+            let point = await run(
+                """
+                const element = document.querySelector(\(literal(selector)));
+                if (!element) return null;
+                element.scrollIntoView({ block: 'center' });
+                const box = element.getBoundingClientRect();
+                return [box.left + box.width / 2, box.top + box.height / 2];
+                """) as? [Double], point.count == 2
+        else { fail("no element \(selector)") }
+        for type in ["mousePressed", "mouseReleased"] {
+            await send(
+                "Input.dispatchMouseEvent",
+                ["type": type, "x": point[0], "y": point[1], "button": "left", "clickCount": 1])
+        }
+    }
+
+    func press(_ key: Key) async {
+        let (name, code) = key == .tab ? ("Tab", 9) : ("Enter", 13)
+        var down: [String: Any] = ["type": "keyDown", "key": name, "code": name, "windowsVirtualKeyCode": code]
+        if key == .enter { down["text"] = "\r" }
+        await send("Input.dispatchKeyEvent", down)
+        await send("Input.dispatchKeyEvent", ["type": "keyUp", "key": name, "code": name, "windowsVirtualKeyCode": code])
+    }
+
+    func screenshot(to file: URL) async {
+        guard let base64 = await send("Page.captureScreenshot", ["format": "png"])?["data"] as? String,
+            let data = Data(base64Encoded: base64)
+        else { fail("no screenshot") }
+        try? data.write(to: file)
+    }
+
+    func printed(width: Double, height: Double) async -> PDFDocument {
+        let inch = 2.54
+        guard
+            let base64 = await send(
+                "Page.printToPDF",
+                [
+                    "paperWidth": width / inch, "paperHeight": height / inch, "printBackground": false,
+                    "marginTop": 1 / inch, "marginBottom": 1 / inch, "marginLeft": 1 / inch, "marginRight": 1 / inch,
+                ])?["data"] as? String,
+            let data = Data(base64Encoded: base64), let document = PDFDocument(data: data)
+        else { fail("no printed page") }
+        return document
+    }
+
+    func end() async { socket.cancel(with: .goingAway, reason: nil) }
 }
 
 // MARK: - The tour
@@ -175,10 +363,14 @@ let pages: [(name: String, path: String, heading: String, section: String?)] = [
     ("not-found", "/no-such-page", "Page not found", nil),
 ]
 
-/// Firefox will not make a window narrower than 500 px, so the narrow pass
-/// is 500 px wide; phone widths (375 and 320 px) are checked by hand in a
-/// browser's device emulation (AGENTS.md §7).
-let widths: [(name: String, width: Int, height: Int)] = [("desktop", 1280, 900), ("narrow", 500, 812)]
+let browser = ProcessInfo.processInfo.environment["DBW_WEBDRIVER"] ?? "firefox"
+
+/// Chrome emulates a phone at 375 and 320 px. Firefox will not make a window
+/// narrower than 500 px, so its narrow pass is 500 px wide.
+let widths: [(name: String, width: Int, height: Int)] =
+    browser == "chrome"
+    ? [("desktop", 1280, 900), ("phone", 375, 812), ("small", 320, 640)]
+    : [("desktop", 1280, 900), ("narrow", 500, 812)]
 
 var checked = 0
 func expect(_ condition: Bool, _ message: @autoclosure () -> String) {
@@ -186,7 +378,6 @@ func expect(_ condition: Bool, _ message: @autoclosure () -> String) {
     if !condition { fail(message()) }
 }
 
-let browser = ProcessInfo.processInfo.environment["DBW_WEBDRIVER"] ?? "firefox"
 let web = root.appendingPathComponent("web")
 guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/handler.js").path) else {
     fail("build the web app first (make build-web)")
@@ -194,22 +385,62 @@ guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/h
 // The pinned Node from the PATH, as make uses it (scripts/check-toolchain.sh).
 FileManager.default.changeCurrentDirectoryPath(web.path)
 _ = start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
+let driver: any TourBrowser
+/// Chrome's browser-wide connection, kept open for its download setting.
+var chromeBrowser: DevTools?
 switch browser {
-case "firefox":
-    guard let gecko = ["/opt/homebrew/bin/geckodriver", "/usr/local/bin/geckodriver"].first(where: {
-        FileManager.default.isExecutableFile(atPath: $0)
-    }) else { fail("geckodriver is not installed (brew install geckodriver)") }
-    _ = start(gecko, ["--port", String(driverPort)])
-case "safari":
-    _ = start("/usr/bin/safaridriver", ["--port", String(driverPort)])
+case "firefox", "safari":
+    if browser == "firefox" {
+        guard let gecko = ["/opt/homebrew/bin/geckodriver", "/usr/local/bin/geckodriver"].first(where: {
+            FileManager.default.isExecutableFile(atPath: $0)
+        }) else { fail("geckodriver is not installed (brew install geckodriver)") }
+        _ = start(gecko, ["--port", String(driverPort)])
+    } else {
+        _ = start("/usr/bin/safaridriver", ["--port", String(driverPort)])
+    }
+    await waitUntilAnswering("\(base)/up", what: "the server")
+    await waitUntilAnswering("http://127.0.0.1:\(driverPort)/status", what: "the browser driver")
+    var webDriver = WebDriver(endpoint: "http://127.0.0.1:\(driverPort)")
+    await webDriver.startSession(browser: browser)
+    driver = webDriver
+case "chrome":
+    let chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    guard FileManager.default.isExecutableFile(atPath: chrome) else { fail("Google Chrome is not installed") }
+    // A fresh profile each time, in the gitignored build folder, with
+    // Chrome's own background traffic (updates, sync, metrics) turned off.
+    let profile = root.appendingPathComponent("build/webtour-chrome")
+    try? FileManager.default.removeItem(at: profile)
+    _ = start(
+        chrome,
+        [
+            "--headless", "--remote-debugging-port=\(driverPort)", "--user-data-dir=\(profile.path)",
+            "--no-first-run", "--no-default-browser-check", "--disable-background-networking",
+            "--disable-component-update", "--disable-default-apps", "--disable-sync", "--metrics-recording-only",
+            "--no-pings", "about:blank",
+        ])
+    await waitUntilAnswering("\(base)/up", what: "the server")
+    await waitUntilAnswering("http://127.0.0.1:\(driverPort)/json/version", what: "Chrome")
+    guard let (list, _) = try? await URLSession.shared.data(from: URL(string: "http://127.0.0.1:\(driverPort)/json/list")!),
+        let targets = try? JSONSerialization.jsonObject(with: list) as? [[String: Any]],
+        let address = targets.first(where: { $0["type"] as? String == "page" })?["webSocketDebuggerUrl"] as? String,
+        let page = URL(string: address)
+    else { fail("Chrome has no page to drive") }
+    let devTools = DevTools(page: page)
+    await devTools.send("Page.enable")
+    driver = devTools
+    // Downloads go to the build folder; the setting lasts while this
+    // connection to the browser stays open.
+    if let (version, _) = try? await URLSession.shared.data(
+        from: URL(string: "http://127.0.0.1:\(driverPort)/json/version")!),
+        let address = (try? JSONSerialization.jsonObject(with: version) as? [String: Any])?["webSocketDebuggerUrl"]
+            as? String, let url = URL(string: address)
+    {
+        chromeBrowser = DevTools(page: url)
+        await chromeBrowser?.send("Browser.setDownloadBehavior", ["behavior": "allow", "downloadPath": downloads.path])
+    }
 default:
-    fail("DBW_WEBDRIVER must be firefox or safari, not \(browser)")
+    fail("DBW_WEBDRIVER must be firefox, chrome or safari, not \(browser)")
 }
-await waitUntilAnswering("\(base)/up", what: "the server")
-await waitUntilAnswering("http://127.0.0.1:\(driverPort)/status", what: "the browser driver")
-
-var driver = WebDriver(endpoint: "http://127.0.0.1:\(driverPort)")
-await driver.startSession(browser: browser)
 try? FileManager.default.createDirectory(at: screenshots, withIntermediateDirectories: true)
 
 for size in widths {
@@ -236,7 +467,7 @@ for size in widths {
                       width: window.innerWidth,
                     };
                     """) as? [String: Any] ?? [:]
-            let label = "\(size.name) \(theme) \(page.path)"
+            let label = "\(browser) \(size.name) \(theme) \(page.path)"
             expect(facts["heading"] as? String == page.heading, "\(label): heading is \(facts["heading"] ?? "none")")
             expect(facts["current"] as? String == page.section, "\(label): current section is \(facts["current"] ?? "none")")
             expect((facts["currentCount"] as? Int ?? 0) == (page.section == nil ? 0 : 1), "\(label): current markers")
@@ -245,10 +476,13 @@ for size in widths {
             expect(facts["noticeHidden"] as? Bool == true, "\(label): the unsupported-browser notice is showing")
             expect((facts["footer"] as? String ?? "").contains("not affiliated with any church"), "\(label): footer")
             expect(facts["firstFocusable"] as? String == "Skip to content", "\(label): the skip link is not first")
-            if size.name == "narrow" {
-                expect((facts["width"] as? Int ?? 9999) <= 500, "\(label): the window is \(facts["width"] ?? "?") px wide")
+            if size.name != "desktop" {
+                expect(
+                    (facts["width"] as? Int ?? 9999) <= size.width,
+                    "\(label): the window is \(facts["width"] ?? "?") px wide")
             }
-            await driver.screenshot(to: screenshots.appendingPathComponent("\(size.name)-\(theme)-\(page.name).png"))
+            await driver.screenshot(
+                to: screenshots.appendingPathComponent("\(browser)-\(size.name)-\(theme)-\(page.name).png"))
         }
     }
 }
@@ -309,11 +543,11 @@ expect((pageCounts["short"] ?? 0) > 1, "print: a short page did not break")
 await driver.go("/plans/gospels-at-your-pace")
 await driver.run(
     "delete Navigator.prototype.share; delete Navigator.prototype.canShare; document.querySelector('a[href$=\"/start\"]').focus()")
-await driver.press(WebDriver.tab)
+await driver.press(.tab)
 expect(
     await driver.run("return document.activeElement.dataset.share ?? ''") as? String == "/plans/gospels-at-your-pace",
     "keyboard: Tab from Start does not reach Share")
-await driver.press(WebDriver.enter)
+await driver.press(.enter)
 await driver.waitUntil(
     "return document.querySelector('button[data-share]').textContent.trim() !== 'Share this plan'", "Share")
 let shared = await driver.run(
@@ -337,14 +571,14 @@ await driver.go("/today?\(monday)")
 let markRead = "#today button[data-mark=completed]:not([data-earlier-for])"
 await driver.waitUntil("return document.querySelector('\(markRead)') !== null", "Today's card")
 await driver.run("document.querySelector('\(markRead)').focus()")
-await driver.press(WebDriver.enter)
+await driver.press(.enter)
 await driver.waitUntil("return document.activeElement.matches('#today button[data-undo]')", "focus on Undo after Mark read")
 expect(
     await driver.run(
         "return document.getElementById(document.activeElement.getAttribute('aria-describedby'))?.textContent ?? ''")
         as? String == "Marked Matthew 1–3 read.",
     "keyboard: Undo does not name the reading it takes back")
-await driver.press(WebDriver.enter)
+await driver.press(.enter)
 await driver.waitUntil("return document.activeElement.matches('\(markRead)')", "focus on Mark read after Undo")
 // History marks a calendar plan's days (a sequence plan's next reading is
 // marked on Today), so this part follows Proverbs through the month.
@@ -355,13 +589,141 @@ await driver.go("/progress?\(monday)")
 let rowMark = "#progress details[data-history] button[data-mark][data-appointed='2027-01-04']"
 await driver.waitUntil("return document.querySelector(\"\(rowMark)\") !== null", "History's rows")
 await driver.run("const m = document.querySelector(\"\(rowMark)\"); m.closest('details').open = true; m.focus()")
-await driver.press(WebDriver.enter)
+await driver.press(.enter)
 await driver.waitUntil(
     "return document.activeElement.matches(\"#progress button[data-undo][data-appointed='2027-01-04']\")",
     "focus on the row's Undo in History")
-await driver.press(WebDriver.enter)
+await driver.press(.enter)
 await driver.waitUntil("return document.activeElement.matches(\"\(rowMark)\")", "focus on the row's Mark read after Undo")
 await driver.run("localStorage.clear(); indexedDB.deleteDatabase('day-by-word')")
+
+// MARK: - Every web flow (P15.6)
+
+/// A file the browser saved into `downloads`, once it is whole.
+func downloaded(_ name: String) async -> Data? {
+    let file = downloads.appendingPathComponent(name)
+    for _ in 0..<100 {
+        if let data = try? Data(contentsOf: file), !data.isEmpty { return data }
+        try? await Task.sleep(for: .milliseconds(100))
+    }
+    return nil
+}
+
+// Each flow a reader has on the web, at the desktop width and the narrowest
+// one: choosing a plan, starting one toward a finish date, Copy, part read,
+// Skip and Undo on Today, the welcome back after a gap, a plan's history
+// (pause, resume, stop following, follow again), the calendar file, and
+// export and deletion. Every confirm() is accepted, as a reader would.
+let markRead2 = "#today button[data-mark=completed]:not([data-earlier-for])"
+for size in [widths[0], widths[widths.count - 1]] {
+    let at = "\(browser) \(size.name)"
+    await driver.resize(width: size.width, height: size.height)
+    try? FileManager.default.removeItem(at: downloads)
+    try? FileManager.default.createDirectory(at: downloads, withIntermediateDirectories: true)
+    await driver.go("/")
+    await driver.run("localStorage.clear(); sessionStorage.clear(); indexedDB.deleteDatabase('day-by-word')")
+
+    // Choosing: the questions suggest up to three plans, each with its page.
+    await driver.go("/plans")
+    await driver.click("form[action='#suggestions'] input[name=time]:not([value=''])")
+    await driver.click("form[action='#suggestions'] button[type=submit]")
+    await driver.waitUntil(
+        "return document.querySelectorAll('#suggestions a[href^=\"/plans/\"]').length > 0", "\(at): suggestions")
+    let suggested = await driver.run("return document.querySelectorAll('#suggestions > ul > li').length") as? Int ?? 0
+    expect((1...3).contains(suggested), "\(at): \(suggested) plans suggested")
+
+    // Starting toward a finish date: its load is previewed before starting.
+    await driver.go("/plans/gospels-at-your-pace/start?\(monday)")
+    await driver.click("#start-plan input[name=behavior][value=finish-date]")
+    await driver.run(
+        """
+        const finish = document.querySelector('#start-plan input[name=finish]');
+        finish.value = '2027-02-26';
+        finish.dispatchEvent(new Event('change', { bubbles: true }));
+        """)
+    await driver.waitUntil(
+        "const p = document.querySelector('[data-finish-preview]'); return !p.hidden && p.textContent.trim() !== ''",
+        "\(at): the finish date's preview")
+    await driver.click("#start-plan button[type=submit]")
+    await driver.waitUntil("return location.pathname === '/today'", "\(at): the plan to start")
+
+    // Today: Copy reference, then part read and Skip, each taken back.
+    await driver.go("/today?\(monday)")
+    await driver.waitUntil("return document.querySelector('\(markRead2)') !== null", "\(at): Today's card")
+    await driver.click("#today button[data-copy]")
+    await driver.waitUntil(
+        "return document.querySelector('#today button[data-copy]').textContent.trim() !== 'Copy reference'",
+        "\(at): Copy reference")
+    for (selector, said) in [
+        ("button[data-mark=partlyCompleted]", "Marked Matthew 1–3 part read."),
+        ("button[data-mark=skipped]", "Skipped Matthew 1–3. It won't count as read."),
+    ] {
+        await driver.click("#today \(selector)")
+        await driver.waitUntil(
+            "return document.getElementById('today').textContent.includes(\(literal(said)))", "\(at): \(said)")
+        await driver.click("#today button[data-undo]")
+        await driver.waitUntil(
+            "return !document.getElementById('today').textContent.includes(\(literal(said)))"
+                + " && document.querySelector('\(markRead2)') !== null",
+            "\(at): Undo after \(said)")
+    }
+    await driver.click(markRead2)
+    await driver.waitUntil(
+        "return document.getElementById('today').textContent.includes('Marked Matthew 1–3 read.')", "\(at): Mark read")
+
+    // Three weeks later, the welcome back: one of its choices, confirmed.
+    let later = "today=2027-01-25"
+    await driver.go("/today?\(later)")
+    await driver.waitUntil("return document.querySelector('#today button[data-return]') !== null", "\(at): the welcome back")
+    await driver.click("#today button[data-return]")
+    await driver.waitUntil(
+        "return document.querySelector('#today button[data-return]') === null"
+            + " && document.querySelector('\(markRead2)') !== null",
+        "\(at): the welcome answered")
+
+    // History: pause, resume, stop following (confirmed), follow again.
+    await driver.go("/progress?\(later)")
+    await driver.waitUntil("return document.querySelector('#progress details[data-history]') !== null", "\(at): History")
+    await driver.run("document.querySelector('#progress details[data-history]').open = true")
+    for (press, then) in [
+        ("button[data-action=pause]", "button[data-action=resume]"),
+        ("button[data-action=resume]", "button[data-action=pause]"),
+        ("button[data-action=end]", "details[data-history] button[data-undo]:not([data-assignment])"),
+        ("details[data-history] button[data-undo]:not([data-assignment])", "button[data-action=pause]"),
+    ] {
+        await driver.click("#progress \(press)")
+        await driver.waitUntil("return document.querySelector('#progress \(then)') !== null", "\(at): \(press) in History")
+    }
+
+    if browser != "safari" {
+        // The next four weeks as a calendar file.
+        await driver.click("#progress button[data-calendar]")
+        let calendar = String(decoding: await downloaded("Gospels at your pace.ics") ?? Data(), as: UTF8.self)
+        expect(
+            calendar.hasPrefix("BEGIN:VCALENDAR") && calendar.contains("Gospels at your pace"),
+            "\(at): the calendar file is \(calendar.prefix(80))")
+
+        // The reading record exported, as the app exports it.
+        await driver.go("/settings")
+        await driver.click("#your-data-section button[data-export]")
+        let record =
+            (try? JSONSerialization.jsonObject(with: await downloaded("Day by Word reading record.json") ?? Data()))
+            as? [String: Any]
+        expect(
+            record?["format"] as? String == "day-by-word-journal" && ((record?["events"] as? [Any])?.count ?? 0) >= 4,
+            "\(at): the exported record is \(record.map { "\($0.keys.sorted())" } ?? "missing")")
+    }
+
+    // Delete everything (confirmed): Today is empty again.
+    await driver.go("/settings")
+    await driver.click("#your-data-section button[data-delete-everything]")
+    await driver.waitUntil("return !document.querySelector('[data-data-status]').hidden", "\(at): deletion")
+    await driver.go("/today?\(later)")
+    try? await Task.sleep(for: .seconds(1))
+    expect(
+        await driver.run("return document.querySelector('#today article') === null") as? Bool == true,
+        "\(at): Today still shows a plan after Delete everything")
+}
 
 await driver.end()
 stopAll()

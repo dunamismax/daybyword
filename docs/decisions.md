@@ -1609,3 +1609,38 @@ never disagrees with Today.
 **Why:** the item asks for a file of upcoming readings; a short snapshot is
 honest about what a file can do, and shared fixtures keep the app and the
 web from drifting.
+
+### E60. The web tour in Chrome through its DevTools protocol, at phone widths
+
+*2026-11-22, agent (P15.6, extends E26).* `scripts/webtour.swift` drives
+each browser through one small interface (`TourBrowser`): W3C WebDriver for
+Firefox (geckodriver) and Safari (`safaridriver`), as before, and **Chrome
+through the Chrome DevTools Protocol** over the page's WebSocket, with
+Chrome started headless on a fresh profile in `build/` and its own
+background traffic (updates, sync, metrics) turned off. `make tour-web`
+runs the tour in Firefox and then in Chrome.
+
+- **No chromedriver.** Homebrew disabled its chromedriver cask (it fails
+  Gatekeeper), and the alternative is a binary downloaded from Google that
+  must match Chrome's version. The DevTools protocol is built into Chrome,
+  so the tour needs nothing installed beyond Chrome itself, and the client
+  stays a page of Swift with no package (E26).
+- **Phone widths at last.** Chrome emulates a phone's viewport
+  (`Emulation.setDeviceMetricsOverride`, `mobile`), so the tour checks
+  every page at 375 and 320 px, which Firefox's 500 px minimum window never
+  allowed. Firefox keeps its 1280 and 500 px passes.
+- **Every web flow, in each browser.** At the desktop width and the
+  narrowest, the tour chooses a plan, starts one toward a finish date, uses
+  Copy, part read, Skip and Undo, answers the welcome back, pauses,
+  resumes, stops and follows a plan again, saves the calendar file and the
+  export (into `build/webtour-downloads`, never the owner's Downloads), and
+  deletes everything. A `confirm()` is accepted, as a reader would.
+- **Real input.** Clicks and keys are the browser's own input events
+  (WebDriver actions, `Input.dispatchMouseEvent` and `dispatchKeyEvent`),
+  not scripted `click()`, so user activation (the clipboard) and focus
+  behave as they do for a reader.
+
+**Why:** P15.6 asks for every web flow at phone and desktop widths in
+Safari and Chrome. Chrome needed no new dependency this way; Safari still
+needs the owner's "Allow remote automation" (E26), and Edge, which shares
+Chrome's engine, stays a check by hand at each release.
