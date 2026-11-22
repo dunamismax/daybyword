@@ -505,6 +505,7 @@ describe("the interface text", () => {
     expect(listed).toEqual([
       "https://daybyword.com/",
       "https://daybyword.com/plans",
+      "https://daybyword.com/support",
       ...releaseCatalog().plans.map((plan) => `https://daybyword.com/plans/${plan.id}`),
     ]);
   });
@@ -540,6 +541,47 @@ describe("the interface text", () => {
     // The script names no interface words of its own (docs/web.md).
     const script = await (await fetch(`${production.base}/assets/share.js`)).text();
     expect(script.replace(/^\s*\/\/.*$/gm, "")).not.toMatch(/"[A-Z][a-z]+ [a-z]+/);
+  });
+});
+
+describe("the home page (P16.1)", () => {
+  it("says what Day by Word is, names every plan in the catalog and no other, and leads to Today", async () => {
+    const html = await page(deployed, "/");
+    const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
+    expect(main).toContain('href="/today"');
+    expect(main).toContain(englishStrings["site.line"]);
+    // The independence statement is the page's own, not only the footer's.
+    expect(main).toContain(englishStrings["site.independence"]);
+    const linked = [...main.matchAll(/href="\/plans\/([a-z0-9-]+)"/g)].map((match) => match[1]);
+    expect(new Set(linked)).toEqual(new Set(releaseCatalog().plans.map((plan) => plan.id)));
+    expect(linked.length).toBe(releaseCatalog().plans.length);
+  });
+});
+
+describe("support (P16.2)", () => {
+  it("gives the support address, how to report a reading, what is kept, and is linked from every page", async () => {
+    const html = await page(deployed, "/support");
+    expect(html).toContain('href="mailto:support@daybyword.com"');
+    expect(html).toContain(
+      "mailto:support@daybyword.com?subject=A%20reading%20that%20looks%20wrong",
+    );
+    for (const key of [
+      "support.report-plan",
+      "support.report-reading",
+      "support.kept-none",
+    ] as const) {
+      expect(readerText(html), key).toContain(englishStrings[key]);
+    }
+    for (const path of [
+      "/",
+      "/today",
+      "/plans/gospels-at-your-pace",
+      "/settings",
+      "/no-such-page",
+    ]) {
+      const footer = (await page(production, path)).split("<footer")[1] ?? "";
+      expect(footer, path).toContain('href="/support"');
+    }
   });
 });
 

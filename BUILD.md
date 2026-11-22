@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a and P15.6a done) |
-| **Next item** | **Phase 16**: P16.1 (the home page), P16.2 (support), then the rest of Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac), **P15.1b** (installing on Android) and **P15.6b** (the tour in Safari), each waiting on the owner or a device |
+| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a and P15.6a done). Phase 16: 2 of 9 (P16.1, P16.2) |
+| **Next item** | **Phase 16**: P16.3 (drafting the privacy policy and terms for the owner), P16.4, P16.5, then the rest of Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac), **P15.1b** (installing on Android) and **P15.6b** (the tour in Safari), each waiting on the owner or a device |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
 | **Waiting on the owner** | **Build 131**: try Siri ("What's my reading today in Day by Word?"), the iPad sidebar, Share as PDF on a plan's week, and Add the next four weeks to a calendar. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P12.6b**: install build 131 on the Mac with TestFlight for Mac and say whether it runs (or allow an agent to register this Mac in Xcode). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an agent to download an Android emulator image. **P15.6b**: turn on Safari's "Allow remote automation" (Settings › Advanced › Show features for web developers, then Developer › Allow remote automation) |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2b906ec (deployed 2026-11-22 after `make check-full`): everything before, plus large print on a plan's week, the calendar download on Progress, the installable web app (manifest and icons), and the offline page with Plans kept offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
@@ -144,7 +144,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 3 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
 | 15 | The web app: install and offline | M3 Version 1.0 | 5 | 3 |
-| 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 0 |
+| 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 2 |
 | 17 | Quality hardening | M3 Version 1.0 | 9 | 0 |
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
 | 19–28 | After 1.0 | roadmap | — | — |
@@ -523,8 +523,10 @@ SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
 
 ## Phase 16: Public pages, legal, and App Store readiness
 
-- [ ] **P16.1** The home page: what Day by Word is ("Find your plan. Read your Bible. Keep your place."), the plans actually in the catalog (never promised ones), the independence statement, and the way into Today.
-- [ ] **P16.2** The support page (`/support`): support@daybyword.com, how to report a reading error (plan, assignment, and what is wrong), what is collected, and frequently asked questions.
+- [x] **P16.1** The home page: what Day by Word is ("Find your plan. Read your Bible. Keep your place."), the plans actually in the catalog (never promised ones), the independence statement, and the way into Today.
+  - *Result (agent, 2026-11-22):* `/` now says what Day by Word is (your own Bible, references never text), how it works (find, read, keep), lists every plan the served catalog holds with its kind and readings (from `planList`, so never a promised one), says no account, ads or tracking with the record kept in the browser, and gives the independence statement in the page itself; Go to Today and Choose a plan lead in. A production test checks it links every catalog plan and no other. Seen in the browser pane at desktop (dark) and 375 px (light), console clean.
+- [x] **P16.2** The support page (`/support`): support@daybyword.com, how to report a reading error (plan, assignment, and what is wrong), what is collected, and frequently asked questions.
+  - *Result (agent, 2026-11-22):* `/support`: the address (D28), how to report a reading that looks wrong (the plan, the reading's number or date, what is wrong; a `mailto:` with a subject), what is kept (the record in the browser or on the device, the server's metadata-only log with no address, no accounts or analytics, mail to the owner's inbox), and eight questions people ask. Linked from every page's footer and Settings › About on the web, and Settings › About in the app ("Help and support"). In the sitemap, routes.json (version 6), the tour, and docs/urls.md. Seen in the browser pane and in the iOS Simulator's Settings.
 - [ ] **P16.3 [OWNER]** The privacy policy and terms, drafted in `docs/legal/` from the real data flows: at 1.0, reading data stays on the device and in the browser, the server keeps none, and there are no analytics (D10, D39). The owner approves them before they are published. *(Rewritten by D39.)*
 - [ ] **P16.4** The cookie statement, inside the privacy page: every cookie and browser storage key, what it holds, and why it is strictly necessary. *(Rewritten by D39.)*
 - [ ] **P16.5** Sources, permissions, and criteria pages, generated from the catalog and `catalog/SOURCES.md`, with every required credit line.

@@ -360,6 +360,7 @@ let pages: [(name: String, path: String, heading: String, section: String?)] = [
     ("week", "/plans/gospels-at-your-pace/week?start=2027-01-04", "Week", "Plans"),
     ("progress", "/progress", "Progress", "Progress"),
     ("settings", "/settings", "Settings", "Settings"),
+    ("support", "/support", "Support", nil),
     ("not-found", "/no-such-page", "Page not found", nil),
 ]
 

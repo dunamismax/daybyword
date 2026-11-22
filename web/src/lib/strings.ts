@@ -19,6 +19,27 @@ const english = {
   "site.browser-needs-javascript":
     "Day by Word's web app needs JavaScript. Pages still work for reading without it.",
   "site.go-to-today": "Go to Today",
+  "site.support": "Support",
+
+  "home.about":
+    "Day by Word helps you choose a Bible reading plan, see what to read today, and keep a record of what you've read. You read in your own Bible: on paper, in an app, or as audio. Day by Word shows the references, never the text.",
+  "home.choose": "Choose a plan",
+  "home.how": "How it works",
+  "home.find": "Find your plan",
+  "home.find-about":
+    "Answer a few practical questions, or look through every plan. Each one says what it covers, how long a reading takes, and what it does not do.",
+  "home.read": "Read your Bible",
+  "home.read-about":
+    "Open today's reading in your own Bible. Copy the reference, or open it in YouVersion or Bible.com.",
+  "home.keep": "Keep your place",
+  "home.keep-about":
+    "Mark what you read, and undo a mark if you need to. After time away, you're welcomed back and choose how to go on.",
+  "home.plans": "The plans",
+  "home.plans-about": "Every plan in Day by Word today:",
+  "home.plans-all": "Every plan, with help choosing",
+  "home.private": "Yours, and private",
+  "home.private-about":
+    "No account, no ads, and no tracking. On the web, your plans and what you mark stay in this browser.",
 
   "section.today": "Today",
   "section.plans": "Plans",
@@ -364,6 +385,50 @@ const english = {
     "Delete your plans and reading record from this browser? This can't be undone.",
   "settings.deleted": "Your plans and reading record are deleted from this browser.",
   "settings.about": "About",
+  "settings.support": "Help and support",
+
+  "support.title": "Support",
+  "support.description":
+    "How to reach Day by Word, report a reading that looks wrong, and what is kept about you.",
+  "support.intro": "For a question, a problem, or a reading that looks wrong, write to:",
+  "support.address": "support@daybyword.com",
+  "support.report": "A reading that looks wrong",
+  "support.report-intro":
+    "If a reading's reference doesn't match its plan, a passage seems to be left out, or a reading's time looks far off, please say so. It helps to include:",
+  "support.report-plan": "the plan's name, as its page gives it;",
+  "support.report-reading": "which reading: its number (such as Reading 12) or its date;",
+  "support.report-what": "what looks wrong, and what you expected.",
+  "support.report-write": "Write about a reading",
+  "support.kept": "What is kept about you",
+  "support.kept-record":
+    "Your plans and what you mark are kept in your browser (in the app, on your device), not on Day by Word's server. To show Today and Progress, your browser sends your record to daybyword.com, which works out the page and keeps nothing.",
+  "support.kept-logs":
+    "The server notes each request's kind, the sort of page it was for (a plan's page, never which plan), its answer, and how long it took. It never notes the address you opened, what you sent, or where you are.",
+  "support.kept-none": "There are no accounts, analytics, advertising, or tracking.",
+  "support.kept-mail":
+    "Mail to support@daybyword.com is forwarded to the inbox of the person who runs Day by Word, and is used only to answer you and to put right what you report.",
+  "support.questions": "Questions people ask",
+  "support.q-text": "Does Day by Word show the Bible text?",
+  "support.a-text":
+    "No. It shows each reading's references, and you read them in your own Bible: on paper, in an app, or as audio.",
+  "support.q-translation": "Which translation should I use?",
+  "support.a-translation":
+    "Whichever you read. If you open readings in YouVersion or Bible.com, choose its translation in Settings.",
+  "support.q-account": "Do I need an account?",
+  "support.a-account":
+    "No. Day by Word has no accounts. On the web, your plans and what you mark stay in this browser; in the app, on your device.",
+  "support.q-away": "What if I don't read for a few days?",
+  "support.a-away":
+    "Nothing is lost. When you come back, you're welcomed back and choose how to go on, and nothing changes until you choose.",
+  "support.q-move": "Can I take my record to another browser or device?",
+  "support.a-move":
+    "Day by Word doesn't sync between browsers or devices. Settings can export your reading record as a file, so you keep a copy.",
+  "support.q-offline": "Does it work offline?",
+  "support.a-offline":
+    "Once you've opened it with a connection, Today, Plans, Progress and Settings open without one, and readings you mark offline are saved when you're back online.",
+  "support.q-free": "Is Day by Word free?",
+  "support.a-free": "Yes, and it has no ads.",
+  "support.q-church": "Who makes Day by Word?",
   "settings.version": "Version {version}",
   "settings.development-version": "Development build",
   "not-found.title": "Page not found",

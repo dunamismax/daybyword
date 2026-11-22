@@ -189,6 +189,9 @@ struct SettingsView: View {
 
                 Section("About") {
                     Text("Day by Word is independent and not affiliated with any church or denomination.")
+                    // The web's support page: the address, reporting a
+                    // reading that looks wrong, and what is kept (P16.2).
+                    Link("Help and support", destination: Self.support)
                     LabeledContent("Version", value: Self.version)
                 }
                 .listRowBackground(Palette.surface)
@@ -210,6 +213,9 @@ struct SettingsView: View {
 
     private static let sample = ReferenceText(
         display: String(localized: "Mark 4:1–20"), spoken: String(localized: "Mark, chapter 4, verses 1 to 20"))
+
+    /// daybyword.com's support page (P16.2).
+    static let support = URL(string: "https://\(AppRoute.webHost)/support")!
 
     /// The running build: "0.1.0 (25)".
     nonisolated static var version: String {
