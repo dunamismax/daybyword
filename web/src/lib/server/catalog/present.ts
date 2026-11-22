@@ -32,6 +32,7 @@ import {
   type StringKey,
 } from "#lib/strings.ts";
 import type { CatalogPlan, ServedCatalog } from "./read.ts";
+import { dataSources, sourceEntries, type Credit } from "./sources.ts";
 
 const weekdays = [
   "monday",
@@ -458,5 +459,69 @@ export function planPage(catalog: ServedCatalog, entry: CatalogPlan): PlanPage {
     review: text(`plan.review-${entry.review}` as StringKey),
     length: lengthText(entry),
     permissions: permissionsText(entry),
+  };
+}
+
+/** A plan on the sources page: where it comes from, its review and its permissions. */
+export interface SourcedPlan {
+  readonly id: string;
+  readonly href: string;
+  readonly title: string;
+  readonly source: string;
+  readonly review: string;
+  readonly permissions: string;
+}
+
+/** A data source on the sources page, with the credit its basis asks for. */
+export interface DataSource {
+  readonly id: string;
+  readonly title: string;
+  readonly about: string;
+  readonly credit?: { readonly text: string; readonly href: string; readonly licence: string };
+}
+
+/** The sources page (BUILD.md P16.5): the plans, the data behind them, and the book registry's citations. */
+export interface SourcesPage {
+  readonly plans: readonly SourcedPlan[];
+  readonly data: readonly DataSource[];
+  readonly books: ServedCatalog["bookSources"];
+}
+
+/**
+ * The sources page, from the served catalog and catalog/SOURCES.md: each
+ * plan's own source note, review and permissions; every cleared source
+ * that no plan names as its rights (the data behind the plans), with its
+ * credit; and what the book registry was checked against.
+ */
+export function sourcesPage(catalog: ServedCatalog): SourcesPage {
+  const planRights = new Set(catalog.plans.map((entry) => entry.rights as string));
+  const data = sourceEntries()
+    .filter((entry) => entry.status === "cleared" && !planRights.has(entry.id))
+    .map((entry): DataSource => {
+      const words = dataSources[entry.id];
+      if (!words) throw new Error(`the sources page has no words for ${entry.id}`);
+      const credit: Credit | undefined = words.credit;
+      return {
+        id: entry.id,
+        title: entry.title,
+        about: text(words.about),
+        ...(credit
+          ? {
+              credit: { text: text(credit.text), href: credit.href, licence: text(credit.licence) },
+            }
+          : {}),
+      };
+    });
+  return {
+    plans: listed(catalog).map((entry) => ({
+      id: entry.id,
+      href: `/plans/${entry.id}`,
+      title: entry.title,
+      source: entry.source,
+      review: text(`plan.review-${entry.review}` as StringKey),
+      permissions: permissionsText(entry),
+    })),
+    data,
+    books: catalog.bookSources,
   };
 }

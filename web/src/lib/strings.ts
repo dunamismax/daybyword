@@ -20,6 +20,9 @@ const english = {
     "Day by Word's web app needs JavaScript. Pages still work for reading without it.",
   "site.go-to-today": "Go to Today",
   "site.support": "Support",
+  "site.sources": "Sources and permissions",
+  "site.criteria": "How plans are chosen",
+  "site.about-label": "About Day by Word",
 
   "home.about":
     "Day by Word helps you choose a Bible reading plan, see what to read today, and keep a record of what you've read. You read in your own Bible: on paper, in an app, or as audio. Day by Word shows the references, never the text.",
@@ -386,6 +389,60 @@ const english = {
   "settings.deleted": "Your plans and reading record are deleted from this browser.",
   "settings.about": "About",
   "settings.support": "Help and support",
+  "plan.sources-link": "Sources and permissions",
+
+  "sources.title": "Sources and permissions",
+  "sources.description":
+    "Where each plan in Day by Word comes from, why Day by Word may offer it, and the sources of its chapter and verse counts and reading times.",
+  "sources.intro":
+    "Every plan in Day by Word has a recorded basis for use, and every source it relies on is listed here. Day by Word never shows Bible text: these sources give it counts and names, not words.",
+  "sources.plans": "The plans",
+  "sources.data": "References and reading times",
+  "sources.data-intro":
+    "Every reference in every plan is checked against these counts, and reading times are estimated from them.",
+  "sources.kjv":
+    "The number of chapters in each book and of verses in each chapter, the English numbering every reference is checked against. Only these counts are used, never the text.",
+  "sources.web":
+    "The number of words in each verse, from which reading times are estimated, and a second check of the chapter and verse counts. The World English Bible is in the public domain; only its counts are used.",
+  "sources.stepbible":
+    "A third, independent check of the chapter and verse counts, from its tables of how Bibles number their verses.",
+  "sources.credit": "Credit:",
+  "sources.stepbible-credit": "STEP Bible",
+  "sources.cc-by": "Used under the Creative Commons Attribution 4.0 International licence.",
+  "sources.books": "Book names and orders",
+  "sources.books-intro":
+    "Book names, abbreviations and orders were checked against these works, which are cited, not copied:",
+  "sources.more": "Every source is recorded, with its evidence, in Day by Word's catalog.",
+
+  "criteria.title": "How Day by Word chooses its plans",
+  "criteria.description":
+    "The standard every plan in Day by Word meets: checked references, exact coverage, a realistic workload, clear instructions, a recorded basis, stated limitations, and review.",
+  "criteria.intro":
+    "Day by Word offers a small number of reading plans and tries to tell you plainly what each one is. A plan is in the catalog only if it meets all of these.",
+  "criteria.checked": "Every reference is checked.",
+  "criteria.checked-about":
+    "Each reading is checked against the chapters and verses of the Bible before the plan is published. A plan with a reference that does not exist is not published.",
+  "criteria.coverage": "Coverage is stated exactly.",
+  "criteria.coverage-about":
+    "Each plan says whether it reads the whole Bible, whole books, or passages chosen from some books. These claims are computed from the plan's own readings, never written by hand: a plan that says it reads the whole Bible reads every verse, and its page shows any verses it repeats and anything it leaves out. Finishing a plan is not the same as reading the whole Bible, and Day by Word never treats it as if it were.",
+  "criteria.workload": "The workload is realistic.",
+  "criteria.workload-about":
+    "Each plan shows roughly how long its readings take, from the lightest to the heaviest, counted from the number of words and typical reading speeds. These are estimates: reading slowly, reading aloud, stopping to reflect, or listening all change them.",
+  "criteria.instructions": "The instructions are clear.",
+  "criteria.instructions-about":
+    "Each plan says how to follow it, which days it expects you to read, and what happens if you miss a day.",
+  "criteria.basis": "Day by Word can show why it may offer the plan.",
+  "criteria.basis-about":
+    "Each plan has a recorded basis for use, listed on the sources page. Day by Word's own plans are labeled as original. A plan from another source is offered only with that source's permission or when it is in the public domain, and it is credited as the source asks.",
+  "criteria.limitations": "Limitations are stated beside advantages.",
+  "criteria.limitations-about":
+    "Each plan's page says whom it suits and what it does not do, so you can choose with the whole picture.",
+  "criteria.reviewed": "Each plan has been reviewed.",
+  "criteria.reviewed-about":
+    "Before it is published, each plan is checked against these criteria and against its own rules, and its description is checked for plain, neutral wording. The review level is shown on the plan's page.",
+  "criteria.not":
+    "Day by Word does not rank plans by popularity, does not recommend plans with artificial intelligence, and does not interpret Scripture or tell you what to believe.",
+  "criteria.mistake": "If you find a mistake in a plan, please tell us through the support page.",
 
   "support.title": "Support",
   "support.description":

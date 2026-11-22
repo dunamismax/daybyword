@@ -59,6 +59,12 @@
   <div class="page pt-l pb-xl">
     <p class="mt-0 mb-xs">{text("site.independence")}</p>
     <p class="mt-0 mb-xs">{text("site.in-development")}</p>
-    <p class="mt-0 mb-xs"><a href="/support">{text("site.support")}</a></p>
+    <nav aria-label={text("site.about-label")}>
+      <ul class="m-0 flex list-none flex-wrap gap-x-m gap-y-xxs p-0">
+        <li><a href="/support">{text("site.support")}</a></li>
+        <li><a href="/sources">{text("site.sources")}</a></li>
+        <li><a href="/criteria">{text("site.criteria")}</a></li>
+      </ul>
+    </nav>
   </div>
 </footer>

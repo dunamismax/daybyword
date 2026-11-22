@@ -65,6 +65,14 @@ files when APIs are needed.
   (`/plans/<id>/week`) prints as the page alone. `?size=large` raises the
   checklist's type sizes (18-point references) on screen and paper
   (P13.1).
+- **Sources** (P16.5). `/sources` is generated from the served catalog
+  (each plan's source note, review and permissions) and from
+  `catalog/SOURCES.md`, read at build time (`src/lib/server/catalog/sources.ts`,
+  parsed as the catalog compiler parses it): every cleared source no plan
+  names as its rights is listed with the string table's words for it and
+  the credit its basis asks for. A cleared source without words stops the
+  page, so none is served uncredited. The criteria's words are the string
+  table's `criteria.*` keys (docs/criteria.md points there).
 - `scripts/with-catalog.sh COMMAND` runs a command with a throwaway
   PostgreSQL holding the roles, the migrations and the release catalog,
   as a deploy leaves them. `make serve-web`, the production tests and the

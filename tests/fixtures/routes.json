@@ -1,5 +1,5 @@
 {
-  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's; version 5 adds the offline page (P15.2) and the web app's manifest (P15.1); version 6 adds Support (P16.2). Edited by hand.",
+  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's; version 5 adds the offline page (P15.2) and the web app's manifest (P15.1); version 6 adds Support (P16.2); version 7 adds Sources and permissions and the criteria (P16.5). Edited by hand.",
   "cases": [
     {
       "input": {
@@ -80,6 +80,28 @@
         "heading": "Support",
         "status": 200,
         "title": "Support · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/sources"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "Sources and permissions",
+        "status": 200,
+        "title": "Sources and permissions · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/criteria"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "How Day by Word chooses its plans",
+        "status": 200,
+        "title": "How Day by Word chooses its plans · Day by Word"
       }
     },
     {

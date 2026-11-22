@@ -84,6 +84,7 @@
     <p class="mt-xs mb-0 text-caption text-text-muted">
       <strong class="text-text">{text("plan.permissions-label")}</strong>
       {plan.permissions}
+      <a href="/sources#{plan.id}">{text("plan.sources-link")}</a>
     </p>
   </section>
 </div>

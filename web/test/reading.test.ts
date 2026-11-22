@@ -56,6 +56,7 @@ const catalog: ServedCatalog = {
   importId: 1,
   registry,
   versification: english,
+  bookSources: [],
   goals: [],
   plans: [
     plan(

@@ -25,6 +25,8 @@ endpoints and later consented sync, never a direct database connection.
 | `/settings` | yes | yes | Settings (a sheet in the app) |
 | `/offline` | yes | no | What the service worker shows for a page not kept, with no connection (P15.2) |
 | `/support` | yes | Settings › About links to the web page | Support: the address, reporting a reading that looks wrong, what is kept about a reader, and questions people ask (P16.2); linked from every page's footer |
+| `/sources` | yes | Settings › About links to the web page | Sources and permissions: each plan's source, review and permissions from the catalog (an anchor per plan id, which its page links to), the data sources from catalog/SOURCES.md with their credits, and the book registry's citations (P16.5) |
+| `/criteria` | yes | Settings › About links to the web page | How Day by Word chooses its plans: the published criteria (P16.5) |
 | `/manifest.webmanifest` | yes | no | The installable web app's manifest (P15.1) |
 
 On the web, Plans and each plan's page show the catalog (BUILD.md
@@ -38,7 +40,7 @@ start page starts one there.
 Addresses for the server's own use, never linked from a page a reader sees:
 `/up` (the health check), `/healthz` (the deploy's check: status, the
 release's commit and the database, as JSON), `/assets/…` (the site's own files),
-`/sitemap.xml` (the home page, Plans, Support and every plan's page by their
+`/sitemap.xml` (the home page, Plans, Support, Sources, the criteria and every plan's page by their
 daybyword.com address, for search engines once robots.txt lets them in,
 P9.9, P18.5), and `/dev/components` (the component gallery, in development only).
 
@@ -54,7 +56,7 @@ cards), `POST /api/v1/events` (the events an action makes),
 date's load, before starting).
 
 Reserved for later phases, so nothing else takes them: the rest of
-`/api/v1/…` (sync, P14; a JSON 404 until an endpoint claims an address), `/about`, `/privacy`, `/sources`, and `/criteria` (public
+`/api/v1/…` (sync, P14; a JSON 404 until an endpoint claims an address), `/about`, `/privacy`, and `/terms` (public
 pages, P16), and `/.well-known/…` (universal links and passkeys, P12.8 and
 P14).
 

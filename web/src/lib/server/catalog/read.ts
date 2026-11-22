@@ -73,6 +73,16 @@ export interface ServedCatalog {
   readonly goals: readonly CatalogGoal[];
   readonly registry: BookRegistry;
   readonly versification: Versification;
+  /** What the book registry's names and orders were checked against (books.json's sources). */
+  readonly bookSources: readonly BookSource[];
+}
+
+/** A work the book registry cites (catalog/scripture/books.json). */
+export interface BookSource {
+  readonly title: string;
+  readonly publisher: string;
+  readonly url: string;
+  readonly usedFor: string;
 }
 
 let pool: pg.Pool | undefined;
@@ -149,6 +159,13 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
     return found.content;
   };
   const registry = new BookRegistry(resource("books.json"));
+  const cited = (JSON.parse(resource("books.json")) as { sources?: BookSource[] }).sources ?? [];
+  const bookSources = cited.map(({ title, publisher, url, usedFor }) => ({
+    title,
+    publisher,
+    url,
+    usedFor,
+  }));
   const versification = new Versification("english", resource("versification/english.tsv"));
 
   const goals: CatalogGoal[] = goalOrder.flatMap((goal) => {
@@ -162,6 +179,7 @@ async function read(client: pg.Pool, importId: number): Promise<ServedCatalog> {
     importId,
     registry,
     versification,
+    bookSources,
     goals,
     plans: plans.rows.map((row) => {
       if (!isPlanID(row.id)) throw new Error(`the catalog has a plan with the id ${row.id}`);

@@ -143,6 +143,7 @@ interface ReleasePlan {
   limitations: string;
   instructions: string;
   source: string;
+  rights: string;
   assignments: { reading: string }[];
 }
 
@@ -183,7 +184,27 @@ function catalogText(): Set<string> {
       found.add(formatter.reading(parseReading(assignment.reading, english)));
     }
   }
+  // What the book registry was checked against, and the sources' own titles
+  // (the sources page, P16.5).
+  const books = JSON.parse(resource("books.json")) as {
+    sources: { title: string; publisher: string }[];
+  };
+  for (const source of books.sources) found.add(source.title).add(source.publisher);
+  for (const entry of sourceEntries()) found.add(entry.title);
   return found;
+}
+
+/** catalog/SOURCES.md's entries, as the catalog compiler reads them. */
+function sourceEntries(): { id: string; title: string; status: string; attribution: string }[] {
+  const file = readFileSync(new URL("../../../catalog/SOURCES.md", import.meta.url), "utf8");
+  return file.split(/^## /m).flatMap((block) => {
+    const heading = /^([a-z0-9-]+): (.+)$/.exec(block.split("\n")[0] ?? "");
+    const status = /^- \*\*Status:\*\*[^`\n]*`([a-z]+)`/m.exec(block)?.[1];
+    const attribution = /^- \*\*Attribution:\*\*(.*(?:\n(?!- \*\*).*)*)/m.exec(block)?.[1] ?? "";
+    return heading?.[1] && heading[2] && status
+      ? [{ id: heading[1], title: heading[2].trim(), status, attribution }]
+      : [];
+  });
 }
 
 let development: Running;
@@ -437,6 +458,9 @@ describe("the interface text", () => {
     "/plans/gospels-at-your-pace/start",
     "/progress",
     "/settings",
+    "/support",
+    "/sources",
+    "/criteria",
     "/no-such-page",
   ]) {
     it(`on ${path} comes only from the string table and the catalog`, async () => {
@@ -506,6 +530,8 @@ describe("the interface text", () => {
       "https://daybyword.com/",
       "https://daybyword.com/plans",
       "https://daybyword.com/support",
+      "https://daybyword.com/sources",
+      "https://daybyword.com/criteria",
       ...releaseCatalog().plans.map((plan) => `https://daybyword.com/plans/${plan.id}`),
     ]);
   });
@@ -581,6 +607,46 @@ describe("support (P16.2)", () => {
     ]) {
       const footer = (await page(production, path)).split("<footer")[1] ?? "";
       expect(footer, path).toContain('href="/support"');
+    }
+  });
+});
+
+describe("sources, permissions and criteria (P16.5)", () => {
+  it("lists each plan's basis and every cleared source in SOURCES.md, with the credit it asks for", async () => {
+    const html = await page(deployed, "/sources");
+    const text = readerText(html);
+    for (const plan of releaseCatalog().plans) {
+      expect(html, plan.id).toContain(`id="${plan.id}"`);
+      expect(html, plan.id).toContain(`href="/plans/${plan.id}"`);
+      expect(text, plan.id).toContain(plan.source);
+      // A plan's page links to its entry.
+      expect(await page(deployed, `/plans/${plan.id}`), plan.id).toContain(
+        `href="/sources#${plan.id}"`,
+      );
+    }
+    const planRights = new Set(releaseCatalog().plans.map((plan) => plan.rights));
+    const shown = sourceEntries().filter(
+      (entry) => entry.status === "cleared" && !planRights.has(entry.id),
+    );
+    expect(shown.length).toBeGreaterThan(0);
+    for (const entry of shown) expect(text, entry.id).toContain(entry.title);
+    for (const entry of sourceEntries().filter((found) => found.status !== "cleared")) {
+      expect(text, entry.id).not.toContain(entry.title);
+    }
+    // Every credit an entry asks for (CC BY's for STEP Bible) is on the page.
+    expect(shown.find((entry) => entry.id === "stepbible-tvtms")?.attribution).toMatch(/credit/);
+    expect(html).toMatch(/<a href="https:\/\/www\.STEPBible\.org"[^>]*>STEP Bible<\/a>/);
+    expect(text).toContain(englishStrings["sources.cc-by"]);
+  });
+
+  it("publishes the criteria, linked from every page's footer with Support and Sources", async () => {
+    const html = await page(deployed, "/criteria");
+    for (const key of ["criteria.checked", "criteria.coverage", "criteria.reviewed"] as const) {
+      expect(readerText(html), key).toContain(englishStrings[key]);
+    }
+    const footer = (await page(production, "/today")).split("<footer")[1] ?? "";
+    for (const path of ["/support", "/sources", "/criteria"]) {
+      expect(footer, path).toContain(`href="${path}"`);
     }
   });
 });
