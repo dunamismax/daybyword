@@ -6,6 +6,9 @@
 // nothing here restates a reading rule. Server-only.
 import {
   assignmentPositions,
+  bibleLink,
+  bibleTranslation,
+  chaptersPassage,
   CivilDateError,
   civilDateText,
   daysInMonth,
@@ -24,9 +27,10 @@ import {
   type JournalEvent,
   type MarkKind,
   type NamingConvention,
+  type Reading,
   type TodayStatus,
 } from "#lib/domain/index.ts";
-import { referenceOf, type Reference } from "#lib/reference.ts";
+import { placeInPrint, referenceOf, type Reference } from "#lib/reference.ts";
 import { listText, text } from "#lib/strings.ts";
 import { dayText } from "./catalog/present.ts";
 import type { ServedCatalog } from "./catalog/read.ts";
@@ -83,6 +87,14 @@ export function journalRequest(body: unknown, catalog: ServedCatalog): JournalRe
   }
 }
 
+/** How the reader reads, from their settings (tests/fixtures/settings.json). */
+export interface ReadingOptions {
+  readonly convention?: NamingConvention;
+  readonly way?: "physicalBible" | "youVersion" | "otherApp";
+  /** Bible.com's number for the reader's translation; absent until chosen. */
+  readonly translation?: number;
+}
+
 /** One reading on a Today card. */
 export interface TodayReading {
   /** "Gospels at your pace — Reading 12", or "— Day 21" by the date. */
@@ -90,6 +102,43 @@ export interface TodayReading {
   readonly reference: Reference;
   readonly assignment: number;
   readonly appointed?: string;
+  /** For a physical Bible, where each passage is in print. */
+  readonly print?: readonly string[];
+  /** For YouVersion: the Bible.com address, and where it opens when not the whole reading. */
+  readonly open?: { readonly href: string; readonly note?: string };
+  /** For YouVersion with no translation chosen yet. */
+  readonly chooseTranslation?: true;
+}
+
+/** How a reading is opened or found, by the way the reader reads (P8.5, P8.6). */
+function wayIn(
+  reading: Reading,
+  names: ReferenceFormatter,
+  options: ReadingOptions,
+): Pick<TodayReading, "print" | "open" | "chooseTranslation"> {
+  switch (options.way ?? "physicalBible") {
+    case "physicalBible":
+      return { print: reading.passages.map((passage) => placeInPrint(passage, names)) };
+    case "youVersion": {
+      const translation =
+        options.translation === undefined ? undefined : bibleTranslation(options.translation);
+      if (!translation) return { chooseTranslation: true };
+      const link = bibleLink(reading, translation, names.versification);
+      if (link.isWholeReading) return { open: { href: link.address } };
+      const chapter = names.reading({
+        passages: [
+          chaptersPassage(
+            link.book,
+            { first: link.chapter, last: link.chapter },
+            names.versification,
+          ),
+        ],
+      });
+      return { open: { href: link.address, note: text("today.opens-at", { chapter }) } };
+    }
+    default:
+      return {};
+  }
 }
 
 /** One plan's day on Today (docs/product.md, Today). */
@@ -145,9 +194,9 @@ export function todayCards(
   catalog: ServedCatalog,
   journal: Journal,
   date: CivilDate,
-  convention: NamingConvention = "common",
+  options: ReadingOptions = {},
 ): TodayCard[] {
-  const names = formatter(catalog, convention);
+  const names = formatter(catalog, options.convention ?? "common");
   return journal.enrollments
     .filter((enrollment) => enrollment.ended === undefined)
     .map((enrollment) => {
@@ -174,6 +223,7 @@ export function todayCards(
                   reference: referenceOf(reading, names),
                   assignment: slot.assignment,
                   ...(slot.appointed ? { appointed: civilDateText(slot.appointed) } : {}),
+                  ...wayIn(reading, names, options),
                 },
               ];
             })

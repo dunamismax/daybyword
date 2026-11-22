@@ -88,10 +88,25 @@ function show(element, message) {
 const todayView = document.getElementById("today");
 const todayProblem = document.querySelector("[data-today-problem]");
 
+/** A setting from this browser's storage (settings.js keeps them), or nothing. */
+function setting(key) {
+  try {
+    return localStorage.getItem(key) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function showToday() {
   const journal = await events();
   if (journal.length === 0) return;
-  const answer = await post("/api/v1/today", { events: journal, today: today() });
+  const answer = await post("/api/v1/today", {
+    events: journal,
+    today: today(),
+    names: setting("dbw.book-names"),
+    way: setting("dbw.way-to-read"),
+    translation: setting("dbw.translation"),
+  });
   if (answer.html) todayView.innerHTML = answer.html;
 }
 

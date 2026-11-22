@@ -17,6 +17,9 @@
       {#each card.readings as reading (reading.assignment)}
         <p class="mb-0 text-label text-text-muted">{reading.label}</p>
         <ReferenceBlock reference={reading.reference} />
+        {#each reading.print ?? [] as line (line)}
+          <p class="my-0 text-text-muted" aria-hidden="true">{line}</p>
+        {/each}
         <div class="actions mt-s flex flex-wrap gap-xs">
           <button
             type="button"
@@ -28,6 +31,11 @@
           >
             {text("today.mark-read")}
           </button>
+          {#if reading.open}
+            <a class="button button-secondary" href={reading.open.href} rel="noopener noreferrer">
+              {text("today.open-youversion")}
+            </a>
+          {/if}
           <CopyButton reference={reading.reference} />
           <button
             type="button"
@@ -51,6 +59,14 @@
             {text("today.skip")}
           </button>
         </div>
+        {#if reading.open?.note}
+          <p class="mb-0 text-caption text-text-muted">{reading.open.note}</p>
+        {/if}
+        {#if reading.chooseTranslation}
+          <p class="mb-0 text-caption">
+            <a href="/settings">{text("today.choose-translation")}</a>
+          </p>
+        {/if}
       {/each}
     {:else}
       <p class="mb-0 text-label text-text-muted">{card.plan}</p>

@@ -359,6 +359,15 @@ describe("Settings", () => {
   it("offers each setting's values, with its default checked", async () => {
     const html = await page(production, "/settings");
     for (const setting of settings) {
+      if (setting.name === "translation") {
+        // A choice among many: a select, its default (none chosen) first.
+        const select = new RegExp(`<select[^>]*name="translation"[^>]*>([\\s\\S]*?)</select>`).exec(
+          html,
+        )?.[1];
+        const options = [...(select ?? "").matchAll(/<option value="([^"]*)"/g)].map((m) => m[1]);
+        expect(options).toEqual(setting.values);
+        continue;
+      }
       for (const value of setting.values) {
         const input = new RegExp(`<input[^>]*name="${setting.name}" value="${value}"[^>]*>`).exec(
           html,

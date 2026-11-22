@@ -197,4 +197,22 @@ describe("Today, marking and undoing", () => {
     );
     expect(() => journalRequest([], catalog)).toThrow(ReadingRequestError);
   });
+
+  it("shows the place in print, a YouVersion link, or where to choose a translation", () => {
+    const started = act([], "2027-03-01", enroll);
+    const request = journalRequest({ events: started, today: "2027-03-01" }, catalog);
+    const reading = (options: Parameters<typeof todayCards>[3]) =>
+      todayCards(catalog, request.journal, request.today, options)[0]?.readings[0];
+    // A physical Bible is the default, as in the app.
+    expect(reading({})?.print).toEqual(["Mark · chapters 1–2"]);
+    expect(reading({ way: "youVersion", translation: 111 })?.open).toEqual({
+      href: "https://www.bible.com/bible/111/MRK.1.NIV",
+      note: "Opens at Mark 1, where this reading begins.",
+    });
+    expect(reading({ way: "youVersion" })?.chooseTranslation).toBe(true);
+    expect(reading({ way: "youVersion", translation: 9999 })?.chooseTranslation).toBe(true);
+    const other = reading({ way: "otherApp", convention: "kjv" });
+    expect(other?.print).toBeUndefined();
+    expect(other?.open).toBeUndefined();
+  });
 });

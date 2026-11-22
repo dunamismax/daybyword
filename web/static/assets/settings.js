@@ -11,9 +11,16 @@ const settings = [
     attribute: "data-reference-size",
     fallback: "standard",
   },
+  // Read by reading.js for Today; nothing to apply to the page.
+  { name: "way-to-read", key: "dbw.way-to-read", fallback: "physicalBible" },
+  { name: "translation", key: "dbw.translation", fallback: "0" },
+  { name: "book-names", key: "dbw.book-names", fallback: "common" },
 ];
 
 function apply(setting, value) {
+  if (!setting.attribute) {
+    return;
+  }
   if (value === setting.fallback) {
     document.documentElement.removeAttribute(setting.attribute);
   } else {
@@ -32,6 +39,10 @@ if (form) {
     const input = form.querySelector(`input[name="${setting.name}"][value="${saved}"]`);
     if (input) {
       input.checked = true;
+    }
+    const select = form.querySelector(`select[name="${setting.name}"]`);
+    if (select && saved !== null) {
+      select.value = saved;
     }
   }
 

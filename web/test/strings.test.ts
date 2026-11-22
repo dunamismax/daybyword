@@ -112,7 +112,7 @@ describe("the settings", () => {
     const theme = read("web/static/assets/theme.js");
     const keeper = read("web/static/assets/settings.js");
     for (const setting of settings) {
-      expect(theme).toContain(`"${setting.key}"`);
+      if (setting.applied) expect(theme).toContain(`"${setting.key}"`);
       expect(keeper).toContain(`"${setting.key}"`);
       expect(keeper).toContain(`"${setting.name}"`);
     }

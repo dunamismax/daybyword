@@ -1,7 +1,7 @@
 {
   "fixture": "settings",
-  "version": 1,
-  "about": "The settings each client keeps only on the reader's device: the values, the default (which is stored as no value), the web form field and localStorage key, and the app's UserDefaults key. The app also keeps its navigation in SceneStorage under \"navigation\".",
+  "version": 2,
+  "about": "The settings each client keeps only on the reader's device: the values, the default (which is stored as no value), the web form field and localStorage key, and the app's UserDefaults key. The app also keeps its navigation in SceneStorage under \"navigation\". Version 2 adds how the reader reads, the Bible.com translation for links (0 until one is chosen; docs/destinations.md) and the book-name convention (D29).",
   "settings": [
     {
       "name": "appearance",
@@ -33,6 +33,74 @@
       },
       "app": {
         "storageKey": "referenceSize"
+      }
+    },
+    {
+      "name": "way-to-read",
+      "values": [
+        "physicalBible",
+        "youVersion",
+        "otherApp"
+      ],
+      "defaultValue": "physicalBible",
+      "web": {
+        "field": "way-to-read",
+        "storageKey": "dbw.way-to-read"
+      },
+      "app": {
+        "storageKey": "wayToRead"
+      }
+    },
+    {
+      "name": "translation",
+      "values": [
+        "0",
+        "12",
+        "1588",
+        "3034",
+        "1713",
+        "37",
+        "392",
+        "55",
+        "59",
+        "68",
+        "1",
+        "3345",
+        "463",
+        "100",
+        "2692",
+        "107",
+        "111",
+        "114",
+        "116",
+        "3523",
+        "2020",
+        "97",
+        "206"
+      ],
+      "defaultValue": "0",
+      "web": {
+        "field": "translation",
+        "storageKey": "dbw.translation"
+      },
+      "app": {
+        "storageKey": "translation"
+      }
+    },
+    {
+      "name": "book-names",
+      "values": [
+        "common",
+        "kjv",
+        "douay"
+      ],
+      "defaultValue": "common",
+      "web": {
+        "field": "book-names",
+        "storageKey": "dbw.book-names"
+      },
+      "app": {
+        "storageKey": "bookNames"
       }
     }
   ]

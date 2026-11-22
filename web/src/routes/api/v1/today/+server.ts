@@ -1,5 +1,5 @@
 // Today, worked out from the journal the browser sends (BUILD.md P8.10c,
-// docs/decisions.md E52): POST { events, today, names } as JSON, answered
+// docs/decisions.md E52): POST { events, today, names, way, translation } as JSON, answered
 // with Today's cards as HTML for /assets/reading.js to insert. Nothing is
 // kept, and the log line has the route and status only (E38).
 import { render } from "svelte/server";
@@ -16,11 +16,18 @@ export const POST = async ({ request }: { request: Request }) => {
   if (body instanceof Response) return body;
   try {
     const { journal, today } = journalRequest(body, catalog);
-    const names = (body as Record<string, unknown>)["names"];
-    const convention = namingConventions.includes(names as NamingConvention)
-      ? (names as NamingConvention)
-      : "common";
-    const cards = todayCards(catalog, journal, today, convention);
+    // How the reader reads, from this browser's settings (settings.json).
+    const fields = body as Record<string, unknown>;
+    const names = fields["names"];
+    const way = fields["way"];
+    const translation = Number(fields["translation"]);
+    const cards = todayCards(catalog, journal, today, {
+      convention: namingConventions.includes(names as NamingConvention)
+        ? (names as NamingConvention)
+        : "common",
+      way: way === "youVersion" || way === "otherApp" ? way : "physicalBible",
+      ...(Number.isInteger(translation) && translation > 0 ? { translation } : {}),
+    });
     const html = cards.length > 0 ? render(TodayCards, { props: { cards } }).body : "";
     return new Response(JSON.stringify({ html, plans: cards.length }), {
       headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },

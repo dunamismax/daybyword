@@ -1388,6 +1388,12 @@ card's own button for the last mark made today, as in the app, rather
 than client state. The production body limit rises from 64K to 1M: the
 journal is sent whole, and a year of one daily plan is about 90 KB.
 
+The script sends the reader's book names, way of reading and translation
+(tests/fixtures/settings.json) with the journal, and the endpoint takes
+any it is not sent at its default, so a page still running a cached older
+script (site files are cached for an hour, E38) gets Today without the
+newer parts rather than an error.
+
 **Why:** every rule stays in the domain module on the server, as D39
 describes for 1.0; the strict CSP is untouched; no package or build step
 is added. **Cost:** each tap is a round trip, and offline marking

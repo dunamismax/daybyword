@@ -96,3 +96,37 @@ export function referenceOf(reading: Reading, formatter: ReferenceFormatter): Re
       .reduce((first, next) => text("reference.then", { first, next })),
   };
 }
+
+/**
+ * Where a passage is in a printed Bible, for a reader who reads one
+ * (docs/product.md, "Physical Bible mode"): the book, then the chapter and
+ * verses called out, as the app's PlaceInPrint says it ("Mark · chapter 4 ·
+ * verses 1–20").
+ */
+export function placeInPrint(passage: Passage, formatter: ReferenceFormatter): string {
+  const { start, end } = passage;
+  const known = formatter.registry.book(passage.book);
+  const book = known ? bookName(known, formatter.convention).name : passage.book;
+  const chapters = formatter.versification.chapters(passage.book);
+  const oneChapterBook = chapters !== undefined && spanCount(chapters) === 1;
+  const values = { book, chapter: String(start.chapter), verse: String(start.verse) };
+  if (isWholeChapters(passage, formatter.versification)) {
+    if (oneChapterBook) return book;
+    return start.chapter === end.chapter
+      ? text("print.chapter", values)
+      : text("print.chapters", { ...values, last: String(end.chapter) });
+  }
+  if (start.chapter !== end.chapter) {
+    return text("print.across", {
+      ...values,
+      last: String(end.chapter),
+      final: String(end.verse),
+    });
+  }
+  const one = start.verse === end.verse;
+  const last = String(end.verse);
+  if (oneChapterBook) {
+    return one ? text("print.book-verse", values) : text("print.book-verses", { ...values, last });
+  }
+  return one ? text("print.verse", values) : text("print.verses", { ...values, last });
+}

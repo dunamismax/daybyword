@@ -5,10 +5,14 @@
   // JavaScript the defaults show and nothing is saved.
   import ReferenceBlock from "#lib/components/ReferenceBlock.svelte";
   import { pageTitle } from "#lib/sections.ts";
+  import { bibleTranslations } from "#lib/domain/index.ts";
   import { settings, type Setting } from "#lib/settings.ts";
   import { text, type StringKey } from "#lib/strings.ts";
 
   let { data }: { data: { version: string } } = $props();
+
+  /** A value as a string key's last part: the app's "physicalBible" is "physical-bible". */
+  const kebab = (value: string) => value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
   const groups: { setting: Setting; legend: StringKey; note: StringKey }[] = [
     {
@@ -20,6 +24,16 @@
       setting: settings[1] as Setting,
       legend: "settings.reference-size",
       note: "settings.reference-size-note",
+    },
+    {
+      setting: settings[2] as Setting,
+      legend: "settings.way-to-read",
+      note: "settings.way-to-read-note",
+    },
+    {
+      setting: settings[4] as Setting,
+      legend: "settings.book-names",
+      note: "settings.book-names-note",
     },
   ];
 </script>
@@ -48,7 +62,7 @@
               {value}
               checked={index === 0}
             />
-            {text(`${group.legend}-${value}` as StringKey)}
+            {text(`${group.legend}-${kebab(value)}` as StringKey)}
           </label>
         {/each}
       </div>
@@ -63,6 +77,21 @@
       <p class="text-caption text-text-muted">{text(group.note)}</p>
     </fieldset>
   {/each}
+  <label class="card flex min-w-0 flex-col gap-xs">
+    <span class="font-semibold">{text("settings.translation")}</span>
+    <select class="min-h-11 max-w-full" name="translation">
+      <option value="0">{text("settings.translation-none")}</option>
+      {#each bibleTranslations as translation (translation.id)}
+        <option value={String(translation.id)}>
+          {text("settings.translation-option", {
+            name: translation.name,
+            abbreviation: translation.abbreviation,
+          })}
+        </option>
+      {/each}
+    </select>
+    <span class="text-caption text-text-muted">{text("settings.translation-note")}</span>
+  </label>
   <p class="text-caption text-text-muted">{text("settings.kept-in-this-browser")}</p>
 </form>
 <section
