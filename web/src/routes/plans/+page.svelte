@@ -47,7 +47,9 @@
   </div>
 {:else}
   <section aria-labelledby="choose-title" class="mb-l">
-    <h2 id="choose-title" class="mt-0 mb-s text-reference-list">{text("choose.title")}</h2>
+    <h2 id="choose-title" class="mt-0 mb-s text-reference-list font-reference-list">
+      {text("choose.title")}
+    </h2>
     <p>{text("choose.intro")}</p>
     <form method="POST" action="#suggestions" class="flex flex-col gap-m">
       <fieldset class="card m-0 min-w-0">
@@ -115,7 +117,9 @@
 
   {#if form}
     <section aria-labelledby="suggestions-title" class="mb-l" id="suggestions">
-      <h2 id="suggestions-title" class="mt-0 mb-s text-reference-list">{text("choose.results")}</h2>
+      <h2 id="suggestions-title" class="mt-0 mb-s text-reference-list font-reference-list">
+        {text("choose.results")}
+      </h2>
       <ul class="m-0 flex list-none flex-col gap-m p-0">
         {#each form.suggestions as plan (plan.id)}
           <li>
@@ -138,7 +142,7 @@
     </section>
   {/if}
 
-  <h2 class="mt-0 mb-s text-reference-list">{text("plans.every-plan")}</h2>
+  <h2 class="mt-0 mb-s text-reference-list font-reference-list">{text("plans.every-plan")}</h2>
   {#if data.groups.length === 0}
     <ul class="m-0 flex list-none flex-col gap-m p-0">
       {#each data.plans as plan (plan.id)}
