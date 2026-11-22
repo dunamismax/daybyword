@@ -34,8 +34,15 @@ start page starts one there.
 
 Addresses for the server's own use, never linked from a page a reader sees:
 `/up` (the health check), `/healthz` (the deploy's check: status, the
-release's commit and the database, as JSON), `/assets/…` (the site's own files), and
-`/dev/components` (the component gallery, in development only).
+release's commit and the database, as JSON), `/assets/…` (the site's own files),
+`/sitemap.xml` (the home page, Plans and every plan's page by their
+daybyword.com address, for search engines once robots.txt lets them in,
+P9.9, P18.5), and `/dev/components` (the component gallery, in development only).
+
+The home page, Plans and each plan's page carry a description and a link
+preview (Open Graph) naming their daybyword.com address and an image from
+the owner's files: a plan's own (`/assets/images/plans/<id>.jpg`) where one
+was delivered, the site's (`/assets/images/share.png`) otherwise (P9.9).
 
 The browser's compute endpoints, which take the journal this browser
 keeps as JSON and store nothing (E52): `POST /api/v1/today` (Today's

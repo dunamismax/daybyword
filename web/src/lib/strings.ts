@@ -100,6 +100,8 @@ const english = {
   "plans.empty-title": "Plans will appear here.",
   "plans.empty-message": "You'll be able to choose a reading plan here.",
   "plans.every-plan": "Every plan",
+  "plans.description":
+    "Day by Word's reading plans, with a few practical questions to help you choose one.",
   "goal.begin": "A place to begin",
   "goal.whole-bible": "The whole Bible",
   "goal.new-testament": "The New Testament",

@@ -8,12 +8,29 @@
   import BrowserNotice from "#lib/components/BrowserNotice.svelte";
   import SiteHeader from "#lib/components/SiteHeader.svelte";
   import type { Section } from "#lib/sections.ts";
+  import { siteOrigin, type Share } from "#lib/site.ts";
   import { text } from "#lib/strings.ts";
   import "../app.css";
 
   let { children }: { children: Snippet } = $props();
   let section = $derived(page.data["section"] as Section | undefined);
+  // A public page's description and link preview (BUILD.md P9.9).
+  let share = $derived(page.data["share"] as Share | undefined);
 </script>
+
+<svelte:head>
+  {#if share}
+    <meta name="description" content={share.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={text("site.name")} />
+    <meta property="og:title" content={share.title} />
+    <meta property="og:description" content={share.description} />
+    <meta property="og:url" content="{siteOrigin}{share.path}" />
+    <meta property="og:image" content="{siteOrigin}{share.image.path}" />
+    <meta property="og:image:width" content={String(share.image.width)} />
+    <meta property="og:image:height" content={String(share.image.height)} />
+  {/if}
+</svelte:head>
 
 <a
   class="absolute -top-40 left-m z-10 rounded-control bg-accent px-m py-xs font-semibold text-on-accent focus:top-xs"

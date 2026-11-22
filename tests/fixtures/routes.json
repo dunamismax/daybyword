@@ -1,5 +1,5 @@
 {
-  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c). Edited by hand.",
+  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's. Edited by hand.",
   "cases": [
     {
       "input": {
@@ -199,6 +199,16 @@
         "heading": "Week",
         "status": 200,
         "title": "Week · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/sitemap.xml"
+      },
+      "output": {
+        "cacheControl": "no-cache",
+        "contentType": "application/xml; charset=utf-8",
+        "status": 200
       }
     },
     {

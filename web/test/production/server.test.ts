@@ -462,6 +462,35 @@ describe("the interface text", () => {
     expect((await post("null")).status).toBe(403);
   });
 
+  it("describes each public page for search engines and link previews, with a sitemap", async () => {
+    const meta = (html: string, key: string) =>
+      new RegExp(`<meta (?:name|property)="${key}" content="([^"]*)"`).exec(html)?.[1];
+    for (const plan of releaseCatalog().plans) {
+      const html = await page(deployed, `/plans/${plan.id}`);
+      expect(meta(html, "description")?.replaceAll("&#39;", "'"), plan.id).toBe(plan.summary);
+      expect(meta(html, "og:url")).toBe(`https://daybyword.com/plans/${plan.id}`);
+      const image = meta(html, "og:image") ?? "";
+      expect(image, plan.id).toMatch(/^https:\/\/daybyword\.com\/assets\/images\//);
+      // The image is one this server has.
+      const served = await fetch(`${deployed.base}${image.replace("https://daybyword.com", "")}`);
+      expect(served.status, image).toBe(200);
+    }
+    expect(meta(await page(deployed, "/plans"), "og:image")).toBe(
+      "https://daybyword.com/assets/images/share.png",
+    );
+    expect(meta(await page(deployed, "/"), "og:title")).toBe("Day by Word");
+    // Pages that belong to a reader have no preview.
+    expect(meta(await page(deployed, "/today"), "og:title")).toBeUndefined();
+
+    const sitemap = await page(deployed, "/sitemap.xml");
+    const listed = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+    expect(listed).toEqual([
+      "https://daybyword.com/",
+      "https://daybyword.com/plans",
+      ...releaseCatalog().plans.map((plan) => `https://daybyword.com/plans/${plan.id}`),
+    ]);
+  });
+
   it("shows every plan in the catalog, each with its page", async () => {
     const list = await page(deployed, "/plans");
     expect(releaseCatalog().plans.length).toBeGreaterThan(0);

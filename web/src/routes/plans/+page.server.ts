@@ -6,16 +6,25 @@
 import { isGoal, isTime, type Answers } from "#lib/domain/index.ts";
 import { planGroups, planList, planSuggestions } from "#lib/server/catalog/present.ts";
 import { servedCatalog } from "#lib/server/catalog/read.ts";
+import { siteImage, type Share } from "#lib/server/share.ts";
+import { text } from "#lib/strings.ts";
 
 /** The days a week the picker offers; anything else is "not sure". */
 const dayAnswers = ["7", "5", "3"];
 
 export const load = async () => {
   const catalog = await servedCatalog();
+  const share: Share = {
+    title: text("section.plans"),
+    description: text("plans.description"),
+    path: "/plans",
+    image: siteImage(),
+  };
   return {
     section: "plans" as const,
     plans: catalog ? planList(catalog) : [],
     groups: catalog ? planGroups(catalog) : [],
+    share,
   };
 };
 

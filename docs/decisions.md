@@ -1467,3 +1467,21 @@ picker recommends from three answers.
 **Why:** each part of the rule lives where AGENTS.md puts rules, the
 catalog's grouping can change without touching a published plan, and the
 reader's answers never leave the request that carries them.
+
+### E55. Public plan pages: a description and a link preview, no structured data
+
+*2026-11-22, agent (P9.9).* The home page, Plans and each plan's page give
+a `description` and Open Graph tags (title, description, address, image
+and its size); a page that belongs to a reader (Today, Progress,
+Settings) gives none. The address is always https://daybyword.com
+(`#lib/site.ts`), wherever the page is served, since it names the page
+people should share. The image is read from `design/images/manifest.json`:
+a plan's own picture where the owner delivered one (D19), the site's
+`share.png` otherwise, so a page never names an image that is not there.
+`/sitemap.xml` lists the same pages; robots.txt keeps blocking crawlers
+until launch (P18.5).
+
+**No structured data.** schema.org has no type for a reading plan:
+`Book` would say Day by Word published the text, `Course` that it
+teaches, `ItemList` that the readings are items for sale or ranking. The
+item asks for structured data "only where accurate", so there is none.
