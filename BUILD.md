@@ -17,7 +17,7 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 7 of 9, with P10.5 (the Story of Scripture) and P10.13 (the catalog review) open |
+| **Phase** | Phase 8, first light (M2): 12 of 14 items done (P8.1–P8.4, P8.6–P8.13), with P8.5 built and waiting on its device test. Phase 10 (the launch catalog, in parallel): 8 of 9, with P10.13 (the catalog review) open |
 | **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done); Phase 9, choosing a plan: **P9.9** (public plan pages as the front door). Phase 9 is 4 of 5 (P9.1–P9.4 done) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
@@ -138,7 +138,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
 | 8 | First light | M2 First light | 14 | 12 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 4 |
-| 10 | The launch catalog | M3 Version 1.0 | 9 | 7 |
+| 10 | The launch catalog | M3 Version 1.0 | 9 | 8 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 0 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 0 |
@@ -555,7 +555,8 @@ prayer-book plans, and the deuterocanonical books follow after 1.0
   - *Result (agent, 2026-11-22):* `bible-in-a-year-five-days.plan`: the Bible in a year's rule in 260 readings (199 and 61 by the testaments' words), paced for five days with two rest days; about 12–16 minutes, 10 to 20. `whole-bible`, verified by the compiler; reviewed under docs/editorial.md (rules, facts against the wording, §3, rights).
 - [x] **P10.4 [REVIEW]** **The New Testament in a year, five days a week**: its 260 chapters, one a day.
   - *Result (agent, 2026-11-22):* `new-testament-in-a-year-five-days.plan`: 260 readings of one chapter, five a week; about 3 minutes, 1 to 9. Every verse of the 27 books (7,957), verified; reviewed.
-- [ ] **P10.5 [REVIEW]** **The Story of Scripture**: a short introduction to the biblical narrative in about 50 readings. Its selection involves editorial judgment, which the plan page explains.
+- [x] **P10.5 [REVIEW]** **The Story of Scripture**: a short introduction to the biblical narrative in about 50 readings. Its selection involves editorial judgment, which the plan page explains.
+  - *Result (agent, 2026-11-22):* `story-of-scripture.plan`: 51 narrative passages from 20 books, in the order the story unfolds, from Genesis 1 to Revelation 21–22; about 4–5 minutes (2 to 13), five a week, about eleven weeks; `selection` coverage (2,150 verses, none repeated). The selection is listed in `scripts/plans.swift` with what each reading tells, and docs/plans.md says how it was chosen; its page says it is one selection among many and claims no passage matters more. Reviewed (rules, the compiler's facts against the wording, AGENTS.md §3, rights); in "A place to begin" with Gospels at your pace.
 - [x] **P10.6 [REVIEW]** **A psalm a day**: 150 readings, with Psalm 119 in sections if workload calls for it, in English (Hebrew) numbering, which the plan page states. *(Rewritten by D39; other numberings are P3.8.)*
   - *Result (agent, 2026-11-22):* `psalm-a-day.plan`: each psalm a reading and Psalm 119 in 11 runs of two 8-verse stanzas (its words are ten times the middle psalm's), so 160 readings; about 1 minute, up to 5–6. Its limitations state the Hebrew numbering and the Greek and Latin one (Psalm 23 is their 22). Every verse of Psalms (2,461), verified; reviewed.
 - [x] **P10.7 [REVIEW]** **Proverbs through the month**: 31 readings by day of the month, with the 31st handled honestly in shorter months.

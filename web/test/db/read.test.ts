@@ -79,6 +79,7 @@ describe("the served catalog", () => {
     if (!catalog) throw new Error("no catalog");
     expect(planList(catalog).map((plan) => plan.id)).toEqual([
       "proverbs-through-the-month",
+      "story-of-scripture",
       "gospels-at-your-pace",
       "pauls-letters",
       "psalm-a-day",
@@ -209,7 +210,10 @@ describe("the served catalog", () => {
       "The Gospels",
       "The Psalms and Proverbs",
     ]);
-    expect(planGroups(catalog)[0]?.plans.map((plan) => plan.id)).toEqual(["gospels-at-your-pace"]);
+    expect(planGroups(catalog)[0]?.plans.map((plan) => plan.id)).toEqual([
+      "gospels-at-your-pace",
+      "story-of-scripture",
+    ]);
     // docs/engine.md's example, as apple/AppTests/LibraryTests.swift has it.
     const suggested = planSuggestions(catalog, { hope: "whole-bible", time: "medium", days: 5 });
     expect(suggested.map((plan) => plan.id)).toEqual([
@@ -228,7 +232,7 @@ describe("the served catalog", () => {
       "It's paced for every day, more than you said.",
       "At 5 readings a week it takes about 73 weeks.",
     ]);
-    const calendar = planSuggestions(catalog, { time: "short", days: 7 });
+    const calendar = planSuggestions(catalog, { hope: "psalms-proverbs", time: "short", days: 7 });
     expect(calendar[0]?.id).toBe("proverbs-through-the-month");
     expect(calendar[0]?.reasons.at(-1)).toBe("It has a reading for each date of the month.");
   });

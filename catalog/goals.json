@@ -4,7 +4,7 @@
   "goals": [
     {
       "id": "begin",
-      "plans": ["gospels-at-your-pace"]
+      "plans": ["gospels-at-your-pace", "story-of-scripture"]
     },
     {
       "id": "whole-bible",

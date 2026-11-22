@@ -33,14 +33,18 @@ struct Chapter {
     /// The first verse given, and whether every verse of the chapter is.
     var first = 1
     var whole = true
+    /// The chapter's own number of verses, where only some are given.
+    var total: Int?
     var words: Int { verses.reduce(0, +) }
+    /// Whether the run reads on to the chapter's last verse.
+    var endsChapter: Bool { whole || first + verses.count - 1 == (total ?? verses.count) }
 
     /// The chapter in runs of `size` verses: "PSA 119:1-16", "PSA 119:17-32".
     func sections(of size: Int) -> [Chapter] {
         stride(from: 0, to: verses.count, by: size).map { start in
             Chapter(
                 book: book, number: number, verses: Array(verses[start..<min(start + size, verses.count)]),
-                first: start + 1, whole: false)
+                first: start + 1, whole: false, total: verses.count)
         }
     }
 }
@@ -122,31 +126,79 @@ func balanced(_ chapters: [Chapter], into count: Int) -> [[Chapter]] {
     return readings.reversed()
 }
 
-/// A reading of whole chapters in the plan-file format: "GEN 1-3", or
-/// "OBA 1; JON 1-2" where it runs from one book into the next.
+/// A reading in the plan-file format, in its shortest writing: "GEN 1-3",
+/// "OBA 1; JON 1-2" where it runs from one book into the next, "PSA
+/// 119:1-16" for part of a chapter, and "GEN 1:1-2:3" for a run that ends
+/// (or begins) inside one.
 func text(of reading: [Chapter]) -> String {
     var parts: [String] = []
     var index = 0
     while index < reading.count {
+        // A run goes on into the book's next chapter when it reads to the
+        // end of this one and the next begins at its first verse.
         var last = index
         while last + 1 < reading.count, reading[last + 1].book == reading[index].book,
-            reading[last + 1].number == reading[last].number + 1
+            reading[last + 1].number == reading[last].number + 1, reading[last].endsChapter,
+            reading[last + 1].first == 1
         {
             last += 1
         }
-        let (first, final) = (reading[index], reading[last])
-        if !first.whole {
-            // A run of one chapter's verses stands alone.
-            guard reading.count == 1 else { fail("a reading mixes part of a chapter with others") }
-            parts.append("\(first.book) \(first.number):\(first.first)-\(first.first + first.verses.count - 1)")
-        } else {
+        let (start, end) = (reading[index], reading[last])
+        let lastVerse = end.first + end.verses.count - 1
+        if start.first == 1, end.endsChapter {
             parts.append(
-                first.number == final.number
-                    ? "\(first.book) \(first.number)" : "\(first.book) \(first.number)-\(final.number)")
+                start.number == end.number
+                    ? "\(start.book) \(start.number)" : "\(start.book) \(start.number)-\(end.number)")
+        } else if start.number == end.number {
+            parts.append(
+                start.first == lastVerse
+                    ? "\(start.book) \(start.number):\(start.first)"
+                    : "\(start.book) \(start.number):\(start.first)-\(lastVerse)")
+        } else {
+            parts.append("\(start.book) \(start.number):\(start.first)-\(end.number):\(lastVerse)")
         }
         index = last + 1
     }
     return parts.joined(separator: "; ")
+}
+
+/// The chapters, whole or in part, that a reading in the plan-file format
+/// gives, for a plan whose readings are listed rather than computed.
+func passages(in reading: String, from all: [Chapter]) -> [Chapter] {
+    reading.components(separatedBy: "; ").flatMap { passage -> [Chapter] in
+        let pieces = passage.split(separator: " ")
+        guard pieces.count == 2 else { fail("\(passage) is not a passage") }
+        let book = String(pieces[0])
+        func place(_ text: Substring) -> (chapter: Int, verse: Int?) {
+            let numbers = text.split(separator: ":").map { Int($0) }
+            guard let chapter = numbers.first ?? nil else { fail("\(passage) is not a passage") }
+            return (chapter, numbers.count > 1 ? numbers[1] : nil)
+        }
+        let ends = pieces[1].split(separator: "-")
+        let from = place(ends[0])
+        var to = from
+        if ends.count == 2 {
+            if ends[1].contains(":") {
+                to = place(ends[1])
+            } else if from.verse != nil {
+                to = (from.chapter, Int(ends[1]))
+            } else {
+                to = (Int(ends[1]) ?? 0, nil)
+            }
+        }
+        return (from.chapter...to.chapter).map { number in
+            guard let chapter = all.first(where: { $0.book == book && $0.number == number }) else {
+                fail("\(passage): \(book) has no chapter \(number)")
+            }
+            let first = number == from.chapter ? (from.verse ?? 1) : 1
+            let last = number == to.chapter ? (to.verse ?? chapter.verses.count) : chapter.verses.count
+            guard 1 <= first, first <= last, last <= chapter.verses.count else { fail("\(passage) has no such verses") }
+            if first == 1, last == chapter.verses.count { return chapter }
+            return Chapter(
+                book: book, number: number, verses: Array(chapter.verses[(first - 1)..<last]), first: first,
+                whole: false, total: chapter.verses.count)
+        }
+    }
 }
 
 struct Schedule {
@@ -163,6 +215,64 @@ let fiveDayYearReadings = 260
 /// Psalm 119's stanzas are 8 verses each, one for each letter of the
 /// Hebrew alphabet; A psalm a day reads two at a time.
 let psalm119Section = 16
+/// The Story of Scripture's readings (docs/plans.md): narrative passages in
+/// the order the story unfolds, each with what it tells. An editorial
+/// selection, written here once; `generate` writes them as they are and
+/// refuses one not in its shortest writing.
+let storyOfScripture: [(reading: String, tells: String)] = [
+    ("GEN 1:1-2:3", "the beginning"),
+    ("GEN 2:4-3:24", "the garden"),
+    ("GEN 6:5-8:22", "the flood"),
+    ("GEN 11:1-9; GEN 12:1-9", "Babel; Abram called"),
+    ("GEN 15; GEN 22:1-19", "the promise to Abram; Isaac"),
+    ("GEN 37", "Joseph sold"),
+    ("GEN 45", "Joseph makes himself known"),
+    ("EXO 1-2", "oppression in Egypt; Moses"),
+    ("EXO 3:1-4:17", "the burning bush"),
+    ("EXO 12:1-42", "the Passover"),
+    ("EXO 14", "the sea"),
+    ("EXO 19-20", "Sinai and the commandments"),
+    ("EXO 32", "the golden calf"),
+    ("NUM 13-14", "the spies and the wilderness"),
+    ("DEU 34; JOS 1", "Moses dies; Joshua"),
+    ("JOS 6", "Jericho"),
+    ("JDG 2:6-23; JDG 6", "the judges; Gideon"),
+    ("RUT 1-2", "Ruth and Naomi"),
+    ("RUT 3-4", "Ruth and Boaz"),
+    ("1SA 3; 1SA 8", "Samuel; the people ask for a king"),
+    ("1SA 16-17", "David anointed; Goliath"),
+    ("2SA 7", "the promise to David"),
+    ("2SA 11-12", "David and Bathsheba; Nathan"),
+    ("1KI 3", "Solomon"),
+    ("1KI 8:1-30", "the temple dedicated"),
+    ("1KI 12", "the kingdom divided"),
+    ("1KI 18", "Elijah on Carmel"),
+    ("2KI 17:1-23", "Samaria falls"),
+    ("2KI 22:1-23:3", "Josiah and the book of the law"),
+    ("2KI 25", "Jerusalem falls"),
+    ("DAN 6", "Daniel in exile"),
+    ("EZR 1; EZR 3", "the return; the temple begun again"),
+    ("NEH 8", "the law read in Jerusalem"),
+    ("LUK 1:26-56", "Mary"),
+    ("LUK 2:1-40", "Jesus born"),
+    ("MRK 1", "Jesus' work begins"),
+    ("MAT 5-7", "the Sermon on the Mount"),
+    ("MRK 4:35-5:43", "the storm; healings"),
+    ("MRK 8:27-9:13", "Peter's answer; the transfiguration"),
+    ("LUK 15", "three parables of the lost"),
+    ("JHN 11:1-44", "Lazarus"),
+    ("LUK 19:1-44", "Zacchaeus; Jerusalem"),
+    ("LUK 22", "the last supper; the arrest"),
+    ("LUK 23", "the crucifixion"),
+    ("LUK 24", "the resurrection"),
+    ("ACT 1-2", "the ascension; Pentecost"),
+    ("ACT 9:1-31", "Saul"),
+    ("ACT 10", "Peter and Cornelius"),
+    ("ACT 17", "Paul in Thessalonica, Berea and Athens"),
+    ("ACT 28", "Paul in Rome"),
+    ("REV 21-22", "the Bible's last two chapters"),
+]
+
 /// The letters that bear Paul's name, in printed order.
 let paulsLetters = ["ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM"]
 
@@ -207,6 +317,16 @@ func schedules() -> [Schedule] {
         fail("Psalm 119 does not have 176 verses")
     }
 
+    // The Story of Scripture: the listed readings, each in its shortest
+    // writing.
+    let story = storyOfScripture.map { listed -> [Chapter] in
+        let reading = passages(in: listed.reading, from: all)
+        guard text(of: reading) == listed.reading else {
+            fail("story-of-scripture: \(listed.reading) is written \(text(of: reading)) at its shortest")
+        }
+        return reading
+    }
+
     return [
         Schedule(plan: "gospels-at-your-pace", readings: gospels),
         Schedule(plan: "bible-in-a-year", readings: year(in: yearReadings)),
@@ -215,6 +335,7 @@ func schedules() -> [Schedule] {
         Schedule(plan: "new-testament-in-a-year-five-days", readings: new.map { [$0] }),
         Schedule(plan: "psalm-a-day", readings: psalms),
         Schedule(plan: "pauls-letters", readings: chapters(of: paulsLetters).map { [$0] }),
+        Schedule(plan: "story-of-scripture", readings: story),
     ]
 }
 

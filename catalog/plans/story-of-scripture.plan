@@ -1,0 +1,90 @@
+id: story-of-scripture
+title: The Story of Scripture
+version: 1
+creator: Day by Word
+summary: The story the Bible tells, from its first chapters to its last, in
+  51 readings of narrative passages chosen where the story turns: the
+  beginning, Israel's ancestors, the exodus and Sinai, the land and the
+  kings, exile and return, the life, death and resurrection of Jesus as the
+  Gospels tell it, the first churches, and the Bible's last two chapters.
+suits: Readers who want the Bible's story as a whole before reading whole
+  books, in readings of about 4 or 5 minutes on five days a week.
+schedule: sequence
+behaviors: pace, finish-date
+reading-days: 5
+coverage: selection
+canon: protestant
+books: GEN, EXO, NUM, DEU, JOS, JDG, RUT, 1SA, 2SA, 1KI, 2KI, EZR, NEH,
+  DAN, MAT, MRK, LUK, JHN, ACT, REV
+limitations: It is a selection made by Day by Word: it reads passages from
+  20 books and leaves out most of each, and it reads no psalms, wisdom
+  books or letters, and none of the prophets' oracles. Another selection
+  could tell the story with other passages; this one follows the narrative
+  and makes no claim that its passages matter more than others. It is an
+  introduction, not a substitute for reading whole books. Its readings
+  differ in length, from about 2 minutes to about 13.
+instructions: Read the next reading on each of your five reading days, in
+  any Bible; the other two days of the week are rest days. If you miss a
+  day, your next reading waits for you. At five readings a week the plan
+  takes about eleven weeks.
+source: An original selection by Day by Word: narrative passages in the
+  order the story unfolds, which is mostly the order the books are
+  printed, chosen at its turning points and mostly whole chapters.
+  Choosing them is editorial judgment, made for a first introduction; the
+  plan names its passages and nothing more. Reading times are estimated
+  from word counts of the World English Bible, a public-domain
+  translation; the plan can be read in any translation.
+rights: daybyword-original
+review: reviewed
+---
+1	GEN 1:1-2:3
+2	GEN 2:4-3:24
+3	GEN 6:5-8:22
+4	GEN 11:1-9; GEN 12:1-9
+5	GEN 15; GEN 22:1-19
+6	GEN 37
+7	GEN 45
+8	EXO 1-2
+9	EXO 3:1-4:17
+10	EXO 12:1-42
+11	EXO 14
+12	EXO 19-20
+13	EXO 32
+14	NUM 13-14
+15	DEU 34; JOS 1
+16	JOS 6
+17	JDG 2:6-23; JDG 6
+18	RUT 1-2
+19	RUT 3-4
+20	1SA 3; 1SA 8
+21	1SA 16-17
+22	2SA 7
+23	2SA 11-12
+24	1KI 3
+25	1KI 8:1-30
+26	1KI 12
+27	1KI 18
+28	2KI 17:1-23
+29	2KI 22:1-23:3
+30	2KI 25
+31	DAN 6
+32	EZR 1; EZR 3
+33	NEH 8
+34	LUK 1:26-56
+35	LUK 2:1-40
+36	MRK 1
+37	MAT 5-7
+38	MRK 4:35-5:43
+39	MRK 8:27-9:13
+40	LUK 15
+41	JHN 11:1-44
+42	LUK 19:1-44
+43	LUK 22
+44	LUK 23
+45	LUK 24
+46	ACT 1-2
+47	ACT 9:1-31
+48	ACT 10
+49	ACT 17
+50	ACT 28
+51	REV 21-22

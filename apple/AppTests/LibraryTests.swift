@@ -115,7 +115,8 @@ private let gospels = PlanID("gospels-at-your-pace")!
     #expect(proverbs.length == "A reading for each day of the month, begun again each month.")
     #expect(
         catalog.listed.map(\.id.rawValue) == [
-            "proverbs-through-the-month", "gospels-at-your-pace", "pauls-letters", "psalm-a-day",
+            "proverbs-through-the-month", "story-of-scripture", "gospels-at-your-pace", "pauls-letters",
+            "psalm-a-day",
             "bible-in-a-year-five-days", "new-testament-in-a-year-five-days", "bible-in-a-year",
         ])
 }
@@ -124,7 +125,7 @@ private let gospels = PlanID("gospels-at-your-pace")!
 @Test func plansAreGroupedAndSuggestedAsOnTheWeb() throws {
     let catalog = try bundledCatalog()
     #expect(catalog.goals.map(\.goal) == Goal.allCases)
-    #expect(catalog.goals.first?.plans == [gospels])
+    #expect(catalog.goals.first?.plans == [gospels, PlanID("story-of-scripture")!])
     // docs/engine.md's example, in words, as web/test/db/read.test.ts has them.
     let suggested = catalog.suggestions(for: Choosing.Answers(hope: .wholeBible, time: .medium, days: 5))
     #expect(suggested.map(\.plan.id.rawValue) == ["bible-in-a-year-five-days", "bible-in-a-year"])
@@ -142,7 +143,7 @@ private let gospels = PlanID("gospels-at-your-pace")!
             "It's paced for every day, more than you said.",
             "At 5 readings a week it takes about 73 weeks.",
         ])
-    let calendar = catalog.suggestions(for: Choosing.Answers(time: .short, days: 7))
+    let calendar = catalog.suggestions(for: Choosing.Answers(hope: .psalmsProverbs, time: .short, days: 7))
     #expect(calendar.first?.plan.id.rawValue == "proverbs-through-the-month")
     #expect(calendar.first?.reasons.last == "It has a reading for each date of the month.")
 }

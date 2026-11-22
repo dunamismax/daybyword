@@ -24,7 +24,7 @@ private func goals(_ entries: String) -> Data {
     let (plans, registry) = try repositoryPlans()
     let groups = try CatalogBuild.readGoals(from: catalogSource, plans: plans, registry: registry)
     #expect(groups.map(\.goal) == Goal.allCases)
-    #expect(groups.first?.plans == [PlanID("gospels-at-your-pace")!])
+    #expect(groups.first?.plans == [PlanID("gospels-at-your-pace")!, PlanID("story-of-scripture")!])
     // Every plan is somewhere.
     #expect(Set(groups.flatMap(\.plans)) == Set(plans.map(\.id)))
 }

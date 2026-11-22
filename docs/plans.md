@@ -48,6 +48,7 @@ heaviest reading.
 | `bible-in-a-year-five-days` | The Bible in a year's rule in 260 readings, five a week for 52 weeks: shared between the testaments by their words (199 and 61), each testament balanced on its own. |
 | `new-testament-in-a-year-five-days` | The New Testament's 260 chapters in printed order, one a reading: five a week for 52 weeks. |
 | `psalm-a-day` | The psalms in order, one a reading, except Psalm 119, read in runs of 16 verses (two of its 8-verse stanzas): 11 readings, so 160 in all. |
+| `story-of-scripture` | Not a computed rule but an editorial selection, listed in `scripts/plans.swift` with what each reading tells: 51 narrative passages in the order the story unfolds, one episode (or two short ones from the same part of the story) a reading, whole chapters where the episode fills them. `generate` writes them as listed and refuses one not in its shortest writing. |
 | `pauls-letters` | The chapters of the thirteen letters that open with Paul's name (Romans to Philemon), in printed order, one a reading: 87 readings. |
 
 **Why 1,350 words** (agent, 2026-11-21): it gives 60 readings of about 6
@@ -65,6 +66,19 @@ own divisions, which many English Bibles mark.
 week for a year; Paul's chapters run from 1 to 6 minutes, short enough to
 read slowly, and a reader with a paper Bible finds a chapter at once.
 Paul's letters leave out Hebrews, which names no author; the plan says so.
+
+**How the Story of Scripture was chosen** (agent, 2026-11-22): from the
+narrative books only, the episodes where the story's course turns (its
+beginning, Israel's ancestors, the exodus and Sinai, the land, the
+judges and the kings, the division and fall of the kingdoms, exile and
+return; in the Gospels, Jesus' birth, work, teaching, death and
+resurrection; the first churches in Acts) and the Bible's last two
+chapters. No psalms, wisdom books, letters or prophets' oracles; the
+order is the story's, which is mostly the printed order (Daniel 6, set
+in the exile, comes before Ezra's return). Readings of about 4 to 5
+minutes, five a week, for an introduction of about ten weeks. Another
+selection could tell the story differently, and the plan page says so.
+No other plan or publisher's selection was consulted.
 
 ## Changing a plan
 
