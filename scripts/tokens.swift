@@ -1,7 +1,8 @@
 // Generates the design's outputs from design/tokens.json (docs/decisions.md E12,
 // BUILD.md P2.4), so the app and the web cannot drift:
 //
-//   apple/Shared/Colors.xcassets   one color set per token, light and dark
+//   apple/Shared/Colors.xcassets   one color set per token, light and dark, and
+//                                  Increase Contrast's values where a token has them
 //   apple/Shared/DesignTokens.swift  Palette, Radius, Spacing, and TypeScale
 //   web/src/tokens.css             the same values as Tailwind CSS 4 theme variables
 //
@@ -24,6 +25,10 @@ struct Tokens {
         let name: String
         let light: String
         let dark: String
+        /// The values under Increase Contrast (iOS) and `prefers-contrast: more`
+        /// (the web), where the token has them (BUILD.md P17.2).
+        let lightHighContrast: String?
+        let darkHighContrast: String?
         let use: String
     }
     struct TypeToken {
@@ -52,7 +57,15 @@ func readTokens() -> Tokens {
         guard let light = value["light"], let dark = value["dark"],
             light.wholeMatch(of: hex) != nil, dark.wholeMatch(of: hex) != nil
         else { fail("color \(name) needs light and dark values as #RRGGBB in capitals") }
-        tokens.colors.append(.init(name: name, light: light, dark: dark, use: value["use"] ?? ""))
+        let lightHigh = value["lightHighContrast"]
+        let darkHigh = value["darkHighContrast"]
+        guard (lightHigh == nil) == (darkHigh == nil),
+            [lightHigh, darkHigh].allSatisfy({ $0 == nil || $0!.wholeMatch(of: hex) != nil })
+        else { fail("color \(name) needs both high-contrast values as #RRGGBB in capitals, or neither") }
+        tokens.colors.append(
+            .init(
+                name: name, light: light, dark: dark, lightHighContrast: lightHigh, darkHighContrast: darkHigh,
+                use: value["use"] ?? ""))
     }
     tokens.radius = (json["radius"] as? [String: Int] ?? [:]).sorted { $0.value < $1.value || ($0.value == $1.value && $0.key < $1.key) }
     tokens.space = (json["space"] as? [String: Int] ?? [:]).sorted { $0.value < $1.value }
@@ -104,11 +117,20 @@ func colorSet(_ token: Tokens.ColorToken) -> String {
             "color-space" : "srgb", "components" : { "alpha" : "1.000", "red" : "0x\(String(s[0...1]))", "green" : "0x\(String(s[2...3]))", "blue" : "0x\(String(s[4...5]))" }
             """
     }
+    var entries = [
+        #"{ "color" : { \#(components(token.light)) }, "idiom" : "universal" }"#,
+        #"{ "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ], "color" : { \#(components(token.dark)) }, "idiom" : "universal" }"#,
+    ]
+    if let lightHigh = token.lightHighContrast, let darkHigh = token.darkHighContrast {
+        entries += [
+            #"{ "appearances" : [ { "appearance" : "contrast", "value" : "high" } ], "color" : { \#(components(lightHigh)) }, "idiom" : "universal" }"#,
+            #"{ "appearances" : [ { "appearance" : "luminosity", "value" : "dark" }, { "appearance" : "contrast", "value" : "high" } ], "color" : { \#(components(darkHigh)) }, "idiom" : "universal" }"#,
+        ]
+    }
     return """
         {
           "colors" : [
-            { "color" : { \(components(token.light)) }, "idiom" : "universal" },
-            { "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ], "color" : { \(components(token.dark)) }, "idiom" : "universal" }
+            \(entries.joined(separator: ",\n    "))
           ],
           "info" : { "author" : "xcode", "version" : 1 }
         }
@@ -179,6 +201,19 @@ func tailwind(_ tokens: Tokens) -> String {
     out += colors({ $0.dark }, indent: "      ") + "\n    }\n  }\n\n"
     out += "  :root[data-theme=\"light\"] {\n    color-scheme: light;\n  }\n\n"
     out += "  :root[data-theme=\"dark\"] {\n    color-scheme: dark;\n" + colors({ $0.dark }, indent: "    ") + "\n  }\n\n"
+    // A reader who asks for more contrast gets the tokens' high-contrast
+    // values, light or dark as the page is (BUILD.md P17.2).
+    let high = tokens.colors.filter { $0.lightHighContrast != nil }
+    if !high.isEmpty {
+        func highColors(_ pick: (Tokens.ColorToken) -> String?, indent: String) -> String {
+            high.map { "\(indent)--color-\(kebab($0.name)): \(pick($0)!);" }.joined(separator: "\n")
+        }
+        out += "  @media (prefers-contrast: more) {\n    :root,\n    :root[data-theme=\"light\"] {\n"
+        out += highColors({ $0.lightHighContrast }, indent: "      ") + "\n    }\n\n"
+        out += "    @media (prefers-color-scheme: dark) {\n      :root:not([data-theme=\"light\"]) {\n"
+        out += highColors({ $0.darkHighContrast }, indent: "        ") + "\n      }\n    }\n\n"
+        out += "    :root[data-theme=\"dark\"] {\n" + highColors({ $0.darkHighContrast }, indent: "      ") + "\n    }\n  }\n\n"
+    }
     // Paper is light whatever the screen's appearance (BUILD.md P8.10b).
     out += "  @media print {\n    :root,\n    :root[data-theme] {\n      color-scheme: light;\n"
     out += colors({ $0.light }, indent: "      ") + "\n    }\n  }\n}\n"
@@ -219,6 +254,13 @@ func checkTextPairs(_ tokens: Tokens) -> [String] {
             continue
         }
         pairs += 1
+        // Increase Contrast's values must not fall below the standard ones.
+        for (appearance, a, b, standard) in [
+            ("light with more contrast", fg.lightHighContrast ?? fg.light, bg.lightHighContrast ?? bg.light, contrast(fg.light, bg.light)),
+            ("dark with more contrast", fg.darkHighContrast ?? fg.dark, bg.darkHighContrast ?? bg.dark, contrast(fg.dark, bg.dark)),
+        ] where contrast(a, b) < max(standard, 4.5) {
+            problems.append("\(text) on \(ground) is \(String(format: "%.2f", contrast(a, b))):1 \(appearance), less than without it")
+        }
         for (appearance, a, b, written) in [("light", fg.light, bg.light, match.3), ("dark", fg.dark, bg.dark, match.4)] {
             let ratio = contrast(a, b)
             if ratio < 4.5 {

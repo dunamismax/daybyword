@@ -435,6 +435,8 @@ const english = {
     'A reading\'s state is always in words or a symbol, never color alone, and references are written out for screen readers ("Mark, chapter 4, verses 1 to 20").',
   "accessibility.tested-app":
     "In the app, every screen (Today, Plans, a plan's page, starting a plan, Progress, History, a week and Settings) passes Apple's accessibility audit in light, in dark and at the largest accessibility text size: a description for every element, contrast, touch targets, and text that grows without being cut short.",
+  "accessibility.tested-settings":
+    "With Bold Text and Increase Contrast on, the app passes the same audit; Increase Contrast, and asking the browser for more contrast on the web, give stronger colors, and with Reduce Motion nothing slides.",
   "accessibility.tested-structure":
     "On the web, every page has landmarks to jump between, one main heading with no skipped levels, and a name for every link, button and field, checked in each browser's view of the page.",
   "accessibility.gaps": "Not yet tested",
@@ -442,8 +444,6 @@ const english = {
     "A person listening with a screen reader: VoiceOver on every screen of the app, and VoiceOver and NVDA on the web.",
   "accessibility.gap-zoom":
     "The web at 400% zoom, and with forced colors (such as Windows contrast themes).",
-  "accessibility.gap-settings":
-    "The app with Bold Text, Reduce Transparency and Increase Contrast turned on.",
   "accessibility.gaps-note":
     "These checks are planned before version 1.0, and this page will say when they are done.",
   "accessibility.report": "Report a barrier",

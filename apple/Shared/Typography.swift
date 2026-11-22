@@ -19,6 +19,7 @@ extension View {
 
 private struct ScaledTypeStyle: ViewModifier {
     @ScaledMetric private var size: CGFloat
+    @Environment(\.legibilityWeight) private var legibilityWeight
     private let weight: Font.Weight
 
     init(style: TypeStyle) {
@@ -27,6 +28,17 @@ private struct ScaledTypeStyle: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content.font(.system(size: size, weight: weight))
+        content.font(.system(size: size, weight: legibilityWeight == .bold ? Self.bolder(weight) : weight))
+    }
+
+    /// One step heavier, for Bold Text (BUILD.md P17.2): a font given its
+    /// own weight does not follow the setting by itself.
+    private static func bolder(_ weight: Font.Weight) -> Font.Weight {
+        switch weight {
+        case .ultraLight, .thin, .light: .regular
+        case .regular: .semibold
+        case .medium, .semibold: .bold
+        default: .heavy
+        }
     }
 }

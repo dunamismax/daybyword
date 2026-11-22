@@ -17,6 +17,7 @@ struct TodayView: View {
     @State private var lastAction: LastAction?
     @State private var failure: String?
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     struct LastAction: Equatable {
         let message: String
@@ -73,7 +74,8 @@ struct TodayView: View {
             if let lastAction {
                 banner(lastAction)
                     .padding(Spacing.m)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    // With Reduce Motion the banner fades instead of sliding (P17.2).
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             }
         }
         .animation(.default, value: lastAction)

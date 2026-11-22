@@ -8,13 +8,17 @@ import XCTest
 final class AccessibilityAuditTests: XCTestCase {
     @MainActor
     func testEveryScreenPassesTheAudit() throws {
-        for (appearance, textSize) in [("light", ""), ("dark", ""), ("light", "ax5")] {
+        for (appearance, textSize) in [("light", ""), ("dark", ""), ("light", "ax5"), ("dark", "bold-contrast")] {
             let app = XCUIApplication()
             app.launchArguments = ["-freshJournal", "YES", "-today", "2027-03-01", "-appearance", appearance]
             if textSize == "ax5" {
                 app.launchArguments += [
                     "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
                 ]
+            }
+            // Bold Text and Increase Contrast together (P17.2).
+            if textSize == "bold-contrast" {
+                app.launchArguments += ["-boldText", "YES", "-increaseContrast", "YES"]
             }
             let appearance = textSize.isEmpty ? appearance : "\(appearance)-\(textSize)"
             app.launch()
@@ -84,7 +88,8 @@ final class AccessibilityAuditTests: XCTestCase {
     /// - text clipped by the screen's own edge, where it scrolls into view
     ///   (an element clipped within the screen still fails);
     /// - text the audit cannot match to an element where the element says it
-    ///   in words (a sample week's "Matthew 1–3" is "Matthew, chapters 1 to 3").
+    ///   in words (a sample week's "Matthew 1–3" is "Matthew, chapters 1 to 3",
+    ///   and Progress's "M ✓" is "Monday, March 1, read").
     @MainActor
     private func audit(_ app: XCUIApplication, largeText: Bool, _ screen: String) throws {
         save(app, screen)
@@ -99,7 +104,9 @@ final class AccessibilityAuditTests: XCTestCase {
             case .contrast where inNavigationBar || frame.maxY > tabBarTop || issue.element?.label == "–": return true
             case .textClipped where issue.element == nil: return true
             case .dynamicType where inNavigationBar || !largeText: return true
-            case .elementDetection where issue.element == nil && screen.hasSuffix("a plan's page"): return true
+            case .elementDetection
+            where issue.element == nil && (screen.hasSuffix("a plan's page") || screen.hasSuffix("Progress")):
+                return true
             default: break
             }
             found.append(

@@ -53,6 +53,22 @@ Rules:
   symbols: ✓ Read, ◐ Part read, Skipped, – No reading.
 - No raw colors in any view or stylesheet; `make check` enforces it (P2.4).
 
+### More contrast
+
+When the reader turns on Increase Contrast (iOS) or asks the browser for
+more contrast (`prefers-contrast: more`), three tokens take stronger
+values (`lightHighContrast`, `darkHighContrast` in design/tokens.json,
+P17.2); the token check refuses any text pair that gets weaker.
+
+| Token | Light | Dark |
+|---|---|---|
+| `textMuted` | `#434957` | `#C3C9D3` |
+| `accent` | `#9C4210` | `#F8C29C` |
+| `line` | `#8A909C` | `#687282` |
+
+Bold Text steps every type style one weight heavier, and with Reduce
+Motion Today's Undo note fades instead of sliding.
+
 ### Text pairs
 
 Every pair a screen uses for text, and its WCAG contrast. The token tests

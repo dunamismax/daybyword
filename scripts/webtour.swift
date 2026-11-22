@@ -103,10 +103,14 @@ protocol TourBrowser {
     /// The page as assistive technology receives it: the browser's own
     /// accessibility tree, where the browser can give it (Chrome).
     func accessibilityTree() async -> [[String: Any]]?
+    /// Asks for more contrast and reduced motion, as a reader's settings do;
+    /// false where the browser cannot be asked (only Chrome can).
+    func emulateMoreContrast(_ on: Bool) async -> Bool
 }
 
 extension WebDriver {
     func accessibilityTree() async -> [[String: Any]]? { nil }
+    func emulateMoreContrast(_ on: Bool) async -> Bool { false }
 }
 
 extension TourBrowser {
@@ -372,6 +376,15 @@ final class DevTools: TourBrowser {
 
     func end() async { socket.cancel(with: .goingAway, reason: nil) }
 
+    func emulateMoreContrast(_ on: Bool) async -> Bool {
+        let features: [[String: String]] =
+            on
+            ? [["name": "prefers-contrast", "value": "more"], ["name": "prefers-reduced-motion", "value": "reduce"]]
+            : []
+        await send("Emulation.setEmulatedMedia", ["features": features])
+        return true
+    }
+
     func accessibilityTree() async -> [[String: Any]]? {
         await send("Accessibility.enable")
         return await send("Accessibility.getFullAXTree")?["nodes"] as? [[String: Any]]
@@ -569,6 +582,26 @@ for page in pages {
         expect(nodes.count > 10, "\(label): Chrome gave no accessibility tree")
         expect(unnamed.isEmpty, "\(label): unnamed in the accessibility tree: \(unnamed)")
     }
+}
+
+// More contrast (P17.2), where the browser can be asked: the tokens'
+// high-contrast colors replace the standard ones in light and dark. (Nothing
+// on the site moves; app.css stops any transition under reduced motion.)
+if await driver.emulateMoreContrast(true) {
+    for (theme, muted, line) in [("light", "rgb(67, 73, 87)", "rgb(138, 144, 156)"), ("dark", "rgb(195, 201, 211)", "rgb(104, 114, 130)")] {
+        await driver.go("/plans")
+        await driver.run("document.documentElement.dataset.theme = '\(theme)'")
+        let seen =
+            await driver.run(
+                """
+                const muted = document.querySelector('.text-text-muted');
+                const card = document.querySelector('.card');
+                return [muted ? getComputedStyle(muted).color : '', card ? getComputedStyle(card).borderTopColor : ''];
+                """) as? [String] ?? []
+        expect(seen.count == 2 && seen[0] == muted, "\(browser) more contrast, \(theme): muted text is \(seen.first ?? "?")")
+        expect(seen.count == 2 && seen[1] == line, "\(browser) more contrast, \(theme): a card's line is \(seen.dropFirst().first ?? "?")")
+    }
+    _ = await driver.emulateMoreContrast(false)
 }
 
 // Keyboard alone (P15.4, P16.6): on every page, Tab reaches every control a

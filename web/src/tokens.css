@@ -83,6 +83,29 @@
     --color-text-muted: #A0A8B6;
   }
 
+  @media (prefers-contrast: more) {
+    :root,
+    :root[data-theme="light"] {
+      --color-accent: #9C4210;
+      --color-line: #8A909C;
+      --color-text-muted: #434957;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --color-accent: #F8C29C;
+        --color-line: #687282;
+        --color-text-muted: #C3C9D3;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --color-accent: #F8C29C;
+      --color-line: #687282;
+      --color-text-muted: #C3C9D3;
+    }
+  }
+
   @media print {
     :root,
     :root[data-theme] {
