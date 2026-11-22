@@ -28,6 +28,7 @@ export * from "./ahead.ts";
 export * from "./preview.ts";
 export * from "./welcome.ts";
 export * from "./progress.ts";
+export * from "./celebrations.ts";
 export * from "./reminders.ts";
 export * from "./bible-link.ts";
 export * from "./choosing.ts";

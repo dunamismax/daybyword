@@ -8,7 +8,7 @@ import { servedCatalog } from "#lib/server/catalog/read.ts";
 import {
   journalRequest,
   ReadingRequestError,
-  todayCards,
+  todayPage,
   type ReadingOptions,
 } from "#lib/server/reading.ts";
 import {
@@ -41,8 +41,10 @@ export const POST = async ({ request }: { request: Request }) => {
       ...(typeof fields["lastAction"] === "string" ? { lastAction: fields["lastAction"] } : {}),
     };
     const page = (date: CivilDate) => {
-      const cards = todayCards(catalog, journal, date, options);
-      return cards.length > 0 ? render(TodayCards, { props: { cards } }).body : "";
+      const { cards, rhythm } = todayPage(catalog, journal, date, options);
+      return cards.length > 0
+        ? render(TodayCards, { props: { cards, ...(rhythm ? { rhythm } : {}) } }).body
+        : "";
     };
     // Today, and the six days after it as things stand now, which the
     // browser keeps for when it is offline (P8.11, E53).

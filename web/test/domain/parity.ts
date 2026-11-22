@@ -14,6 +14,7 @@ import {
   BookRegistry,
   BookRegistryError,
   bookName,
+  celebrations,
   canonBooks,
   changeOf,
   coverage,
@@ -119,6 +120,7 @@ export const domainFixtures = [
   "returning",
   "changing",
   "progress",
+  "celebrations",
   "reminders",
   "ahead",
   "bible-links",
@@ -596,6 +598,13 @@ export function computers(resources: Resources): Record<DomainFixture, Compute> 
           }),
         },
         streak: streak(journal, date),
+      };
+    },
+
+    celebrations: (input: { events: unknown[]; today: string }, plans: readonly PlanVersion[]) => {
+      const journal = foldJournal(input.events, plans);
+      return {
+        celebrations: celebrations(journal, parseCivilDate(input.today), english),
       };
     },
 

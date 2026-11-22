@@ -139,25 +139,9 @@ extension Journal {
         var verses = VerseSet(scheme: versification.scheme)
         var touched = verses
         for enrollment in enrollments {
-            var readings: [Int: Reading] = [:]
-            for assignment in enrollment.plan.assignments where readings[assignment.id] == nil {
-                readings[assignment.id] = assignment.reading
-            }
-            for mark in enrollment.settled where mark.state != .skipped {
-                guard let reading = readings[mark.slot.assignment], reading.scheme == versification.scheme else {
-                    continue
-                }
-                let whole = VerseSet(reading.passages, in: versification)
-                if mark.state == .read {
-                    verses = verses.union(whole)
-                    continue
-                }
-                var stated = VerseSet(scheme: versification.scheme)
-                if let text = mark.verses, let said = try? ReferenceFormat.reading(text, in: versification) {
-                    stated = VerseSet(said.passages, in: versification).intersection(whole)
-                }
-                if stated.isEmpty { touched = touched.union(whole) } else { verses = verses.union(stated) }
-            }
+            let covered = enrollment.covered(in: versification)
+            verses = verses.union(covered.verses)
+            touched = touched.union(covered.touched)
         }
 
         let all = verses.union(touched)
@@ -173,5 +157,37 @@ extension Journal {
                     verses: $0.verses)
             },
             books: versification.books.filter { all.books.contains($0) })
+    }
+}
+
+extension Enrollment {
+    /// This enrollment's part of coverage: the verses its readings marked
+    /// read cover, with the stated verses of those marked part read, as far
+    /// as they are verses of that reading; and, apart, the readings marked
+    /// part read with no such verses, whose chapters are listed and whose
+    /// books are explored though they add no verses.
+    func covered(in versification: Versification) -> (verses: VerseSet, touched: VerseSet) {
+        var verses = VerseSet(scheme: versification.scheme)
+        var touched = verses
+        var readings: [Int: Reading] = [:]
+        for assignment in plan.assignments where readings[assignment.id] == nil {
+            readings[assignment.id] = assignment.reading
+        }
+        for mark in settled where mark.state != .skipped {
+            guard let reading = readings[mark.slot.assignment], reading.scheme == versification.scheme else {
+                continue
+            }
+            let whole = VerseSet(reading.passages, in: versification)
+            if mark.state == .read {
+                verses = verses.union(whole)
+                continue
+            }
+            var stated = VerseSet(scheme: versification.scheme)
+            if let text = mark.verses, let said = try? ReferenceFormat.reading(text, in: versification) {
+                stated = VerseSet(said.passages, in: versification).intersection(whole)
+            }
+            if stated.isEmpty { touched = touched.union(whole) } else { verses = verses.union(stated) }
+        }
+        return (verses, touched)
     }
 }

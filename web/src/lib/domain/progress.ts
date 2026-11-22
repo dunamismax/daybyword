@@ -107,7 +107,7 @@ export function progressCounts(enrollment: Enrollment, date: CivilDate): Progres
  * marked in it, so its later days neither count as reading days among the
  * recent ones nor weigh on the streak.
  */
-function expectsReading(enrollment: Enrollment, date: CivilDate): boolean {
+export function expectsReading(enrollment: Enrollment, date: CivilDate): boolean {
   if (!isReadingDay(enrollment, date)) return false;
   if (!isFinished(enrollment) || enrollment.settled.length === 0) return true;
   return enrollment.settled.some((mark) => !before(mark.date, date));
@@ -119,7 +119,7 @@ function expectsReading(enrollment: Enrollment, date: CivilDate): boolean {
  * one day and finished the next is two days read, though its slot keeps only
  * the later mark.
  */
-function readDates(journal: Journal): Set<string> {
+export function readDates(journal: Journal): Set<string> {
   const dates = new Set<string>();
   for (const enrollment of journal.enrollments) {
     for (const mark of enrollment.marks) {
@@ -186,31 +186,9 @@ export function coverage(journal: Journal, versification: Versification): Progre
   let verses = new VerseSet(versification.scheme);
   let touched = new VerseSet(versification.scheme);
   for (const enrollment of journal.enrollments) {
-    const readings = new Map<number, Reading>();
-    for (const assignment of enrollment.plan.assignments) {
-      if (!readings.has(assignment.id)) readings.set(assignment.id, assignment.reading);
-    }
-    for (const mark of enrollment.settled) {
-      const reading = readings.get(mark.assignment);
-      if (mark.state === "skipped" || reading?.passages[0]?.scheme !== versification.scheme)
-        continue;
-      const whole = VerseSet.of(reading.passages, versification);
-      if (mark.state === "read") {
-        verses = verses.union(whole);
-        continue;
-      }
-      let stated = new VerseSet(versification.scheme);
-      if (mark.verses !== undefined) {
-        try {
-          const said = parseReading(mark.verses, versification);
-          stated = VerseSet.of(said.passages, versification).intersection(whole);
-        } catch (error) {
-          if (!(error instanceof ReferenceFormatError)) throw error;
-        }
-      }
-      if (stated.isEmpty) touched = touched.union(whole);
-      else verses = verses.union(stated);
-    }
+    const covered = enrollmentCoverage(enrollment, versification);
+    verses = verses.union(covered.verses);
+    touched = touched.union(covered.touched);
   }
 
   const all = verses.union(touched);
@@ -228,4 +206,44 @@ export function coverage(journal: Journal, versification: Versification): Progre
     })),
     books: versification.books.filter((book) => books.has(book)),
   };
+}
+
+/**
+ * One enrollment's part of coverage: the verses its readings marked read
+ * cover, with the stated verses of those marked part read, as far as they
+ * are verses of that reading; and, apart, the readings marked part read with
+ * no such verses, whose chapters are listed and whose books are explored
+ * though they add no verses.
+ */
+export function enrollmentCoverage(
+  enrollment: Enrollment,
+  versification: Versification,
+): { readonly verses: VerseSet; readonly touched: VerseSet } {
+  let verses = new VerseSet(versification.scheme);
+  let touched = new VerseSet(versification.scheme);
+  const readings = new Map<number, Reading>();
+  for (const assignment of enrollment.plan.assignments) {
+    if (!readings.has(assignment.id)) readings.set(assignment.id, assignment.reading);
+  }
+  for (const mark of enrollment.settled) {
+    const reading = readings.get(mark.assignment);
+    if (mark.state === "skipped" || reading?.passages[0]?.scheme !== versification.scheme) continue;
+    const whole = VerseSet.of(reading.passages, versification);
+    if (mark.state === "read") {
+      verses = verses.union(whole);
+      continue;
+    }
+    let stated = new VerseSet(versification.scheme);
+    if (mark.verses !== undefined) {
+      try {
+        const said = parseReading(mark.verses, versification);
+        stated = VerseSet.of(said.passages, versification).intersection(whole);
+      } catch (error) {
+        if (!(error instanceof ReferenceFormatError)) throw error;
+      }
+    }
+    if (stated.isEmpty) touched = touched.union(whole);
+    else verses = verses.union(stated);
+  }
+  return { verses, touched };
 }

@@ -188,7 +188,11 @@ maturity, or understanding, and nothing on it may suggest that it does.
   logging and undo.
 - **Quiet celebrations**, in words and never confetti: returning after a
   gap, finishing a book, finishing a plan, and keeping a rhythm the reader
-  chose. Never a comparison with anyone else.
+  chose. Never a comparison with anyone else. They appear on Today on the
+  day they happen, in the plan's card ("You've read all of Ruth."), with
+  the week's rhythm once after the cards ("You've read on each of your
+  reading days this week."), and never in a reminder (docs/engine.md,
+  "Quiet celebrations").
 - **The streak** (D17) is off by default. When the reader turns it on, it
   counts against their own reading days (rest days never break it), is shown
   small, never appears in a notification, and is never described with loss

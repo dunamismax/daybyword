@@ -20,6 +20,7 @@ import {
   startPreview,
   ReadingRequestError,
   todayCards,
+  todayPage,
 } from "#lib/server/reading.ts";
 
 const repository = new URL("../../", import.meta.url);
@@ -63,6 +64,7 @@ const catalog: ServedCatalog = {
       ["pace", "finish-date"],
       ["MRK 1-2", "MRK 3-4", "MRK 5-6"],
     ),
+    plan("ruth-in-a-week", "Ruth in a week", "sequence", ["pace"], ["RUT 1", "RUT 2", "RUT 3-4"]),
     plan(
       "proverbs-by-the-date",
       "Proverbs by the date",
@@ -125,6 +127,56 @@ describe("starting a plan", () => {
     expect(attempt({ ...enroll, readingDays: [3, 1] })).toThrow(ReadingRequestError);
     expect(attempt({ ...enroll, behavior: "finish-date" })).toThrow(ReadingRequestError);
     expect(attempt({ ...enroll, kind: "delete" })).toThrow(ReadingRequestError);
+  });
+});
+
+describe("quiet celebrations", () => {
+  const page = (events: unknown[], today: string) => {
+    const request = journalRequest({ events, today }, catalog);
+    return todayPage(catalog, request.journal, request.today);
+  };
+  const mark = (events: unknown[], today: string, assignment: number) =>
+    act(events, today, {
+      kind: "mark",
+      mark: "completed",
+      enrollment: cards(events, today)[0]?.enrollment,
+      assignment,
+    });
+
+  it("says, in the plan's card, that the reader came back, finished a book and the plan", () => {
+    const started = act([], "2027-03-01", { ...enroll, plan: "ruth-in-a-week" });
+    const monday = mark(started, "2027-03-01", 1);
+    // A first reading is a beginning, and Ruth is not read yet.
+    expect(page(monday, "2027-03-01").cards[0]?.celebrations).toBeUndefined();
+    const friday = mark(mark(monday, "2027-03-05", 2), "2027-03-05", 3);
+    expect(page(friday, "2027-03-05")).toEqual({
+      cards: [
+        expect.objectContaining({
+          status: "finished",
+          celebrations: [
+            "You've picked up where you left off.",
+            "You've read all of Ruth.",
+            "You've finished Ruth in a week.",
+          ],
+        }),
+      ],
+    });
+    // A celebration is for its own day.
+    expect(page(friday, "2027-03-08").cards[0]?.celebrations).toBeUndefined();
+  });
+
+  it("says once, after the cards, that the week's reading days were each read", () => {
+    const started = act([], "2027-03-01", {
+      ...enroll,
+      plan: "ruth-in-a-week",
+      readingDays: [1, 3],
+    });
+    const monday = mark(started, "2027-03-01", 1);
+    expect(page(monday, "2027-03-01").rhythm).toBeUndefined();
+    const wednesday = mark(monday, "2027-03-03", 2);
+    expect(page(wednesday, "2027-03-03").rhythm).toBe(
+      "You've read on each of your reading days this week.",
+    );
   });
 });
 

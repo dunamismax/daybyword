@@ -1,0 +1,3273 @@
+{
+  "about" : "Quiet celebrations (docs/engine.md, \"Quiet celebrations\"; P11.2): for a date, each enrollment's return after a gap, the books it finished and its finishing, in the order the enrollments were started, then whether the week's reading days were kept. The plans are invented.",
+  "cases" : [
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "nothing marked: nothing to celebrate",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "a first reading is a beginning, not a return",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "returning: read on Monday, not Tuesday to Thursday, and again on Friday",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "one reading day not read is simply a day: no return",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-08T12:00:00Z",
+            "date" : "2027-03-08",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-08"
+      },
+      "name" : "rest days are not a gap: Friday, then Monday",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-06T12:00:00Z",
+            "date" : "2027-03-06",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-06"
+      },
+      "name" : "returning on a rest day: the gap is counted in reading days",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a skip is not a reading: no return",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a reading logged for an earlier day belongs to that day: nothing today",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "a reading logged for an earlier day belongs to that day: the return is Thursday's",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-05T12:00:00Z",
+            "choice" : "continue",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "returned",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "answering the welcome and then reading is a return",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-04T12:00:00Z",
+            "choice" : "continue",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "returned",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "answering the welcome is not reading: the reader who answered yesterday returns today",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-02T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-02",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-05T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-05",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "paused days are not reading days: no gap, and the week's two reading days were read",
+      "output" : {
+        "celebrations" : [
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-04T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-04",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-08T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-08",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-08T12:00:00Z",
+            "date" : "2027-03-08",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-08"
+      },
+      "name" : "resuming starts afresh: the reading days before the pause are not a gap",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-08T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-08",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-09T12:00:00Z",
+            "date" : "2027-03-09",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-09"
+      },
+      "name" : "a reading on a paused day is no return",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-05T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "undone",
+            "target" : "0195a7c2-0003-7000-8000-000000000003",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "an undone reading is not read: nothing to celebrate",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-04-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-01",
+            "assignment" : 1,
+            "at" : "2027-04-01T12:00:00Z",
+            "date" : "2027-04-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-05",
+            "assignment" : 5,
+            "at" : "2027-04-05T12:00:00Z",
+            "date" : "2027-04-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-05"
+      },
+      "name" : "calendar: returning after a gap",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "finishing a book: Ruth's last chapter read",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "partlyCompleted",
+            "verses" : "RUT 4:1-10",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "a part-read chapter leaves the book unfinished",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "partlyCompleted",
+            "verses" : "RUT 4:1-10",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "the part-read chapter read later finishes the book that day, and the week is kept",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a book finished before today is not finished again; every reading day read keeps the week",
+      "output" : {
+        "celebrations" : [
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "a skipped chapter leaves the book unfinished",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-01"
+      },
+      "name" : "one reading finishes two books, given in the scheme's order",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "PHM",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "book" : "JUD",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-15T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-15",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-15T12:00:00Z",
+            "date" : "2027-03-15",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-16T12:00:00Z",
+            "date" : "2027-03-16",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-17T12:00:00Z",
+            "date" : "2027-03-17",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-17"
+      },
+      "name" : "a second plan through the same book celebrates it again",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "kind" : "finishedBook"
+          },
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "kind" : "finishedPlan"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a book finished by a reading logged for an earlier day belongs to that day",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "two readings on one day finish the book once",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "finishing a plan: its last reading read; a finished plan asks nothing more this week",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedPlan"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "skipped",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-03"
+      },
+      "name" : "finishing a plan by skipping its last reading",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedPlan"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "partlyCompleted",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-09T12:00:00Z",
+            "date" : "2027-03-09",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-09"
+      },
+      "name" : "a plan finished before today: reading it again is no return and no second finish, but the book it completes is",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-04-01T12:00:00Z",
+            "behavior" : "calendar",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-month",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "start" : "2027-04-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-01",
+            "assignment" : 1,
+            "at" : "2027-04-01T12:00:00Z",
+            "date" : "2027-04-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-02",
+            "assignment" : 2,
+            "at" : "2027-04-02T12:00:00Z",
+            "date" : "2027-04-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-03",
+            "assignment" : 3,
+            "at" : "2027-04-03T12:00:00Z",
+            "date" : "2027-04-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "appointed" : "2027-04-04",
+            "assignment" : 4,
+            "at" : "2027-04-04T12:00:00Z",
+            "date" : "2027-04-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-04-04"
+      },
+      "name" : "calendar: finishing a book, and never the plan; the first week counts from the start",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "a rhythm is kept only on the week's last reading day",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a reading day not read: the week is not kept, and nothing is said of it; Ruth is finished",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              3,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "reading days 1, 3 and 5: the rest days between are not asked about",
+      "output" : {
+        "celebrations" : [
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-05T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-05",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a week with one reading day says nothing",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-03T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-03",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "the first week counts from the start",
+      "output" : {
+        "celebrations" : [
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-03T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-03",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "paused",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-04T12:00:00Z",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "from" : "2027-03-04",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "resumed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "a paused day is not asked about",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-06T12:00:00Z",
+            "date" : "2027-03-06",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-07T12:00:00Z",
+            "date" : "2027-03-07",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "two plans: Saturday is a reading day of the second, so Friday keeps nothing yet",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              6,
+              7
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-06T12:00:00Z",
+            "date" : "2027-03-06",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-07T12:00:00Z",
+            "date" : "2027-03-07",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-07"
+      },
+      "name" : "two plans: a reading day of either is a reading day, and the week ends on Sunday",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "kind" : "finishedBook"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-02T12:00:00Z",
+            "date" : "2027-03-02",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-03T12:00:00Z",
+            "date" : "2027-03-03",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-04T12:00:00Z",
+            "date" : "2027-03-04",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "ended",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-04"
+      },
+      "name" : "an ended enrollment has no celebrations, and its days are not asked about",
+      "output" : {
+        "celebrations" : [
+
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "enrolled",
+            "plan" : "invented-short",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "two plans: each one's celebrations in the order they were started",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          },
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "book" : "PHM",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "kind" : "finishedBook"
+          },
+          {
+            "book" : "JUD",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000b",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-08T12:00:00Z",
+            "date" : "2027-03-08",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-09T12:00:00Z",
+            "date" : "2027-03-09",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-10T12:00:00Z",
+            "date" : "2027-03-10",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-11T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-05"
+      },
+      "name" : "the example: on Friday the reader has returned and finished Ruth",
+      "output" : {
+        "celebrations" : [
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "returned"
+          },
+          {
+            "book" : "RUT",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          }
+        ]
+      }
+    },
+    {
+      "input" : {
+        "events" : [
+          {
+            "at" : "2027-03-01T12:00:00Z",
+            "behavior" : "pace",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0001-7000-8000-000000000001",
+            "kind" : "enrolled",
+            "plan" : "invented-ruth-jonah",
+            "readingDays" : [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "start" : "2027-03-01",
+            "version" : 1,
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 1,
+            "at" : "2027-03-01T12:00:00Z",
+            "date" : "2027-03-01",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0002-7000-8000-000000000002",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 2,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0003-7000-8000-000000000003",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 3,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0004-7000-8000-000000000004",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 4,
+            "at" : "2027-03-05T12:00:00Z",
+            "date" : "2027-03-05",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0005-7000-8000-000000000005",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 5,
+            "at" : "2027-03-08T12:00:00Z",
+            "date" : "2027-03-08",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0006-7000-8000-000000000006",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 6,
+            "at" : "2027-03-09T12:00:00Z",
+            "date" : "2027-03-09",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0007-7000-8000-000000000007",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 7,
+            "at" : "2027-03-10T12:00:00Z",
+            "date" : "2027-03-10",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0008-7000-8000-000000000008",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          },
+          {
+            "assignment" : 8,
+            "at" : "2027-03-11T12:00:00Z",
+            "date" : "2027-03-11",
+            "device" : "phone",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "id" : "0195a7c2-0009-7000-8000-000000000009",
+            "kind" : "completed",
+            "zone" : "America/Chicago"
+          }
+        ],
+        "today" : "2027-03-11"
+      },
+      "name" : "the example: on Thursday Jonah and the plan are finished, and the week is kept",
+      "output" : {
+        "celebrations" : [
+          {
+            "book" : "JON",
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedBook"
+          },
+          {
+            "enrollment" : "0195a7c1-0000-7000-8000-00000000000a",
+            "kind" : "finishedPlan"
+          },
+          {
+            "kind" : "keptRhythm"
+          }
+        ]
+      }
+    }
+  ],
+  "fixture" : "celebrations",
+  "plans" : [
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "RUT 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "RUT 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "RUT 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "RUT 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "JON 1"
+        },
+        {
+          "id" : 6,
+          "reading" : "JON 2"
+        },
+        {
+          "id" : 7,
+          "reading" : "JON 3"
+        },
+        {
+          "id" : 8,
+          "reading" : "JON 4"
+        }
+      ],
+      "behaviors" : [
+        "pace",
+        "finish-date"
+      ],
+      "id" : "invented-ruth-jonah",
+      "readingDays" : 5,
+      "schedule" : "sequence",
+      "version" : 1
+    },
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "JUD 1; PHM 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "OBA 1"
+        },
+        {
+          "id" : 3,
+          "reading" : "RUT 1-4"
+        }
+      ],
+      "behaviors" : [
+        "pace",
+        "finish-date"
+      ],
+      "id" : "invented-short",
+      "readingDays" : 7,
+      "schedule" : "sequence",
+      "version" : 1
+    },
+    {
+      "assignments" : [
+        {
+          "id" : 1,
+          "reading" : "RUT 1"
+        },
+        {
+          "id" : 2,
+          "reading" : "RUT 2"
+        },
+        {
+          "id" : 3,
+          "reading" : "RUT 3"
+        },
+        {
+          "id" : 4,
+          "reading" : "RUT 4"
+        },
+        {
+          "id" : 5,
+          "reading" : "JON 1"
+        },
+        {
+          "id" : 6,
+          "reading" : "JON 2"
+        },
+        {
+          "id" : 7,
+          "reading" : "JON 3"
+        },
+        {
+          "id" : 8,
+          "reading" : "JON 4"
+        },
+        {
+          "id" : 9,
+          "reading" : "ECC 1"
+        },
+        {
+          "id" : 10,
+          "reading" : "ECC 2"
+        },
+        {
+          "id" : 11,
+          "reading" : "ECC 3"
+        },
+        {
+          "id" : 12,
+          "reading" : "ECC 4"
+        },
+        {
+          "id" : 13,
+          "reading" : "ECC 5"
+        },
+        {
+          "id" : 14,
+          "reading" : "ECC 6"
+        },
+        {
+          "id" : 15,
+          "reading" : "ECC 7"
+        },
+        {
+          "id" : 16,
+          "reading" : "ECC 8"
+        },
+        {
+          "id" : 17,
+          "reading" : "ECC 9"
+        },
+        {
+          "id" : 18,
+          "reading" : "ECC 10"
+        },
+        {
+          "id" : 19,
+          "reading" : "ECC 11"
+        },
+        {
+          "id" : 20,
+          "reading" : "ECC 12"
+        },
+        {
+          "id" : 21,
+          "reading" : "SNG 1"
+        },
+        {
+          "id" : 22,
+          "reading" : "SNG 2"
+        },
+        {
+          "id" : 23,
+          "reading" : "SNG 3"
+        },
+        {
+          "id" : 24,
+          "reading" : "SNG 4"
+        },
+        {
+          "id" : 25,
+          "reading" : "SNG 5"
+        },
+        {
+          "id" : 26,
+          "reading" : "SNG 6"
+        },
+        {
+          "id" : 27,
+          "reading" : "SNG 7"
+        },
+        {
+          "id" : 28,
+          "reading" : "SNG 8"
+        },
+        {
+          "id" : 29,
+          "reading" : "HAB 1"
+        },
+        {
+          "id" : 30,
+          "reading" : "HAB 2"
+        },
+        {
+          "id" : 31,
+          "reading" : "HAB 3"
+        }
+      ],
+      "behaviors" : [
+        "calendar"
+      ],
+      "id" : "invented-month",
+      "readingDays" : 7,
+      "schedule" : "day-of-month",
+      "version" : 1
+    }
+  ],
+  "version" : 1
+}

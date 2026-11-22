@@ -958,7 +958,19 @@
     "You're offline" : {
 
     },
+    "You've finished %@." : {
+
+    },
+    "You've picked up where you left off." : {
+
+    },
     "You've reached the end of this plan." : {
+
+    },
+    "You've read all of %@." : {
+
+    },
+    "You've read on each of your reading days this week." : {
 
     },
     "You've rejoined today's readings." : {

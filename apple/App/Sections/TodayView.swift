@@ -39,6 +39,7 @@ struct TodayView: View {
                 } else if enrollments.isEmpty {
                     welcome
                 } else {
+                    let noticed = celebrations
                     ForEach(enrollments, id: \.id) { enrollment in
                         if let plan = library.plan(of: enrollment), let formatter = library.formatter {
                             // After a gap, the welcome comes first (P8.7).
@@ -49,8 +50,12 @@ struct TodayView: View {
                             }
                             TodayCard(
                                 enrollment: enrollment, plan: plan, today: library.today, formatter: formatter,
-                                act: act, todaysMark: todaysMark(enrollment), undoMark: undoMark)
+                                act: act, todaysMark: todaysMark(enrollment), undoMark: undoMark,
+                                celebrations: noticed.compactMap { words($0, in: enrollment, plan: plan) })
                         }
+                    }
+                    if noticed.contains(.keptRhythm) {
+                        Celebrations(words: [String(localized: "You've read on each of your reading days this week.")])
                     }
                 }
                 if let failure {
@@ -81,6 +86,25 @@ struct TodayView: View {
         // offers Undo for today's mark instead.
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { lastAction = nil }
+        }
+    }
+
+    /// What today quietly notices (P11.2), from the engine.
+    private var celebrations: [Celebration] {
+        guard let journal = library.journal, let catalog = library.catalog else { return [] }
+        return journal.celebrations(on: library.today, in: catalog.versification)
+    }
+
+    /// A celebration about this enrollment, in words.
+    private func words(_ celebration: Celebration, in enrollment: Enrollment, plan: Plan) -> String? {
+        guard celebration.enrollment == enrollment.id else { return nil }
+        switch celebration {
+        case .returned: return String(localized: "You've picked up where you left off.")
+        case .finishedBook(let book, _):
+            let name = library.catalog?.registry.book(book)?.name(in: library.convention).name ?? book.rawValue
+            return String(localized: "You've read all of \(name).")
+        case .finishedPlan: return String(localized: "You've finished \(plan.title).")
+        case .keptRhythm: return nil
         }
     }
 
@@ -174,6 +198,8 @@ struct TodayCard: View {
     /// The last mark made today, to offer Undo for (P8.9).
     var todaysMark: JournalEvent?
     var undoMark: (JournalEvent, String) -> Void = { _, _ in }
+    /// What this plan's day quietly notices, in words (P11.2).
+    var celebrations: [String] = []
 
     @AppStorage(WayToRead.storageKey) private var wayToRead = WayToRead.physicalBible
     @State private var confirmingSkip: Slot?
@@ -195,6 +221,7 @@ struct TodayCard: View {
                     .foregroundStyle(Palette.text)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            if !celebrations.isEmpty { Celebrations(words: celebrations) }
             if let todaysMark, case .marked(let marked) = todaysMark.body {
                 let message = markMessage(
                     marked.mark,
@@ -355,6 +382,28 @@ struct TodayCard: View {
         act(
             .marked(.init(mark, assignment: slot.assignment, date: date, appointed: slot.appointed)), enrollment.id,
             message)
+    }
+}
+
+/// Quiet celebrations (docs/product.md, Progress; BUILD.md P11.2): a few
+/// words on the accent tint, never confetti, a badge or a count of days.
+struct Celebrations: View {
+    let words: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
+            ForEach(words, id: \.self) { line in
+                Text(verbatim: line)
+                    .typeStyle(TypeScale.body)
+                    .foregroundStyle(Palette.text)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Spacing.m)
+        .padding(.vertical, Spacing.s)
+        .background(Palette.accentTint, in: RoundedRectangle(cornerRadius: Radius.chip, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }
 

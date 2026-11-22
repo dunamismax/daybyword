@@ -8,7 +8,7 @@
   import CopyButton from "./CopyButton.svelte";
   import ReferenceBlock from "./ReferenceBlock.svelte";
 
-  let { cards }: { cards: readonly TodayCard[] } = $props();
+  let { cards, rhythm }: { cards: readonly TodayCard[]; rhythm?: string } = $props();
 </script>
 
 {#each cards as card (card.enrollment)}
@@ -114,6 +114,13 @@
       <p class="mb-0 text-label text-text-muted">{card.plan}</p>
       <p class="mt-xxs text-reference-list font-semibold">{card.message}</p>
     {/if}
+    {#if card.celebrations}
+      <div class="mt-s rounded-chip bg-accent-tint px-m py-s">
+        {#each card.celebrations as words (words)}
+          <p class="my-0">{words}</p>
+        {/each}
+      </div>
+    {/if}
     {#if card.lastMark}
       <div class="mt-s flex items-center justify-between gap-s">
         <span class="text-text-muted">{card.lastMark.message}</span>
@@ -132,3 +139,6 @@
     {/if}
   </article>
 {/each}
+{#if rhythm}
+  <p class="mb-m rounded-chip bg-accent-tint px-m py-s">{rhythm}</p>
+{/if}

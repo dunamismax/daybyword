@@ -1485,3 +1485,31 @@ until launch (P18.5).
 `Book` would say Day by Word published the text, `Course` that it
 teaches, `ItemList` that the readings are items for sale or ranking. The
 item asks for structured data "only where accurate", so there is none.
+
+### E56. Quiet celebrations: worked out on the day, a plan's own books, shown on Today
+
+*2026-11-22, agent (P11.2).* The engine gives a date's celebrations
+(docs/engine.md, "Quiet celebrations"); nothing is stored, and each rests
+on marks *dated* that day, so it is there all that day and gone the next,
+and both runtimes answer `celebrations.json`.
+
+- **When.** By the mark's date, not the moment it was made: the engine
+  never reads `at`, and a reading logged for an earlier day is that day's,
+  as everywhere else. A book or plan finished by logging an earlier day is
+  therefore not celebrated on Today; the plan's own status already says it
+  has come to its end.
+- **A book is finished in a plan.** Coverage for this is the enrollment's
+  own, not the journal's: across plans, a second year through the Bible
+  would never celebrate a book again. Only every verse finishes a book, so
+  a skipped or part-read chapter leaves it open until it is read.
+- **Returning** uses the welcome's gap, except that answering the welcome
+  is not reading, and a first reading is not a return.
+- **A rhythm** is the reader's own week, Monday to Sunday, told on its last
+  reading day, so it is said at most once a week; a week needs two reading
+  days (*app convention*), and its reading days are the streak's. It is a
+  sentence about the week just kept, never a running count, so it is not
+  the streak (D17, off by default) under another name.
+- **Where.** On Today, where the reader marks: a plan's celebrations in its
+  card, on the accent tint `docs/design.md` sets aside for them, and the
+  week's rhythm once, after the cards. Progress stays a record. Not in
+  reminders, the widget or notifications.

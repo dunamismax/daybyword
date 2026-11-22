@@ -883,6 +883,38 @@ struct ProgressOutput: Codable, Equatable, Sendable {
     }
 }
 
+// MARK: Celebrations
+
+struct CelebrationsOutput: Codable, Equatable, Sendable {
+    struct Celebration: Codable, Equatable, Sendable {
+        var kind: String
+        /// Absent for the week's rhythm.
+        var enrollment: String?
+        /// The book finished, for `finishedBook`.
+        var book: String?
+    }
+
+    var celebrations: [Celebration]
+}
+
+@Test func celebrationsMatchTheirFixture() throws {
+    let english = try loadEnglish()
+    try checkFixture("celebrations") { (input: TodayInput, plans: [PlanVersion]) -> CelebrationsOutput in
+        let journal = try Journal(wire: input.events, plans: plans)
+        let date = try CivilDate(input.today)
+        return CelebrationsOutput(
+            celebrations: journal.celebrations(on: date, in: english).map {
+                switch $0 {
+                case .returned(let enrollment): .init(kind: "returned", enrollment: enrollment.rawValue)
+                case .finishedBook(let book, let enrollment):
+                    .init(kind: "finishedBook", enrollment: enrollment.rawValue, book: book.rawValue)
+                case .finishedPlan(let enrollment): .init(kind: "finishedPlan", enrollment: enrollment.rawValue)
+                case .keptRhythm: .init(kind: "keptRhythm")
+                }
+            })
+    }
+}
+
 // MARK: Reminders
 
 struct RemindersInput: Codable, Sendable {

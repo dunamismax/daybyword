@@ -8,6 +8,7 @@ import {
   assignmentPositions,
   bibleLink,
   bookName,
+  celebrations as celebrationsOn,
   coverage,
   bibleTranslation,
   chaptersPassage,
@@ -174,6 +175,8 @@ export interface TodayCard {
   readonly readings: readonly TodayReading[];
   /** On a short month's last day, the days it does not appoint. */
   readonly note?: string;
+  /** What this plan's day quietly notices, in words (P11.2). */
+  readonly celebrations?: readonly string[];
   /** The reader's last action, or else the last mark made today, to take back. */
   readonly lastMark?: {
     readonly event: EventID;
@@ -221,6 +224,45 @@ function markMessage(kind: MarkKind, reference: string, on?: CivilDate): string 
     case "skipped":
       return text("today.marked-skipped", { reference });
   }
+}
+
+/** Today's cards, and the week's rhythm when the reader kept it (P11.2). */
+export interface TodayPage {
+  readonly cards: readonly TodayCard[];
+  readonly rhythm?: string;
+}
+
+/** Today's cards with what each plan's day quietly notices, and the week's rhythm. */
+export function todayPage(
+  catalog: ServedCatalog,
+  journal: Journal,
+  date: CivilDate,
+  options: ReadingOptions = {},
+): TodayPage {
+  const noticed = celebrationsOn(journal, date, catalog.versification);
+  const cards = todayCards(catalog, journal, date, options).map((card) => {
+    const words = noticed.flatMap((celebration) => {
+      if (celebration.kind === "keptRhythm" || celebration.enrollment !== card.enrollment)
+        return [];
+      switch (celebration.kind) {
+        case "returned":
+          return [text("celebration.returned")];
+        case "finishedBook": {
+          const book = catalog.registry.book(celebration.book);
+          const name = book
+            ? bookName(book, options.convention ?? "common").name
+            : celebration.book;
+          return [text("celebration.finished-book", { book: name })];
+        }
+        case "finishedPlan":
+          return [text("celebration.finished-plan", { plan: card.plan })];
+      }
+    });
+    return words.length > 0 ? { ...card, celebrations: words } : card;
+  });
+  return noticed.some((celebration) => celebration.kind === "keptRhythm")
+    ? { cards, rhythm: text("celebration.kept-rhythm") }
+    : { cards };
 }
 
 /** Today for every plan the reader follows and has not ended, in the order started. */

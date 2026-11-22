@@ -712,6 +712,76 @@ understanding, and no wording may suggest they do (AGENTS.md §3).
 weekend, read Monday. On Tuesday morning the streak is 3: the weekend
 were rest days, and Tuesday is not yet counted either way.
 
+## Quiet celebrations
+
+Day by Word notices four things the reader did and says each in a
+sentence, on the day it happened (BUILD.md P11.2): returning after a gap,
+finishing a book, finishing a plan, and keeping the reading days they
+chose for a week. They are words, never confetti, badges or points; they
+never compare the reader with anyone, count days, or mention what was not
+read; and like every record they describe activity.
+
+For a date *D* the engine lists them: for each enrollment in the order
+the reader started them, its return, the books it finished (in the
+scheme's book order) and its finishing; then the week's rhythm. An
+enrollment that ended on or before *D* has none. Each rests on marks
+*dated* *D*, the day the reading happened, so a reading logged today for
+an earlier day belongs to that day, and a celebration is for its own day,
+not every day after. Nothing is stored: the list is worked out again
+whenever it is asked for.
+
+**The record before a date** is what the enrollment's active marking
+events dated before it give alone, as if every mark dated on or after it
+were left out; **the record through** a date includes the marks dated on
+it.
+
+- **Returning after a gap** (`returned`): the reader read in the
+  enrollment on *D* (an active `completed` or `partlyCompleted` dated
+  *D*) and on an earlier date; *D* is on or after the start and not a
+  paused day; the plan was not finished in the record before *D*; and two
+  or more reading days lie strictly between the anchor and *D*. The anchor
+  is the latest of the day before the start, the last earlier date the
+  reader read in it, and the day before the last active `resumed` whose
+  `from` is on or before *D*. This is the gap of "Returning after a break"
+  as it stood that morning, except that answering the welcome is not
+  reading: a reader who answered it yesterday and reads today returns
+  today. A first reading is a beginning, not a return. "You've picked up
+  where you left off."
+- **Finishing a book** (`finishedBook`, with the book): every verse of the
+  book is in the enrollment's own coverage ("Progress", for this
+  enrollment alone) in the record through *D*, and was not in the record
+  before *D*. Because the coverage is the enrollment's own, a second plan
+  through the same book celebrates it again. A skipped or part-read
+  chapter leaves the book unfinished until it is read. "You've read all of
+  Ruth."
+- **Finishing a plan** (`finishedPlan`): a sequence with no unread reading
+  in the record through *D* that had one in the record before *D*. A skip
+  of the last reading finishes it too, since the plan has come to its end;
+  how much was read is counted apart, on Progress. A calendar plan never
+  finishes. "You've finished Gospels at your pace."
+- **Keeping a rhythm** (`keptRhythm`, across enrollments): in *D*'s week
+  (Monday to Sunday, ISO 8601), *D* is the last reading day, the week has
+  at least two, and the reader read on every one of them up to *D*. A
+  reading day is one of any enrollment, as for the recent days and the
+  streak (a finished sequence asks nothing after its last marked day), and
+  a day is read when an active `completed` or `partlyCompleted` in any
+  enrollment is dated on it. Rest days and paused days are not asked
+  about. A week with one reading day says nothing (*app convention*: a
+  rhythm takes at least two). "You've read on each of your reading days
+  this week."
+
+Nothing is said about a day not read; no celebration mentions the streak
+or appears in a notification.
+
+*Example:* reading days 1 to 5, in a plan of Ruth and then Jonah. The
+reader reads Ruth 1 on Monday 2027-03-01, nothing from Tuesday to
+Thursday, and Ruth 2 to 4 on Friday 5 March. On Friday they have returned
+(three reading days lay between Monday and Friday) and finished Ruth; the
+week is not kept, since Tuesday to Thursday were not read. If they read
+Jonah 1 to 4 on Monday to Thursday of the next week and Jonah's last
+chapter was the plan's last reading, Thursday finishes Jonah and the plan,
+and keeps the week: once the plan is finished, Friday asks nothing.
+
 ## Reminders
 
 The engine works in wall-clock times and never in instants: it is given
