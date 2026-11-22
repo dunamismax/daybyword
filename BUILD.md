@@ -642,27 +642,25 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-21, this session:** P8.10b (the web's printable week, print
-  stylesheet with light tokens on paper), then the app's first light:
-  plan list and pages, the start flow, Today, marking with undo and redo,
-  physical Bible mode, the welcome back, Progress, and Settings' export,
-  delete and book names. Each item's note says what is the web's (P8.10c).
-- **The app's data:** `JournalStore` (ReadingData) keeps wire-form events
-  in Application Support; `Library` (apple/App/Model) folds them (E47).
-  It moves to the App Group with the widget (P8.9, P12.1).
-- **Testing the app:** `-today YYYY-MM-DD` pins the date and
-  `-freshJournal YES` starts empty (Debug only); UI tests pass the latter.
-  Another session's app may hold the first booted simulator; use
-  `scripts/sim-destination.sh`'s device.
-- **Deployed bbc97fb** after `make check-full` passed (tours, Linux,
-  browser engine); `make test-ui` was not run on its own.
-- **Next:** P8.5 needs a device test (see Now). P8.10c needs E38's choice
-  for client code under the strict CSP; the app's screens are the model.
-- **Signing:** the team is in `Base.xcconfig` now (E48); `make
-  check-signing` says whether a Mac is ready. No Secrets.xcconfig needed.
-- **TestFlight:** build 96 (8872016, `make check-full` passed) uploaded
-  2026-11-21 after the owner accepted Apple's updated license; Xcode
-  reported "Upload succeeded". Its processing and arrival on a device are
-  not yet confirmed. Build 25's upload was never verified.
-- **Open:** P7.3 waits for the first verified daily snapshot. Stage by
-  path (§8).
+- **2026-11-21, evening session:** P8.3 and P8.5 (YouVersion links, E49;
+  its device test waits on the owner), P8.8 (reminders, E50), P8.9 (the
+  widget and the App Group, E51), and P8.10c and P8.10d (the web's start,
+  Today, marking, welcome back, Progress and Settings, E52).
+- **Before the next TestFlight build:** the app and widget now carry the
+  `group.com.daybyword.app` entitlement. Register it through automatic
+  signing (P12.1): `make archive` with `-allowProvisioningUpdates` should;
+  if signing fails, the App Group needs adding to the App ID.
+- **The web's record** is in the browser's IndexedDB (`reading.js`); the
+  compute endpoints (`/api/v1/today`, `events`, `progress`, `preview`)
+  fold it with the catalog and keep nothing. Body limit 1M in the unit.
+- **Testing:** `?today=YYYY-MM-DD` on /today, /progress and a start page;
+  `-today` and `-freshJournal YES` in the app. After `make build-web`, the
+  Browser pane may run cached `/assets/*.js` for an hour; reload them.
+  Reminders fire by the real clock; `xcrun simctl push` tests actions.
+- **Next:** P8.11 offline. The web needs event ids made in the browser
+  (E52's cost), so a client build of the domain module (E38's first
+  option) or a service worker that queues actions.
+- **Open:** P8.13 waits only on seeing the app's Export share sheet open
+  (it never has under the Simulator's taps). P7.3 waits for the daily
+  snapshot (2026-11-22 07:30 UTC). P8.14 needs a TestFlight build with
+  this session's work. Stage by path (§8).
