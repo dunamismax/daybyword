@@ -138,7 +138,7 @@ struct SettingsView: View {
 
                 Section {
                     if let exportFile {
-                        ShareLink(item: exportFile) { Text("Export my reading record") }
+                        Button("Export my reading record") { ShareSheet.present(exportFile) }
                     }
                     Button("Delete everything on this device", role: .destructive) { confirmingDelete = true }
                     if let failure {
