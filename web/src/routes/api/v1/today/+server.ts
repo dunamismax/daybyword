@@ -5,8 +5,19 @@
 import { render } from "svelte/server";
 import TodayCards from "#lib/components/TodayCards.svelte";
 import { servedCatalog } from "#lib/server/catalog/read.ts";
-import { journalRequest, ReadingRequestError, todayCards } from "#lib/server/reading.ts";
-import { namingConventions, type NamingConvention } from "#lib/domain/index.ts";
+import {
+  journalRequest,
+  ReadingRequestError,
+  todayCards,
+  type ReadingOptions,
+} from "#lib/server/reading.ts";
+import {
+  addDays,
+  civilDateText,
+  namingConventions,
+  type CivilDate,
+  type NamingConvention,
+} from "#lib/domain/index.ts";
 import { readJSON, refused } from "../request.ts";
 
 export const POST = async ({ request }: { request: Request }) => {
@@ -21,16 +32,25 @@ export const POST = async ({ request }: { request: Request }) => {
     const names = fields["names"];
     const way = fields["way"];
     const translation = Number(fields["translation"]);
-    const cards = todayCards(catalog, journal, today, {
+    const options: ReadingOptions = {
       convention: namingConventions.includes(names as NamingConvention)
         ? (names as NamingConvention)
         : "common",
       way: way === "youVersion" || way === "otherApp" ? way : "physicalBible",
       ...(Number.isInteger(translation) && translation > 0 ? { translation } : {}),
       ...(typeof fields["lastAction"] === "string" ? { lastAction: fields["lastAction"] } : {}),
+    };
+    const page = (date: CivilDate) => {
+      const cards = todayCards(catalog, journal, date, options);
+      return cards.length > 0 ? render(TodayCards, { props: { cards } }).body : "";
+    };
+    // Today, and the six days after it as things stand now, which the
+    // browser keeps for when it is offline (P8.11, E53).
+    const ahead = [1, 2, 3, 4, 5, 6].map((days) => {
+      const date = addDays(today, days);
+      return { date: civilDateText(date), html: page(date) };
     });
-    const html = cards.length > 0 ? render(TodayCards, { props: { cards } }).body : "";
-    return new Response(JSON.stringify({ html, plans: cards.length }), {
+    return new Response(JSON.stringify({ html: page(today), ahead }), {
       headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
     });
   } catch (error) {

@@ -12,6 +12,10 @@
 </svelte:head>
 
 <h1 class="mb-l">{text("section.today")}</h1>
+<div class="card mb-m" role="status" data-today-offline hidden>
+  <p class="mt-0 font-semibold">{text("component.offline-title")}</p>
+  <p class="mb-0 text-text-muted">{text("component.offline-message")}</p>
+</div>
 <div
   id="today"
   aria-live="polite"

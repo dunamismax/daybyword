@@ -1,7 +1,7 @@
 {
   "extends": "$app/tsconfig",
   "include": ["src", "test", "scripts", "*.ts", "*.js"],
-  "exclude": ["build", "node_modules"],
+  "exclude": ["build", "node_modules", "src/service-worker"],
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,

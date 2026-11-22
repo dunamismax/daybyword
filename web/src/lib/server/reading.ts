@@ -14,6 +14,7 @@ import {
   daysInMonth,
   eventIDMilliseconds,
   foldJournal,
+  isEventID,
   Journal,
   JournalError,
   journalEventWire,
@@ -678,7 +679,17 @@ export function newEvents(
         .map((event) => eventIDMilliseconds(event.id))
         .reduce((a, b) => Math.max(a, b), eventIDMilliseconds(enrollment.id));
       const record = { enrollment: enrollment.id, at, zone, device };
-      const id = newID(Math.max(now.getTime(), latest + 1));
+      // A mark made offline comes with the id the browser made for it then
+      // (P8.11, E53), so sending it twice changes nothing.
+      const proposed = action["id"];
+      if (proposed !== undefined && (typeof proposed !== "string" || !isEventID(proposed))) {
+        throw new ReadingRequestError("id is not an event id");
+      }
+      if (typeof proposed === "string" && journal.events.some((event) => event.id === proposed)) {
+        return [];
+      }
+      const id =
+        typeof proposed === "string" ? proposed : newID(Math.max(now.getTime(), latest + 1));
       if (action["kind"] === "return") {
         // The answer to the welcome the engine offers today, and no other.
         const offer = welcomeOf(enrollment, today)?.offers.find(

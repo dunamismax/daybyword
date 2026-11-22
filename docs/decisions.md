@@ -1402,3 +1402,32 @@ describes for 1.0; the strict CSP is untouched; no package or build step
 is added. **Cost:** each tap is a round trip, and offline marking
 (P8.11) will need the browser to make event ids itself; when it does, a
 client build of the domain module (E38's first option) is the way.
+
+### E53. Offline: a service worker for the site, kept days for Today, marks queued with their ids
+
+*2026-11-21, agent (P8.11).* The app needs no network at all: its catalog
+is bundled and its journal is on the device; the only address it builds
+is the Bible.com link it hands to the system (an audit of `apple/` and
+the packages found no other). On the web:
+
+- **`src/service-worker/index.ts`** keeps each release's own files and
+  the pages a reader opens offline (`/today`, `/progress`, `/settings`):
+  files from its cache, pages from the network first and its cache when
+  there is none. It never touches `/api/`. `reading.js` registers it;
+  SvelteKit's own registration is off (`serviceWorker.register: false`),
+  since no page loads its client runtime (E38).
+- **`/api/v1/today` also answers the six days after today**, as things
+  stand, and `reading.js` keeps all seven in `localStorage`
+  (`dbw.today-ahead`), so Today opens offline for a week.
+- **A mark made with no connection** (a network error, not a refusal) is
+  kept in IndexedDB's `pending` store with an id made then, laid out as
+  `makeEventID` lays it out, and the date it was made; it is sent, oldest
+  first, when Today next loads or the browser comes back online. The
+  server keeps a proposed id, and makes nothing of one it already has, so
+  sending twice is harmless. Undo and a welcome's answer wait for a
+  connection. Today says it is offline in the table's words.
+- Deleting everything also clears the pending marks and the kept days.
+
+**Why:** the smallest change that keeps the reader's place offline without
+moving the rules into the browser; the cost is that marks made offline
+are shown as kept, not folded, until they are sent.

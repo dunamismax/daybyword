@@ -16,6 +16,9 @@ export default defineConfig({
       // precompress writes .br and .gz beside each static asset; the Node
       // server serves them, and Caddy proxies to it (docs/deploy.md).
       adapter: adapter({ out: "build", precompress: true }),
+      // /assets/reading.js registers src/service-worker.ts itself (P8.11),
+      // as no page loads SvelteKit's client runtime (E38).
+      serviceWorker: { register: false },
       // The strict policy (docs/decisions.md E11, E36): nothing from another
       // host, no inline script or style. SvelteKit adds a nonce (or, on a
       // prerendered page, a hash) for the scripts it writes itself; server.ts

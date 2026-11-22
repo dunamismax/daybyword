@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | Phase 8, first light (M2): 10 of 14 items done (P8.1–P8.4, P8.6–P8.10, P8.12), with P8.5 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
-| **Next item** | **P8.11** (offline: the app in airplane mode; the web's cached coming readings and marks queued offline, E52), then **P8.13**'s last check and **P8.14** (ship first light) |
+| **Phase** | Phase 8, first light (M2): 11 of 14 items done (P8.1–P8.4, P8.6–P8.12), with P8.5 and P8.13 part-built. Phase 10 (the launch catalog, in parallel): 3 of 9 |
+| **Next item** | **P8.14** (ship first light: deploy and a TestFlight build, once the owner's steps below are done), **P8.13**'s last check (the app's Export share sheet), then Phase 9 (choosing a plan) |
 | **Also open** | **P7.3**: tick it once the first daily ubuntu-vm-backup snapshot with the `daybyword` database is verified (2026-11-22 07:30 UTC). **P8.5** is built and waits only for its device test |
 | **Waiting on the owner** | **The deploy of this session's web work**: `make check-full` passed at 8ca3610 (2026-11-21), but `make deploy` stopped at SSH because Tailscale asked for an extra sign-in check on the owner's account. Once the owner approves it, `make deploy` runs as usual; nothing on the host changed. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters; say what each did (docs/destinations.md, "What was tested"). Build 96 was uploaded to TestFlight on 2026-11-21 and is processing; Apple emails when it is ready. |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18. Starting a plan, Today, marking, the welcome back, Progress and the new Settings on the web (P8.10c, P8.10d) are committed; their deploy waits on the Tailscale check above. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked): Plans lists the three plans, each with its page and a printable week (P8.10b), from PostgreSQL 18. Starting a plan, Today, marking, the welcome back, Progress, the new Settings and offline (P8.10c, P8.10d, P8.11) on the web are committed; their deploy waits on the Tailscale check above. Deployed 2026-11-21 at bbc97fb after `make check-full` passed; the candidate, the live port and https://daybyword.com passed check-live, and the 22 other site names answered as before. `https://daybyword.com/healthz` names the serving commit |
 | **Last updated** | 2026-11-21 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -136,7 +136,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 5 | The reading engine | M1 Foundation | 11 | 11 |
 | 6 | Church calendars and lectionaries | after 1.0 (roadmap) | — | — |
 | 7 | Hosting at daybyword.com | M1 Foundation | 6 | 5 |
-| 8 | First light | M2 First light | 14 | 10 |
+| 8 | First light | M2 First light | 14 | 11 |
 | 9 | Choosing a plan | M3 Version 1.0 | 5 | 0 |
 | 10 | The launch catalog | M3 Version 1.0 | 9 | 3 |
 | 11 | Progress and history | M3 Version 1.0 | 5 | 0 |
@@ -517,7 +517,8 @@ list.
     - *Result (agent, 2026-11-21):* E52: `static/assets/reading.js` keeps the journal in IndexedDB and sends it to `POST /api/v1/today` (Today's cards, rendered by `TodayCards.svelte`) and `POST /api/v1/events` (an action's new events, made and checked by the domain module), which keep nothing and log route and status only; the production body limit is 1M. `/plans/<id>/start` starts a plan (start date or today's reading, behavior, finish and limit, reading days); Today has Mark read, Copy reference, Mark part read, Skip (confirmed) and Undo for the day's last mark; Settings' "Your data" says what is kept where, and exports and deletes. Six tests in `web/test/reading.test.ts`; routes.json is version 4. Seen in a browser against the production build: started Gospels at your pace, Today before and on the start date, Mark read and Undo, export's file and delete, at desktop width in dark and at phone width, with no console errors or CSP violations.
   - [x] **P8.10d** The web's counterparts of the app's first light: log an earlier day (P8.4), Open in YouVersion with the translation and how you read (P8.5, P8.6's paper lines), the welcome back after a gap (P8.7), Progress (P8.12), book names in Settings (P8.13), and the finish date's load previewed before starting (P8.2b). *(Added 2026-11-21 from P8.10c's split.)*
     - *Result (agent, 2026-11-21):* Settings' how you read, translation and book names (settings.json version 2, checked by both platforms); Today's place in print, Open in YouVersion with "Opens at …", or the way to choose a translation; Log an earlier day (a calendar plan's earlier day is that date's reading); Undo, then Redo, for the tab's last action (sessionStorage); the welcome back with each choice's effect and a confirmation (`return` action, only a choice offered today); Progress (`POST /api/v1/progress`: the week in words and symbols, readings by state, next reading, finish); and the finish date's preview (`POST /api/v1/preview`, with the later date that fits), a start beyond the limit being refused. Fourteen tests in `web/test/reading.test.ts`. Seen in a browser against the production build.
-- [ ] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans (cached coming readings, from P8.10c), queues marks made offline with their event ids, and says clearly when it is offline. *(E52: event ids made offline need the domain module in the browser.)*
+- [x] **P8.11** Offline: the app works fully in airplane mode. The web keeps Today and the coming week for the active plans (cached coming readings, from P8.10c), queues marks made offline with their event ids, and says clearly when it is offline. *(E52: event ids made offline need the domain module in the browser.)*
+  - *Result (agent, 2026-11-21):* E53. The app makes no network request (audited: its only address is the Bible.com link handed to the system), so everything but opening a link works offline. The web: a service worker keeps each release's files and Today, Progress and Settings; `/api/v1/today` answers six more days, kept in `localStorage`; a mark made with no connection waits in IndexedDB with an id made then and its date, and is sent when Today next loads or the browser is online again (the server keeps the id and ignores a repeat; one test). Seen in a browser against the production build with the server stopped: Today opened from the service worker with "You're offline", a mark was kept, and on restart it was sent with its id and Today showed the day read. *Not done here:* a device in airplane mode, for the app and the web (P17.5).
 - [x] **P8.12** Progress, first version: assignments completed, recent reading days, and the next reading; a quiet welcome after returning from a gap.
   - *Result (agent, 2026-11-21):* in the app: a seven-day strip (read, a reading day, a rest day, each a symbol and words), and for each plan its readings by state, the next reading and the projected finish, from the engine's progress rules. The welcome after a gap is on Today (P8.7), where docs/product.md puts it. Seen in the Simulator. The web's is with P8.10c.
 - [ ] **P8.13** Settings, first version: reminders, the way to read and translation, book-name convention (D29), appearance, export of all personal data (JSON), delete all data, about, and version.
@@ -657,10 +658,11 @@ only when Phase 18 is finished or an item points there.
   `-today` and `-freshJournal YES` in the app. After `make build-web`, the
   Browser pane may run cached `/assets/*.js` for an hour; reload them.
   Reminders fire by the real clock; `xcrun simctl push` tests actions.
-- **Next:** P8.11 offline. The web needs event ids made in the browser
-  (E52's cost), so a client build of the domain module (E38's first
-  option) or a service worker that queues actions.
-- **Deploy:** `make check-full` passed at 8ca3610; `make deploy` stopped at
+- **Offline (P8.11, E53):** a service worker keeps the site's files and
+  pages; Today keeps seven days of cards; marks made offline wait in
+  IndexedDB with their own ids. Undo and the welcome need a connection.
+- **Deploy:** `make check-full` passed at 8ca3610 (P8.11 came after; run it
+  again first); `make deploy` stopped at
   Tailscale SSH's extra check (the owner's sign-in). Nothing changed on
   the host; deploy once the owner has approved it.
 - **Open:** P8.13 waits only on seeing the app's Export share sheet open

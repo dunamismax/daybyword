@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import {
   BookRegistry,
   eventIDMilliseconds,
+  makeEventID,
   parseReading,
   Versification,
   type PlanVersion,
@@ -357,6 +358,19 @@ describe("Today, marking and undoing", () => {
     expect(() => act([], "2027-03-01", tooSoon)).toThrow(ReadingRequestError);
     expect(startPreview({ events: [], today: "2027-03-01", action: enroll }, catalog, now)).toBe(
       undefined,
+    );
+  });
+
+  it("keeps the id a mark made offline came with, and makes nothing of it twice", () => {
+    const started = act([], "2027-03-01", enroll);
+    const enrollment = cards(started, "2027-03-01")[0]?.enrollment;
+    const id = makeEventID(now.getTime() + 60_000, Array<number>(10).fill(1)) as string;
+    const mark = { kind: "mark", mark: "completed", enrollment, assignment: 1, id };
+    const marked = act(started, "2027-03-01", mark);
+    expect((marked.at(-1) as { id: string }).id).toBe(id);
+    expect(act(marked, "2027-03-01", mark)).toHaveLength(marked.length);
+    expect(() => act(started, "2027-03-01", { ...mark, id: "not-an-id" })).toThrow(
+      ReadingRequestError,
     );
   });
 });

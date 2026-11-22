@@ -8,22 +8,31 @@
 const database = "day-by-word";
 const store = "events";
 
-/** Opens the journal's database, creating its one store the first time. */
+/** Marks made offline, waiting to be sent (P8.11, E53). */
+const pendingStore = "pending";
+
+/** Opens the journal's database, creating its stores the first time. */
 function open() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(database, 1);
-    request.onupgradeneeded = () => request.result.createObjectStore(store, { keyPath: "id" });
+    const request = indexedDB.open(database, 2);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(store)) db.createObjectStore(store, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(pendingStore)) {
+        db.createObjectStore(pendingStore, { keyPath: "id" });
+      }
+    };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 }
 
-/** Runs `work` in a transaction on the events store and resolves when it commits. */
-async function transact(mode, work) {
+/** Runs `work` in a transaction on a store (the events, unless named) and resolves when it commits. */
+async function transact(mode, work, name = store) {
   const db = await open();
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(store, mode);
-    const result = work(transaction.objectStore(store));
+    const transaction = db.transaction(name, mode);
+    const result = work(transaction.objectStore(name));
     transaction.oncomplete = () => {
       db.close();
       resolve(result.result ?? result);
@@ -84,6 +93,81 @@ async function act(action) {
   }
 }
 
+// MARK: Offline (P8.11, E53)
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js", { type: "module" }).catch(() => {
+    // No offline copy of the site in this browser; everything else works.
+  });
+}
+
+const two = (byte) => byte.toString(16).padStart(2, "0");
+
+/**
+ * A new event id made here, for a mark made offline: a UUIDv7 laid out as
+ * the domain module's makeEventID lays it out (the server refuses any other
+ * shape), later than every event of its plan.
+ */
+function newEventID(enrollment, journal) {
+  const ms = (id) => Number.parseInt(id.slice(0, 8) + id.slice(9, 13), 16);
+  const latest = journal
+    .filter((event) => event.enrollment === enrollment)
+    .reduce((most, event) => Math.max(most, ms(event.id)), ms(enrollment));
+  const time = Math.max(Date.now(), latest + 1)
+    .toString(16)
+    .padStart(12, "0");
+  const r = [...crypto.getRandomValues(new Uint8Array(10))];
+  const tail = r.slice(3).map(two).join("");
+  return [
+    time.slice(0, 8),
+    time.slice(8),
+    two(0x70 | (r[0] & 0x0f)) + two(r[1]),
+    two(0x80 | (r[2] & 0x3f)) + tail.slice(0, 2),
+    tail.slice(2),
+  ].join("-");
+}
+
+/** Keeps today's cards and the coming days' for when there is no connection. */
+function keepAhead(answer) {
+  try {
+    const days = { [today()]: answer.html };
+    for (const day of answer.ahead ?? []) days[day.date] = day.html;
+    localStorage.setItem("dbw.today-ahead", JSON.stringify(days));
+  } catch {
+    // Without storage there is no offline copy of Today.
+  }
+}
+
+/** The cards kept for a date, if any. */
+function keptFor(date) {
+  try {
+    return JSON.parse(localStorage.getItem("dbw.today-ahead") ?? "{}")[date];
+  } catch {
+    return undefined;
+  }
+}
+
+/** Sends the marks made offline, oldest first, and keeps what comes back. */
+async function sendPending() {
+  const pending = await transact("readonly", (s) => s.getAll(), pendingStore);
+  for (const item of pending.sort((a, b) => (a.id < b.id ? -1 : 1))) {
+    const answer = await post("/api/v1/events", {
+      events: await events(),
+      today: today(),
+      zone: item.zone,
+      action: { ...item.action, id: item.id, date: item.date },
+    });
+    await keep(answer.events);
+    await transact("readwrite", (s) => s.delete(item.id), pendingStore);
+    try {
+      sessionStorage.setItem("dbw.last-action", item.id);
+    } catch {
+      // Undo is then offered for today's marks only.
+    }
+  }
+  return pending.length;
+}
+
 function show(element, message) {
   if (!element) return;
   element.textContent = message;
@@ -94,6 +178,7 @@ function show(element, message) {
 
 const todayView = document.getElementById("today");
 const todayProblem = document.querySelector("[data-today-problem]");
+const offlineNotice = document.querySelector("[data-today-offline]");
 
 /** A setting from this browser's storage (settings.js keeps them), or nothing. */
 function setting(key) {
@@ -104,7 +189,20 @@ function setting(key) {
   }
 }
 
+/** Today from the server, or, without a connection, the cards kept for today. */
 async function showToday() {
+  try {
+    await showTodayOnline();
+    if (offlineNotice) offlineNotice.hidden = true;
+  } catch (error) {
+    const kept = keptFor(today());
+    if (!kept) throw error;
+    todayView.innerHTML = kept;
+    if (offlineNotice) offlineNotice.hidden = false;
+  }
+}
+
+async function showTodayOnline() {
   const journal = await events();
   if (journal.length === 0) return;
   const answer = await post("/api/v1/today", {
@@ -122,10 +220,19 @@ async function showToday() {
     })(),
   });
   if (answer.html) todayView.innerHTML = answer.html;
+  keepAhead(answer);
 }
 
 if (todayView) {
-  showToday().catch(() => show(todayProblem, todayView.dataset.notSaved));
+  sendPending()
+    .catch(() => 0)
+    .then(() => showToday())
+    .catch(() => show(todayProblem, todayView.dataset.notSaved));
+  addEventListener("online", () => {
+    sendPending()
+      .then(() => showToday())
+      .catch(() => {});
+  });
 
   todayView.addEventListener("click", async (event) => {
     const button = event.target instanceof Element ? event.target.closest("button") : null;
@@ -168,7 +275,40 @@ if (todayView) {
       }
       show(todayProblem, "");
       await showToday();
-    } catch {
+    } catch (error) {
+      // Without a connection, a mark is kept here with the id and date it
+      // was made with, and sent when the browser is back online; the card
+      // says so (an undo or a welcome's answer waits for a connection).
+      // fetch fails with a TypeError when the network does; an answer the
+      // server refuses is not kept.
+      if (button.dataset.mark && (error instanceof TypeError || !navigator.onLine)) {
+        const journal = await events();
+        const earlier = button.hasAttribute("data-earlier-for")
+          ? button.parentElement?.querySelector("input[data-earlier]")?.value
+          : undefined;
+        await transact(
+          "readwrite",
+          (s) =>
+            s.put({
+              id: newEventID(button.dataset.enrollment, journal),
+              date: earlier || today(),
+              zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              action: {
+                kind: "mark",
+                mark: button.dataset.mark,
+                enrollment: button.dataset.enrollment,
+                assignment: Number(button.dataset.assignment),
+                ...(button.dataset.appointed ? { appointed: button.dataset.appointed } : {}),
+              },
+            }),
+          pendingStore,
+        );
+        for (const sibling of button.closest("article")?.querySelectorAll("button") ?? []) {
+          sibling.disabled = true;
+        }
+        if (offlineNotice) offlineNotice.hidden = false;
+        return;
+      }
       button.disabled = false;
       show(todayProblem, todayView.dataset.notSaved);
     }
@@ -302,6 +442,13 @@ if (yourData) {
   yourData.querySelector("[data-delete-everything]")?.addEventListener("click", async () => {
     if (!window.confirm(yourData.dataset.deleteConfirm)) return;
     await transact("readwrite", (events) => events.clear());
+    await transact("readwrite", (pending) => pending.clear(), pendingStore);
+    try {
+      localStorage.removeItem("dbw.today-ahead");
+      sessionStorage.removeItem("dbw.last-action");
+    } catch {
+      // Nothing kept there.
+    }
     show(status, yourData.dataset.deleted);
   });
 }

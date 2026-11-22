@@ -60,10 +60,12 @@ files when APIs are needed.
 - At 1.0 progress remains in IndexedDB; server computation is transient
   from request bodies and retains nothing. No records in URLs, cookies,
   logs or shared caches. Native apps and browsers never connect to Postgres.
-- Preserve cached upcoming plans/readings and offline marks with stable
-  ids, cache-version upgrades and honest offline status, through
-  SvelteKit's service worker (`src/service-worker.ts`). Local browser
-  computation, when necessary, imports the domain module.
+- Offline (E53): the service worker (`src/service-worker/index.ts`,
+  registered by `reading.js`) keeps each release's files and the pages
+  Today, Progress and Settings; Today keeps seven days of cards in
+  `localStorage`; marks made offline wait in IndexedDB with their own ids
+  and are sent when there is a connection. Local browser computation,
+  when it becomes necessary, imports the domain module.
 - Tailwind CSS 4 is the styling layer, with one entry at `src/app.css`.
   Generate its `@theme` variables from design/tokens.json; no raw colors,
   remote fonts/scripts/styles/images or CDN code. Localizable strings,
