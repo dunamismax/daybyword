@@ -65,6 +65,25 @@
   {/each}
   <p class="text-caption text-text-muted">{text("settings.kept-in-this-browser")}</p>
 </form>
+<section
+  class="card"
+  aria-labelledby="your-data"
+  id="your-data-section"
+  data-delete-confirm={text("settings.delete-confirm")}
+  data-deleted={text("settings.deleted")}
+>
+  <h2 class="mt-0 mb-s text-reference-list" id="your-data">{text("settings.your-data")}</h2>
+  <p>{text("settings.data-note")}</p>
+  <div class="actions flex flex-wrap gap-xs">
+    <button type="button" class="button button-secondary" data-export>
+      {text("settings.export")}
+    </button>
+    <button type="button" class="button button-secondary text-danger" data-delete-everything>
+      {text("settings.delete")}
+    </button>
+  </div>
+  <p class="mb-0 text-caption text-text-muted" role="status" data-data-status hidden></p>
+</section>
 <section class="card" aria-labelledby="about">
   <h2 class="mt-0 mb-s text-reference-list" id="about">{text("settings.about")}</h2>
   <p>{text("site.independence")}</p>

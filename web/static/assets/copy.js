@@ -2,8 +2,10 @@
 // data-failed="Selected; copy it with your keyboard">. The messages come from
 // the page, not this script (docs/web.md). Without JavaScript, or when the
 // browser refuses the clipboard, the reference stays selectable.
-for (const button of document.querySelectorAll("button[data-copy]")) {
-  button.addEventListener("click", async () => {
+// One listener for the page, so buttons Today inserts later work too.
+document.addEventListener("click", async (event) => {
+  const button = event.target instanceof Element ? event.target.closest("button[data-copy]") : null;
+  if (button) {
     try {
       await navigator.clipboard.writeText(button.dataset.copy);
       button.textContent = button.dataset.copied;
@@ -20,5 +22,5 @@ for (const button of document.querySelectorAll("button[data-copy]")) {
       }
       button.textContent = button.dataset.failed;
     }
-  });
-}
+  }
+});

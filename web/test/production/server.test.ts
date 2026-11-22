@@ -407,6 +407,7 @@ describe("the interface text", () => {
     "/plans/bible-in-a-year",
     "/plans/proverbs-through-the-month",
     "/plans/gospels-at-your-pace/week",
+    "/plans/gospels-at-your-pace/start",
     "/progress",
     "/settings",
     "/no-such-page",

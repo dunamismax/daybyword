@@ -1363,3 +1363,33 @@ none.
 
 **Why:** one file is one truth, and the widget computes Today with the
 same engine and catalog the app does.
+
+### E52. The web's record: kept in IndexedDB, worked out on the server, stored nowhere
+
+*2026-11-21, agent (P8.10c), choosing among E38's options.* Today,
+starting a plan, marking and undo on the web use a small same-origin
+module, `static/assets/reading.js`, not SvelteKit's client runtime or a
+second Vite build. It keeps every event in this browser's IndexedDB
+(`day-by-word`, store `events`, keyed by id), and for each view or action
+sends the whole journal and the reader's own date (resolved once in the
+browser, E7; `?today=` pins it for tests, E14) to two endpoints:
+
+- `POST /api/v1/today` folds the journal with the served catalog and
+  answers with Today's cards, rendered by `TodayCards.svelte` through
+  `svelte/server`, which the script inserts;
+- `POST /api/v1/events` makes the events an action produces (an
+  `enrolled` event, a mark, an undo) with the domain module's ids and
+  wire form, checks that each would mean something in that journal, and
+  answers with them; the script adds them to IndexedDB.
+
+Both accept JSON only (so a cross-site form cannot reach them), keep
+nothing, and log only the route and status (E38's wrapper). Undo is a
+card's own button for the last mark made today, as in the app, rather
+than client state. The production body limit rises from 64K to 1M: the
+journal is sent whole, and a year of one daily plan is about 90 KB.
+
+**Why:** every rule stays in the domain module on the server, as D39
+describes for 1.0; the strict CSP is untouched; no package or build step
+is added. **Cost:** each tap is a round trip, and offline marking
+(P8.11) will need the browser to make event ids itself; when it does, a
+client build of the domain module (E38's first option) is the way.

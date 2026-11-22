@@ -1,5 +1,5 @@
 {
-  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a). Edited by hand.",
+  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c). Edited by hand.",
   "cases": [
     {
       "input": {
@@ -99,6 +99,29 @@
     {
       "input": {
         "path": "/plans/psalm-a-day"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "Page not found",
+        "status": 404,
+        "title": "Page not found · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/plans/gospels-at-your-pace/start"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "current": "Plans",
+        "heading": "Start this plan",
+        "status": 200,
+        "title": "Start this plan · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/plans/psalm-a-day/start"
       },
       "output": {
         "contentType": "text/html; charset=utf-8",
@@ -419,5 +442,5 @@
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY"
   },
-  "version": 3
+  "version": 4
 }
