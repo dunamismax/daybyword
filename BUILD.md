@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M2 First light is shipped: TestFlight build 126 on the owner's iPhone, and daybyword.com serving 2aead57. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done) |
-| **Next item** | **Phase 15**: P15.4 (keyboard use and sharing), P15.5, P15.6; then Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac) and **P15.1b** (installing on Android), each waiting on the owner or a device |
+| **Phase** | M3 Version 1.0 under way: TestFlight build 131 uploaded (processing), and daybyword.com serving 2b906ec. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done). Phase 15: 1 of 5 (P15.2; P15.1a done) |
+| **Next item** | **Phase 15**: P15.4 (keyboard use and sharing: a Share button on plan pages through the Web Share API with a copy-link fallback; keyboard use was audited as sound), P15.5, P15.6; then Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac) and **P15.1b** (installing on Android), each waiting on the owner or a device |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | **P12.6b**: either allow an agent to register this Mac as a development device in Xcode, or install the next TestFlight build on the Mac with TestFlight for Mac and say whether it runs. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P15.1b**: install daybyword.com from Chrome on an Android phone after the next deploy, or allow an agent to download an Android emulator image |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2aead57 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today with quiet celebrations, Progress (books by verse and chapter, the optional reading days in a row, History, and the archive with pause, resume and stop), Settings and offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
+| **Waiting on the owner** | **Build 131**: try Siri ("What's my reading today in Day by Word?"), the iPad sidebar, Share as PDF on a plan's week, and Add the next four weeks to a calendar. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P12.6b**: install build 131 on the Mac with TestFlight for Mac and say whether it runs (or allow an agent to register this Mac in Xcode). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an agent to download an Android emulator image |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2b906ec (deployed 2026-11-22 after `make check-full`): everything before, plus large print on a plan's week, the calendar download on Progress, the installable web app (manifest and icons), and the offline page with Plans kept offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -565,24 +565,23 @@ only when Phase 18 is finished or an item points there.
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
 - **2026-11-22, third session:** P12.4 (Siri and Shortcuts, E58), P12.6a
-  (the iPad sidebar and readable widths), and Phase 13 (P13.1 the week as a
-  PDF and in large print, P13.4 calendar export, E59, P13.5 print and
-  export tests), so Phase 13 is finished. P12.6 is split: P12.6b, the app
-  on a Mac, waits on the owner (a device registration, or TestFlight for
-  Mac).
-- **Not deployed, no new TestFlight build.** daybyword.com still serves
-  2aead57; the web's large print and calendar download are only in `main`.
-  Deploy after `make check-full` at the next milestone.
+  (iPad sidebar and readable widths), Phase 13 finished (P13.1 week PDF and
+  large print, P13.4 calendar export, E59, P13.5 print and export tests),
+  P15.1a (installable web app, seen on an iPhone) and P15.2 (offline
+  finished). Split: P12.6b (Mac) and P15.1b (Android) wait on the owner.
+- **Shipped:** `make check-full` passed; daybyword.com serves 2b906ec;
+  TestFlight build 131 (0.1.0, 2b906ec) uploaded, processing at the end of
+  the session. The owner asked to stop here: P15.4 was scoped, not begun.
 - **Shared code:** `TodaysReading` (apple/Shared) names today's reading
-  for the widget and for Siri; `ReadableWidth` / `readableRows()` hold
-  every screen to 720 points. App Shortcut phrases are their own catalog,
-  `apple/App/AppShortcuts.xcstrings`, kept by `scripts/strings.swift`.
-- **Calendar files** come from two writers held to one fixture,
-  `tests/fixtures/calendar.json`; regenerate it only on purpose.
-- **Tests:** the web tour now prints the week through Firefox and checks
-  the PDF (332 checks). The iPhone UI tests pass with the new tab style.
-- **Surprises:** every iPhone simulator was held by other sessions, so this
-  session made "DbW iPhone 18 Pro"; the browser pane now runs the service
-  worker on localhost (AGENTS.md §11); the Mac's load reached 565.
-- **Next:** Phase 15 (P15.1 the web app manifest), then Phase 16; P12.2b
-  and P12.6b when the owner has tried them.
+  for the widget and Siri; `ReadableWidth` / `readableRows()` hold every
+  screen to 720 points; App Shortcut phrases are `AppShortcuts.xcstrings`,
+  kept by `scripts/strings.swift`; calendar files come from two writers
+  held to `tests/fixtures/calendar.json`.
+- **Web:** asset paths are absolute now (`paths.relative: false`), and the
+  service worker keeps the `/_app/` files the kept pages link to; the
+  browser pane runs that worker on localhost (AGENTS.md §11).
+- **Tests:** the web tour prints the week through Firefox and checks the
+  PDF (332 checks); the iPhone UI tests pass with the adaptable tab style.
+- **Simulators:** every iPhone simulator was held by other sessions, so
+  this session made "DbW iPhone 18 Pro" (1A19E4D3) and used a shut-down
+  iPad Air 11-inch; the Mac's load reached 665.
