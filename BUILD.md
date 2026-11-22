@@ -21,7 +21,7 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P12.2b** (seeing the Lock Screen accessories where they run), **P12.4** (App Intents and Shortcuts), P12.6; **P8.14** once the owner's steps below are done |
 | **Also open** | **P12.1** waits on the Xcode sign-in below. Phase 7 is finished (P7.3's off-server backup verified 2026-11-22) |
 | **Waiting on the owner** | **Sign in to Xcode** (Xcode → Settings → Accounts) with the Apple ID of team D9QMP3LP8H: `make archive` stopped on 2026-11-22 with "No Accounts", so automatic signing cannot register the App Group `group.com.daybyword.app` that the app and its widget share (P12.1); after that, `make archive && make testflight` make the next TestFlight build, and P8.14 can be ticked. **P8.5's device test**: on an iPhone with YouVersion installed, choose a translation in Settings, then tap Open in YouVersion on a whole chapter, a verse range and a reading across chapters, and say what each did (docs/destinations.md, "What was tested"). Build 96 (2026-11-21) is the latest upload |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves ce22517 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today, Progress (with books explored), Settings and offline. **Not yet deployed:** P11.2–P11.5 (celebrations, reading days in a row, books by verse, History and the archive) are on `main`; `make deploy` needs SSH to the host, which this session could not use |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2aead57 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today with quiet celebrations, Progress (books by verse and chapter, the optional reading days in a row, History, and the archive with pause, resume and stop), Settings and offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -609,9 +609,9 @@ only when Phase 18 is finished or an item points there.
   P10.13 (the catalog review), so Phase 10 is finished; P12.2a (the medium
   widget). P12.2 is split: P12.2b, the Lock Screen accessories, is built
   but unseen (the Simulator's Lock Screen editor would not open).
-- **Not deployed.** daybyword.com still serves ce22517. `make deploy` and
-  P7.3's check both need root SSH to the host, which this session's
-  permission policy refused. Run `make check-full`, then `make deploy`.
+- **Deployed** 2aead57 after `make check-full` (the app tour failed once
+  on Simulator state left by manual testing: a plan page restored in the
+  Plans tab; it passed on rerun). P7.3 verified, so Phase 7 is finished.
 - **Engine additions** (both runtimes, pinned by fixtures): `celebrations`,
   `recordSlots` (History's readings, also behind the counts), and
   `BookCoverage` / `coverageByBook`. Specification version stays 1.
