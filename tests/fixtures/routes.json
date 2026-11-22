@@ -1,5 +1,5 @@
 {
-  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's; version 5 adds the offline page (P15.2) and the web app's manifest (P15.1); version 6 adds Support (P16.2); version 7 adds Sources and permissions and the criteria (P16.5); version 8 adds Accessibility (P16.6). Edited by hand.",
+  "about": "Each address the web answers, by GET: status, content type, cache policy, a redirect's location, and for pages the title, first heading, and current section; and the security headers on every response. Development environment unless stated. The server holds the repository's release catalog (scripts/with-catalog.sh), so a plan's address answers for a plan in it and is not found otherwise (version 3, BUILD.md P8.10a); version 4 adds a plan's start page (P8.10c); the sitemap is P9.9's; version 5 adds the offline page (P15.2) and the web app's manifest (P15.1); version 6 adds Support (P16.2); version 7 adds Sources and permissions and the criteria (P16.5); version 8 adds Accessibility (P16.6); version 9 adds the privacy policy and the terms (P16.3). Edited by hand.",
   "cases": [
     {
       "input": {
@@ -113,6 +113,28 @@
         "heading": "Accessibility",
         "status": 200,
         "title": "Accessibility · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/privacy"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "Privacy policy",
+        "status": 200,
+        "title": "Privacy policy · Day by Word"
+      }
+    },
+    {
+      "input": {
+        "path": "/terms"
+      },
+      "output": {
+        "contentType": "text/html; charset=utf-8",
+        "heading": "Terms of use",
+        "status": 200,
+        "title": "Terms of use · Day by Word"
       }
     },
     {

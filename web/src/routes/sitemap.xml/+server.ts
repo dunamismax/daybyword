@@ -1,5 +1,5 @@
 // The sitemap (BUILD.md P9.9): the public pages, the home page, Plans,
-// Support (P16.2), Sources and the criteria (P16.5), Accessibility (P16.6), and each plan's page, by their address on daybyword.com, for search engines
+// Support (P16.2), Sources and the criteria (P16.5), Accessibility (P16.6), Privacy and Terms (P16.3), and each plan's page, by their address on daybyword.com, for search engines
 // once the site opens to them (P18.5; until then robots.txt blocks them).
 import { servedCatalog } from "#lib/server/catalog/read.ts";
 import { siteOrigin } from "#lib/site.ts";
@@ -16,6 +16,8 @@ export const GET = async () => {
     "/sources",
     "/criteria",
     "/accessibility",
+    "/privacy",
+    "/terms",
     ...(catalog?.plans.map((plan) => `/plans/${plan.id}`) ?? []),
   ];
   const urls = paths.map((path) => `  <url><loc>${escaped(siteOrigin + path)}</loc></url>`);

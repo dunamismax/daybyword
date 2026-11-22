@@ -28,6 +28,8 @@ endpoints and later consented sync, never a direct database connection.
 | `/sources` | yes | Settings › About links to the web page | Sources and permissions: each plan's source, review and permissions from the catalog (an anchor per plan id, which its page links to), the data sources from catalog/SOURCES.md with their credits, and the book registry's citations (P16.5) |
 | `/criteria` | yes | Settings › About links to the web page | How Day by Word chooses its plans: the published criteria (P16.5) |
 | `/accessibility` | yes | Settings › About links to the web page | The accessibility statement: WCAG 2.2 AA, what was tested, what has not been yet, and reporting a barrier (P16.6) |
+| `/privacy` | yes | Settings › About links to the web page | The privacy policy, with every cookie (none) and browser storage item (P16.3, P16.4); from `docs/legal/privacy.md` as the owner approved it |
+| `/terms` | yes | Settings › About links to the web page | The terms of use (P16.3); from `docs/legal/terms.md` as the owner approved it |
 | `/manifest.webmanifest` | yes | no | The installable web app's manifest (P15.1) |
 
 On the web, Plans and each plan's page show the catalog (BUILD.md
@@ -41,7 +43,7 @@ start page starts one there.
 Addresses for the server's own use, never linked from a page a reader sees:
 `/up` (the health check), `/healthz` (the deploy's check: status, the
 release's commit and the database, as JSON), `/assets/…` (the site's own files),
-`/sitemap.xml` (the home page, Plans, Support, Sources, the criteria, Accessibility and every plan's page by their
+`/sitemap.xml` (the home page, Plans, Support, Sources, the criteria, Accessibility, Privacy, Terms and every plan's page by their
 daybyword.com address, for search engines once robots.txt lets them in,
 P9.9, P18.5), and `/dev/components` (the component gallery, in development only).
 

@@ -367,6 +367,8 @@ let pages: [(name: String, path: String, heading: String, section: String?)] = [
     ("sources", "/sources", "Sources and permissions", nil),
     ("criteria", "/criteria", "How Day by Word chooses its plans", nil),
     ("accessibility", "/accessibility", "Accessibility", nil),
+    ("privacy", "/privacy", "Privacy policy", nil),
+    ("terms", "/terms", "Terms of use", nil),
     ("not-found", "/no-such-page", "Page not found", nil),
 ]
 

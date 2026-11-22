@@ -1,13 +1,14 @@
-# Terms of use: draft
+# Terms of use
 
-*Draft for the owner's approval (BUILD.md P16.3). Not published. Once
-approved, it becomes daybyword.com/terms (an address to add to
-docs/urls.md then), linked from the footer beside the privacy policy. The
-questions for the owner are at the end.*
+*Approved by the owner on 2026-11-22 (BUILD.md P16.3) and published as
+daybyword.com/terms, linked beside the privacy policy. The page's words are
+keys in `web/src/lib/strings.ts` (`terms.*`); change this file and the page
+together. As approved: Apple's standard EULA for the app, no governing law
+stated, and the rights holder named as the person who runs Day by Word.*
 
 ---
 
-**Effective:** the date of publication
+**Effective:** 22 November 2026
 
 ## What Day by Word is
 
@@ -45,8 +46,8 @@ it is deleted or the device is lost. Settings can export it as a file.
 
 ## What you may do with Day by Word's content
 
-Day by Word's own plans, words, design, and code are © the owner, all
-rights reserved. You may follow any plan, print its weeks for your own use,
+Day by Word's own plans, words, design, and code are © the person who runs
+Day by Word, all rights reserved. You may follow any plan, print its weeks for your own use,
 and share a plan by its link. Please ask (support@daybyword.com) before
 reproducing a plan's schedule elsewhere.
 
@@ -58,7 +59,8 @@ If these terms change, this page shows the new version and its date.
 ## No warranty
 
 Day by Word is offered as it is, without warranties of any kind, to the
-extent the law allows, and the owner is not liable for any loss arising
+extent the law allows, and the person who runs Day by Word is not
+liable for any loss arising
 from its use, to the extent the law allows.
 
 ## The app
@@ -70,15 +72,3 @@ License Agreement, together with these terms.
 
 support@daybyword.com
 
----
-
-## Questions for the owner before publishing
-
-1. Whether to keep Apple's standard EULA for the app (as drafted) or
-   supply your own in App Store Connect.
-2. The governing law and place, if you want one stated.
-3. How to name you as the rights holder ("© the owner" is a placeholder;
-   the repository's LICENSE says all rights reserved, D4).
-4. Whether "please ask before reproducing a plan's schedule elsewhere"
-   matches how you want people to share plans (each plan's page says
-   "free to follow, to print for your own use, and to share by its link").

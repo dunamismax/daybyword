@@ -47,7 +47,11 @@
     <p class="mt-0">{text("support.kept-record")}</p>
     <p>{text("support.kept-logs")}</p>
     <p>{text("support.kept-none")}</p>
-    <p class="mb-0">{text("support.kept-mail")}</p>
+    <p>{text("support.kept-mail")}</p>
+    <ul class="m-0 flex list-none flex-wrap gap-x-m gap-y-xxs p-0">
+      <li><a href="/privacy">{text("settings.privacy")}</a></li>
+      <li><a href="/terms">{text("settings.terms")}</a></li>
+    </ul>
   </section>
 
   <section aria-labelledby="support-questions">

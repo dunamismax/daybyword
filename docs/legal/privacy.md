@@ -1,15 +1,16 @@
-# Privacy policy: draft
+# Privacy policy
 
-*Draft for the owner's approval (BUILD.md P16.3, with P16.4's statement of
-cookies and browser storage). Not published. Once approved, it becomes
+*Approved by the owner on 2026-11-22 (BUILD.md P16.3, with P16.4's
+statement of cookies and browser storage) and published as
 daybyword.com/privacy, linked from every page's footer, Support, and
-Settings in the app and on the web; its date is the day it is published.
-Every statement below was checked against the code and the server on
-2026-11-22; the questions for the owner are at the end.*
+Settings in the app and on the web. The page's words are keys in
+`web/src/lib/strings.ts` (`privacy.*`) and its storage list is
+`web/src/lib/storage.ts`; change this file and the page together, and keep
+every statement true of the code and the server.*
 
 ---
 
-**Effective:** the date of publication
+**Effective:** 22 November 2026
 
 ## The short version
 
@@ -70,8 +71,7 @@ Mail to support@daybyword.com is forwarded by Cloudflare Email Routing to
 the inbox of the person who runs Day by Word. It is used only to answer
 you and to put right what you report. Anything from a message that is
 needed in Day by Word's public repository (for example, a reading error)
-is anonymized first. *[Owner: name the inbox's provider, and how long mail
-is kept.]*
+is anonymized first.
 
 ## Services you choose to open
 
@@ -119,15 +119,3 @@ included.
 ## Changes
 
 If this policy changes, this page shows the new version and its date.
-
----
-
-## Questions for the owner before publishing
-
-1. The inbox provider support mail is forwarded to, and how long mail is
-   kept.
-2. Whether to name the operator (your name, as the App Store's seller under
-   D33) or say "the person who runs Day by Word", as drafted.
-3. Any jurisdiction-specific wording you want (for example a contact for
-   data-protection requests). The draft makes no legal claims beyond what
-   the code and the server do.

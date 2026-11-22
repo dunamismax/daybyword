@@ -122,5 +122,7 @@
   <h2 class="mt-0 mb-s text-reference-list" id="about">{text("settings.about")}</h2>
   <p>{text("site.independence")}</p>
   <p><a href="/support">{text("settings.support")}</a></p>
+  <p><a href="/privacy">{text("settings.privacy")}</a></p>
+  <p><a href="/terms">{text("settings.terms")}</a></p>
   <p class="text-caption text-text-muted">{data.version}</p>
 </section>

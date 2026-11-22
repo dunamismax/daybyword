@@ -23,6 +23,8 @@ const english = {
   "site.sources": "Sources and permissions",
   "site.criteria": "How plans are chosen",
   "site.accessibility": "Accessibility",
+  "site.privacy": "Privacy",
+  "site.terms": "Terms",
   "site.about-label": "About Day by Word",
 
   "home.about":
@@ -390,6 +392,8 @@ const english = {
   "settings.deleted": "Your plans and reading record are deleted from this browser.",
   "settings.about": "About",
   "settings.support": "Help and support",
+  "settings.privacy": "Privacy policy",
+  "settings.terms": "Terms of use",
   "plan.sources-link": "Sources and permissions",
 
   "sources.title": "Sources and permissions",
@@ -446,6 +450,137 @@ const english = {
   "accessibility.report-about":
     "If something in Day by Word is hard or impossible for you to use, please write to support@daybyword.com: say what you were trying to do, on which page or screen, and with what device, browser, or assistive technology.",
   "accessibility.report-write": "Report a barrier",
+
+  "privacy.title": "Privacy policy",
+  "privacy.description":
+    "Day by Word keeps your reading record on your phone or in your browser, not on its server. No accounts, analytics, advertising, or tracking.",
+  "privacy.effective": "Effective 22 November 2026.",
+  "privacy.short": "The short version",
+  "privacy.short-text":
+    "Day by Word keeps your reading record on your phone or in your browser, not on our server. There are no accounts, analytics, advertising, or tracking, and nothing about you is sold or shared.",
+  "privacy.who": "Who runs Day by Word",
+  "privacy.who-text":
+    "Day by Word is an independent Bible reading companion, not affiliated with any church or denomination. You can write to support@daybyword.com.",
+  "privacy.stays": "What stays with you",
+  "privacy.app": "In the app.",
+  "privacy.app-text":
+    "The plans you start, what you mark, your reminders, and your settings are stored on your iPhone or iPad. The app's widgets and its Siri and Shortcuts actions read the same record on the device. Reminders are scheduled by iOS on the device. The record is part of your device's own backups (iCloud or a computer) if you make them. The app itself makes no network requests: it opens a link only when you ask it to (for example Open in YouVersion, Help and support, or a plan's link you share).",
+  "privacy.web": "On the web.",
+  "privacy.web-text":
+    "The plans you start and what you mark are stored in your browser (its IndexedDB), and your settings in its local storage. They stay in that browser on that device. Each item is listed under Cookies and browser storage below.",
+  "privacy.deletion": "Export and deletion.",
+  "privacy.deletion-text":
+    "Settings can export your reading record as a file, and can delete your plans and reading record from the device or the browser. Removing the app, or clearing the site's data in your browser, removes everything, settings included. Nothing is kept anywhere else, so nothing else needs deleting.",
+  "privacy.reaches": "What reaches daybyword.com, and what it keeps",
+  "privacy.pages": "Pages.",
+  "privacy.pages-text":
+    "Your browser asks daybyword.com for pages and the site's own files, as with any website. Nothing on a page is loaded from another site.",
+  "privacy.compute": "Working out Today and Progress.",
+  "privacy.compute-text":
+    "To show Today and Progress, and to record a new mark, your browser sends your reading record (the plans you started and what you marked, with their dates), with the settings that shape the page (book names, the way you read, your translation, and whether to show reading days in a row), to daybyword.com. The server works out the answer in memory and keeps nothing: none of it is written to a database, a file, or a log.",
+  "privacy.log": "The server's log.",
+  "privacy.log-text":
+    "For each request the server notes the method (such as GET), the sort of page it was for (such as a plan's page, never which plan), the answer's status, and how long it took. It does not note your IP address, the address you opened, its query, what you sent, or any cookie. The log is kept in the server's system journal for at most 30 days. The web server in front of the site writes no access log.",
+  "privacy.database": "The database",
+  "privacy.database-text": "holds only the public plan catalog.",
+  "privacy.backups": "Backups",
+  "privacy.backups-text": "of the server contain the database, and so only the catalog.",
+  "privacy.email": "Email",
+  "privacy.email-text":
+    "Mail to support@daybyword.com is forwarded by Cloudflare Email Routing to the inbox of the person who runs Day by Word. It is used only to answer you and to put right what you report. Anything from a message that is needed in Day by Word's public repository (for example, a reading error) is anonymized first.",
+  "privacy.services": "Services you choose to open",
+  "privacy.youversion": "YouVersion and Bible.com.",
+  "privacy.youversion-text":
+    "Open in YouVersion opens Bible.com, or the YouVersion app if you have it, at the passage. That service receives the request under its own privacy policy. Day by Word sends it nothing else.",
+  "privacy.sharing": "Calendars, sharing, and printing.",
+  "privacy.sharing-text":
+    "A calendar file, a shared plan link, an exported record, or a printed week goes only where you send it.",
+  "privacy.apple": "Apple.",
+  "privacy.apple-text":
+    "The App Store and TestFlight deliver the app. If you have agreed to share them with developers, Apple provides crash reports and aggregate figures about the app; Day by Word adds no analytics of its own.",
+  "privacy.dns": "DNS.",
+  "privacy.dns-text":
+    "Cloudflare answers DNS queries for daybyword.com. It does not carry your connection, which goes straight to Day by Word's server.",
+  "privacy.storage": "Cookies and browser storage",
+  "privacy.storage-intro":
+    "Day by Word sets no cookies. On the web it uses the browser storage below, all first-party (set and read only by daybyword.com), and each is needed for something you use. None is used for analytics or advertising.",
+  "privacy.storage-caption": "Every item Day by Word keeps in your browser",
+  "privacy.storage-where": "Where",
+  "privacy.storage-name": "Name",
+  "privacy.storage-holds": "What it holds",
+  "privacy.storage-why": "Why",
+  "privacy.where-indexeddb": "IndexedDB",
+  "privacy.where-local": "Local storage",
+  "privacy.where-session": "Session storage",
+  "privacy.where-cache": "Cache storage",
+  "privacy.where-worker": "Service worker",
+  "privacy.holds-events":
+    "Your reading record: the plans you started and what you marked, with dates",
+  "privacy.why-events": "Your record lives in your browser, not on a server",
+  "privacy.holds-pending": "Marks made without a connection",
+  "privacy.why-pending": "Sent when you are back online (offline use)",
+  "privacy.holds-appearance": "Light, dark, or automatic",
+  "privacy.why-appearance": "Your appearance setting",
+  "privacy.holds-size": "The size of references",
+  "privacy.why-size": "Your text size setting",
+  "privacy.holds-way": "A paper Bible, YouVersion and Bible.com, or another app",
+  "privacy.why-way": "Your way to read",
+  "privacy.holds-translation": "The translation YouVersion and Bible.com open",
+  "privacy.why-translation": "Your translation setting",
+  "privacy.holds-book-names": "The book-name convention",
+  "privacy.why-book-names": "Your book names setting",
+  "privacy.holds-days": "Whether to show reading days in a row",
+  "privacy.why-days": "Your Progress setting",
+  "privacy.holds-ahead": "Today's cards for the next seven days (plan names and references)",
+  "privacy.why-ahead": "Today opens without a connection",
+  "privacy.holds-last": "The id of the last thing you did in this tab",
+  "privacy.why-last": "Today can offer Undo; gone when the tab closes",
+  "privacy.holds-cache": "The site's own files and public pages",
+  "privacy.why-cache":
+    "Pages open offline; replaced with each release, and holds no reading record",
+  "privacy.holds-worker": "Nothing of its own",
+  "privacy.why-worker": "Keeps the cache above and sends offline marks",
+  "privacy.storage-after":
+    "Clearing the site's data in your browser removes all of it, as does Delete everything in this browser in Settings (which removes the record, the offline marks, Today's kept cards, and Undo's note).",
+  "privacy.children": "Children",
+  "privacy.children-text":
+    "Day by Word collects no personal information from anyone, children included.",
+  "privacy.changes": "Changes",
+  "privacy.changes-text": "If this policy changes, this page shows the new version and its date.",
+
+  "terms.title": "Terms of use",
+  "terms.description":
+    "The terms for using Day by Word's website and app: your own Bible, plans not advice, your record, and what you may do with Day by Word's content.",
+  "terms.effective": "Effective 22 November 2026.",
+  "terms.what": "What Day by Word is",
+  "terms.what-text":
+    "Day by Word is a Bible reading companion: it helps you choose a reading plan, shows what to read today, and keeps a record of what you have read. It is free to use and needs no account. Using the website or the app means you accept these terms.",
+  "terms.bible": "Your own Bible",
+  "terms.bible-text":
+    "Day by Word shows references, never the text of the Bible. You read in your own Bible: on paper, in an app, or as audio. Links to other services (such as YouVersion and Bible.com) are destinations, not endorsements, and those services' own terms apply when you use them.",
+  "terms.advice": "Plans, not advice",
+  "terms.advice-text":
+    "Plans and their descriptions are practical: what a plan covers, how long it takes, and what it does not do. Day by Word does not interpret Scripture or give spiritual, medical, legal, or other professional advice, and a reading record describes only what you marked.",
+  "terms.accuracy": "Accuracy",
+  "terms.accuracy-text":
+    "Every reference in every plan is checked by software against a published versification, and plans are reviewed before they are offered. Mistakes can still happen; please report one through the support page, and it will be put right.",
+  "terms.record": "Your record",
+  "terms.record-text":
+    "Your reading record belongs to you. It is kept on your device or in your browser, not on Day by Word's server, so Day by Word cannot recover it if it is deleted or the device is lost. Settings can export it as a file.",
+  "terms.content": "What you may do with Day by Word's content",
+  "terms.content-text":
+    "Day by Word's own plans, words, design, and code are © the person who runs Day by Word, all rights reserved. You may follow any plan, print its weeks for your own use, and share a plan by its link. Please ask (support@daybyword.com) before reproducing a plan's schedule elsewhere.",
+  "terms.changes": "Changes and availability",
+  "terms.changes-text":
+    "Day by Word may change, pause, or end any part of the website or the app. If these terms change, this page shows the new version and its date.",
+  "terms.warranty": "No warranty",
+  "terms.warranty-text":
+    "Day by Word is offered as it is, without warranties of any kind, to the extent the law allows, and the person who runs Day by Word is not liable for any loss arising from its use, to the extent the law allows.",
+  "terms.app": "The app",
+  "terms.app-text":
+    "The app is provided under Apple's standard Licensed Application End User License Agreement, together with these terms.",
+  "terms.app-link": "Apple's standard license agreement",
+  "terms.contact": "Contact",
 
   "criteria.title": "How Day by Word chooses its plans",
   "criteria.description":

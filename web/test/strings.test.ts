@@ -10,6 +10,7 @@ import {
 } from "#lib/domain/index.ts";
 import { referenceOf, startDate } from "#lib/reference.ts";
 import { settings } from "#lib/settings.ts";
+import { storedItems } from "#lib/storage.ts";
 import {
   englishStrings,
   listText,
@@ -154,5 +155,26 @@ describe("a reference, said aloud", () => {
     ] as const) {
       expect(said(reading), reading).toEqual({ display, spoken });
     }
+  });
+});
+
+describe("the privacy policy's browser storage (P16.4)", () => {
+  it("lists every name the code stores in the browser, and sets no cookie", () => {
+    const listed = new Set(storedItems.map((item) => item.name));
+    const code = [
+      read("web/static/assets/reading.js"),
+      read("web/static/assets/settings.js"),
+      read("web/static/assets/theme.js"),
+      read("web/src/service-worker/index.ts"),
+    ].join("\n");
+    const keys = new Set([...code.matchAll(/"(dbw\.[a-z-]+)"/g)].map((match) => match[1]));
+    expect(keys.size).toBeGreaterThan(0);
+    for (const key of keys) expect(listed, key).toContain(key);
+    for (const store of [...code.matchAll(/Store = "([a-z]+)"|const store = "([a-z]+)"/g)]) {
+      const name = store[1] ?? store[2];
+      expect(listed, name).toContain(`day-by-word / ${name}`);
+    }
+    expect(code).toContain("`day-by-word-${version}`");
+    expect(code).not.toMatch(/document\.cookie/);
   });
 });

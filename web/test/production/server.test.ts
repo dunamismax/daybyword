@@ -15,6 +15,7 @@ import {
   Versification,
 } from "#lib/domain/index.ts";
 import { settings } from "#lib/settings.ts";
+import { storedItems } from "#lib/storage.ts";
 import { englishStrings } from "#lib/strings.ts";
 
 interface RouteCase {
@@ -126,6 +127,9 @@ function readerText(html: string): string[] {
 }
 
 /** Whether a piece of page text is one of the table's values, a placeholder standing for any text. */
+/** The browser storage names the privacy policy shows are the code's own (P16.4). */
+const storedNames = new Set(storedItems.map((item) => item.name));
+
 function isFromTheTable(piece: string): boolean {
   return Object.values(englishStrings).some((value) =>
     new RegExp(
@@ -462,6 +466,8 @@ describe("the interface text", () => {
     "/sources",
     "/criteria",
     "/accessibility",
+    "/privacy",
+    "/terms",
     "/no-such-page",
   ]) {
     it(`on ${path} comes only from the string table and the catalog`, async () => {
@@ -469,7 +475,10 @@ describe("the interface text", () => {
       const pieces = readerText(await page(deployed, path));
       expect(pieces.length).toBeGreaterThan(0);
       for (const piece of pieces) {
-        expect(fromTheCatalog.has(piece) || isFromTheTable(piece), piece).toBe(true);
+        expect(
+          fromTheCatalog.has(piece) || isFromTheTable(piece) || storedNames.has(piece),
+          piece,
+        ).toBe(true);
       }
     });
   }
@@ -534,6 +543,8 @@ describe("the interface text", () => {
       "https://daybyword.com/sources",
       "https://daybyword.com/criteria",
       "https://daybyword.com/accessibility",
+      "https://daybyword.com/privacy",
+      "https://daybyword.com/terms",
       ...releaseCatalog().plans.map((plan) => `https://daybyword.com/plans/${plan.id}`),
     ]);
   });
@@ -647,7 +658,14 @@ describe("sources, permissions and criteria (P16.5)", () => {
       expect(readerText(html), key).toContain(englishStrings[key]);
     }
     const footer = (await page(production, "/today")).split("<footer")[1] ?? "";
-    for (const path of ["/support", "/sources", "/criteria", "/accessibility"]) {
+    for (const path of [
+      "/support",
+      "/sources",
+      "/criteria",
+      "/accessibility",
+      "/privacy",
+      "/terms",
+    ]) {
       expect(footer, path).toContain(`href="${path}"`);
     }
   });
@@ -697,6 +715,37 @@ describe("the error pages (P16.8)", () => {
       expect(html).toContain('href="/today"');
     } finally {
       server.process.kill();
+    }
+  });
+});
+
+describe("the privacy policy and terms (P16.3, P16.4)", () => {
+  it("publish the approved policy, every stored item, and the terms", async () => {
+    const privacy = await page(deployed, "/privacy");
+    for (const key of [
+      "privacy.short-text",
+      "privacy.compute-text",
+      "privacy.log-text",
+      "privacy.storage-intro",
+      "privacy.email-text",
+    ] as const) {
+      expect(readerText(privacy), key).toContain(englishStrings[key]);
+    }
+    for (const item of storedItems)
+      expect(privacy, item.name).toContain(`<code>${item.name}</code>`);
+    // The owner's notes and questions stayed in the drafts.
+    expect(privacy).not.toMatch(/Owner:|Questions for the owner/);
+    const terms = await page(deployed, "/terms");
+    for (const key of ["terms.bible-text", "terms.content-text", "terms.app-text"] as const) {
+      expect(readerText(terms), key).toContain(englishStrings[key]);
+    }
+    expect(terms).toContain(
+      'href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"',
+    );
+    for (const path of ["/settings", "/support"]) {
+      const html = await page(deployed, path);
+      expect(html, path).toContain('href="/privacy"');
+      expect(html, path).toContain('href="/terms"');
     }
   });
 });

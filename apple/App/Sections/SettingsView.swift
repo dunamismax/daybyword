@@ -196,6 +196,9 @@ struct SettingsView: View {
                     Link("Sources and permissions", destination: Self.web("/sources"))
                     Link("How plans are chosen", destination: Self.web("/criteria"))
                     Link("Accessibility", destination: Self.web("/accessibility"))
+                    // The privacy policy and terms the owner approved (P16.3).
+                    Link("Privacy policy", destination: Self.web("/privacy"))
+                    Link("Terms of use", destination: Self.web("/terms"))
                     LabeledContent("Version", value: Self.version)
                 }
                 .listRowBackground(Palette.surface)
@@ -218,7 +221,7 @@ struct SettingsView: View {
     private static let sample = ReferenceText(
         display: String(localized: "Mark 4:1–20"), spoken: String(localized: "Mark, chapter 4, verses 1 to 20"))
 
-    /// A public page on daybyword.com: support (P16.2), sources and the criteria (P16.5), accessibility (P16.6).
+    /// A public page on daybyword.com: support (P16.2), sources and the criteria (P16.5), accessibility (P16.6), privacy and terms (P16.3).
     static func web(_ path: String) -> URL { URL(string: "https://\(AppRoute.webHost)\(path)")! }
 
     /// The running build: "0.1.0 (25)".
