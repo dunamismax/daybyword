@@ -9,12 +9,13 @@
     "accessibility.tested-keyboard",
     "accessibility.tested-widths",
     "accessibility.tested-contrast",
+    "accessibility.tested-forced",
     "accessibility.tested-words",
     "accessibility.tested-app",
     "accessibility.tested-settings",
     "accessibility.tested-structure",
   ] as const;
-  const gaps = ["accessibility.gap-screen-readers", "accessibility.gap-zoom"] as const;
+  const gaps = ["accessibility.gap-screen-readers"] as const;
 </script>
 
 <svelte:head>

@@ -732,7 +732,7 @@ describe("the privacy policy and terms (P16.3, P16.4)", () => {
       expect(readerText(privacy), key).toContain(englishStrings[key]);
     }
     for (const item of storedItems)
-      expect(privacy, item.name).toContain(`<code>${item.name}</code>`);
+      expect(privacy, item.name).toContain(`<code class="break-all">${item.name}</code>`);
     // The owner's notes and questions stayed in the drafts.
     expect(privacy).not.toMatch(/Owner:|Questions for the owner/);
     const terms = await page(deployed, "/terms");

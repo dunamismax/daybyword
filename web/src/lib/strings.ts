@@ -428,7 +428,9 @@ const english = {
   "accessibility.tested-keyboard":
     "Every page can be used with a keyboard alone: each control is reached with Tab, with a visible outline, a link to skip to the content comes first, and after you mark a reading, focus stays with that plan.",
   "accessibility.tested-widths":
-    "Every page is checked at phone widths down to 320 pixels without scrolling sideways, in light and dark.",
+    "Every page is checked at phone widths down to 320 pixels (the width of 400% zoom) and with text at twice its size, without scrolling sideways or cutting text short, in light and dark.",
+  "accessibility.tested-forced":
+    "With forced colors (such as Windows contrast themes), every button keeps its edge and the current section is underlined.",
   "accessibility.tested-contrast":
     "Every pairing of text and background meets WCAG AA contrast, in light and dark, checked each time the colors change.",
   "accessibility.tested-words":
@@ -442,8 +444,6 @@ const english = {
   "accessibility.gaps": "Not yet tested",
   "accessibility.gap-screen-readers":
     "A person listening with a screen reader: VoiceOver on every screen of the app, and VoiceOver and NVDA on the web.",
-  "accessibility.gap-zoom":
-    "The web at 400% zoom, and with forced colors (such as Windows contrast themes).",
   "accessibility.gaps-note":
     "These checks are planned before version 1.0, and this page will say when they are done.",
   "accessibility.report": "Report a barrier",

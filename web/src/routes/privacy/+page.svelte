@@ -80,9 +80,9 @@
     <ul class="mt-0 mb-s list-none p-0" aria-label={text("privacy.storage-caption")}>
       {#each storedItems as item (item.name)}
         <li class="border-t border-line py-xs">
-          <dl class="m-0 grid grid-cols-[max-content_1fr] gap-x-s gap-y-xxs">
+          <dl class="m-0 grid grid-cols-[minmax(0,max-content)_minmax(0,1fr)] gap-x-s gap-y-xxs">
             <dt class="text-text-muted">{text("privacy.storage-name")}</dt>
-            <dd class="m-0"><code>{item.name}</code></dd>
+            <dd class="m-0"><code class="break-all">{item.name}</code></dd>
             <dt class="text-text-muted">{text("privacy.storage-where")}</dt>
             <dd class="m-0">{text(item.where)}</dd>
             <dt class="text-text-muted">{text("privacy.storage-holds")}</dt>

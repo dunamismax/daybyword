@@ -106,11 +106,15 @@ protocol TourBrowser {
     /// Asks for more contrast and reduced motion, as a reader's settings do;
     /// false where the browser cannot be asked (only Chrome can).
     func emulateMoreContrast(_ on: Bool) async -> Bool
+    /// Forced colors (Windows contrast themes); false where the browser
+    /// cannot be asked (only Chrome can).
+    func emulateForcedColors(_ on: Bool) async -> Bool
 }
 
 extension WebDriver {
     func accessibilityTree() async -> [[String: Any]]? { nil }
     func emulateMoreContrast(_ on: Bool) async -> Bool { false }
+    func emulateForcedColors(_ on: Bool) async -> Bool { false }
 }
 
 extension TourBrowser {
@@ -385,6 +389,12 @@ final class DevTools: TourBrowser {
         return true
     }
 
+    func emulateForcedColors(_ on: Bool) async -> Bool {
+        let features: [[String: String]] = on ? [["name": "forced-colors", "value": "active"]] : []
+        await send("Emulation.setEmulatedMedia", ["features": features])
+        return true
+    }
+
     func accessibilityTree() async -> [[String: Any]]? {
         await send("Accessibility.enable")
         return await send("Accessibility.getFullAXTree")?["nodes"] as? [[String: Any]]
@@ -604,6 +614,62 @@ if await driver.emulateMoreContrast(true) {
     _ = await driver.emulateMoreContrast(false)
 }
 
+// Text at 200% (P17.3, WCAG 1.4.4): with the root font size doubled, as a
+// reader's text-only zoom does, every page still fits the desktop and the
+// narrow width without scrolling sideways, and no element hides text it
+// cannot fit. (400% zoom is the 320 px width above, in Chrome.)
+for (width, height) in [(1280, 900), (widths[widths.count - 1].width, widths[widths.count - 1].height)] {
+    await driver.resize(width: width, height: height)
+    for page in pages {
+        await driver.go(page.path)
+        let fit =
+            await driver.run(
+                """
+                document.documentElement.style.fontSize = '200%';
+                const clipped = [...document.querySelectorAll('body *')].filter((e) => {
+                  const style = getComputedStyle(e);
+                  // Text kept for screen readers only is clipped on purpose.
+                  return e.getClientRects().length > 0 && e.clientWidth > 0 && !e.classList.contains('sr-only')
+                    && ['hidden', 'clip'].includes(style.overflowX) && e.scrollWidth > e.clientWidth + 1;
+                }).map((e) => e.outerHTML.slice(0, 80));
+                return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, clipped };
+                """) as? [String: Any] ?? [:]
+        let label = "\(browser) 200% text at \(width) px \(page.path)"
+        expect((fit["overflow"] as? Int ?? 1) <= 0, "\(label): scrolls sideways by \(fit["overflow"] ?? "?") px")
+        expect((fit["clipped"] as? [String] ?? ["?"]).isEmpty, "\(label): clips \(fit["clipped"] ?? "?")")
+    }
+}
+
+// Forced colors (P17.3), where the browser can be asked: every button keeps
+// an edge, the current section is underlined, and the skip link still
+// comes first.
+await driver.resize(width: 1280, height: 900)
+if await driver.emulateForcedColors(true) {
+    for page in pages {
+        await driver.go(page.path)
+        let forced =
+            await driver.run(
+                """
+                const edgeless = [...document.querySelectorAll('.button')]
+                  .filter((e) => e.getClientRects().length > 0 && getComputedStyle(e).borderTopStyle === 'none')
+                  .map((e) => e.outerHTML.slice(0, 80));
+                const current = document.querySelector('header nav [aria-current="page"]');
+                return {
+                  active: matchMedia('(forced-colors: active)').matches,
+                  edgeless,
+                  underlined: current ? getComputedStyle(current).textDecorationLine.includes('underline') : null,
+                };
+                """) as? [String: Any] ?? [:]
+        let label = "\(browser) forced colors \(page.path)"
+        expect(forced["active"] as? Bool == true, "\(label): not in forced colors")
+        expect((forced["edgeless"] as? [String] ?? ["?"]).isEmpty, "\(label): buttons without an edge: \(forced["edgeless"] ?? "?")")
+        if page.section != nil {
+            expect(forced["underlined"] as? Bool == true, "\(label): the current section is not underlined")
+        }
+    }
+    _ = await driver.emulateForcedColors(false)
+}
+
 // Keyboard alone (P15.4, P16.6): on every page, Tab reaches every control a
 // reader can see (one stop for each group of radio buttons), and each shows
 // its focus outline. A date field's parts take Tabs of their own, so the
@@ -646,6 +712,12 @@ for page in pages {
             await driver.run(
                 """
                 const target = document.activeElement;
+                // A ring missed while the window was briefly not key is
+                // forgiven once the element is seen with it.
+                if (target && getComputedStyle(target).outlineStyle !== 'none') {
+                  const html = target.outerHTML.slice(0, 80);
+                  window.__unmarked = window.__unmarked.filter((each) => each !== html);
+                }
                 if (target && target !== document.body && !window.__reached.has(target)) {
                   window.__reached.add(target);
                   // Such a field is never :focus-visible there, so the outline alone counts.

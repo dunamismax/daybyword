@@ -41,11 +41,15 @@ column at least 44 points tall for VoiceOver's focus.
 **The web: the tour** (`make tour-web`, in Firefox, Chrome and Safari). On
 every page: the landmarks a screen reader jumps between (banner,
 navigation, one main, contentinfo), one first-level heading and no skipped
-heading levels, `lang="en"`, and the keyboard walk (every control reached
+heading levels, `lang="en"`; text at 200% (the root font size doubled, as
+text-only zoom does) at the desktop and the narrowest width with nothing
+scrolling sideways or clipped; and the keyboard walk (every control reached
 with Tab and showing its focus outline). In Chrome, from the browser's own
 accessibility tree, a name for every link, button and field and every
 image named or hidden; and with more contrast asked for (Chrome's media
-emulation), the high-contrast colors in light and dark. `make check`
+emulation), the high-contrast colors in light and dark; and in forced
+colors, an edge on every button and the current section underlined. 400%
+zoom is the 320 px width, toured in Chrome. `make check`
 also validates every page's HTML (`links.test.ts`) and checks every color pair's contrast in both
 appearances (`make tokens`' check). Reduce Transparency changes only the
 system's own bars: the app draws no translucent material of its own.
@@ -56,4 +60,5 @@ system's own bars: the app draws no translucent material of its own.
   an iPad, VoiceOver with Safari on a Mac, and NVDA on Windows. The
   Simulator has no VoiceOver, and letting an agent drive the Mac's
   VoiceOver is the owner's setting (BUILD.md P17.1b).
-- The web at 400% zoom and in forced colors (P17.3).
+- Forced colors in a real Windows contrast theme (Chrome's emulation is
+  what has run), and Safari on iOS with its own text-size setting.

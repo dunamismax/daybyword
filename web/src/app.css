@@ -143,6 +143,20 @@
     }
   }
 
+  /* Forced colors (such as Windows contrast themes) drop backgrounds, so
+     buttons keep an edge and the current section an underline (P17.3). */
+  @media (forced-colors: active) {
+    .button {
+      border: 1px solid ButtonText;
+    }
+
+    /* Over the link's own no-underline utility. */
+    header nav [aria-current="page"] {
+      text-decoration: underline 2px !important;
+      text-underline-offset: 0.25em;
+    }
+  }
+
   /* A reference never breaks inside "4:1–20", so on the narrowest screens its
      size is also capped by the viewport width, keeping it from forcing a
      horizontal scroll at large text and reference sizes (WCAG 1.4.10). */
