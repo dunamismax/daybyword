@@ -11,10 +11,12 @@
 //   DBW_WEBDRIVER=safari swift scripts/webtour.swift
 //                                          Safari through safaridriver, once "Allow
 //                                          remote automation" is on in Safari's settings
+//                                          (a visible window at 1280 and 500 px; Tab is
+//                                          Option-Tab, as Safari's keyboard readers press it)
 //
 // It also prints a week's checklist through the browser's own Print, in
 // ordinary and large print, and checks the paper with PDFKit (BUILD.md
-// P13.5); presses keys for Share, Today and History (P15.4); and runs every
+// P13.5; not in Safari, whose driver cannot print); presses keys for Share, Today and History (P15.4); and runs every
 // web flow at the desktop and the narrowest width (P15.6).
 //
 // The checks are semantic (headings, the nav's current link, the footer, the
@@ -120,6 +122,14 @@ func literal(_ text: String) -> String {
 struct WebDriver: TourBrowser {
     let endpoint: String
     var session = ""
+    /// Safari's Tab reaches only form controls unless the reader turns on
+    /// "Press Tab to highlight each item"; Option-Tab reaches links and every
+    /// control, as Safari's keyboard readers use it, without changing a setting.
+    var tabWithOption = false
+    /// The tour's window, which Safari keys again before each Tab: a Safari
+    /// window that is not the key window moves focus on Tab but fires no
+    /// focus events and shows no focus ring (`document.hasFocus()` is false).
+    var window = ""
 
     @discardableResult
     func send(_ method: String, _ path: String, _ body: [String: Any]? = nil) async -> Any? {
@@ -163,6 +173,7 @@ struct WebDriver: TourBrowser {
         let value = await send("POST", "/session", ["capabilities": ["alwaysMatch": capabilities]])
         guard let id = (value as? [String: Any])?["sessionId"] as? String else { fail("no session") }
         session = id
+        window = await send("GET", "/session/\(session)/window") as? String ?? ""
     }
 
     func go(_ path: String) async { await send("POST", "/session/\(session)/url", ["url": base + path]) }
@@ -185,7 +196,12 @@ struct WebDriver: TourBrowser {
 
     func press(_ key: Key) async {
         let code = key == .tab ? "\u{E004}" : "\u{E007}"
-        let keys: [[String: Any]] = [["type": "keyDown", "value": code], ["type": "keyUp", "value": code]]
+        var keys: [[String: Any]] = [["type": "keyDown", "value": code], ["type": "keyUp", "value": code]]
+        if key == .tab && tabWithOption {
+            await send("POST", "/session/\(session)/window", ["handle": window])
+            let option = "\u{E00A}"
+            keys = [["type": "keyDown", "value": option]] + keys + [["type": "keyUp", "value": option]]
+        }
         await send(
             "POST", "/session/\(session)/actions",
             ["actions": [["type": "key", "id": "keyboard", "actions": keys]]])
@@ -409,7 +425,7 @@ case "firefox", "safari":
     }
     await waitUntilAnswering("\(base)/up", what: "the server")
     await waitUntilAnswering("http://127.0.0.1:\(driverPort)/status", what: "the browser driver")
-    var webDriver = WebDriver(endpoint: "http://127.0.0.1:\(driverPort)")
+    var webDriver = WebDriver(endpoint: "http://127.0.0.1:\(driverPort)", tabWithOption: browser == "safari")
     await webDriver.startSession(browser: browser)
     driver = webDriver
 case "chrome":
@@ -530,7 +546,24 @@ for page in pages {
                 document.activeElement?.blur();
                 return controls.length;
                 """) as? Int ?? 0
-    for _ in 0..<(count * 3 + 2) { await driver.press(.tab) }
+    for _ in 0..<(count * 3 + 2) {
+        await driver.press(.tab)
+        // Safari fires no focusin when Tab enters a date field's parts, so
+        // the tour also notes where focus is after each press.
+        if browser == "safari" {
+            await driver.run(
+                """
+                const target = document.activeElement;
+                if (target && target !== document.body && !window.__reached.has(target)) {
+                  window.__reached.add(target);
+                  // Such a field is never :focus-visible there, so the outline alone counts.
+                  if (getComputedStyle(target).outlineStyle === 'none') {
+                    window.__unmarked.push(target.outerHTML.slice(0, 80));
+                  }
+                }
+                """)
+        }
+    }
     let result =
         await driver.run(
             controls
@@ -565,6 +598,8 @@ await driver.run("localStorage.clear()")
 // Paper (P13.1, P13.5): the week's checklist printed on Letter, in ordinary
 // and large print, and on a short page that forces breaks. The page alone is
 // printed, every reading is on it, and no day is split across pages.
+// safaridriver has no Print command, so Safari's printing is checked by hand
+// at each release (docs/browsers.md).
 let week = "/plans/gospels-at-your-pace/week?start=2027-01-04"
 let days = [
     ("Monday 4 January", "Matthew 1–3"), ("Tuesday 5 January", "Matthew 4–5"),
@@ -572,7 +607,8 @@ let days = [
     ("Friday 8 January", "Matthew 10–11"),
 ]
 var pageCounts: [String: Int] = [:]
-for (name, query, height) in [("ordinary", "", 27.94), ("large", "&size=large", 27.94), ("short", "&size=large", 9.0)] {
+let papers = browser == "safari" ? [] : [("ordinary", "", 27.94), ("large", "&size=large", 27.94), ("short", "&size=large", 9.0)]
+for (name, query, height) in papers {
     await driver.go(week + query)
     let document = await driver.printed(width: 21.59, height: height)
     // A large label can wrap ("Monday 4 / January"): compare words, not lines.
@@ -592,8 +628,10 @@ for (name, query, height) in [("ordinary", "", 27.94), ("large", "&size=large", 
         expect(holding.count == 1, "print \(name): \(day) and \(reference) are together on \(holding.count) pages")
     }
 }
-expect((pageCounts["large"] ?? 0) >= (pageCounts["ordinary"] ?? 0), "print: large print has fewer pages")
-expect((pageCounts["short"] ?? 0) > 1, "print: a short page did not break")
+if !papers.isEmpty {
+    expect((pageCounts["large"] ?? 0) >= (pageCounts["ordinary"] ?? 0), "print: large print has fewer pages")
+    expect((pageCounts["short"] ?? 0) > 1, "print: a short page did not break")
+}
 
 // Keyboard (P15.4). A plan's Share button is the next stop after Start, and
 // Enter copies the link, or shows it selected if the clipboard is refused.

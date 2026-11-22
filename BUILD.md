@@ -17,8 +17,8 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888), which the owner tested and found working. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 3 of 5 (P15.2, P15.4, P15.5; P15.1a, P15.6a done). Phase 16: 8 of 9 (P16.7 drafted) |
-| **Next item** | **P15.6b** (Safari, now that remote automation is on); then **P16.7** (the privacy URL and the screenshots' UI test); then **Phase 17** from P17.1. Waiting on a device: P12.2b, P12.6b, P15.1b |
+| **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888), which the owner tested and found working. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 4 of 5 (P15.2, P15.4, P15.5, P15.6; P15.1a done). Phase 16: 8 of 9 (P16.7 drafted) |
+| **Next item** | **P16.7** (the privacy URL and the screenshots' UI test); then **Phase 17** from P17.1. Waiting on a device: P12.2b, P12.6b, P15.1b |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
 | **Waiting on the owner** | **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22 after `make check-full`). `/privacy` and `/terms` are committed, not deployed yet. |
@@ -143,7 +143,7 @@ trimmed the path to 1.0 from 148 open items to 103.
 | 12 | Widgets and Apple integration | M3 Version 1.0 | 4 | 2 |
 | 13 | Paper and calendars | M3 Version 1.0 | 3 | 3 |
 | 14 | Accounts, backup, and sync | after 1.0 (roadmap) | — | — |
-| 15 | The web app: install and offline | M3 Version 1.0 | 5 | 3 |
+| 15 | The web app: install and offline | M3 Version 1.0 | 5 | 4 |
 | 16 | Public pages, legal, and App Store readiness | M3 Version 1.0 | 9 | 8 |
 | 17 | Quality hardening | M3 Version 1.0 | 9 | 0 |
 | 18 | Version 1.0 launch | M3 Version 1.0 | 9 | 0 |
@@ -520,11 +520,12 @@ SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
   - *Result (agent, 2026-11-22):* **Share this plan** on each plan's page (`ShareButton.svelte`, `share.js`): the Web Share API where the browser has it, else the link copied, else shown selected in a labelled field; hidden without JavaScript. The app's plan page has a ShareLink to the same daybyword.com address (`AppRoute.webURL`). Keyboard: a Tab walk of every page in the browser pane found every control reachable with a visible ring; the gap was Today and History, whose buttons vanish when their HTML is replaced, so `reading.js` now puts focus on the plan's Undo after Mark read and on Mark read after Undo (Undo is described by its "Marked … read"). The web tour presses Tab and Enter for Share, Today and History in Firefox (335 checks); the fallback was seen at 375 px in the browser pane and the share sheet in the iOS Simulator. A real phone's Web Share sheet is not seen yet (P15.6).
 - [x] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
   - *Result (agent, 2026-11-22):* docs/browsers.md: the matrix, what the web app needs (the features `support.js` checks, IndexedDB, the service worker, the CSP), features that depend on the browser (Share, Copy, install, offline, print), a table of every browser test run with its version and date, what is not tested yet, and the by-hand pass at each release. Linked from README.md and docs/web.md.
-- [ ] **P15.6** Browser tests for every web flow at phone and desktop widths in Safari and Chrome, with Firefox and Edge checked by hand at each release.
+- [x] **P15.6** Browser tests for every web flow at phone and desktop widths in Safari and Chrome, with Firefox and Edge checked by hand at each release.
   - *Note (agent, 2026-11-22):* split: Chrome (and Firefox, automated too) are done; Safari's driver refuses a session until "Allow remote automation" is on, which is the owner's setting.
   - [x] **P15.6a** Chrome and Firefox. `scripts/webtour.swift` drives Chrome through its DevTools protocol (no chromedriver: Homebrew's fails Gatekeeper; E60) at 1280, 375 and 320 px, and Firefox at 1280 and 500 px, in light and dark, and both run every web flow at the desktop and the narrowest width: choosing, starting toward a finish date, Copy, part read, Skip, Undo, the welcome back, pause, resume, stop and follow again, the calendar file, the export, and Delete everything. `make tour-web` runs both: 505 checks in Chrome 157, 343 in Firefox 160.
-  - [ ] **P15.6b** Safari, on the Mac and in the iOS Simulator: `DBW_WEBDRIVER=safari swift scripts/webtour.swift` once the owner turns on Safari's Settings › Advanced › "Show features for web developers", then Developer › "Allow remote automation" (or runs `safaridriver --enable`, which asks for the Mac's password). Edge, which shares Chrome's engine and is not installed here, stays a check by hand at each release (docs/browsers.md).
+  - [x] **P15.6b** Safari, on the Mac and in the iOS Simulator: `DBW_WEBDRIVER=safari swift scripts/webtour.swift` once the owner turns on Safari's Settings › Advanced › "Show features for web developers", then Developer › "Allow remote automation" (or runs `safaridriver --enable`, which asks for the Mac's password). Edge, which shares Chrome's engine and is not installed here, stays a check by hand at each release (docs/browsers.md).
     - *Owner (2026-11-22):* Safari's "Allow remote automation" is now on.
+    - *Result (agent, 2026-11-22):* the tour passes in Safari 27.2 (550 checks, twice) and `make tour-web` now runs it after Firefox and Chrome, in a visible window at 1280 and 500 px. Its Tab walk presses Option-Tab, as Safari's keyboard readers do, and re-keys the window before each press (an unfocused Safari window moves focus but fires no focus events). It found that Safari's Tab enters a date field with no `focusin` and the field never matches `:focus-visible`, so it showed no ring: date fields now draw it on `:focus`. Not in Safari: printing (safaridriver has no Print command; by hand at release). iOS Safari in the simulator by touch: start, Mark read, Undo, Redo (its Settings app drew blank, so no driver there). docs/browsers.md updated.
 
 ## Phase 16: Public pages, legal, and App Store readiness
 

@@ -31,7 +31,10 @@
     margin-block: 1em;
   }
 
-  :focus-visible {
+  /* A date field counts too: Safari focuses its parts, so the field itself
+     is never :focus-visible there, yet a keyboard reader needs the ring. */
+  :focus-visible,
+  input[type="date"]:focus {
     outline: 3px solid var(--color-accent);
     outline-offset: 2px;
   }
