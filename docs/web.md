@@ -48,6 +48,12 @@ files when APIs are needed.
   rest) are the catalog's and are shown as written. With no
   `DATABASE_URL` there is no catalog: Plans is empty and a plan's
   address is not found.
+- **Installable** (P15.1). `/manifest.webmanifest` is a route that
+  builds the manifest from Morning's colors (`design/tokens.json`) and
+  the owner's icons (`design/images/manifest.json`: the 192 and 512 px
+  web-app icons, opaque, the mark inside the maskable safe zone); it
+  opens on `/today`, standalone. The head names it, the home-screen title
+  for iOS, and a `theme-color` for light and dark.
 - **Paper.** `@media print` in `app.css` drops the header, footer,
   forms and buttons, and tokens.css switches to Morning's light colors
   whatever the screen's appearance, so a week's checklist

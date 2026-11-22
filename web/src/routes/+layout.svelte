@@ -11,6 +11,8 @@
   import { siteOrigin, type Share } from "#lib/site.ts";
   import { text } from "#lib/strings.ts";
   import "../app.css";
+  // The browser's own bar takes Morning's page color (P15.1).
+  import tokens from "../../../design/tokens.json";
 
   let { children }: { children: Snippet } = $props();
   let section = $derived(page.data["section"] as Section | undefined);
@@ -19,6 +21,16 @@
 </script>
 
 <svelte:head>
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: light)"
+    content={tokens.color.background.light}
+  />
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: dark)"
+    content={tokens.color.background.dark}
+  />
   {#if share}
     <meta name="description" content={share.description} />
     <meta property="og:type" content="website" />

@@ -523,3 +523,45 @@ describe("the interface text", () => {
     }
   });
 });
+
+describe("the installable web app (P15.1)", () => {
+  it("serves a manifest with Morning's colors, the owner's icons, and Today to open on", async () => {
+    const response = await fetch(`${production.base}/manifest.webmanifest`);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toMatch(/^application\/manifest\+json/);
+    const manifest = (await response.json()) as {
+      name: string;
+      start_url: string;
+      display: string;
+      theme_color: string;
+      background_color: string;
+      icons: { src: string; sizes: string; purpose: string }[];
+    };
+    const tokens = JSON.parse(
+      readFileSync(new URL("../../../design/tokens.json", import.meta.url), "utf8"),
+    ) as { color: { background: { light: string } } };
+    expect(manifest).toMatchObject({
+      name: "Day by Word",
+      start_url: "/today",
+      display: "standalone",
+      theme_color: tokens.color.background.light,
+      background_color: tokens.color.background.light,
+    });
+    expect(manifest.icons.map((icon) => icon.sizes)).toEqual(["192x192", "512x512"]);
+    for (const icon of manifest.icons) {
+      const image = await fetch(`${production.base}${icon.src}`);
+      expect(image.status, icon.src).toBe(200);
+      expect(image.headers.get("content-type"), icon.src).toBe("image/png");
+    }
+    expect((await fetch(`${production.base}${manifest.start_url}`)).status).toBe(200);
+  });
+
+  it("names the manifest, the home screen title and the bar's colors on every page", async () => {
+    for (const path of ["/", "/today", "/plans/gospels-at-your-pace"]) {
+      const html = await page(production, path);
+      expect(html, path).toContain('<link rel="manifest" href="/manifest.webmanifest"');
+      expect(html, path).toContain('<meta name="apple-mobile-web-app-title" content="Day by Word"');
+      expect(html.match(/<meta name="theme-color"/g)?.length, path).toBe(2);
+    }
+  });
+});

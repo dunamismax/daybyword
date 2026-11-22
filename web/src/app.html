@@ -7,6 +7,10 @@
     <meta name="robots" content="noindex" />
     <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+    <!-- Installable (P15.1): the manifest names the app, its icons and
+         Morning's colors; iOS reads its own title and touch icon. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Day by Word" />
     <!-- Applies the reader's appearance and reference size before the page
          paints, from this browser's own storage; a file, not inline, under the
          strict CSP. support.js and unsupported.js show the old-browser notice;

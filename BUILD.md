@@ -18,9 +18,9 @@ sessions build Day by Word step by step, working under
 | | |
 |---|---|
 | **Phase** | M2 First light is shipped: TestFlight build 126 on the owner's iPhone, and daybyword.com serving 2aead57. Phases M, 0–11 and 13 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a and P12.6a done) |
-| **Next item** | **Phase 15**: P15.1 (the installable web app), P15.2, P15.4, P15.5, P15.6; then Phase 16. Still open in Phase 12: **P12.2b** (the Lock Screen accessories, to be seen on a device) and **P12.6b** (the app on a Mac, which waits on the owner) |
+| **Next item** | **Phase 15**: P15.2 (the web offline, finished), P15.4, P15.5, P15.6; then Phase 16. Still open: **P12.2b** (Lock Screen widgets, on a device), **P12.6b** (the app on a Mac) and **P15.1b** (installing on Android), each waiting on the owner or a device |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | **P12.6b**: either allow an agent to register this Mac as a development device in Xcode, or install the next TestFlight build on the Mac with TestFlight for Mac and say whether it runs. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there |
+| **Waiting on the owner** | **P12.6b**: either allow an agent to register this Mac as a development device in Xcode, or install the next TestFlight build on the Mac with TestFlight for Mac and say whether it runs. **P12.2b**: say whether the Lock Screen's three Day by Word widgets show and Mark read works there. **P15.1b**: install daybyword.com from Chrome on an Android phone after the next deploy, or allow an agent to download an Android emulator image |
 | **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 2aead57 (deployed 2026-11-22 after `make check-full`): eight plans with their pages, the plan questions and grouped list, starting a plan, Today with quiet celebrations, Progress (books by verse and chapter, the optional reading days in a row, History, and the archive with pause, resume and stop), Settings and offline. Candidate, live port and https://daybyword.com passed check-live, and the other sites answered as before |
 | **Last updated** | 2026-11-22 |
 
@@ -507,6 +507,9 @@ SvelteKit with Drizzle/PostgreSQL supplies optional accounts later (D42).
 ## Phase 15: The web app: install and offline
 
 - [ ] **P15.1** An installable web app: the manifest (name, icons from the owner's files, colors from the tokens), checked through Add to Home Screen on iPhone and installation on Android.
+  - *Note (agent, 2026-11-22):* split: the manifest and the iPhone are done; no Android emulator image is installed on the owner's Mac.
+  - [x] **P15.1a** The manifest and the iPhone. `/manifest.webmanifest` from the tokens and the owner's icons (docs/web.md), the head's links and `theme-color`, and production tests. Seen in the iOS Simulator (iPhone 18 Pro, Safari): Add to Home Screen offered "Day by Word" with the owner's icon and "Open as Web App"; the icon opened Today standalone, without Safari's bar.
+  - [ ] **P15.1b** Installation on Android: Chrome's install prompt and the installed app opening on Today. Needs an Android phone, or an emulator image (a download of a few gigabytes, which an agent makes only with the owner's OK). Check it then, or with P15.6's browser checks.
 - [ ] **P15.2** The web offline, finished: SvelteKit's service worker (`src/service-worker.ts`) keeps the assets and the active plans' coming weeks, queues marks, and never caches another reader's data.
 - [ ] **P15.4** Keyboard use throughout, and sharing through the Web Share API with a copy-link fallback. *(Rewritten by D39.)*
 - [ ] **P15.5** Write `docs/browsers.md`: the support matrix (D30) and what was tested in each browser.
