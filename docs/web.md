@@ -108,7 +108,9 @@ files when APIs are needed.
 - Test the production server (`node server.ts` around the adapter-node
   build; `make serve-web`, `make smoke-web`), route/error/health
   behavior, form actions and hydration in a real browser, not only the
-  development server.
+  development server. `test/production/links.test.ts` (P16.9, E61)
+  crawls every page: same-site links answer, loaded files are the site's
+  own, and each page passes html-validate's `standard` rules.
 
 The checks the retired Swift server's tests made now live in
 `web/test/` (PM.20): the address contract (tests/fixtures/routes.json),

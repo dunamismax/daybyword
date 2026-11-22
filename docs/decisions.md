@@ -1644,3 +1644,32 @@ runs the tour in Firefox and then in Chrome.
 Safari and Chrome. Chrome needed no new dependency this way; Safari still
 needs the owner's "Allow remote automation" (E26), and Edge, which shares
 Chrome's engine, stays a check by hand at each release.
+
+### E61. The link check: every page crawled, validated by html-validate
+
+*2026-11-22, agent (P16.9).* `web/test/production/links.test.ts` runs in
+`make check` (through `make smoke-web`) against the production build and
+the release catalog. It starts from the home page and every address in
+`tests/fixtures/routes.json`, follows every same-site link and file a page
+names, and requires each to answer (a redirect must lead to a page that
+does); it requires every file a page loads (scripts, stylesheets, icons,
+images, the manifest) to come from the site itself, while links to other
+sites (Bible.com, STEP Bible) stay allowed; and it validates every page as
+HTML.
+
+- **html-validate** (MIT, pure JavaScript, no install scripts) is the one
+  new development package, pinned at 11.19.0, a release more than two
+  weeks old when added. It runs offline on the page text the test fetched,
+  with its `html-validate:standard` rules (conformance to the HTML
+  standard, not style), and sends nothing anywhere.
+- **Not the W3C's Nu checker**: it needs a Java runtime and a jar from
+  outside the package registry, which `make check` would then depend on;
+  and its online service would send every page to another host.
+- **Not a hand-written checker**: well-formedness alone (balanced tags)
+  misses what matters most here (duplicate ids, an `aria-labelledby` that
+  names nothing, content where the standard does not allow it).
+
+**Why:** P16.9 asks that every internal link resolves, pages validate as
+HTML, and nothing loads from another host, in `make check`. Crawling the
+real production build checks the pages readers get, and one small,
+maintained validator is cheaper than a second runtime.
