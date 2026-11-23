@@ -26,7 +26,7 @@ by hand:
 | Exempted | Why |
 |---|---|
 | Contrast and Dynamic Type on the navigation bar's buttons (Done, Cancel, Start) | The system draws them on glass and sizes them; the audit samples the glass |
-| Contrast on text that reaches under the tab bar | The audit samples it through the bar's blur; the same text passes once scrolled into view |
+| Contrast on text that reaches under the tab bar, and contrast the audit names no element for while the tab bar shows | The audit samples it through the bar's blur (on History's long list it cannot even say which element); the same text passes once scrolled into view |
 | Contrast on a label of one glyph (Progress's day letters, ✓, ○ and –) | Single glyphs the audit samples unreliably (it passed and failed the same letter on two runs); their colors are 6.3:1 (light) and 7.2:1 (dark) by the tokens |
 | Dynamic Type at the standard text size | The audit flags text that does grow (Copy reference, More, the reminder rows); the AX5 pass audits Dynamic Type itself, and its screenshots show the text grown |
 | Text clipped by the screen's own edge | Text that continues below the screen, to be scrolled to; text clipped within the screen still fails |

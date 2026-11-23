@@ -21,7 +21,7 @@ sessions build Day by Word step by step, working under
 | **Next item** | **P18.3**, the beta, which the owner starts (D36); then P18.4 (App Review, with the owner's go-ahead), P18.5 and P18.7 on release day; in Phase 17 only P17.1b and P17.9 remain, both waiting on the owner with a device. Waiting on a device or the owner: P12.2b, P12.6b, P15.1b, P17.1b |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
 | **Waiting on the owner** | **P17.9**: run a TestFlight build for a week with reminders on two plans, quiet hours on and "Reminders a day" at 1, and say which reminders arrived and when. **P17.1b**: listen to the app with VoiceOver on the iPhone and iPad (TestFlight), and to daybyword.com with VoiceOver in Safari, and say what reads badly; or allow an agent to drive the Mac's VoiceOver. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22 after `make check-full`). `/privacy` and `/terms` are committed, not deployed yet. |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22). Everything since (the legal pages, Safari, Phase 17 work, P18.1, P18.9) is pushed but not deployed, and TestFlight is still build 143. |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -582,22 +582,30 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-22, fourth session:** P15.4 (Share this plan, focus kept on
-  Today and History), P15.5 (docs/browsers.md), P15.6a (the tour in Chrome
-  through DevTools at 375 and 320 px, and every web flow in both browsers,
-  E60), P16.1, P16.2, P16.5, P16.6, P16.8, P16.9 (the link and HTML check,
-  html-validate, E61). Drafted for the owner: P16.3 and P16.4
-  (`docs/legal/`), and P16.7 short of screenshots (`docs/app-store/`).
-- **Shipped:** `make check-full` passed (706 engine cases in Firefox, the
-  web tour 505 checks in Firefox and 739 in Chrome, the app tour, Linux);
-  daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888, after
-  a second `check-full`) uploaded, processing at the end of the session.
-- **Split:** P15.6b (Safari) waits on the owner's remote automation.
-- **New pages' words** are string-table keys; `/sources` reads
-  `catalog/SOURCES.md` at build time and stops if a cleared source has no
-  words (`src/lib/server/catalog/sources.ts`). The accessibility statement
-  must stay true: update it as Phase 17 lands.
-- **The Mac restarted mid-session:** a fresh shell put an old Node 24
-  (`/usr/local/bin`) before Homebrew's pinned 26.13.1; prefix commands with
-  `PATH=/opt/homebrew/bin:$PATH`. Tool hooks timed out for a while after.
-- **Simulator:** "DbW iPhone 18 Pro" (1A19E4D3) is this project's own.
+- **2026-11-22, fifth session:** recorded the owner's answers (P16.3
+  approved, Safari automation on, build 143 works). Done: P16.3, P16.4
+  (/privacy, /terms), P15.6b (Safari in the tour), P16.7 (App Store
+  screenshots, `make app-store-screenshots`; Phase 16 moved to history),
+  P17.1a, P17.2, P17.3, P17.4, P17.5, P17.7 (POST limit, 4M body limit,
+  `make audit-web`, E62), P17.10, P17.11, P18.1 (`docs/rights-audit.md`),
+  P18.2, P18.9 (`docs/learning.md`, Share what you think).
+- **Not shipped:** daybyword.com still serves 4180d56 and TestFlight is
+  still build 143. Everything since is committed and pushed but neither
+  deployed nor uploaded. Next session: run `make check-full`, then `make
+  deploy` (installs the new 4M unit) and `make archive testflight`.
+- **check-full state:** check, audit-web, the engine cases in Firefox and
+  Linux passed on ec9a271; every app UI test passed except the
+  accessibility audit, whose last failure (text seen through the tab bar
+  on History, no element named) is exempted in the final commit, not yet
+  rerun. `make tour-web` passed in all three browsers earlier in the
+  session but not on the final commit. The Mac was under very heavy load
+  (load average 70–145), which makes UI tests slow and flaky.
+- **Waiting on the owner:** P17.9 (a week of reminders on a device),
+  P17.1b (listening with VoiceOver), P12.2b, P12.6b, P15.1b, and P18.3
+  (start the beta). P18.4 needs the owner's go-ahead to submit.
+- **Owner to know:** the POST limit keeps a salted hash of each client's
+  address in memory for a minute (never logged); the privacy policy's log
+  statements still hold, but say if you want it mentioned there.
+- **Safari's driver** needs workarounds (scripts/webtour.swift): Option-Tab,
+  re-keying the window, no promises in scripts; the offline pass is skipped
+  there.
