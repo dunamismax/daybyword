@@ -17,7 +17,7 @@ WEB_STAMP := web/node_modules/.modules.yaml
 
 .PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
 	test-linux run screenshot lint format \
-	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser \
+	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser audit-web \
 	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web app-store-screenshots check check-full check-signing archive testflight deploy clean
 
 help: ## List the targets
@@ -109,6 +109,9 @@ serve-web: build-web catalog-export ## Serve the SvelteKit site's production bui
 
 check-web: lint-web types-web test-web smoke-web check-export db-drift test-db ## The web part of make check
 
+audit-web: web-install ## Check the web's production dependencies for published advisories (needs the network; docs/decisions.md E62)
+	@cd web && pnpm audit --prod
+
 test-domain-browser: web-install ## Run the shared engine cases in headless Firefox (docs/engine.md, "Parity")
 	@echo "== domain cases in a browser"
 	@cd web && node scripts/domain-browser.ts
@@ -153,7 +156,7 @@ tour-web: build-web catalog-export ## Tour the SvelteKit site and every web flow
 check: lint check-web catalog check-catalog test-packages test-app check-strings ## The gate before every commit
 	@echo "check: all passed"
 
-check-full: check test-domain-browser tour-web tour-app test-linux ## The milestone gate: check, the engine cases in a browser, both tours in light and dark, and Linux
+check-full: check audit-web test-domain-browser tour-web tour-app test-linux ## The milestone gate: check, the production dependencies' advisories, the engine cases in a browser, both tours in light and dark, and Linux
 	@echo "check-full: all passed"
 
 check-signing: ## Check that this Mac can sign and upload the app: Xcode, the team's certificate, an Apple ID (docs/release.md)

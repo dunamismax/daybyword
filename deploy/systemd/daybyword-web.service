@@ -15,7 +15,7 @@ Type=simple
 User=daybyword-web
 Group=daybyword-web
 WorkingDirectory=/srv/www/daybyword.com/current
-Environment=NODE_ENV=production HOST=127.0.0.1 PORT=4318 BODY_SIZE_LIMIT=1M DBW_ENV=production
+Environment=NODE_ENV=production HOST=127.0.0.1 PORT=4318 BODY_SIZE_LIMIT=4M DBW_ENV=production
 # The read-only web role (daybyword_web). Never migration.env.
 EnvironmentFile=/etc/web-apps/daybyword/web.env
 ExecStart=/opt/node-26/bin/node /srv/www/daybyword.com/current/server.ts

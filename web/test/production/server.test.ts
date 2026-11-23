@@ -228,6 +228,73 @@ afterAll(() => {
   for (const server of [development, production, deployed]) server.process.kill();
 });
 
+describe("the limit on POSTs (P17.7)", () => {
+  it("answers 429 after a client's limit in a minute, and counts only POSTs", async () => {
+    const limited = await start({ DBW_ENV: "production", DBW_POST_LIMIT: "3" });
+    try {
+      const post = () =>
+        fetch(`${limited.base}/api/v1/today`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ events: [], today: "2027-03-01" }),
+        });
+      const statuses = [];
+      for (let i = 0; i < 4; i += 1) statuses.push((await post()).status);
+      expect(statuses.slice(0, 3).every((status) => status !== 429)).toBe(true);
+      const refused = await post();
+      expect(refused.status).toBe(429);
+      expect(refused.headers.get("retry-after")).toBe("60");
+      expect(refused.headers.get("content-security-policy")).toContain("default-src 'none'");
+      // A page is not a POST, and still answers.
+      expect((await fetch(`${limited.base}/plans`)).status).toBe(200);
+      // The log keeps the route's kind, never the client.
+      expect(limited.log.some((line) => line.includes("route=limited status=429"))).toBe(true);
+      expect(limited.log.join("\n")).not.toMatch(/127\.0\.0\.1(?!:)/);
+    } finally {
+      limited.process.kill();
+    }
+  });
+});
+
+describe("the compute endpoints' refusals (P17.7)", () => {
+  it("refuse another content type, malformed JSON, a malformed record, and a body over the limit", async () => {
+    const send = (body: string, type = "application/json", base = production.base) =>
+      fetch(`${base}/api/v1/today`, { method: "POST", headers: { "content-type": type }, body });
+    for (const [response, status, error] of [
+      [await send("{}", "application/xml"), 415, "notJSON"],
+      [await send("{not json"), 400, "notJSON"],
+      [await send(JSON.stringify({ events: "no", today: "2027-03-01" })), 422, undefined],
+      [await send(JSON.stringify({ events: [], today: "2027-02-30" })), 422, undefined],
+    ] as const) {
+      expect(response.status).toBe(status);
+      expect(response.headers.get("cache-control")).toBe("no-store");
+      const answer = (await response.json()) as { error?: string };
+      expect(typeof answer.error).toBe("string");
+      if (error) expect(answer.error).toBe(error);
+    }
+    // A form's types from another site never reach them: SvelteKit refuses it.
+    const crossSite = await fetch(`${production.base}/api/v1/today`, {
+      method: "POST",
+      headers: { "content-type": "text/plain", origin: "https://example.com" },
+      body: "{}",
+    });
+    expect(crossSite.status).toBe(403);
+    // adapter-node refuses a body over BODY_SIZE_LIMIT (1M on the host).
+    const small = await start({ DBW_ENV: "production", BODY_SIZE_LIMIT: "2K" });
+    try {
+      const big = await send(
+        JSON.stringify({ events: [], today: "2027-03-01", padding: "x".repeat(4096) }),
+        "application/json",
+        small.base,
+      );
+      expect(big.status).toBe(413);
+      expect(((await big.json()) as { error?: string }).error).toBe("tooLarge");
+    } finally {
+      small.process.kill();
+    }
+  });
+});
+
 describe("the production server", () => {
   for (const testCase of fixture.cases) {
     const { path, environment } = testCase.input;

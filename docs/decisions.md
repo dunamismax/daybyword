@@ -1673,3 +1673,54 @@ HTML.
 HTML, and nothing loads from another host, in `make check`. Crawling the
 real production build checks the pages readers get, and one small,
 maintained validator is cheaper than a second runtime.
+
+### E62. Security at 1.0: a limit on POSTs, request sizes, advisories
+
+*2026-11-22, agent (P17.7).* What P17.7 asks, and where each stands:
+
+- **Server-only data access and a private database**: the Drizzle schema
+  and client live under `src/lib/server/`, which SvelteKit refuses to
+  bundle for the browser; PostgreSQL listens on the host's loopback, and
+  the web role is read-only (docs/deploy.md). No browser or app holds a
+  connection.
+- **Validation and origin checks**: the compute endpoints take JSON only
+  (415 otherwise, 400 for malformed JSON, 422 for a record the domain
+  module refuses), and SvelteKit refuses a form-type POST from another
+  origin (403). The production tests now send each of these.
+- **Request size**: adapter-node's `BODY_SIZE_LIMIT`, now 4M on the host
+  (was 1M), answered 413 `tooLarge`. The browser sends the whole record
+  with each request, and an event is about 236 bytes, so 1M was about
+  4,400 events: a few years of daily reading in three plans. 4M allows
+  well over a decade; sync after 1.0 changes how the record travels.
+- **A limit on POSTs**, in `server.ts`, before SvelteKit: at most
+  `DBW_POST_LIMIT` (240) a minute from one client, then 429 with
+  `Retry-After: 60`. The client is the address Caddy forwards, salted with
+  a random value made when the process starts and hashed, held in memory
+  only for the minute it counts, and never logged; the log line says
+  `route=limited`. A reader marks a few readings a day; 240 a minute only
+  stops a loop or an abuser. GETs are not limited: pages are cheap, and
+  Caddy serves the same files to everyone.
+- **CSP**: strict, no `unsafe-*`, tested on every page (E11, E19).
+- **Cookies**: none are set (the privacy policy, P16.4).
+- **Advisories**: `make audit-web` (in `make check-full`) runs
+  `pnpm audit --prod`, which needs the network. On 2026-11-22 the
+  production dependencies had none. The whole tree had one moderate
+  advisory, GHSA-67mh-4wv8-2f99 in esbuild 0.24.2 and earlier, reached
+  only through drizzle-kit's development loader (`@esbuild-kit/*`): it
+  concerns esbuild's development server, which nothing here starts, and
+  drizzle-kit runs only on the owner's Mac and in the deploy's build step
+  to generate and check migrations. Reviewed and left; revisit when
+  drizzle-kit drops `@esbuild-kit`.
+- **The app**: no secrets in the binary (the team ID in `Base.xcconfig`
+  is public by nature; checked with `strings` on the build), and no
+  tokens at 1.0, so nothing yet needs the Keychain (accounts and sync,
+  after 1.0, store theirs there). The journal keeps iOS's default
+  protection, complete until the first unlock after a restart, because
+  the widgets, Siri and a reminder's Mark read work while the phone is
+  locked; files the reader exports or adds to a calendar are written with
+  complete protection.
+
+**Why:** these are the checks a small, account-free service needs at
+1.0; each is tested where it can be, and the rest is recorded here so
+the next change does not undo it.
+

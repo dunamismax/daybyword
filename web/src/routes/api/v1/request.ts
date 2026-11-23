@@ -16,7 +16,9 @@ export async function readJSON(request: Request): Promise<unknown> {
   if (!type.toLowerCase().startsWith("application/json")) return refused(415, "notJSON");
   try {
     return await request.json();
-  } catch {
+  } catch (error) {
+    // A body over adapter-node's BODY_SIZE_LIMIT is refused while it is read.
+    if ((error as { status?: unknown } | null)?.status === 413) return refused(413, "tooLarge");
     return refused(400, "notJSON");
   }
 }

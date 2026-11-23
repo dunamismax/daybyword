@@ -6,6 +6,7 @@
 // and the time taken (docs/decisions.md E17). HSTS is Caddy's.
 //
 //   node server.ts      after `vite build`; HOST (127.0.0.1) and PORT (3000)
+import { createHash, randomBytes } from "node:crypto";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 
 export const policy = [
@@ -72,11 +73,60 @@ const { handler } = (await import(new URL("./build/handler.js", import.meta.url)
   handler: Handler;
 };
 
+// A limit on POSTs (BUILD.md P17.7; docs/decisions.md E62): the form
+// actions and the compute API each fold a reader's whole record, so one
+// client may post at most DBW_POST_LIMIT times a minute (240, far above a
+// reader's pace), and is then answered 429 until the minute ends. A client
+// is its address as Caddy forwards it (or the socket's, straight to this
+// port), kept only in this process's memory, salted and hashed, for the
+// minute it counts; it is never logged or written anywhere.
+const postLimit = Number(process.env["DBW_POST_LIMIT"] ?? "240");
+const minute = 60_000;
+const salt = randomBytes(16);
+const posts = new Map<string, { since: number; count: number }>();
+setInterval(() => {
+  const now = Date.now();
+  for (const [client, window] of posts) if (now - window.since >= minute) posts.delete(client);
+}, minute).unref();
+
+function overTheLimit(request: IncomingMessage): boolean {
+  if (request.method !== "POST") return false;
+  const forwarded = request.headers["x-forwarded-for"];
+  const address =
+    (typeof forwarded === "string" ? forwarded.split(",")[0]?.trim() : undefined) ??
+    request.socket.remoteAddress ??
+    "";
+  const client = createHash("sha256").update(salt).update(address).digest("base64url");
+  const now = Date.now();
+  let window = posts.get(client);
+  if (!window || now - window.since >= minute) {
+    window = { since: now, count: 0 };
+    posts.set(client, window);
+  }
+  window.count += 1;
+  return window.count > postLimit;
+}
+
 export function serve(request: IncomingMessage, response: ServerResponse): void {
   const start = performance.now();
   request.headers[protocolHeader] ??= "http";
   for (const [name, value] of Object.entries(securityHeaders)) response.setHeader(name, value);
   let route = "static";
+  if (overTheLimit(request)) {
+    response.on("finish", () =>
+      console.log(
+        `request method=POST route=limited status=429 ms=${Math.round(performance.now() - start)}`,
+      ),
+    );
+    request.resume();
+    response.writeHead(429, {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "no-store",
+      "retry-after": "60",
+    });
+    response.end("Too many requests. Please try again in a minute.\n");
+    return;
+  }
   const writeHead = response.writeHead.bind(response) as (...args: unknown[]) => ServerResponse;
   response.writeHead = ((status: number, ...rest: unknown[]) => {
     const marked = response.getHeader(routeHeader);
