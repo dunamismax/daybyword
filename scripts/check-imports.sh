@@ -38,4 +38,14 @@ if printf '%s\n' "$output" | grep -q '^fail$'; then
   printf '%s\n' "$output" | grep -v '^fail$' >&2
   status=1
 fi
+
+# The app and its widgets make no network requests of their own (the
+# privacy policy says so, and every feature works in airplane mode,
+# BUILD.md P17.5): no networking API appears in their code. Links the
+# reader opens go to the system (Link, openURL), which is not the app asking.
+if grep -rnE '\b(URLSession|URLRequest|NWConnection|NWPathMonitor|WKWebView|SFSafariViewController|CFNetwork|dataTask|Network\.framework)\b|^import (Network|WebKit|SafariServices)$' \
+  apple/App apple/Widgets apple/Shared Packages/ReadingEngine/Sources Packages/ReadingData/Sources >&2; then
+  echo "check-imports: the app must make no network requests of its own (P17.5)" >&2
+  status=1
+fi
 exit $status

@@ -207,6 +207,10 @@ struct WebDriver: TourBrowser {
             "POST", "/session/\(session)/element", ["using": "css selector", "value": selector])
         guard let id = (element as? [String: Any])?.values.first as? String else { fail("no element \(selector)") }
         await send("POST", "/session/\(session)/element/\(id)/click", [:])
+        // Safari's driver can answer before a click's navigation begins (a
+        // form posted while the service worker controls the page), and then
+        // reads the old page for a while: let it begin.
+        if tabWithOption { try? await Task.sleep(for: .milliseconds(800)) }
     }
 
     func press(_ key: Key) async {
@@ -444,7 +448,11 @@ guard FileManager.default.fileExists(atPath: web.appendingPathComponent("build/h
 }
 // The pinned Node from the PATH, as make uses it (scripts/check-toolchain.sh).
 FileManager.default.changeCurrentDirectoryPath(web.path)
-_ = start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
+/// The site's server; the offline pass stops it and starts it again (P17.5).
+func startServer() -> Process {
+    start("/usr/bin/env", ["node", "server.ts"], environment: ["HOST": "127.0.0.1", "PORT": String(serverPort)])
+}
+var server = startServer()
 let driver: any TourBrowser
 /// Chrome's browser-wide connection, kept open for its download setting.
 var chromeBrowser: DevTools?
@@ -984,6 +992,70 @@ for size in [widths[0], widths[widths.count - 1]] {
     expect(
         await driver.run("return document.querySelector('#today article') === null") as? Bool == true,
         "\(at): Today still shows a plan after Delete everything")
+}
+
+// Offline (P15.2, P17.5): with a plan started and Today opened once, the
+// server stops, as when the reader loses their connection. Today opens with
+// its kept card and says it is offline, Mark read is kept to send later,
+// Plans opens, and a page never opened shows the offline page. With the
+// server back, the kept mark is sent and Today shows it read. Not in
+// Safari: under its driver, after the flows above, the worker stays
+// installing and never takes the page, so Safari offline is checked by
+// hand at each release (docs/browsers.md).
+if browser != "safari" {
+    let at = "\(browser) offline"
+    await driver.resize(width: 1280, height: 900)
+    await driver.go("/")
+    await driver.run("localStorage.clear(); sessionStorage.clear(); indexedDB.deleteDatabase('day-by-word')")
+    await driver.go("/plans/gospels-at-your-pace/start?\(monday)")
+    await driver.click("#start-plan button[type=submit]")
+    await driver.waitUntil("return location.pathname === '/today'", "\(at): the plan to start")
+    // The worker keeps the release when it installs, and answers pages
+    // from the next load on.
+    var controlled = false
+    for _ in 0..<40 where !controlled {
+        await driver.go("/today?\(monday)")
+        controlled =
+            await driver.run(
+                "return navigator.serviceWorker.controller !== null") as? Bool
+            == true
+        if !controlled { try? await Task.sleep(for: .milliseconds(250)) }
+    }
+    expect(controlled, "\(at): the service worker never took the page")
+    await driver.waitUntil("return document.querySelector('\(markRead2)') !== null", "\(at): Today's card online")
+    await driver.go("/plans")
+
+    server.terminate()
+    server.waitUntilExit()
+    await driver.go("/today?\(monday)")
+    await driver.waitUntil(
+        "return document.querySelector('\(markRead2)') !== null && !document.querySelector('[data-today-offline]').hidden",
+        "\(at): Today's kept card and the offline note")
+    await driver.click(markRead2)
+    // Each look starts a count of the kept marks and reads the last one's
+    // answer (Safari's driver does not wait for a promise).
+    await driver.waitUntil(
+        """
+        const seen = window.__pending;
+        const open = indexedDB.open('day-by-word');
+        open.onsuccess = () => {
+          const count = open.result.transaction('pending').objectStore('pending').count();
+          count.onsuccess = () => { window.__pending = count.result; };
+        };
+        return seen === 1;
+        """, "\(at): the mark kept to send")
+    await driver.go("/plans")
+    expect(await driver.run("return document.querySelector('h1')?.textContent") as? String == "Plans", "\(at): Plans")
+    await driver.go("/plans/pauls-letters/week")
+    let shown = await driver.run("return document.querySelector('h1')?.textContent") as? String ?? ""
+    expect(shown == "You're offline", "\(at): a page never opened shows \(shown)")
+
+    server = startServer()
+    await waitUntilAnswering("\(base)/up", what: "the server again")
+    await driver.go("/today?\(monday)")
+    await driver.waitUntil(
+        "return document.querySelector('\(markRead2)') === null && document.querySelector('#today article') !== null",
+        "\(at): the kept mark sent and shown read")
 }
 
 await driver.end()
