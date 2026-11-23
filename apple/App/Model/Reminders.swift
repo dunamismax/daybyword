@@ -263,7 +263,8 @@ final class ReminderScheduler {
     /// read today.
     func snooze(_ payload: ReminderPayload) {
         guard let (enrollment, _) = find(payload),
-            let at = try? LocalDateTime(library.now.addingTimeInterval(ReminderPreferences.snooze), in: .current)
+            let at = try? LocalDateTime(
+                library.now.addingTimeInterval(ReminderPreferences.snooze), in: library.timeZone)
         else { return }
         var stored = ReminderPreferences.storedSnoozes(defaults)
         stored.append(

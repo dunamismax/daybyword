@@ -265,6 +265,29 @@ if (todayView) {
       .catch(() => {});
   });
 
+  // A page left open past midnight, or brought back after a day away or a
+  // flight, shows the new day's readings (P17.4): when the reader returns
+  // to the tab, and at midnight for a page left showing.
+  let shownFor = today();
+  const showIfTheDayTurned = () => {
+    if (today() === shownFor) return;
+    shownFor = today();
+    showToday().catch(() => {});
+  };
+  addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") showIfTheDayTurned();
+  });
+  addEventListener("focus", showIfTheDayTurned);
+  const atMidnight = () => {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+    setTimeout(() => {
+      showIfTheDayTurned();
+      atMidnight();
+    }, next.getTime() - now.getTime());
+  };
+  atMidnight();
+
   todayView.addEventListener("click", async (event) => {
     const button = event.target instanceof Element ? event.target.closest("button") : null;
     if (!button || (!button.dataset.mark && !button.dataset.undo && !button.dataset.return)) {

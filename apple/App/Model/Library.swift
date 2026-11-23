@@ -35,15 +35,22 @@ final class Library {
 
     private let store: JournalStore?
     private let clock: () -> Date
+    private let zone: () -> TimeZone
 
-    init(catalog: Catalog?, store: JournalStore?, problem: String? = nil, clock: @escaping () -> Date = Date.init) {
+    /// `clock` and `zone` are the device's own unless a test gives others
+    /// (a clock past midnight, a reader who has flown, P17.4).
+    init(
+        catalog: Catalog?, store: JournalStore?, problem: String? = nil, clock: @escaping () -> Date = Date.init,
+        zone: @escaping () -> TimeZone = { .current }
+    ) {
         self.catalog = catalog
         self.store = store
         self.problem = problem
         self.clock = clock
+        self.zone = zone
         convention =
             NamingConvention(rawValue: UserDefaults.standard.string(forKey: Self.conventionKey) ?? "") ?? .common
-        today = Self.civilDate(clock())
+        today = Self.civilDate(clock(), in: zone())
         reload()
         // The widgets read these from the App Group (P8.9, P12.2).
         SharedJournal.defaults.set(convention.rawValue, forKey: Self.conventionKey)
@@ -92,23 +99,27 @@ final class Library {
         return url
     }
 
-    private static func civilDate(_ instant: Date) -> CivilDate {
-        (try? CivilDate(instant, in: .current)) ?? .earliest
+    private static func civilDate(_ instant: Date, in zone: TimeZone) -> CivilDate {
+        (try? CivilDate(instant, in: zone)) ?? .earliest
     }
 
-    /// Resolves today again, as when the app returns to the foreground.
+    /// Resolves today again, as when the app returns to the foreground, the
+    /// day turns at midnight, or the reader arrives in another zone.
     func refreshToday() {
-        let now = Self.civilDate(clock())
+        let now = Self.civilDate(clock(), in: zone())
         if now != today { today = now }
     }
 
     /// The instant now, by the library's clock.
     var now: Date { clock() }
 
+    /// The time zone the reader is in now.
+    var timeZone: TimeZone { zone() }
+
     /// The local date and wall-clock time now, in the device's zone, which the
     /// engine's reminders work in (docs/engine.md, "Reminders").
     var localNow: LocalDateTime {
-        (try? LocalDateTime(clock(), in: .current))
+        (try? LocalDateTime(clock(), in: zone()))
             ?? LocalDateTime(date: today, time: WallTime(hour: 0, minute: 0)!)
     }
 

@@ -37,7 +37,11 @@ files when APIs are needed.
   interface words: it reads its messages from the page's data attributes.
   When an action replaces Today's or Progress's HTML, it puts keyboard
   focus back in the reader's place (`keepFocus`, P15.4): on the plan's
-  Undo after Mark read, on Mark read after Undo, never back at the top. No component kit is
+  Undo after Mark read, on Mark read after Undo, never back at the top.
+  Today resolves the reader's date in the browser (E7) and works it out
+  again when the tab comes back into view or gains focus, and at
+  midnight, so a page left open overnight or after travel shows the new
+  day (P17.4). No component kit is
   required; no new imagery or generic palette; preserve Morning.
 - TypeScript domain logic lives in `src/lib/domain/`, follows
   docs/engine.md and the same JSON cases as native Swift. Do not
