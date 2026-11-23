@@ -18,7 +18,7 @@ WEB_STAMP := web/node_modules/.modules.yaml
 .PHONY: help tokens generate catalog check-catalog build test-packages test-app test-ui \
 	test-linux run screenshot lint format \
 	web-install lint-web types-web test-web build-web smoke-web serve-web check-web test-domain-browser audit-web \
-	catalog-export check-export db-generate db-drift test-db strings check-strings tour tour-app tour-web app-store-screenshots check check-full check-signing archive testflight deploy clean
+	catalog-export check-export rights-audit db-generate db-drift test-db strings check-strings tour tour-app tour-web app-store-screenshots check check-full check-signing archive testflight deploy clean
 
 help: ## List the targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{ printf "  %-14s %s\n", $$1, $$2 }'
@@ -34,8 +34,9 @@ catalog: ## Compile the catalog for the app bundle (RELEASE=1 for release mode)
 		--output $(CATALOG) $(if $(RELEASE),--release)
 	@cp $(CATALOG) $(APP_CATALOG)
 
-check-catalog: ## Check our own plans' schedules against their rules, and compile the catalog in release mode too, which refuses plans with uncleared sources
+check-catalog: ## Check our own plans' schedules against their rules, the rights audit (docs/rights-audit.md), and compile the catalog in release mode too, which refuses plans with uncleared sources
 	@swift scripts/plans.swift check
+	@swift scripts/rights-audit.swift check
 	@swift run --package-path Packages/CatalogCompiler --quiet catalog build \
 		--output build/catalog/Catalog-release.sqlite --release
 
@@ -56,6 +57,9 @@ test-ui: generate ## Run the app's UI tests in the simulator
 
 app-store-screenshots: generate ## Make the App Store's screenshots on the 6.9-inch iPhone and 13-inch iPad, light and dark; they go to screenshots/app-store/
 	@scripts/app-store-screenshots.sh
+
+rights-audit: ## Write docs/rights-audit.md from catalog/SOURCES.md and the plans (P18.1)
+	@swift scripts/rights-audit.swift generate
 
 test-linux: ## Test the Swift packages on Linux, in a container
 	@scripts/test-linux.sh
@@ -144,11 +148,10 @@ check-strings: ## Check the String Catalog against the last build's strings (aft
 
 tour: tour-app tour-web ## Visit every section in light and dark in the app and on the web, saving screenshots
 
-tour-app: generate ## Tour the app in the simulator and run Apple's accessibility audit on every screen (docs/accessibility.md); screenshots go to screenshots/app/
+tour-app: generate ## Every app UI test in the simulator: the tour in light and dark, the accessibility audit on every screen (docs/accessibility.md), and every critical flow (P17.10); screenshots go to screenshots/app/
 	@mkdir -p screenshots/app
 	@TEST_RUNNER_DBW_SCREENSHOTS="$(CURDIR)/screenshots/app" scripts/xcodebuild.sh tour-app \
-		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests/TourTests \
-		-only-testing:AppUITests/AccessibilityAuditTests test
+		-destination "$$(scripts/sim-destination.sh)" -only-testing:AppUITests test
 
 tour-web: build-web catalog-export ## Tour the SvelteKit site and every web flow in Firefox (WebDriver), Chrome (DevTools, phone widths too) and Safari (safaridriver, a visible window), with the release catalog; screenshots go to screenshots/web/
 	@scripts/with-catalog.sh sh -c 'swift scripts/webtour.swift && DBW_WEBDRIVER=chrome swift scripts/webtour.swift && DBW_WEBDRIVER=safari swift scripts/webtour.swift'

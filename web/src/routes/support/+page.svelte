@@ -8,6 +8,17 @@
 
   const address = text("support.address");
   const reportLink = `mailto:${address}?subject=${encodeURIComponent(text("support.report"))}`;
+  // The questions to answer, in the message too, so a reader can reply
+  // under each (BUILD.md P18.9). Nothing is sent unless the reader sends it.
+  const feedback = [
+    "support.feedback-plan",
+    "support.feedback-hard",
+    "support.feedback-change",
+    "support.feedback-read",
+  ] as const;
+  const feedbackLink =
+    `mailto:${address}?subject=${encodeURIComponent(text("support.feedback"))}` +
+    `&body=${encodeURIComponent(feedback.map((key) => text(key)).join("\n\n\n") + "\n")}`;
   const questions = [
     ["support.q-text", "support.a-text"],
     ["support.q-translation", "support.a-translation"],
@@ -52,6 +63,18 @@
       <li><a href="/privacy">{text("settings.privacy")}</a></li>
       <li><a href="/terms">{text("settings.terms")}</a></li>
     </ul>
+  </section>
+
+  <section class="card" aria-labelledby="feedback" id="feedback-section">
+    <h2 class="mt-0 mb-xs text-body" id="feedback">{text("support.feedback")}</h2>
+    <p class="mt-0">{text("support.feedback-intro")}</p>
+    <ul class="mt-0 list-disc pl-l">
+      {#each feedback as key (key)}
+        <li class="mb-xs">{text(key)}</li>
+      {/each}
+    </ul>
+    <p><a href={feedbackLink}>{text("support.feedback-write")}</a></p>
+    <p class="mb-0 text-caption text-text-muted">{text("support.feedback-note")}</p>
   </section>
 
   <section aria-labelledby="support-questions">

@@ -216,6 +216,8 @@ struct SettingsView: View {
                     // The privacy policy and terms the owner approved (P16.3).
                     Link("Privacy policy", destination: Self.web("/privacy"))
                     Link("Terms of use", destination: Self.web("/terms"))
+                    // A few questions a reader may answer by mail (P18.9).
+                    Link("Share what you think", destination: Self.web("/support#feedback"))
                     LabeledContent("Version", value: Self.version)
                 } header: {
                     Text("About").sectionNote()

@@ -24,7 +24,7 @@ endpoints and later consented sync, never a direct database connection.
 | `/progress` | yes | yes | Progress |
 | `/settings` | yes | yes | Settings (a sheet in the app) |
 | `/offline` | yes | no | What the service worker shows for a page not kept, with no connection (P15.2) |
-| `/support` | yes | Settings › About links to the web page | Support: the address, reporting a reading that looks wrong, what is kept about a reader, and questions people ask (P16.2); linked from every page's footer |
+| `/support` | yes | Settings › About links to the web page | Support: the address, reporting a reading that looks wrong, what is kept about a reader, Share what you think (`#feedback`, four questions answered by mail, P18.9), and questions people ask (P16.2); linked from every page's footer |
 | `/sources` | yes | Settings › About links to the web page | Sources and permissions: each plan's source, review and permissions from the catalog (an anchor per plan id, which its page links to), the data sources from catalog/SOURCES.md with their credits, and the book registry's citations (P16.5) |
 | `/criteria` | yes | Settings › About links to the web page | How Day by Word chooses its plans: the published criteria (P16.5) |
 | `/accessibility` | yes | Settings › About links to the web page | The accessibility statement: WCAG 2.2 AA, what was tested, what has not been yet, and reporting a barrier (P16.6) |

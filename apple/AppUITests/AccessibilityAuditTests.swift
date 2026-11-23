@@ -83,8 +83,9 @@ final class AccessibilityAuditTests: XCTestCase {
     ///   samples through the bar's blur;
     /// - Dynamic Type at the standard size, where the audit flags text that
     ///   does grow: the AX5 pass audits Dynamic Type itself and is seen;
-    /// - contrast on Progress's rest-day dash, one thin glyph whose colors are
-    ///   6.3:1 (light) and 7.2:1 (dark) by the tokens;
+    /// - contrast on a label of one glyph (Progress's day letters, check,
+    ///   circle and rest-day dash), whose colors are 6.3:1 (light) and 7.2:1
+    ///   (dark) by the tokens, but which the audit samples unreliably;
     /// - text clipped by the screen's own edge, where it scrolls into view
     ///   (an element clipped within the screen still fails);
     /// - text the audit cannot match to an element where the element says it
@@ -93,6 +94,19 @@ final class AccessibilityAuditTests: XCTestCase {
     @MainActor
     private func audit(_ app: XCUIApplication, largeText: Bool, _ screen: String) throws {
         save(app, screen)
+        // An issue counts when two audits a moment apart both find it: the
+        // contrast check samples pixels, and on a busy machine it can catch
+        // a screen still settling (a real issue is found every time).
+        let first = try issues(app, screen, largeText: largeText)
+        guard !first.isEmpty else { return }
+        Thread.sleep(forTimeInterval: 2)
+        let again = Set(try issues(app, screen, largeText: largeText))
+        let found = first.filter { again.contains($0) }
+        XCTAssertTrue(found.isEmpty, found.joined(separator: "\n"))
+    }
+
+    @MainActor
+    private func issues(_ app: XCUIApplication, _ screen: String, largeText: Bool) throws -> [String] {
         let navigationBar = app.navigationBars.firstMatch
         let tabBar = app.tabBars.firstMatch
         let tabBarTop = tabBar.exists ? tabBar.frame.minY : .infinity
@@ -100,8 +114,9 @@ final class AccessibilityAuditTests: XCTestCase {
         try app.performAccessibilityAudit { issue in
             let frame = issue.element?.frame ?? .zero
             let inNavigationBar = navigationBar.exists && navigationBar.frame.insetBy(dx: 0, dy: -8).contains(frame)
+            let oneGlyph = (issue.element?.label.count ?? 0) == 1
             switch issue.auditType {
-            case .contrast where inNavigationBar || frame.maxY > tabBarTop || issue.element?.label == "–": return true
+            case .contrast where inNavigationBar || frame.maxY > tabBarTop || oneGlyph: return true
             case .textClipped where issue.element == nil: return true
             case .dynamicType where inNavigationBar || !largeText: return true
             case .elementDetection
@@ -109,12 +124,12 @@ final class AccessibilityAuditTests: XCTestCase {
                 return true
             default: break
             }
-            found.append(
-                "\(screen): \(issue.auditType) on \(issue.element?.debugDescription.prefix(160) ?? "the screen"): \(issue.compactDescription)"
-            )
+            // Described without the element's address, which differs between audits.
+            let element = issue.element.map { "\($0.elementType.rawValue) '\($0.label)' at \($0.frame.integral)" }
+            found.append("\(screen): \(issue.auditType) on \(element ?? "the screen"): \(issue.compactDescription)")
             return true
         }
-        XCTAssertTrue(found.isEmpty, found.joined(separator: "\n"))
+        return found
     }
 
     /// Each audited screen, attached to the result and, when the runner is

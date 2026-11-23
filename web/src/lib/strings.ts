@@ -381,7 +381,7 @@ const english = {
   "settings.streak-note":
     "Counts the reading days you've read one after another. Rest days never break it, and it never appears in a reminder.",
   "settings.kept-in-this-browser":
-    "These choices are kept in this browser only. They are never sent to daybyword.com.",
+    "These choices are kept in this browser. Book names, how you read, your translation and reading days in a row go with your record when Today and Progress are worked out, and daybyword.com keeps none of them.",
   "settings.your-data": "Your data",
   "settings.data-note":
     "Your plans and reading record are kept only in this browser. To work out today's reading, this browser sends them to daybyword.com, which keeps none of it and records nothing about them.",
@@ -394,6 +394,7 @@ const english = {
   "settings.support": "Help and support",
   "settings.privacy": "Privacy policy",
   "settings.terms": "Terms of use",
+  "settings.feedback": "Share what you think",
   "plan.sources-link": "Sources and permissions",
 
   "sources.title": "Sources and permissions",
@@ -632,6 +633,16 @@ const english = {
   "support.kept-none": "There are no accounts, analytics, advertising, or tracking.",
   "support.kept-mail":
     "Mail to support@daybyword.com is forwarded to the inbox of the person who runs Day by Word, and is used only to answer you and to put right what you report.",
+  "support.feedback": "Share what you think",
+  "support.feedback-intro":
+    "If you'd like to help shape Day by Word, write and answer any of these. Answer as much or as little as you like.",
+  "support.feedback-plan": "Which plan are you following, and how did you choose it?",
+  "support.feedback-hard": "What, if anything, makes it hard to start or to keep going?",
+  "support.feedback-change": "What would you change, add, or take away?",
+  "support.feedback-read": "How do you read: on paper, in an app, or by listening?",
+  "support.feedback-write": "Write your answers",
+  "support.feedback-note":
+    "Your message goes to the inbox of the person who runs Day by Word and is used only to improve it. Anything that helps a change is written down without your name or details.",
   "support.questions": "Questions people ask",
   "support.q-text": "Does Day by Word show the Bible text?",
   "support.a-text":

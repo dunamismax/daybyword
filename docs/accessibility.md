@@ -18,13 +18,16 @@ traits as the settings would), and saves each screen when given
 that match it, a large enough hit region, contrast, text that grows with
 Dynamic Type, and text that is not cut short.
 
-It passes every issue except these, each checked by hand:
+An issue fails the test only when two audits a moment apart both find
+it: the contrast check samples pixels and, on a busy machine, can catch a
+screen still settling. It passes every issue except these, each checked
+by hand:
 
 | Exempted | Why |
 |---|---|
 | Contrast and Dynamic Type on the navigation bar's buttons (Done, Cancel, Start) | The system draws them on glass and sizes them; the audit samples the glass |
 | Contrast on text that reaches under the tab bar | The audit samples it through the bar's blur; the same text passes once scrolled into view |
-| Contrast on Progress's rest-day dash ("–") | One thin glyph; its colors are 6.3:1 (light) and 7.2:1 (dark) by the tokens |
+| Contrast on a label of one glyph (Progress's day letters, ✓, ○ and –) | Single glyphs the audit samples unreliably (it passed and failed the same letter on two runs); their colors are 6.3:1 (light) and 7.2:1 (dark) by the tokens |
 | Dynamic Type at the standard text size | The audit flags text that does grow (Copy reference, More, the reminder rows); the AX5 pass audits Dynamic Type itself, and its screenshots show the text grown |
 | Text clipped by the screen's own edge | Text that continues below the screen, to be scrolled to; text clipped within the screen still fails |
 | Text the audit cannot match to an element, on a plan's page and Progress | The sample week says each reference in words ("Matthew, chapters 1 to 3"), not as shown ("Matthew 1–3"), and Progress's recent days say each day ("Monday, March 1, read"), not its letter and symbol |

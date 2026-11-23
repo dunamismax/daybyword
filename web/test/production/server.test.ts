@@ -489,7 +489,9 @@ describe("Settings", () => {
       }
     }
     expect(html).toMatch(/<legend[^>]*>Appearance<\/legend>/);
-    expect(html).toContain("never sent to daybyword.com");
+    // It says what the code does: the settings that shape Today and
+    // Progress go with the record, and nothing keeps them (P17.11).
+    expect(html).toContain("daybyword.com keeps none of them");
   });
 });
 
@@ -783,6 +785,26 @@ describe("the error pages (P16.8)", () => {
     } finally {
       server.process.kill();
     }
+  });
+});
+
+describe("sharing what you think (P18.9)", () => {
+  it("offers four questions by mail, opt-in, linked from Settings", async () => {
+    const support = await page(deployed, "/support");
+    for (const key of [
+      "support.feedback-plan",
+      "support.feedback-hard",
+      "support.feedback-change",
+      "support.feedback-read",
+      "support.feedback-note",
+    ] as const) {
+      expect(readerText(support), key).toContain(englishStrings[key]);
+    }
+    expect(support).toContain(
+      `href="mailto:support@daybyword.com?subject=Share%20what%20you%20think&amp;body=Which%20plan`,
+    );
+    expect(support).toContain('id="feedback"');
+    expect(await page(deployed, "/settings")).toContain('href="/support#feedback"');
   });
 });
 

@@ -124,5 +124,6 @@
   <p><a href="/support">{text("settings.support")}</a></p>
   <p><a href="/privacy">{text("settings.privacy")}</a></p>
   <p><a href="/terms">{text("settings.terms")}</a></p>
+  <p><a href="/support#feedback">{text("settings.feedback")}</a></p>
   <p class="text-caption text-text-muted">{data.version}</p>
 </section>
