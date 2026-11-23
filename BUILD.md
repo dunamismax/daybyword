@@ -17,11 +17,11 @@ sessions build Day by Word step by step, working under
 
 | | |
 |---|---|
-| **Phase** | M3 Version 1.0 under way: daybyword.com serves 4180d56; TestFlight build 143 (0.1.0, af2c888), which the owner tested and found working. Phases M, 0–11, 13 and 16 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 4 of 5 (P15.2, P15.4, P15.5, P15.6; P15.1a done). |
+| **Phase** | M3 Version 1.0 under way: daybyword.com serves 44d807c; TestFlight build 143 (0.1.0, af2c888), which the owner tested and found working; build 155 (44d807c) is archived, waiting to upload. Phases M, 0–11, 13 and 16 are finished (in BUILD-HISTORY.md; 6 moved to the roadmap). Phase 12: 2 of 4 (P12.1, P12.4; P12.2a, P12.6a done). Phase 15: 4 of 5 (P15.2, P15.4, P15.5, P15.6; P15.1a done). |
 | **Next item** | **P18.3**, the beta, which the owner starts (D36); then P18.4 (App Review, with the owner's go-ahead), P18.5 and P18.7 on release day; in Phase 17 only P17.1b and P17.9 remain, both waiting on the owner with a device. Waiting on a device or the owner: P12.2b, P12.6b, P15.1b, P17.1b |
 | **Also open** | [GATE DEMO] is open since P8.14; nothing in this file waits on it (D38's letters come with their plans, after 1.0) |
-| **Waiting on the owner** | **P17.9**: run a TestFlight build for a week with reminders on two plans, quiet hours on and "Reminders a day" at 1, and say which reminders arrived and when. **P17.1b**: listen to the app with VoiceOver on the iPhone and iPad (TestFlight), and to daybyword.com with VoiceOver in Safari, and say what reads badly; or allow an agent to drive the Mac's VoiceOver. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
-| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 4180d56 (deployed 2026-11-22). Everything since (the legal pages, Safari, Phase 17 work, P18.1, P18.9) is pushed but not deployed, and TestFlight is still build 143. |
+| **Waiting on the owner** | **Xcode sign-in**: `make testflight` fails with "App Store Connect access … is required": sign in again at Xcode → Settings → Accounts, then an agent runs `make testflight` for build 155. **Safari's driver**: check Safari → Settings → Advanced/Developer that "Allow remote automation" is still on (its session times out). **P17.9**: run a TestFlight build for a week with reminders on two plans, quiet hours on and "Reminders a day" at 1, and say which reminders arrived and when. **P17.1b**: listen to the app with VoiceOver on the iPhone and iPad (TestFlight), and to daybyword.com with VoiceOver in Safari, and say what reads badly; or allow an agent to drive the Mac's VoiceOver. **P12.2b**: say whether the Lock Screen widgets show and Mark read works there. **P12.6b**: install a TestFlight build on the Mac through TestFlight for Mac (or allow registering this Mac). **P15.1b**: install daybyword.com from Chrome on an Android phone, or allow an Android emulator download |
+| **Live** | https://daybyword.com, in development (noindex, robots blocked), serves 44d807c (deployed 2026-11-22, with the 4M body limit): the legal pages, Phase 17's work, P18.1 and P18.9 are live. TestFlight is still build 143 until the owner signs Xcode in again. |
 | **Last updated** | 2026-11-22 |
 
 **Name:** **Day by Word** (owner decision D1). The canonical domain is
@@ -582,30 +582,28 @@ only when Phase 18 is finished or an item points there.
 
 *Replaced each session; keep under 25 lines. History lives in Git.*
 
-- **2026-11-22, fifth session:** recorded the owner's answers (P16.3
-  approved, Safari automation on, build 143 works). Done: P16.3, P16.4
-  (/privacy, /terms), P15.6b (Safari in the tour), P16.7 (App Store
-  screenshots, `make app-store-screenshots`; Phase 16 moved to history),
-  P17.1a, P17.2, P17.3, P17.4, P17.5, P17.7 (POST limit, 4M body limit,
-  `make audit-web`, E62), P17.10, P17.11, P18.1 (`docs/rights-audit.md`),
-  P18.2, P18.9 (`docs/learning.md`, Share what you think).
-- **Not shipped:** daybyword.com still serves 4180d56 and TestFlight is
-  still build 143. Everything since is committed and pushed but neither
-  deployed nor uploaded. Next session: run `make check-full`, then `make
-  deploy` (installs the new 4M unit) and `make archive testflight`.
-- **check-full state:** check, audit-web, the engine cases in Firefox and
-  Linux passed on ec9a271; every app UI test passed except the
-  accessibility audit, whose last failure (text seen through the tab bar
-  on History, no element named) is exempted in the final commit, not yet
-  rerun. `make tour-web` passed in all three browsers earlier in the
-  session but not on the final commit. The Mac was under very heavy load
-  (load average 70–145), which makes UI tests slow and flaky.
-- **Waiting on the owner:** P17.9 (a week of reminders on a device),
-  P17.1b (listening with VoiceOver), P12.2b, P12.6b, P15.1b, and P18.3
-  (start the beta). P18.4 needs the owner's go-ahead to submit.
-- **Owner to know:** the POST limit keeps a salted hash of each client's
-  address in memory for a minute (never logged); the privacy policy's log
-  statements still hold, but say if you want it mentioned there.
-- **Safari's driver** needs workarounds (scripts/webtour.swift): Option-Tab,
-  re-keying the window, no promises in scripts; the offline pass is skipped
-  there.
+- **2026-11-22, sixth session:** ran `make check-full` on 44d807c,
+  deployed it, and archived build 155. No BUILD.md item was open that an
+  agent can do: the rest wait on the owner or on release day (P18.3–P18.8).
+- **check-full on 44d807c:** check, audit-web, the engine cases in
+  Firefox, the web tour in Firefox (700 checks) and Chrome (1041), every
+  app UI test (the accessibility audit with its tab-bar exemption,
+  CriticalFlow, Launch, Tour) and Linux all passed. **Not run: the Safari
+  tour.** safaridriver timed out at "Request creation of a new automation
+  session" five times (Safari first hung at launch and was restarted; no
+  prompt showed) under a load average of 60–430. Web changes since Safari
+  last passed (7962e87) are ~160 lines, passing in Firefox and Chrome.
+  Rerun it (`DBW_WEBDRIVER=safari`) when the Mac is quiet.
+- **Deployed:** daybyword.com serves 44d807c; the candidate, live port,
+  public check and neighbours all passed; the unit runs
+  `BODY_SIZE_LIMIT=4M`.
+- **TestFlight blocked:** `make archive` made build 155 (44d807c), but
+  `make testflight` fails twice with "App Store Connect access … is
+  required": Xcode's account needs the owner to sign in again. Then run
+  `make testflight` (the archive is in `build/DayByWord.xcarchive`; if it
+  is gone, `make archive` again).
+- **Waiting on the owner:** the Xcode sign-in, P17.9 (a week of reminders
+  on a device), P17.1b (listening with VoiceOver), P12.2b, P12.6b,
+  P15.1b, and P18.3 (start the beta). P18.4 needs the owner's go-ahead.
+  Also open: should the privacy policy mention the POST limit's
+  in-memory salted hash (a minute, never logged)?

@@ -37,6 +37,11 @@ pinned in .swift-version and the commands below remain the native path.
   License Agreement: the owner accepts it at developer.apple.com/account
   (and any new agreements in App Store Connect → Business), then `make
   testflight` runs again unchanged. Agents never accept agreements.
+  If an export reports `Failed to Use Accounts` ("App Store Connect access
+  for … is required"), Xcode's sign-in has lapsed although `make
+  check-signing` still passes (it sees the certificate, not the session):
+  the owner signs in again at Xcode → Settings → Accounts, then `make
+  testflight` uploads the same archive.
   If Distribute App reports `DistributionAppRecordProviderError` right after
   creating a record, the record exists but App Store Connect has not caught
   up yet: run `make testflight` again a minute later.
